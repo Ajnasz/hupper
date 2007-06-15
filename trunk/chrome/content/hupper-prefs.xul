@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://grwatcher/locale/grwatcher.dtd">
+<dialog
+  id="hupper-prefs"
+  title="Hupper Preferences"
+  ondialogaccept="savePreferences();"
+  buttons="accept,cancel"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
+  <script type="application/x-javascript">
+  <![CDATA[
+    window.addEventListener('load', StartHupperPrefernces, false);
+  ]]>
+  </script>
+
+  <groupbox flex="1">
+    <caption label="Hupper Preferences" />
+    <vbox>
+      <checkbox id="enable-trollfilter" label="enable troll filter" />
+      <label control="trolls" value="trolls (comma separated)" />
+      <textbox id="trolls"  />
+      <menulist id="trollfilter-method">
+        <menupopup>
+          <menuitem value="hide" label="Hide" />
+          <menuitem value="hilight" label="hilight" />
+        </menupopup>
+      </menulist>
+      <checkbox id="enable-hupperfilter" label="enable hupper filter" />
+      <label control="huppers" value="huppers (comma separated)" />
+      <textbox id="huppers"  />
+      <checkbox id="enable-new-comment-changer" label="enable new comment change filter" />
+      <label control="new-comment-text" value="change the 'új' text on new comments" />
+      <textbox id="new-comment-text"  />
+    </vbox>
+  </groupbox>
+</dialog>

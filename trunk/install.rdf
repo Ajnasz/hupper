@@ -35,6 +35,6 @@
     <em:description>Adds some feature to http://hup.hu website</em:description>
     <em:homepageURL>http://ajnasz.hu/</em:homepageURL>
     <em:iconURL>chrome://hupper/skin/hupper.png</em:iconURL>
-<!--    <em:optionsURL>chrome://hupper/content/hupperprefs.xul</em:optionsURL> -->
+    <em:optionsURL>chrome://hupper/content/hupper-prefs.xul</em:optionsURL> -->
   </Description>
 </RDF>
