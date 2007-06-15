@@ -5,17 +5,7 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <script type="application/x-javascript">
   <![CDATA[
-  window.addEventListener("load", function(){
-    var appcontent = window.document.getElementById('appcontent');
-    if(appcontent)
-    {
-      if(!appcontent.hupper)
-      {
-        appcontent.hupper = true;
-        appcontent.addEventListener("DOMContentLoaded", HUPPER, false);
-      }
-    }
-  }, false);
+        window.addEventListener("DOMContentLoaded", HUPPER, false);
   ]]>
   </script>
 </overlay>
