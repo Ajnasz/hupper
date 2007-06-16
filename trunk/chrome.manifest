@@ -2,6 +2,5 @@ content hupper jar:chrome/hupper.jar!/content/
 overlay chrome://browser/content/browser.xul chrome://hupper/content/hupper.xul
 
 locale hupper en-US jar:chrome/hupper.jar!/locale/en-US/
-locale hupper hu jar:chrome/hupper.jar!/locale/hu/
 
 skin hupper classic/1.0      jar:chrome/hupper.jar!/skin/classic/hupper/

@@ -1,0 +1,15 @@
+<!ENTITY Hupper.enabletrollfilter "Enable trollfilter">
+<!ENTITY Hupper.trolls "Trolls (comma separated)">
+<!ENTITY Hupper.trollcolor "The color of a troll comment's header">
+<!ENTITY Hupper.enabletrollfilter "Enable trollfilter">
+<!ENTITY Hupper.enabletrollfilter "Enable trollfilter">
+<!ENTITY Hupper.trollfiltermethod "Effect to filter the troll's comment">
+<!ENTITY Hupper.trollfilter.hide "Hide">
+<!ENTITY Hupper.trollfilter.hilight "Hilight">
+
+<!ENTITY Hupper.enablehupperfilter "Enable hupper filter">
+<!ENTITY Hupper.huppers "Huppers (comma separated)">
+<!ENTITY Hupper.huppercolor "The color of a hupper comment's header">
+
+<!ENTITY Hupper.enablenewcommentchange "Enable the replace the 'új' text in the header of the newly posted comments">
+<!ENTITY Hupper.newcommenttext "The text to replace to">

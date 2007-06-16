@@ -5,8 +5,11 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <script type="application/x-javascript">
   <![CDATA[
-        window.addEventListener("DOMContentLoaded", HUPPER, false);
+    window.addEventListener("DOMContentLoaded", HUPPER, false);
   ]]>
   </script>
+  <stringbundlest>
+    <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
+  </stringbundlest>
 </overlay>
 

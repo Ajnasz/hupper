@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://grwatcher/locale/grwatcher.dtd">
+<!DOCTYPE window SYSTEM "chrome://hupper/locale/hupper.dtd">
 <dialog
   id="hupper-prefs"
   title="Hupper Preferences"
@@ -18,21 +18,48 @@
   <groupbox flex="1">
     <caption label="Hupper Preferences" />
     <vbox>
-      <checkbox id="enable-trollfilter" label="enable troll filter" />
-      <label control="trolls" value="trolls (comma separated)" />
+
+      <!-- trollfiter section -->
+
+      <checkbox id="enable-trollfilter" label="&Hupper.enabletrollfilter;" />
+
+      <label control="trolls" value="&Hupper.trolls;" />
       <textbox id="trolls"  />
+
+      <label control="troll-color" value="&Hupper.trollcolor;" />
+      <textbox id="troll-color" />
+
+      <label control="trollfilter-method" value="&Hupper.trollfiltermethod;" />
       <menulist id="trollfilter-method">
         <menupopup>
-          <menuitem value="hide" label="Hide" />
-          <menuitem value="hilight" label="hilight" />
+          <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
+          <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
         </menupopup>
       </menulist>
-      <checkbox id="enable-hupperfilter" label="enable hupper filter" />
-      <label control="huppers" value="huppers (comma separated)" />
+
+      <!-- trollfiter section end -->
+
+      <separator class="groove" />
+
+      <!-- hupper filter section -->
+
+      <checkbox id="enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
+
+      <label control="huppers" value="&Hupper.huppers;" />
       <textbox id="huppers"  />
-      <checkbox id="enable-new-comment-changer" label="enable new comment change filter" />
-      <label control="new-comment-text" value="change the 'új' text on new comments" />
+
+      <label control="hupper-color" value="&Hupper.huppercolor;" />
+      <textbox id="hupper-color" />
+
+      <!-- hupper filter section end -->
+
+      <separator class="groove" />
+      
+      <checkbox id="enable-new-comment-changer" label="&Hupper.enablenewcommentchange;" />
+
+      <label control="new-comment-text" value="&Hupper.newcommenttext;" />
       <textbox id="new-comment-text"  />
+
     </vbox>
   </groupbox>
 </dialog>

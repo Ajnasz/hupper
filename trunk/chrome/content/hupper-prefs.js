@@ -17,6 +17,10 @@ HP.prototype = {
     {
       return this.M.getBoolPref('extensions.hupper.filtertrolls');
     },
+    trollcolor: function()
+    {
+      return this.M.getCharPref('extensions.hupper.trollcolor');
+    },
     /**
     * @return hide, hilight
     */
@@ -36,6 +40,11 @@ HP.prototype = {
     {
       return this.M.getBoolPref('extensions.hupper.filterhuppers');
     },
+    huppercolor: function()
+    {
+      return this.M.getCharPref('extensions.hupper.huppercolor');
+    },
+
     replacenewcommenttext: function()
     {
       return this.M.getBoolPref('extensions.hupper.replacenewcommenttext');
@@ -66,6 +75,10 @@ HP.prototype = {
       // hide, hilight
       this.M.setCharPref('extensions.hupper.trollfiltermethod', value);
     },
+    trollcolor: function(value)
+    {
+      this.M.setCharPref('extensions.hupper.trollcolor', value);
+    },
     /**
     * @return {String}
     */
@@ -76,6 +89,10 @@ HP.prototype = {
     filterhuppers: function(value)
     {
       this.M.setBoolPref('extensions.hupper.filterhuppers', value);
+    },
+    huppercolor: function(value)
+    {
+      this.M.setCharPref('extensions.hupper.huppercolor', value);
     },
     replacenewcommenttext: function(value)
     {
@@ -91,9 +108,11 @@ setPrefWinVals = function()
 {
   document.getElementById('enable-trollfilter').checked = hp.get.filtertrolls();
   document.getElementById('trolls').value = hp.get.trolls();
+  document.getElementById('troll-color').value = hp.get.trollcolor();
   document.getElementById('trollfilter-method').value = hp.get.trollfiltermethod();
   document.getElementById('enable-hupperfilter').checked = hp.get.filterhuppers();
   document.getElementById('huppers').value = hp.get.huppers();
+  document.getElementById('hupper-color').value = hp.get.huppercolor();
   document.getElementById('enable-new-comment-changer').checked = hp.get.replacenewcommenttext();
   document.getElementById('new-comment-text').value = hp.get.newcommenttext();
 };
@@ -101,9 +120,11 @@ savePreferences = function()
 {
   hp.set.filtertrolls(document.getElementById('enable-trollfilter').checked);
   hp.set.trolls(document.getElementById('trolls').value);
+  hp.set.trollcolor(document.getElementById('troll-color').value);
   hp.set.trollfiltermethod(document.getElementById('trollfilter-method').value);
   hp.set.filterhuppers(document.getElementById('enable-hupperfilter').checked);
   hp.set.huppers(document.getElementById('huppers').value);
+  hp.set.huppercolor(document.getElementById('hupper-color').value);
   hp.set.replacenewcommenttext(document.getElementById('enable-new-comment-changer').checked);
   hp.set.newcommenttext(document.getElementById('new-comment-text').value);
 };
