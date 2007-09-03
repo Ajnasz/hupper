@@ -60,6 +60,9 @@
       <label control="new-comment-text" value="&Hupper.newcommenttext;" />
       <textbox id="new-comment-text"  />
 
+      <checkbox id="enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
+      <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
+
     </vbox>
   </groupbox>
 </dialog>

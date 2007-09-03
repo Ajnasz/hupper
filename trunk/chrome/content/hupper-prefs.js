@@ -1,3 +1,7 @@
+/**
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @licence General Public Licence v2 
+ */
 HP = function()
 {
   this.M = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -52,6 +56,14 @@ HP.prototype = {
     newcommenttext: function()
     {
       return this.M.getCharPref('extensions.hupper.newcommenttext');
+    },
+    extracommentlinks: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.extracommentlinks');
+    },
+    hilightforumlinesonhover: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.hilightforumlinesonhover');
     }
   },
   set: {
@@ -101,6 +113,14 @@ HP.prototype = {
     newcommenttext: function(value)
     {
       this.M.setCharPref('extensions.hupper.newcommenttext', value);
+    },
+    extracommentlinks: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.extracommentlinks', value);
+    },
+    hilightforumlinesonhover: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.hilightforumlinesonhover', value);
     }
   }
 };
@@ -115,6 +135,8 @@ setPrefWinVals = function()
   document.getElementById('hupper-color').value = hp.get.huppercolor();
   document.getElementById('enable-new-comment-changer').checked = hp.get.replacenewcommenttext();
   document.getElementById('new-comment-text').value = hp.get.newcommenttext();
+  document.getElementById('enable-extra-comment-links').checked = hp.get.extracommentlinks();
+  document.getElementById('hilight-forum-lines-onhover').checked = hp.get.hilightforumlinesonhover();
 };
 savePreferences = function()
 {
@@ -127,6 +149,8 @@ savePreferences = function()
   hp.set.huppercolor(document.getElementById('hupper-color').value);
   hp.set.replacenewcommenttext(document.getElementById('enable-new-comment-changer').checked);
   hp.set.newcommenttext(document.getElementById('new-comment-text').value);
+  hp.set.extracommentlinks(document.getElementById('enable-extra-comment-links').checked);
+  hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
 };
 StartHupperPrefernces = function()
 {
