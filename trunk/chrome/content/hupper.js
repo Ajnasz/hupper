@@ -78,14 +78,23 @@ HupperPrefs = {
   tags: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.tags');
+  },
+  extraCommentLinks: function()
+  {
+    return this.prefManager.getBoolPref('extensions.hupper.extracommentlinks');
+  },
+  hilightForumLinsOnHover: function()
+  {
+    return this.prefManager.getBoolPref('extensions.hupper.hilightforumlinesonhover');
   }
+
 };
 /**
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  */
 getComments = function()
 {
-  var comments = Array(), newComments = Array(), comment;
+  var comments = Array(), newComments = Array(), indentComments = Array(Array()), comment, parentComment;
   if(w.document)
   {
     var tables = w.document.getElementsByTagName('table');
@@ -105,9 +114,17 @@ getComments = function()
         id: tables[i].previousSibling.previousSibling.id,
         header: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1],
         footer: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[4].firstChild,
+        indent: tables[i].parentNode.tagName.toLowerCase() == 'div' ? parseInt(tables[i].parentNode.style.marginLeft)/25 : 0,
         newComm: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[2].getElementsByTagName('font')[0],
         user: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML
       };
+      parentComment = getParentComment(indentComments, comment);
+      comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment].id : -1;
+      if(typeof indentComments[comment.indent] == 'undefined')
+      {
+        indentComments[comment.indent] = Array();
+      }
+      indentComments[comment.indent].push(comments.length);
       comments.push(comment);
       if(comment.newComm)
       {
@@ -115,7 +132,7 @@ getComments = function()
       }
     }
   }
-  return Array(comments, newComments);
+  return Array(comments, newComments, indentComments);
 };
 /**
  * @param {Array} trolls
@@ -234,6 +251,7 @@ parseComments = function()
 
   var huppers = HupperPrefs.huppers();
   var filterhuppers = HupperPrefs.filterhuppers();
+  var extraCommentLinks = HupperPrefs.extraCommentLinks();
   var filteredhuppers = Array();
 
   var firstLinkText = hupperBundles.getString('FirstLinkText');
@@ -242,6 +260,7 @@ parseComments = function()
   var nextLinkText = hupperBundles.getString('NextLinkText');
   var topLinkText = hupperBundles.getString('TopLinkText');
   var backLinkText = hupperBundles.getString('BackLinkText');
+  var parentLinkText = hupperBundles.getString('ParentLinkText');
 
   var cc = document.getElementById('comment_controls');
 
@@ -277,7 +296,7 @@ parseComments = function()
         // continue;
       }
     }
-    else if(filterhuppers)
+    if(filterhuppers)
     {
       if(huppers.inArray(comments[i].user))
       {
@@ -287,7 +306,14 @@ parseComments = function()
         // continue;
       }
     }
-    comments[i].footer.innerHTML += ' · <a href="#top">' + topLinkText + '</a> · <a href="javascript:history.back();">' + backLinkText + '</a>';
+    if(extraCommentLinks)
+    {
+      comments[i].footer.innerHTML += ' · <a href="#top">' + topLinkText + '</a> · <a href="javascript:history.back();">' + backLinkText + '</a>';
+    }
+    if(comments[i].parent != -1)
+    {
+      comments[i].footer.innerHTML += ' · <a href="#'+ comments[i].parent +'">' + parentLinkText + '</a>';
+    }
   }
   if(filteredtrolls.length > 0)
   {
@@ -321,7 +347,10 @@ var forumNewMessageLink = function()
     this.forumLinks = this.forumTable.getElementsByTagName('a');
     this.forumLines = this.forumTable.getElementsByTagName('tr');
     this.modifyLinks();
-    this.addHoverToLines();
+    if(HupperPrefs.hilightForumLinsOnHover())
+    {
+      this.addHoverToLines();
+    }
     this.getForumTable();
     return true;
   }
@@ -359,21 +388,47 @@ forumNewMessageLink.prototype =
     return false;
   }
 };
-addClass = function(element, className)
+/**
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @param {Object} element
+ * @param {String} className
+ */
+var addClass = function(element, className)
 {
   var cl = new RegExp(className);
   if(!cl.test(element.className))
   {
     element.className += ' '+className;
   }
-}
-removeClass = function(element, className)
+};
+/**
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @param {Object} element
+ * @param {String} className
+ */
+var removeClass = function(element, className)
 {
   var cl = new RegExp(className);
   element.className = element.className.replace(cl, '');
-}
-
+};
 /**
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @param {Array} indentedComments
+ * @param {Object} comment
+ */
+var getParentComment = function(indentedComments, comment)
+{
+  if(comment.indent > 0)
+  {
+    return indentedComments[comment.indent-1][indentedComments[comment.indent-1].length-1];
+  }
+  else
+  {
+    return false;
+  }
+};
+/**
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @param {Object} o event object
  */
 addHupStyles = function(o)
@@ -422,6 +477,7 @@ HUPPER = function(e)
     var c = getComments()
     comments = c[0];
     newComments = c[1];
+    indentComments = c[2];
     hupperBundles = document.getElementById('hupper-bundles');
     addHupStyles();
     parseComments();
