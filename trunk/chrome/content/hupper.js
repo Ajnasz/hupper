@@ -103,12 +103,13 @@ getComments = function()
   {
     var tables = w.getElementsByTagName('table');
   }
-  var i = 0; tl = tables.length;
+  var i = 0, tl = tables.length, username;
   for(; i < tl; i++)
   {
     if(tables[i].className.match(/comment/))
     {
       // comments.push(tables[i]);
+      username = (typeof tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1] != 'undefined') ? tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML : tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].innerHTML.replace(/Szerző:\s+([^\s]+).+/, '$1');
       comment = {
         table: tables[i],
         id: tables[i].previousSibling.previousSibling.id,
@@ -116,7 +117,8 @@ getComments = function()
         footer: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[4].firstChild,
         indent: tables[i].parentNode.tagName.toLowerCase() == 'div' ? parseInt(tables[i].parentNode.style.marginLeft)/25 : 0,
         newComm: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[2].getElementsByTagName('font')[0],
-        user: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML
+        // user: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML
+        user: username
       };
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment].id : -1;
