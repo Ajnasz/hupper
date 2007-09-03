@@ -11,3 +11,6 @@
 
 <!ENTITY Hupper.enablenewcommentchange "Enable the replace the 'új' text in the header of the newly posted comments">
 <!ENTITY Hupper.newcommenttext "The text to replace to">
+
+<!ENTITY Hupper.extracommentlinks "Enable top and back links in the comments footer">
+<!ENTITY Hupper.hilightforumlinesonhover "Hilight forum lines on mouse over">
