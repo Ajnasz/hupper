@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>hupper@ajnasz.hu</em:id>
     <em:name>Hupper</em:name>
-    <em:version>0.0.3.3</em:version>
+    <em:version>0.0.3.4</em:version>
 
     <!-- Firefox -->
     <em:targetApplication>
@@ -33,7 +33,7 @@
 
     <em:creator>Lajos Koszti [Ajnasz]; http://ajnasz.hu</em:creator>
     <em:description>Adds some feature to http://hup.hu website</em:description>
-    <em:homepageURL>http://ajnasz.hu/</em:homepageURL>
+    <em:homepageURL>http://ajnasz.hu/blog/20070616/hupper-extension</em:homepageURL>
     <em:iconURL>chrome://hupper/skin/hupper.png</em:iconURL>
     <em:optionsURL>chrome://hupper/content/hupper-prefs.xul</em:optionsURL> -->
     <em:updateURL>http://ajnasz.hu/files/hupper-update.rdf</em:updateURL>
