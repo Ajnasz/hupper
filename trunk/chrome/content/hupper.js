@@ -9,7 +9,8 @@ HLog = {
   /**
    * @param {String} message
    */
-  log: function(message){
+  log: function(message)
+  {
     this.serv.logStringMessage('HUPPER: '+message);
   }
 };
@@ -21,13 +22,16 @@ HupperPrefs = {
   // http://developer.mozilla.org/en/docs/Code_snippets:Preferences
   prefManager: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch),
   /**
-   * @return the names of the trolls as array
+   * @return {Array} the returned array contains the names of the trolls
    */
   trolls: function()
   {
     var trolls = this.prefManager.getCharPref('extensions.hupper.trolls');
     return trolls.split(',');
   },
+  /**
+   * @return {String} hexa code color
+   */
   trollcolor: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.trollcolor');
@@ -40,7 +44,7 @@ HupperPrefs = {
     return this.prefManager.getBoolPref('extensions.hupper.filtertrolls');
   },
   /**
-   * @return hide, hilight
+   * @return {String} hide, hilight
    */
   trollfiltermethod: function()
   {
@@ -48,41 +52,65 @@ HupperPrefs = {
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
   /**
-   * @return {String}
+   * @return {Array}the returned array contains the names of the huppers
    */
   huppers: function()
   {
     var huppers = this.prefManager.getCharPref('extensions.hupper.huppers');
     return huppers.split(',');
   },
+  /**
+   * @return {String} hexa code color
+   */
   huppercolor: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.huppercolor');
   },
+  /**
+   * @return {Boolean}
+   */
   filterhuppers: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.filterhuppers');
   },
+  /**
+   * @return {Boolean}
+   */
   replacenewcommenttext: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.replacenewcommenttext');
   },
+  /**
+   * @return {String}
+   */
   newcommenttext: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.newcommenttext');
   },
+  /**
+   * @return {Boolean}
+   */
   prevnextlinks: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.prevnextlinks');
   },
+  /**
+   * @return {String}
+   */
   tags: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.tags');
   },
+  /**
+   * @return {Boolean}
+   */
   extraCommentLinks: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.extracommentlinks');
   },
+  /**
+   * @return {Boolean}
+   */
   hilightForumLinsOnHover: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.hilightforumlinesonhover');
@@ -90,7 +118,10 @@ HupperPrefs = {
 
 };
 /**
+ * collects the comment nodes and filter them into another 2 array too by their properties: comments, newComments, indentComments
+ * the indenComments just contains an index which specify the comment index in the comments array
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * @return {Array}
  */
 getComments = function()
 {
@@ -103,22 +134,22 @@ getComments = function()
   {
     var tables = w.getElementsByTagName('table');
   }
-  var i = 0, tl = tables.length, username;
-  for(; i < tl; i++)
+  var tl = tables.length, username, ctb, userNameNode;
+  for(var i = 0; i < tl; i++)
   {
-    if(tables[i].className.match(/comment/))
+    if(hasClass(tables[i], 'comment'))
     {
-      // comments.push(tables[i]);
-      username = (typeof tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1] != 'undefined') ? tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML : tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].innerHTML.replace(/Szerző:\s+([^\s]+).+/, '$1');
+      ctb = tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1];
+      userNameNode = ctb.childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1];
       comment = {
         table: tables[i],
         id: tables[i].previousSibling.previousSibling.id,
-        header: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1],
-        footer: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[4].firstChild,
+        header: ctb.childNodes[0].childNodes[1],
+        footer: ctb.childNodes[4].firstChild,
         indent: tables[i].parentNode.tagName.toLowerCase() == 'div' ? parseInt(tables[i].parentNode.style.marginLeft)/25 : 0,
-        newComm: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[2].getElementsByTagName('font')[0],
-        // user: tables[i].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerHTML
-        user: username
+        newComm: ctb.childNodes[0].childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[2].getElementsByTagName('font')[0],
+        user: (typeof userNameNode.childNodes[1] != 'undefined') ?  userNameNode.childNodes[1].innerHTML : userNameNode.innerHTML.replace(/Szerző:\s+([^\s]+).+/, '$1')
+
       };
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment].id : -1;
@@ -137,41 +168,47 @@ getComments = function()
   return Array(comments, newComments, indentComments);
 };
 /**
- * @param {Array} trolls
  * hilights trolls comments
+ * @param {Array} trolls array with trolls names
  */
 trollFilter = function(trolls)
 {
-  var i = 0; cl = comments.length;
-  for(; i < cl; i++)
+  var cl = comments.length;
+  for(var i = 0; i < cl; i++)
   {
     if(trolls.inArray(comments[i].user))
     {
-      comments[i].table.className += ' trollComment';
-      comments[i].header.className += ' trollCommentHeader';
+      addClass(comments[i].table, ' trollComment');
+      addClass(comments[i].header, ' trollCommentHeader');
     }
   }
 };
+/**
+ * hilights huppers comments
+ * @param {Array} huppers array with huppers names
+ */
 hupperFilter = function(huppers)
 {
-  var writer, i = 0; i < cl;
-  for(; i < cl; i++)
- //  for(var i = 0; i < comments.length; i++)
+  var cl = comments.length;
+  for(var i = 0; i < cl; i++)
   {
     if(huppers.inArray(comments[i].user))
     {
-      comments[i].table.className += ' hupperComment';
-      comments[i].header.className += ' hupperCommentHeader';
+      addClass(comments[i].table, ' hupperComment');
+      addClass(comments[i].header, ' hupperCommentHeader');
     }
   }
 };
+/**
+ * replaces the 'új' text in the new comments header
+ */
 newCommentTextReplacer = function()
 {
 
   var newComment = null;
   var newCommentText = HupperPrefs.newcommenttext();
-  var i = 0, cl = comments.length;
-  for(; i < cl; i++)
+  var cl = comments.length;
+  for(var i = 0; i < cl; i++)
   {
     if(comments[i].newComm)
     {
@@ -179,6 +216,10 @@ newCommentTextReplacer = function()
     }
   }
 };
+/**
+ * realises the tagger functionality for the hup.hu site
+ * @note this Objcect isn't used
+ */
 var hupperTagger = function()
 {
   var tagsTXT = HupperPrefs.tags();
@@ -189,16 +230,20 @@ var hupperTagger = function()
 hupperTagger.prototype =
 {
   tags: {},
+  /**
+   * shows the tags in the users box
+   */
   showTags: function()
   {
     var out = '<div id="tags" class="content"><h2 class="title">Tags</h2>';
-    var tagLinks;
+    var tagLinks, tl;
     for (tag in this.tags)
     {
       tagLinks = this.tags[tag];
       out += '<h4>'+tag+'</h4>';
       out += '<ul>';
-      for(var i = 0; i < tagLinks.length; i++)
+      tl = tagLinks.length;
+      for(var i = 0; i < tl; i++)
       {
         out += '<li><a href="http://hup.hu'+tagLinks[i].url+'">'+tagLinks[i].name+'</a></li>';
       }
@@ -214,10 +259,13 @@ hupperTagger.prototype =
     }
   }
 };
+/**
+ * @param {String,Number,Array,Object} value
+ */
 Array.prototype.inArray = function(value)
 {
-  var i, al = this.length;
-  for(i = 0; i < al; i++)
+  var i, l = this.length;
+  for(i = 0; i < l; i++)
   {
     if(this[i] === value)
     {
@@ -226,29 +274,35 @@ Array.prototype.inArray = function(value)
   }
   return false;
 };
+/**
+ *
+ * @return {Array}
+ */
 Array.prototype.unique = function(b)
 {
- var a = Array(), i, l = this.length;
- for(i = 0; i < l; i++)
- {
-  if( a.indexOf(this[i], 0, b) < 0) {
-    a.push(this[i]);
+  var a = Array(), i, l = this.length;
+  for(var i = 0; i < l; i++)
+  {
+    if(a.indexOf(this[i], 0, b) < 0)
+    {
+      a.push(this[i]);
+    }
   }
- }
- return a;
+  return a;
 };
 /**
+ * parses all comment on the page and add class names, replaces the 'új' text, etc.
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  */
 parseComments = function()
 {
   var newCommentText = HupperPrefs.newcommenttext();
-  var replacenewcommenttext = HupperPrefs.replacenewcommenttext()
+  var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
 
   var prevnextlinks = HupperPrefs.prevnextlinks();
 
   var trolls = HupperPrefs.trolls();
-  var filtertrolls = HupperPrefs.filtertrolls()
+  var filtertrolls = HupperPrefs.filtertrolls();
   var filteredtrolls = Array();
 
   var huppers = HupperPrefs.huppers();
@@ -269,8 +323,8 @@ parseComments = function()
   var prevLink, nextLink;
   if(replacenewcommenttext || prevnextlinks)
   {
-    var i = 0; ncl = newComments.length;
-    for(; i < ncl; i++)
+    var ncl = newComments.length;
+    for(var i = 0; i < ncl; i++)
     {
       if(replacenewcommenttext)
       {
@@ -285,27 +339,25 @@ parseComments = function()
     }
   }
   // filter trolls and huppers
-  var i = 0; cl = comments.length;
-  for(; i < cl; i++)
+  var cl = comments.length;
+  for(var i = 0; i < cl; i++)
   {
     if(filtertrolls)
     {
       if(trolls.inArray(comments[i].user))
       {
-        comments[i].table.className += ' trollComment';
-        comments[i].header.className += ' trollCommentHeader';
+        addClass(comments[i].table, ' trollComment');
+        addClass(comments[i].header, ' trollCommentHeader');
         filteredtrolls.push(comments[i].user);
-        // continue;
       }
     }
     if(filterhuppers)
     {
       if(huppers.inArray(comments[i].user))
       {
-        comments[i].table.className += ' hupperComment';
-        comments[i].header.className += ' hupperCommentHeader';
+        addClass(comments[i].table, 'hupperComment');
+        addClass(comments[i].header, 'hupperCommentHeader');
         filteredhuppers.push(comments[i].user);
-        // continue;
       }
     }
     if(extraCommentLinks)
@@ -339,7 +391,9 @@ parseComments = function()
   }
 };
 /**
+ * add an extra #new str to the forums links
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * @return {Boolean}
  */
 var forumNewMessageLink = function()
 {
@@ -362,23 +416,38 @@ forumNewMessageLink.prototype =
 {
   forumTable: null,
   forumLinks: null,
+  /**
+   * adds the #new string to the link
+   */
   modifyLinks: function()
   {
-    var fll = this.forumLinks.length, i = 0;
-    for(; i < fll; i+=3)
+    var fll = this.forumLinks.length;
+    for(var i = 0; i < fll; i+=3)
     {
       this.forumLinks[i].href += '#new';
     }
   },
+  /**
+   * adds hilight effect to the lines of the table
+   */
   addHoverToLines: function()
   {
-    var fll = this.forumLines.length; i = 0;
-    for(; i < fll; i++)
+    var fll = this.forumLines.length;
+    for(var i = 0; i < fll; i++)
     {
-      this.forumLines[i].addEventListener('mouseover', function(){ addClass(this, 'forumHover');}, false)
-      this.forumLines[i].addEventListener('mouseout', function(){ removeClass(this, 'forumHover');}, false)
+      this.forumLines[i].addEventListener('mouseover', function()
+          {
+            addClass(this, 'forumHover');
+          }, false);
+      this.forumLines[i].addEventListener('mouseout', function()
+          {
+            removeClass(this, 'forumHover');
+          }, false);
     }
   },
+  /**
+   * @return {Boolean}
+   */
   getForumTable: function()
   {
     var t = w.getElementsByTagName('table')[5];
@@ -391,32 +460,42 @@ forumNewMessageLink.prototype =
   }
 };
 /**
+ * adds the specified class to the element
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
- * @param {Object} element
- * @param {String} className
+ * @param {Object} el DOM element
+ * @param {String} c class name
  */
-var addClass = function(element, className)
+var addClass = function(el, c)
 {
-  var cl = new RegExp(className);
-  if(!cl.test(element.className))
-  {
-    element.className += ' '+className;
-  }
+  el.className += ' ' + c;
 };
 /**
+ * removes the specified class from the element
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
- * @param {Object} element
- * @param {String} className
+ * @param {Object} el DOM element
+ * @param {String} c class name
  */
-var removeClass = function(element, className)
+var removeClass = function(el, c)
 {
-  var cl = new RegExp(className);
-  element.className = element.className.replace(cl, '');
+  el.className = el.className.replace(c, '');
 };
+/**
+ * checks that the element has the specified class or not
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @param {Object} el
+ * @param {String} c
+ * @return {Boolean}
+ */
+var hasClass = function(el, c)
+{
+  cl = new RegExp(c);
+  return cl.test(el.className);
+}
 /**
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
  * @param {Array} indentedComments
  * @param {Object} comment
+ * @return {Number,Boolean} returns an array index number or false
  */
 var getParentComment = function(indentedComments, comment)
 {
@@ -430,6 +509,7 @@ var getParentComment = function(indentedComments, comment)
   }
 };
 /**
+ * adds my own styles to the hup.hu header
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @param {Object} o event object
  */
@@ -460,7 +540,11 @@ addHupStyles = function(o)
   styles += '</style>';
   w.getElementsByTagName('head')[0].innerHTML += styles;
 };
-// INIT function
+/**
+ * initialization function, runs when the page is loaded
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @param {Object} e window load event object
+ */
 HUPPER = function(e)
 {
   w = e.originalTarget;
@@ -475,12 +559,11 @@ HUPPER = function(e)
       var body = w.getElementsByTagName('body')[0];
     }
     body.innerHTML = '<a name="top"></a>' + body.innerHTML;
-
+    hupperBundles = document.getElementById('hupper-bundles');
     var c = getComments()
     comments = c[0];
     newComments = c[1];
     indentComments = c[2];
-    hupperBundles = document.getElementById('hupper-bundles');
     addHupStyles();
     parseComments();
     // new hupperTagger();
