@@ -402,7 +402,7 @@ var forumNewMessageLink = function()
   {
     this.forumLinks = this.forumTable.getElementsByTagName('a');
     this.forumLines = this.forumTable.getElementsByTagName('tr');
-    this.modifyLinks();
+    // this.modifyLinks();
     if(HupperPrefs.hilightForumLinsOnHover())
     {
       this.addHoverToLines();
@@ -548,7 +548,7 @@ addHupStyles = function(o)
 HUPPER = function(e)
 {
   w = e.originalTarget;
-  if(w.location.href.match(/^https?:\/\/(?:www|mirror\.)?hup\.hu/))
+  if(w.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/))
   {
     if(w.document)
     {
