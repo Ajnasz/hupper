@@ -15,3 +15,5 @@ pref("extensions.hupper.prevnextlinks", true);
 pref("extensions.hupper.tags", "{}");
 pref("extensions.hupper.extracommentlinks", true);
 pref("extensions.hupper.hilightforumlinesonhover", true);
+
+pref("extensions.hupper.insertpermalink", true);
