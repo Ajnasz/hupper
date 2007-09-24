@@ -121,6 +121,13 @@ HupperPrefs = {
   insertPermalink: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.insertpermalink');
+  },
+  /**
+   * @return {Boolean}
+   */
+  insertnewtexttonode: function()
+  {
+    return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
   }
 };
 /**
@@ -195,6 +202,109 @@ var getComments = function()
   }
   return Array(comments, newComments, indentComments);
 };
+var getNodes = function()
+{
+  var c = w.getElementById('content-both');
+  var ds = c.getElementsByTagName('div');
+  var nodes = Array(), node = {}, dsl = ds.length, i, title, submitData, content, footer;
+  for(i = 0; i < dsl; i++)
+  {
+    if(hasClass(ds[i], 'node'))
+    {
+      title = ds[i].childNodes[1];
+      submitData = ds[i].childNodes[3];
+      content = ds[i].childNodes[5];
+      footer = ds[i].childNodes[7];
+      node = {
+        title: title,
+        submitData: submitData,
+        content: content,
+        footer: footer,
+        new: getElementsByClassName(footer,'comment_new_comments', 'li').length > 0 ? true : false
+      }
+      nodes.push(node);
+    }
+  }
+  return nodes;
+};
+var parseNodes = function(nodes)
+{
+  
+  var newCommentText = HupperPrefs.newcommenttext();
+  var spa = document.createElement('span');
+  spa.setAttribute('style', 'color:red;float:right;font-size:11px;margin-top:-16px;');
+  /*
+  var firstLinkText = hupperBundles.getString('FirstLinkText');
+  var lastLinkText = hupperBundles.getString('LastLinkText');
+  var prevLinkText = hupperBundles.getString('PrevLinkText');
+  var nextLinkText = hupperBundles.getString('NextLinkText');
+
+  var a = document.createElement('a');
+  span.setAttribute('style', 'float:right;font-size:10px;color:red;');
+  var fit = document.createTextNode(firstLinkText);
+  var lat = document.createTextNode(lastLinkText);
+  var prt = document.createTextNode(prevLinkText);
+  var net = document.createTextNode(nextLinkText);
+  */
+  var newCt = document.createTextNode(newCommentText);
+
+  /*
+  var lia = a.cloneNode(true);
+  var nea = a.cloneNode(true);
+  nea.innerText = net;
+  // nea.appendChild(net);
+  var pra = a.cloneNode(true);
+  pra.innerText = prt;
+  */
+  // pra.appendChild(prt);
+  var sp, liaC, praC, neaC, fitC, latC;
+  for(var i = 0; i < nodes.length; i++)
+  {
+    if(nodes[i].new)
+    {
+      sp = spa.cloneNode(true);
+      /*
+      liaC = lia.cloneNode(true);
+      liaC.name = 'newhupnode'+i;
+      sp.appendChild(liaC);
+
+      if(i > 0)
+      {
+        praC = pra.cloneNode(true);
+        praC.href = 'newhupnode' + (i-1);
+        sp.appendChild(praC);
+      }
+      else
+      {
+        fitC = lat.cloneNode(true);
+        sp.appendChild(fitC);
+      }
+      if(i < nodes.length-1)
+      {
+        neaC = nea.cloneNode(true);
+        neaC.href = 'newhupnode' + (i+1);
+        sp.appendChild(neaC);
+      }
+      else
+      {
+        latC = lat.cloneNode(true);
+        sp.appendChild(latC);
+      }
+      */
+      sp.appendChild(newCt.cloneNode(true));
+      nodes[i].title.appendChild(sp);
+
+      /*
+      t = '<a name="#newnode'+ i +'"></a><span style="float:right;font-size: 10px;color:red;">'; 
+      t += (i > 0) ? '<a href="#newnode'+(i-1) + '">' + prevLinkText + '</a>' : firstLinkText;
+      t += (i < nodes.length-1) ? '<a href="#newnode'+(i+1) + '">' + nextLinkText + '</a>' : nextLinkText;
+      t += newCommentText; 
+      t += '</span>';
+      nodes[i].title.innerHTML += t;
+      */
+    }
+  }
+}
 /**
  * @param {String,Number,Array,Object} value
  */
@@ -302,7 +412,6 @@ parseComments = function(comments, newComments, indentComments)
       if(replacenewcommenttext)
       {
         newCT += '<span class="hnew">' + newCommentText + '</span>';
-        // newComments[i].newComm.innerHTML = newCommentText;
       }
       else
       {
@@ -391,7 +500,7 @@ var getIndent = function(el)
  */
 addHupStyles = function(o)
 {
-  var styles = '<style type="text/css" id="hupperStyles">';
+  var styles = '<style type="text/css">';
   // hupper styles
   switch(HupperPrefs.trollfiltermethod())
   {
@@ -431,19 +540,24 @@ HUPPER = function(e)
   w = e.originalTarget;
   if(w.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/))
   {
+    addHupStyles();
     var body = w.getElementsByTagName('body')[0];
     var p = w.getElementById('primary');
     p.getElementsByTagName('a')[0].name = 'top';
     hupperBundles = document.getElementById('hupper-bundles');
-    addHupStyles();
-    var c = getComments();
-    if(c !== false)
+    if(document.getElementById('comments'))
     {
+      var c = getComments();
       comments = c[0];
       newComments = c[1];
       indentComments = c[2];
       parseComments(comments, newComments, indentComments);
     }
+    else if(HupperPrefs.insertnewtexttonode())
+    {
+      parseNodes(getNodes());
+    }
+
     HLog.log('initialized');
   }
 };
