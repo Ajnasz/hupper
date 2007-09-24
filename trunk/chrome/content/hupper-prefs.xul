@@ -62,6 +62,7 @@
 
       <checkbox id="enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
       <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
+      <checkbox id="insert-permalink" label="&Hupper.insertpermalink;" />
 
     </vbox>
   </groupbox>

@@ -14,3 +14,5 @@
 
 <!ENTITY Hupper.extracommentlinks "Enable top and back links in the comments footer">
 <!ENTITY Hupper.hilightforumlinesonhover "Hilight forum lines on mouse over">
+
+<!ENTITY Hupper.insertpermalink "Insert permalink into the footer of the comments">

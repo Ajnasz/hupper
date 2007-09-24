@@ -64,6 +64,10 @@ HP.prototype = {
     hilightforumlinesonhover: function()
     {
       return this.M.getBoolPref('extensions.hupper.hilightforumlinesonhover');
+    },
+    insertpermalink: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.insertpermalink');
     }
   },
   set: {
@@ -121,6 +125,10 @@ HP.prototype = {
     hilightforumlinesonhover: function(value)
     {
       this.M.setBoolPref('extensions.hupper.hilightforumlinesonhover', value);
+    },
+    insertpermalink: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.insertpermalink', value);
     }
   }
 };
@@ -137,6 +145,7 @@ setPrefWinVals = function()
   document.getElementById('new-comment-text').value = hp.get.newcommenttext();
   document.getElementById('enable-extra-comment-links').checked = hp.get.extracommentlinks();
   document.getElementById('hilight-forum-lines-onhover').checked = hp.get.hilightforumlinesonhover();
+  document.getElementById('insert-permalink').checked = hp.get.insertpermalink();
 };
 savePreferences = function()
 {
@@ -151,6 +160,7 @@ savePreferences = function()
   hp.set.newcommenttext(document.getElementById('new-comment-text').value);
   hp.set.extracommentlinks(document.getElementById('enable-extra-comment-links').checked);
   hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
+  hp.set.insertpermalink(document.getElementById('insert-permalink').checked);
 };
 StartHupperPrefernces = function()
 {
