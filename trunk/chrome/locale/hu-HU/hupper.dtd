@@ -16,3 +16,5 @@
 <!ENTITY Hupper.hilightforumlinesonhover "Fórum sorok kiemelése egér sor fölé vitelekor">
 
 <!ENTITY Hupper.insertpermalink "Permalink beszúrása a hozzászólások láblécébe">
+
+<!ENTITY Hupper.insertnewtexttonode "Új jelző beszúrása azon cikkek fejlécébe, ahol olvasatlan hozzászólás van">

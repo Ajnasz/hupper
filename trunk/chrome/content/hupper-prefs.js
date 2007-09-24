@@ -68,6 +68,10 @@ HP.prototype = {
     insertpermalink: function()
     {
       return this.M.getBoolPref('extensions.hupper.insertpermalink');
+    },
+    insertnewtexttonode: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.insertnewtexttonode');
     }
   },
   set: {
@@ -129,6 +133,10 @@ HP.prototype = {
     insertpermalink: function(value)
     {
       this.M.setBoolPref('extensions.hupper.insertpermalink', value);
+    },
+    insertnewtexttonode: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.insertnewtexttonode', value);
     }
   }
 };
@@ -146,6 +154,7 @@ setPrefWinVals = function()
   document.getElementById('enable-extra-comment-links').checked = hp.get.extracommentlinks();
   document.getElementById('hilight-forum-lines-onhover').checked = hp.get.hilightforumlinesonhover();
   document.getElementById('insert-permalink').checked = hp.get.insertpermalink();
+  document.getElementById('insert-new-text-to-node').checked = hp.get.insertnewtexttonode();
 };
 savePreferences = function()
 {
@@ -161,6 +170,7 @@ savePreferences = function()
   hp.set.extracommentlinks(document.getElementById('enable-extra-comment-links').checked);
   hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
   hp.set.insertpermalink(document.getElementById('insert-permalink').checked);
+  hp.set.insertnewtexttonode(document.getElementById('insert-new-text-to-node').checked);
 };
 StartHupperPrefernces = function()
 {
