@@ -1,6 +1,7 @@
 /**
  * hupper.js
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @version 0.0.4.7
  * @licence General Public Licence v2
  */
 HLog = {
@@ -15,7 +16,7 @@ HLog = {
   }
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Namespace, which is used to returns the preferences value
  */
 HupperPrefs = {
   // pref types: BoolPref, CharPref, IntPref
@@ -52,7 +53,7 @@ HupperPrefs = {
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
   /**
-   * @return {Array}the returned array contains the names of the huppers
+   * @return {Array} the returned array contains the names of the huppers
    */
   huppers: function()
   {
@@ -131,37 +132,216 @@ HupperPrefs = {
   }
 };
 /**
- * collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Namespace to build links, lists etc.
+ */
+var nodeHeaderBuilder = function()
+{
+  var spa = w.createElement('span');
+  var listItem = w.createElement('li');
+  var a = w.createElement('a');
+
+  var firstLinkText = hupperBundles.getString('FirstLinkText');
+  var lastLinkText = hupperBundles.getString('LastLinkText');
+  var prevLinkText = hupperBundles.getString('PrevLinkText');
+  var nextLinkText = hupperBundles.getString('NextLinkText');
+  var topLinkText = hupperBundles.getString('TopLinkText');
+  var backLinkText = hupperBundles.getString('BackLinkText');
+  var parentLinkText = hupperBundles.getString('ParentLinkText');
+
+  var parentTextItem = w.createTextNode(parentLinkText);
+  var permaTextItem = w.createTextNode('permalink');
+  var topTextItem = w.createTextNode(topLinkText);
+  var backTextItem = w.createTextNode(backLinkText);
+
+  var fit = w.createTextNode(firstLinkText);
+  var lat = w.createTextNode(lastLinkText);
+  var prt = w.createTextNode(prevLinkText);
+  var net = w.createTextNode(nextLinkText);
+  var newCt = w.createTextNode(HupperPrefs.newcommenttext());
+
+  var markR = a.cloneNode(true);
+  markR.appendChild(w.createTextNode(hupperBundles.getString('markingText')));
+  markR.setAttribute('class', 'marker');
+
+  return {
+    /**
+     * Builds a link node
+     * @param {Object} tn a textNode
+     * @param {String} path path to point the link
+     * @return {Object}
+     */
+    buildLink: function(tn, path)
+    {
+      var l = a.cloneNode(true);
+      l.appendChild(tn);
+      l.setAttribute('href', path);
+      return l;
+    },
+    /**
+     * Builds a link which points to the specified path with the next link str
+     * @param {String} path Path for the next node
+     * @return {Object}
+     */
+    buildNextLink: function(path)
+    {
+      return this.buildLink(net.cloneNode(true), '#' + path);
+    },
+    /**
+     * Builds a link which points to the specified path with the prev link text 
+     * @param {String} path Path for the next node
+     * @return {Object}
+     */
+    buildPrevLink: function(path)
+    {
+      return this.buildLink(prt.cloneNode(true), '#' + path);
+    },
+    /**
+     * Builds a text node with the first text
+     * @return {Object}
+     */
+    buildFirstLink: function()
+    {
+      var nsp = spa.cloneNode(true);
+      nsp.appendChild(fit);
+      return nsp;
+    },
+    /**
+     * Builds a text node with the last text
+     * @return {Object}
+     */
+    buildLastLink: function()
+    {
+      var nsp = spa.cloneNode(true);
+      nsp.appendChild(lat);
+      return nsp;
+    },
+    /**
+     * Builds a mark as read linknode
+     * @return {Object}
+     */
+    buildMarker: function(path)
+    {
+      var mr = markR.cloneNode(true);
+      mr.setAttribute('path', path);
+      mr.addEventListener('click', markNodeAsRead, true);
+      return mr;
+    },
+    /**
+     * Builds a text node with [new] text
+     * @return {Object}
+     */
+    buildNewText: function()
+    {
+      var nsp = spa.cloneNode(true);
+      nsp.setAttribute('class', 'hnew');
+      nsp.appendChild(newCt.cloneNode(true));
+      return nsp;
+    },
+    /**
+     * Builds an invisible link with a name attribute
+     * @param {Number} i id of the node
+     * @return {Object}
+     */
+    buildNameLink: function(i)
+    {
+      var liaC = a.cloneNode(true);
+      liaC.setAttribute('name', 'newhupnode'+i);
+      return liaC;
+    },
+    /**
+     * Builds a link node which points to the top of the page
+     * @return {Object}
+     */
+    buildComExtraTop: function()
+    {
+      var tmpList = listItem.cloneNode(true);
+      tmpList.appendChild(this.buildLink(topTextItem.cloneNode(true), '#top'));
+      return tmpList;
+    },
+    /**
+     * Builds a link node which points to the previous page
+     * @return {Object}
+     */
+    buildComExtraBack: function()
+    {
+      var tmpList = listItem.cloneNode(true);
+      tmpList.appendChild(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'));
+      return tmpList;
+    },
+    /**
+     * Builds a link node which points to its parent node
+     * @param {String} parent the parent comment id
+     * @return {Object}
+     */
+    buildComExtraParent: function(parent)
+    {
+      var tmpList = listItem.cloneNode(true);
+      tmpList.appendChild(this.buildLink(parentTextItem.cloneNode(true), '#' + parent));
+      return tmpList;
+    },
+    /**
+     * Builds a link with a permalink text
+     * @param {String} cid
+     * @return {Object}
+     */
+    buildComExtraPerma: function(cid)
+    {
+      var tmpList = listItem.cloneNode(true);
+      tmpList.appendChild(this.buildLink(permaTextItem.cloneNode(true), '#' + cid));
+      return tmpList;
+    }
+  }
+};
+/**
+ * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
  * @param {Object} par parent element node
  * @param {String} cn className
  * @param {String} el element type
+ * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
  * @return {Array}
  */
-var getElementsByClassName = function(par, cn, el)
+var getElementsByClassName = function(par, cn, el, force)
 {
-    if(typeof el == 'undefined')
-    {
-        el = 'div';
-    }
-    if(typeof par == 'undefined')
+  if(!el)
+  {
+      el = 'div';
+  }
+  if(!par)
+  {
+    if(force == true)
     {
       par = w.getElementsByTagName('body')[0];
     }
-    var ts = par.getElementsByTagName(el), out = Array(), i;
-    for(i = 0; i < ts.length; i++)
+    else
     {
-      if(hasClass(ts[i],cn))
-      {
-        out.push(ts[i]);
-      }
+      return Array();
     }
-    return out;
+  }
+  var ts = par.getElementsByTagName(el), out = Array(), i, tsl = ts.length;;
+  for(i = 0; i < tsl; i++)
+  {
+    if(hasClass(ts[i], cn))
+    {
+      out.push(ts[i]);
+    }
+  }
+  return out;
 };
 /**
- * collects the comment nodes and filter them into another 2 array too by their properties: comments, newComments, indentComments
- * the indenComments just contains an index which specify the comment index in the comments array
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Collects the comment nodes and filter them into another 2 array too by their properties: comments, newComments, indentComments the indenComments just contains an index which specify the comment index in the comments array
+ * @var {Array} comments an array, which conatains all comment
+ * @var {Array} indentComments an array, which contains only the indented comments
+ * @var {Array} newComments an array, which contains only the unread comments
+ * @var {Object} comment an object which contains all data of the comment
+ * @var {Object} comment.comment the whole node which contains the comment
+ * @var {Object} comment.header comment node first childNode with 'submitted' className
+ * @var {Object} comment.footer comment node first childnode with 'link' className
+ * @var {Array} comment.newComm an array with the node which contains the 'új' string (if exists, else empty array)
+ * @var {Object, Array} comment.footerLinks a node which contains the links in the footer
+ * @var {Number} comment.id id of the comment
+ * @var {Number} comment.indent indetion level of the comment
+ * @var {String} comment.user the name of the user who sent the comment
+ * @var {Object} comment.parent parent node of the comment
  * @return {Array}
  */
 var getComments = function()
@@ -184,11 +364,11 @@ var getComments = function()
         comment: ds[i],
         header: header,
         footer: footer,
+        newComm: (newComm.length) ? newComm[0] : false,
         footerLinks: footer.getElementsByTagName('ul')[0],
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
-        user: (typeof header.childNodes[1] != 'undefined') ?  header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1'),
-        newComm: (newComm.length) ? newComm[0] : false
+        user: (typeof header.childNodes[1] != 'undefined') ?  header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       }
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment].id : -1;
@@ -207,24 +387,34 @@ var getComments = function()
   return Array(comments, newComments, indentComments);
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Collects the content nodes like articles or blog posts from the page
+ * @var {Array} nodes contains all node objects
+ * @var {Array} newnodes contains only the new node objects
+ * @var {Object} node a node object with all data of the node
+ * @var {Object} node.header header node of the node - where are the titles of the nodes
+ * @var {String} node.path the path to the node
+ * @var {Object} node.submitData
+ * @var {Object} node.content
+ * @var {Object} node.content
+ * @var {Boolean} node.newc true, if the node have unread comments
  * @return {Array}
  */
 var getNodes = function()
 {
   var c = w.getElementById('content-both');
   var ds = c.getElementsByTagName('div');
-  var nodes = Array(), newnodes = Array(), node = {}, dsl = ds.length, i, title, submitData, content, footer;
+  var nodes = Array(), newnodes = Array(), node = {}, dsl = ds.length, i, header, submitData, content, footer;
   for(i = 0; i < dsl; i++)
   {
     if(hasClass(ds[i], 'node'))
     {
-      title = ds[i].childNodes[1];
+      header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
       content = ds[i].childNodes[5];
-      footer = ds[i].childNodes[7];
+      footer = hasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
       node = {
-        title: title,
+        header: header,
+        path: header.firstChild.getAttribute('href'),
         submitData: submitData,
         content: content,
         footer: footer,
@@ -240,85 +430,75 @@ var getNodes = function()
   return Array(nodes, newnodes);
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
  * @param {Array} nodes
  */
 var parseNodes = function(nodes)
 {
-
-  var newCommentText = HupperPrefs.newcommenttext();
-  var spa = w.createElement('span');
-  spa.setAttribute('style', 'font-size:11px;');
-
-  var firstLinkText = hupperBundles.getString('FirstLinkText');
-  var lastLinkText = hupperBundles.getString('LastLinkText');
-  var prevLinkText = hupperBundles.getString('PrevLinkText');
-  var nextLinkText = hupperBundles.getString('NextLinkText');
-
-  var a = w.createElement('a');
-  var fit = w.createTextNode(firstLinkText);
-  var lat = w.createTextNode(lastLinkText);
-  var prt = w.createTextNode(prevLinkText);
-  var net = w.createTextNode(nextLinkText);
-
-  var newCt = w.createTextNode(newCommentText);
-
-
-  var lia = a.cloneNode(true);
-  var nea = a.cloneNode(true);
-  nea.appendChild(net);
-  var pra = a.cloneNode(true);
-
-  pra.appendChild(prt);
-  var sp, liaC, praC, neaC, nsp;
+  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder();
   for(var i = 0; i < nodes.length; i++)
   {
     if(nodes[i].newc)
     {
       sp = spa.cloneNode(true);
       sp.setAttribute('class', 'nnew');
-
-      // append 'new' text
-      nsp = spa.cloneNode(true);
-      nsp.setAttribute('class', 'hnew');
-      nsp.appendChild(newCt.cloneNode(true));
-      sp.appendChild(nsp);
-
-      // create a name
-      liaC = lia.cloneNode(true);
-      liaC.setAttribute('name', 'newhupnode'+i);
-      nodes[i].title.parentNode.insertBefore(liaC, nodes[i].title);
+      sp.appendChild(builder.buildMarker(nodes[i].path));
+      sp.appendChild(builder.buildNewText());
+      nodes[i].header.parentNode.insertBefore(builder.buildNameLink(i), nodes[i].header);
 
       if(i > 0)
       {
-        praC = pra.cloneNode(true);
-        praC.setAttribute('href', '#newhupnode' + (i-1));
-        sp.appendChild(praC);
+        sp.appendChild(builder.buildPrevLink('newhupnode' + (i-1)));
       }
       else
       {
-        nsp = spa.cloneNode(true);
-        nsp.appendChild(fit);
-        sp.appendChild(nsp);
+        sp.appendChild(builder.buildFirstLink());
       }
       if(i < nodes.length-1)
       {
-        neaC = nea.cloneNode(true);
-        neaC.setAttribute('href', '#newhupnode' + (i+1));
-        sp.appendChild(neaC);
+        sp.appendChild(builder.buildNextLink('newhupnode' +(i+1)));
       }
       else
       {
-        nsp = spa.cloneNode(true);
-        nsp.appendChild(lat);
-        sp.appendChild(nsp);
+        sp.appendChild(builder.buildLastLink());
       }
-      nodes[i].title.insertBefore(sp, nodes[i].title.firstChild);
+      nodes[i].header.insertBefore(sp, nodes[i].header.firstChild);
     }
   }
-}
+};
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Send an AJAX HEAD request to the server, to remove the unread nodes
+ * @param {Object} e event object
+ * @see HupAjax
+ */
+var markNodeAsRead = function(e)
+{
+  new HupAjax(
+    {
+      method: 'head',
+      url: 'http://hup.hu'+this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
+      successHandler: function()
+      {
+        this.el.innerHTML = hupperBundles.getString('markingSuccess');
+        if(this.el.nextSibling.getAttribute('class') == 'hnew')
+        {
+          this.el.parentNode.removeChild(this.el.nextSibling);
+        }
+      },
+      loadHandler: function()
+      {
+        this.el.innerHTML = '<img src="chrome://hupper/skin/ajax-loader.gif" alt="marking..." />';
+      },
+      errorHandler: function()
+      {
+        this.el.innerHTML = hupperBundles.getString('markingError');
+      }
+    },
+    e.target
+  );
+};
+/**
+ * Checks that the arrray contains the specified element
  * @param {String,Number,Array,Object} value
  * @return {Boolean}
  */
@@ -335,7 +515,6 @@ Array.prototype.inArray = function(value)
   return false;
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @return {Array}
  */
 Array.prototype.unique = function(b)
@@ -351,47 +530,23 @@ Array.prototype.unique = function(b)
   return a;
 };
 /**
- * parses all comment on the page and add class names, replaces the 'új' text, etc.
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Parses all comment on the page and add class names, replaces the 'új' text, etc.
  * @param {Array} comments
  * @param {Array} newComments
  * @param {Array} indentComments
  */
 parseComments = function(comments, newComments, indentComments)
 {
-  var newCommentText = HupperPrefs.newcommenttext();
   var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
-
   var prevnextlinks = HupperPrefs.prevnextlinks();
-
   var trolls = HupperPrefs.trolls();
   var filtertrolls = HupperPrefs.filtertrolls();
-
   var huppers = HupperPrefs.huppers();
   var filterhuppers = HupperPrefs.filterhuppers();
   var extraCommentLinks = HupperPrefs.extraCommentLinks();
   var insertPermalink = HupperPrefs.insertPermalink();
 
-  var firstLinkText = hupperBundles.getString('FirstLinkText');
-  var lastLinkText = hupperBundles.getString('LastLinkText');
-  var prevLinkText = hupperBundles.getString('PrevLinkText');
-  var nextLinkText = hupperBundles.getString('NextLinkText');
-  var topLinkText = hupperBundles.getString('TopLinkText');
-  var backLinkText = hupperBundles.getString('BackLinkText');
-  var parentLinkText = hupperBundles.getString('ParentLinkText');
-
-  var prevLink, nextLink;
-  var newCT;
-
-
-  var listItem = w.createElement('li');
-  var linkItem = w.createElement('a');
-  var topTextItem = w.createTextNode(topLinkText);
-  var backTextItem = w.createTextNode(backLinkText);
-  var parentTextItem = w.createTextNode(parentLinkText);
-  var permaTextItem = w.createTextNode('permalink');
-
-  var tmpList, tmpLink, tmpTop, tmpBack, tmpParent, tmpPerma;
+  var builder = new nodeHeaderBuilder();
   comments.map(
     function(C)
     {
@@ -413,115 +568,59 @@ parseComments = function(comments, newComments, indentComments)
       }
       if(extraCommentLinks)
       {
-        tmpList = listItem.cloneNode(true);
-        tmpLink = linkItem.cloneNode(true);
-        tmpLink.setAttribute('href', '#top');
-        tmpTop = topTextItem.cloneNode(true);
-
-        tmpLink.appendChild(tmpTop);
-        tmpList.appendChild(tmpLink);
-
-        C.footerLinks.appendChild(tmpList);
-
-        tmpList = listItem.cloneNode(true);
-        tmpLink = linkItem.cloneNode(true);
-        tmpLink.setAttribute('href', 'javascript:history.back();');
-        tmpBack = backTextItem.cloneNode(true);
-
-        tmpLink.appendChild(tmpBack);
-        tmpList.appendChild(tmpLink);
-
-        C.footerLinks.appendChild(tmpList);
+        C.footerLinks.appendChild(builder.buildComExtraTop());
+        C.footerLinks.appendChild(builder.buildComExtraBack());
       }
       if(C.parent != -1)
       {
-
-        tmpList = listItem.cloneNode(true);
-        tmpLink = linkItem.cloneNode(true);
-        tmpLink.setAttribute('href', '#' + C.parent);
-        tmpParent = parentTextItem.cloneNode(true);
-
-        tmpLink.appendChild(tmpParent);
-        tmpList.appendChild(tmpLink);
-
-        C.footerLinks.appendChild(tmpList);
+        C.footerLinks.appendChild(builder.buildComExtraParent(C.parent));
       }
       if(insertPermalink)
       {
-        tmpList = listItem.cloneNode(true);
-        tmpLink = linkItem.cloneNode(true);
-        tmpLink.setAttribute('href', '#' + C.id);
-        tmpPerma = permaTextItem.cloneNode(true);
-
-        tmpLink.appendChild(tmpPerma);
-        tmpList.appendChild(tmpLink);
-
-        C.footerLinks.appendChild(tmpList);
+        C.footerLinks.appendChild(builder.buildComExtraPerma(C.id));
       }
     }
   );
   if(replacenewcommenttext || prevnextlinks)
   {
     var spanNode = w.createElement('span');
-    var linkNode = w.createElement('a');
-    var newComTextNode = (replacenewcommenttext) ? w.createTextNode(newCommentText) : w.reateTextNode(newComments[0].newComm.innerHTML);
-    var prevLinkTextNode = w.createTextNode(prevLinkText);
-    var nextLinkTextNode = w.createTextNode(nextLinkText);
-
-    var tmpSpan1, tmpSpan2, tmpSpan3, tmpNewComText, tmpPrevLinkText, tmpNextLinkText, tmpLink;
+    
+    var tmpSpan1;
     var ncl = newComments.length, i;
     for(i = 0; i < ncl; i++)
     {
       tmpSpan1 = spanNode.cloneNode(true);
       tmpSpan1.setAttribute('class', 'hnav');
-
-      tmpSpan2 = spanNode.cloneNode(true);
-      tmpSpan2.setAttribute('class', 'hnew');
-
-      tmpNewComText = newComTextNode.cloneNode(true);
-      tmpSpan2.appendChild(tmpNewComText);
-
       if(prevnextlinks)
       {
 
         if(newComments[i-1])
         {
-          tmpLink = linkNode.cloneNode(true);
-          tmpLink.setAttribute('href', '#' + newComments[i-1].id);
-          tmpLink.appendChild(prevLinkTextNode.cloneNode(true));
-          tmpSpan1.appendChild(tmpLink);
+          tmpSpan1.appendChild(builder.buildPrevLink(newComments[i-1].id));
         }
         else
         {
-          tmpSpan3 = spanNode.cloneNode(true);
-          tmpSpan3.appendChild(w.createTextNode(firstLinkText));
-          tmpSpan1.appendChild(tmpSpan3);
+          tmpSpan1.appendChild(builder.buildFirstLink());
         }
 
 
         if(newComments[i+1])
         {
-          tmpLink = linkNode.cloneNode(true);
-          tmpLink.setAttribute('href', '#' + newComments[i+1].id);
-          tmpLink.appendChild(nextLinkTextNode.cloneNode(true));
-          tmpSpan1.appendChild(tmpLink);
+          tmpSpan1.appendChild(builder.buildNextLink(newComments[i+1].id));
         }
         else
         {
-          tmpSpan3 = spanNode.cloneNode(true);
-          tmpSpan3.appendChild(w.createTextNode(lastLinkText));
-          tmpSpan1.appendChild(tmpSpan3);
+          tmpSpan1.appendChild(builder.buildLastLink());
         }
       }
       newComments[i].comment.removeChild(newComments[i].newComm);
-      tmpSpan1.appendChild(tmpSpan2);
+      tmpSpan1.appendChild(builder.buildNewText());
       newComments[i].header.insertBefore(tmpSpan1, newComments[i].header.firstChild);
     }
   }
 };
 /**
- * adds the specified class to the element
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Adds the specified class to the element
  * @param {Object} el DOM element
  * @param {String} c class name
  */
@@ -538,8 +637,7 @@ var addClass = function(el, c)
   }
 };
 /**
- * removes the specified class from the element
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Removes the specified class from the element
  * @param {Object} el DOM element
  * @param {String} c class name
  */
@@ -548,19 +646,21 @@ var removeClass = function(el, c)
   el.setAttribute('class', el.getAttribute('class').replace(c, ''));
 };
 /**
- * checks that the element has the specified class or not
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Checks that the element has the specified class or not
  * @param {Object} el
  * @param {String} c
  * @return {Boolean}
  */
 var hasClass = function(el, c)
 {
+  if(!el || !c)
+  {
+    return false;
+  }
   cl = new RegExp(c);
   return cl.test(el.getAttribute('class'));
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @param {Array} indentedComments
  * @param {Object} comment
  * @return {Number,Boolean} returns an array index number or false
@@ -577,24 +677,22 @@ var getParentComment = function(indentedComments, comment)
   }
 };
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @param {Object} el
- * @return how indented the comment
+ * @return {Number} how indented the comment
  */
 var getIndent = function(el)
 {
   var indent = 0;
   while(hasClass(el.parentNode, 'indent'))
   {
-    indent++;
     el = el.parentNode;
+    indent++;
   }
   return indent;
 };
 
 /**
- * adds my own styles to the hup.hu header
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu *
+ * Adds my own styles to the hup.hu header
  * @param {Object} o event object
  */
 addHupStyles = function(o)
@@ -606,10 +704,9 @@ addHupStyles = function(o)
       styles += '.trollComment {display:none !important;}';
     break;
     case 'hilight':
+    default:
       styles += '.trollCommentHeader {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
     break;
-    default:
-      styles += '.trollCommentHeader {background-color:'+HupperPrefs.trollcolor() + ' !important;}';
   }
   styles += '.hupperCommentHeader {background-color: '+HupperPrefs.huppercolor() + ' !important;}';
   styles += '#filteredhuppers, #filteredtrolls {display:block; !important;}';
@@ -624,10 +721,12 @@ addHupStyles = function(o)
   styles += 'input:focus, textarea:focus { border-color: #000 !important; }';
   styles += '.hnew { color: red; font-weight: bold; }';
   styles += '.nnew { float:right; }';
+  styles += '.nnew, .nnew a { font-size:10px; font-weight: normal; }';
   styles += '.nnew * { margin-left: 2px; margin-right: 2px; }';
   styles += '.hnav { float: right; padding-right: 5px; }';
   styles += '.hnav * { margin-left: 2px; margin-right: 2px; }';
   styles += '.submitted { padding: 2px !important; }';
+  styles += '.marker { cursor: pointer; color: #000; }';
 
   var st = w.createElement('style');
   var sti = w.createTextNode(styles);
@@ -636,8 +735,7 @@ addHupStyles = function(o)
   w.getElementsByTagName('head')[0].appendChild(st);
 };
 /**
- * initialization function, runs when the page is loaded
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * Initialization function, runs when the page is loaded
  * @param {Object} e window load event object
  */
 var HUPPER = function(e)
@@ -662,7 +760,6 @@ var HUPPER = function(e)
     {
       parseNodes(getNodes()[1]);
     }
-
     HLog.log('initialized');
   }
 };
