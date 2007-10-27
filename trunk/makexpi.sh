@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm chrome/hupper.jar hupper.xpi;
+rm chrome/hupper.jar *.xpi;
 
 cd chrome;
 zip -r hupper.jar content/* -x *.svn/*;

@@ -18,3 +18,4 @@
 <!ENTITY Hupper.insertpermalink "Permalink beszúrása a hozzászólások láblécébe">
 
 <!ENTITY Hupper.insertnewtexttonode "Új jelző beszúrása azon cikkek fejlécébe, ahol olvasatlan hozzászólás van">
+<!ENTITY Hupper.fadeparentcomment "Szülő hozzászólás áttűnés">

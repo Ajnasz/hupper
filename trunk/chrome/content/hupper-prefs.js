@@ -72,7 +72,12 @@ HP.prototype = {
     insertnewtexttonode: function()
     {
       return this.M.getBoolPref('extensions.hupper.insertnewtexttonode');
+    },
+    fadeparentcomment: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.fadeparentcomment');
     }
+
   },
   set: {
     M: this.M,
@@ -137,6 +142,10 @@ HP.prototype = {
     insertnewtexttonode: function(value)
     {
       this.M.setBoolPref('extensions.hupper.insertnewtexttonode', value);
+    },
+    fadeparentcomment: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.fadeparentcomment', value);
     }
   }
 };
@@ -155,6 +164,7 @@ setPrefWinVals = function()
   document.getElementById('hilight-forum-lines-onhover').checked = hp.get.hilightforumlinesonhover();
   document.getElementById('insert-permalink').checked = hp.get.insertpermalink();
   document.getElementById('insert-new-text-to-node').checked = hp.get.insertnewtexttonode();
+  document.getElementById('fade-parent-comment').checked = hp.get.fadeparentcomment();
 };
 savePreferences = function()
 {
@@ -170,7 +180,7 @@ savePreferences = function()
   hp.set.extracommentlinks(document.getElementById('enable-extra-comment-links').checked);
   hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
   hp.set.insertpermalink(document.getElementById('insert-permalink').checked);
-  hp.set.insertnewtexttonode(document.getElementById('insert-new-text-to-node').checked);
+  hp.set.fadeparentcomment(document.getElementById('fade-parent-comment').checked);
 };
 StartHupperPrefernces = function()
 {

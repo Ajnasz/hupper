@@ -4,7 +4,7 @@
  * @version 0.0.4.7
  * @licence General Public Licence v2
  */
-HLog = {
+var HLog = {
   // mozilla log service
   serv: Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService),
   /**
@@ -12,13 +12,13 @@ HLog = {
    */
   log: function(message)
   {
-    this.serv.logStringMessage('HUPPER: '+message);
+    this.serv.logStringMessage('HUPPER: ' + message);
   }
 };
 /**
  * Namespace, which is used to returns the preferences value
  */
-HupperPrefs = {
+var HupperPrefs = {
   // pref types: BoolPref, CharPref, IntPref
   // http://developer.mozilla.org/en/docs/Code_snippets:Preferences
   prefManager: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch),
@@ -129,6 +129,10 @@ HupperPrefs = {
   insertnewtexttonode: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
+  },
+  fadeparentcomment: function()
+  {
+    return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
   }
 };
 /**
@@ -245,7 +249,7 @@ var nodeHeaderBuilder = function()
     buildNameLink: function(i)
     {
       var liaC = a.cloneNode(true);
-      liaC.setAttribute('name', 'newhupnode'+i);
+      liaC.setAttribute('name', 'newhupnode' + i);
       return liaC;
     },
     /**
@@ -269,14 +273,25 @@ var nodeHeaderBuilder = function()
       return tmpList;
     },
     /**
-     * Builds a link node which points to its parent node
+     * Builds a link node which points to the comment's parent comment
      * @param {String} parent the parent comment id
      * @return {Object}
      */
     buildComExtraParent: function(parent)
     {
       var tmpList = listItem.cloneNode(true);
-      tmpList.appendChild(this.buildLink(parentTextItem.cloneNode(true), '#' + parent));
+      var link = this.buildLink(parentTextItem.cloneNode(true), '#' + parent.id);
+      if(HupperPrefs.fadeparentcomment())
+      {
+        link.addEventListener('click',
+          function(e)
+          {
+            new Transform(e.target.n.comment);
+          }, false
+        );
+        link.n = parent;
+      }
+      tmpList.appendChild(link);
       return tmpList;
     },
     /**
@@ -314,10 +329,10 @@ var getElementsByClassName = function(par, cn, el, force)
     }
     else
     {
-      return Array();
+      return new Array();
     }
   }
-  var ts = par.getElementsByTagName(el), out = Array(), i, tsl = ts.length;;
+  var ts = par.getElementsByTagName(el), out = new Array(), i, tsl = ts.length;;
   for(i = 0; i < tsl; i++)
   {
     if(hasClass(ts[i], cn))
@@ -336,6 +351,7 @@ var getElementsByClassName = function(par, cn, el, force)
  * @var {Object} comment.comment the whole node which contains the comment
  * @var {Object} comment.header comment node first childNode with 'submitted' className
  * @var {Object} comment.footer comment node first childnode with 'link' className
+ * @var {Object} comment.cont content node of the comment
  * @var {Array} comment.newComm an array with the node which contains the 'új' string (if exists, else empty array)
  * @var {Object, Array} comment.footerLinks a node which contains the links in the footer
  * @var {Number} comment.id id of the comment
@@ -352,18 +368,20 @@ var getComments = function()
     return false;
   }
   var ds = COMS.getElementsByTagName('div');
-  var header, footer, el, comments = Array(), newComm, parentComment, indentComments = Array(), newComments = Array(), dsl = ds.length, i;
+  var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
   for(i = 0; i < dsl; i++)
   {
     if(hasClass(ds[i], 'comment'))
     {
       header = getElementsByClassName(ds[i],'submitted', 'div')[0];
       footer = getElementsByClassName(ds[i], 'link', 'div')[0];
+      cont = getElementsByClassName(ds[i], 'content', 'div')[0];
       newComm = getElementsByClassName(ds[i], 'new', 'span');
       comment = {
         comment: ds[i],
         header: header,
         footer: footer,
+        cont: cont,
         newComm: (newComm.length) ? newComm[0] : false,
         footerLinks: footer.getElementsByTagName('ul')[0],
         id: ds[i].previousSibling.previousSibling.id,
@@ -371,10 +389,10 @@ var getComments = function()
         user: (typeof header.childNodes[1] != 'undefined') ?  header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       }
       parentComment = getParentComment(indentComments, comment);
-      comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment].id : -1;
+      comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
       if(typeof indentComments[comment.indent] == 'undefined')
       {
-        indentComments[comment.indent] = Array();
+        indentComments[comment.indent] = new Array();
       }
       indentComments[comment.indent].push(comments.length);
       comments.push(comment);
@@ -384,7 +402,7 @@ var getComments = function()
       }
     }
   }
-  return Array(comments, newComments, indentComments);
+  return new Array(comments, newComments, indentComments);
 };
 /**
  * Collects the content nodes like articles or blog posts from the page
@@ -394,8 +412,8 @@ var getComments = function()
  * @var {Object} node.header header node of the node - where are the titles of the nodes
  * @var {String} node.path the path to the node
  * @var {Object} node.submitData
- * @var {Object} node.content
- * @var {Object} node.content
+ * @var {Object} node.cont
+ * @var {Object} node.cont
  * @var {Boolean} node.newc true, if the node have unread comments
  * @return {Array}
  */
@@ -403,31 +421,34 @@ var getNodes = function()
 {
   var c = w.getElementById('content-both');
   var ds = c.getElementsByTagName('div');
-  var nodes = Array(), newnodes = Array(), node = {}, dsl = ds.length, i, header, submitData, content, footer;
+  var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
   for(i = 0; i < dsl; i++)
   {
     if(hasClass(ds[i], 'node'))
     {
       header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
-      content = ds[i].childNodes[5];
+      cont = ds[i].childNodes[5];
       footer = hasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
       node = {
         header: header,
         path: header.firstChild.getAttribute('href'),
         submitData: submitData,
-        content: content,
+        cont: cont,
         footer: footer,
         newc: getElementsByClassName(footer,'comment_new_comments', 'li').length > 0 ? true : false
       }
+      node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
+      /*
       nodes.push(node);
       if(node.newc)
       {
         newnodes.push(node);
       }
+      */
     }
   }
-  return Array(nodes, newnodes);
+  return new Array(nodes, newnodes);
 };
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
@@ -435,8 +456,8 @@ var getNodes = function()
  */
 var parseNodes = function(nodes)
 {
-  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder();
-  for(var i = 0; i < nodes.length; i++)
+  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i;
+  for(i = 0; i < nl; i++)
   {
     if(nodes[i].newc)
     {
@@ -454,7 +475,7 @@ var parseNodes = function(nodes)
       {
         sp.appendChild(builder.buildFirstLink());
       }
-      if(i < nodes.length-1)
+      if(i < nl-1)
       {
         sp.appendChild(builder.buildNextLink('newhupnode' +(i+1)));
       }
@@ -476,7 +497,7 @@ var markNodeAsRead = function(e)
   new HupAjax(
     {
       method: 'head',
-      url: 'http://hup.hu'+this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
+      url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
       successHandler: function()
       {
         this.el.innerHTML = hupperBundles.getString('markingSuccess');
@@ -515,27 +536,12 @@ Array.prototype.inArray = function(value)
   return false;
 };
 /**
- * @return {Array}
- */
-Array.prototype.unique = function(b)
-{
-  var a = Array(), i, l = this.length;
-  for(i = 0; i < l; i++)
-  {
-    if(a.indexOf(this[i], 0, b) < 0)
-    {
-      a.push(this[i]);
-    }
-  }
-  return a;
-};
-/**
  * Parses all comment on the page and add class names, replaces the 'új' text, etc.
  * @param {Array} comments
  * @param {Array} newComments
  * @param {Array} indentComments
  */
-parseComments = function(comments, newComments, indentComments)
+var parseComments = function(comments, newComments, indentComments)
 {
   var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
   var prevnextlinks = HupperPrefs.prevnextlinks();
@@ -546,7 +552,7 @@ parseComments = function(comments, newComments, indentComments)
   var extraCommentLinks = HupperPrefs.extraCommentLinks();
   var insertPermalink = HupperPrefs.insertPermalink();
 
-  var builder = new nodeHeaderBuilder();
+  var builder = new nodeHeaderBuilder(), ps;
   comments.map(
     function(C)
     {
@@ -573,7 +579,9 @@ parseComments = function(comments, newComments, indentComments)
       }
       if(C.parent != -1)
       {
-        C.footerLinks.appendChild(builder.buildComExtraParent(C.parent));
+        var Bl = builder.buildComExtraParent(C.parent);
+        HLog.log(Bl.getElementsByTagName('a')[0].n);
+        C.footerLinks.appendChild(Bl);
       }
       if(insertPermalink)
       {
@@ -583,30 +591,24 @@ parseComments = function(comments, newComments, indentComments)
   );
   if(replacenewcommenttext || prevnextlinks)
   {
-    var spanNode = w.createElement('span');
-    
-    var tmpSpan1;
-    var ncl = newComments.length, i;
+    var spanNode = w.createElement('span'), tmpSpan1, ncl = newComments.length, i;
     for(i = 0; i < ncl; i++)
     {
       tmpSpan1 = spanNode.cloneNode(true);
       tmpSpan1.setAttribute('class', 'hnav');
       if(prevnextlinks)
       {
-
-        if(newComments[i-1])
+        if(i > 0)
         {
-          tmpSpan1.appendChild(builder.buildPrevLink(newComments[i-1].id));
+          tmpSpan1.appendChild(builder.buildPrevLink(newComments[i - 1].id));
         }
         else
         {
           tmpSpan1.appendChild(builder.buildFirstLink());
         }
-
-
-        if(newComments[i+1])
+        if(i < ncl-1)
         {
-          tmpSpan1.appendChild(builder.buildNextLink(newComments[i+1].id));
+          tmpSpan1.appendChild(builder.buildNextLink(newComments[i + 1].id));
         }
         else
         {
@@ -690,12 +692,35 @@ var getIndent = function(el)
   }
   return indent;
 };
+/**
+ * @param {Object} ob transformable object
+ */
+var Transform = function(ob)
+{
+  this.ob = ob;
+  this.dur = 10;
+  this.i = 0;
+  this.do(this);
+}
+/**
+ * make the transformation
+ * @param {Object} THIS reference to the Transform.prototype object
+ */
+Transform.prototype.do = function(THIS)
+{
+  THIS.ob.style.opacity = 0.1*THIS.i;
+  if(THIS.i < THIS.dur)
+  {
+    setTimeout(THIS.do, THIS.dur/0.1, THIS);
+    THIS.i++;
+  }
+}
 
 /**
  * Adds my own styles to the hup.hu header
  * @param {Object} o event object
  */
-addHupStyles = function(o)
+var addHupStyles = function(o)
 {
   var styles = '';
   switch(HupperPrefs.trollfiltermethod())
@@ -708,7 +733,7 @@ addHupStyles = function(o)
       styles += '.trollCommentHeader {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
     break;
   }
-  styles += '.hupperCommentHeader {background-color: '+HupperPrefs.huppercolor() + ' !important;}';
+  styles += '.hupperCommentHeader {background-color: ' + HupperPrefs.huppercolor() + ' !important;}';
   styles += '#filteredhuppers, #filteredtrolls {display:block; !important;}';
   styles += '#tags {background-color:#F6F6EB; }';
   styles += '#tags h4 {margin: 0;padding:0; }';

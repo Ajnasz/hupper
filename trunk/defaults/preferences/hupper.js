@@ -19,3 +19,4 @@ pref("extensions.hupper.hilightforumlinesonhover", true);
 pref("extensions.hupper.insertpermalink", true);
 
 pref("extensions.hupper.insertnewtexttonode", true);
+pref("extensions.hupper.fadeparentcomment", true);

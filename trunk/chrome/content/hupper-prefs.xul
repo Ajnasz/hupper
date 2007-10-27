@@ -64,6 +64,7 @@
       <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
       <checkbox id="insert-permalink" label="&Hupper.insertpermalink;" />
       <checkbox id="insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
+      <checkbox id="fade-parent-comment" label="&Hupper.fadeparentcomment;" />
 
     </vbox>
   </groupbox>
