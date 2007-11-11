@@ -76,6 +76,10 @@ HP.prototype = {
     fadeparentcomment: function()
     {
       return this.M.getBoolPref('extensions.hupper.fadeparentcomment');
+    },
+    showqnavbox: function()
+    {
+      return this.M.getBoolPref('extensions.hupper.showqnavbox');
     }
 
   },
@@ -146,7 +150,12 @@ HP.prototype = {
     fadeparentcomment: function(value)
     {
       this.M.setBoolPref('extensions.hupper.fadeparentcomment', value);
+    },
+    showqnavbox: function(value)
+    {
+      this.M.setBoolPref('extensions.hupper.showqnavbox', value);
     }
+ 
   }
 };
 setPrefWinVals = function()
@@ -165,6 +174,7 @@ setPrefWinVals = function()
   document.getElementById('insert-permalink').checked = hp.get.insertpermalink();
   document.getElementById('insert-new-text-to-node').checked = hp.get.insertnewtexttonode();
   document.getElementById('fade-parent-comment').checked = hp.get.fadeparentcomment();
+  document.getElementById('show-quick-nav-box').checked = hp.get.showqnavbox();
 };
 savePreferences = function()
 {
@@ -181,6 +191,7 @@ savePreferences = function()
   hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
   hp.set.insertpermalink(document.getElementById('insert-permalink').checked);
   hp.set.fadeparentcomment(document.getElementById('fade-parent-comment').checked);
+  hp.set.showqnavbox(document.getElementById('show-quick-nav-box').checked);
 };
 StartHupperPrefernces = function()
 {
