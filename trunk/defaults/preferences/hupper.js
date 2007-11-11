@@ -20,3 +20,5 @@ pref("extensions.hupper.insertpermalink", true);
 
 pref("extensions.hupper.insertnewtexttonode", true);
 pref("extensions.hupper.fadeparentcomment", true);
+
+pref("extensions.hupper.showqnavbox", true);

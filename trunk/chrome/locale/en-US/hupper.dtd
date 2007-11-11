@@ -19,3 +19,5 @@
 
 <!ENTITY Hupper.insertnewtexttonode "Insert the NEW text into the hader of the articles where are unread feeds">
 <!ENTITY Hupper.fadeparentcomment "Fade parent comment">
+
+<!ENTITY Hupper.fadeparentcomment "Show quick navigation box">

@@ -19,3 +19,5 @@
 
 <!ENTITY Hupper.insertnewtexttonode "Új jelző beszúrása azon cikkek fejlécébe, ahol olvasatlan hozzászólás van">
 <!ENTITY Hupper.fadeparentcomment "Szülő hozzászólás áttűnés">
+
+<!ENTITY Hupper.showquicknavbox "Gyors navigációs doboz mutatása">
