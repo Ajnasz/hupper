@@ -4,15 +4,35 @@
  * @version 0.0.4.7
  * @licence General Public Licence v2
  */
-var HLog = {
+var HLog = function()
+{
+  this.s = this.serv();
+}
+HLog.prototype = {
   // mozilla log service
-  serv: Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService),
+  s: null,
+  msg: null,
+  serv: function() {  return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService) },
   /**
-   * @param {String} message
+   * @param {String} 
    */
-  log: function(message)
+  log: function()
   {
-    this.serv.logStringMessage('HUPPER: ' + message);
+    this.msg = new String(); 
+    for(var i = 0; i < arguments.length; i++)
+    {
+      // this.msg.push(arguments[i]);
+      this.msg += ', ' + arguments[i];
+    }
+    try
+    {
+      this.s.logStringMessage('HUPPER: ' + this.msg.replace(/^, /, ''));
+    }
+    catch(e)
+    {
+      // alert(this.msg.join(', '));
+      // alert(this.msg);
+    }
   }
 };
 /**
@@ -133,6 +153,10 @@ var HupperPrefs = {
   fadeparentcomment: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
+  },
+  showqnavbox: function()
+  {
+    return this.prefManager.getBoolPref('extensions.hupper.showqnavbox');
   }
 };
 /**
@@ -227,6 +251,7 @@ var nodeHeaderBuilder = function()
     {
       var mr = markR.cloneNode(true);
       mr.setAttribute('path', path);
+      mr.setAttribute('id', 'marker-' + path.replace(/.*\/(\d+$)/, '$1'));
       mr.addEventListener('click', markNodeAsRead, true);
       return mr;
     },
@@ -456,14 +481,16 @@ var getNodes = function()
  */
 var parseNodes = function(nodes)
 {
-  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i;
+  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
   for(i = 0; i < nl; i++)
   {
     if(nodes[i].newc)
     {
       sp = spa.cloneNode(true);
       sp.setAttribute('class', 'nnew');
-      sp.appendChild(builder.buildMarker(nodes[i].path));
+      mread = builder.buildMarker(nodes[i].path);
+      markAsReadNodes.push(nodes[i].path.replace(/.*\/(\d+$)/, '$1'));
+      sp.appendChild(mread);
       sp.appendChild(builder.buildNewText());
       nodes[i].header.parentNode.insertBefore(builder.buildNameLink(i), nodes[i].header);
 
@@ -477,7 +504,7 @@ var parseNodes = function(nodes)
       }
       if(i < nl-1)
       {
-        sp.appendChild(builder.buildNextLink('newhupnode' +(i+1)));
+        sp.appendChild(builder.buildNextLink('newhupnode' + (i+1)));
       }
       else
       {
@@ -518,6 +545,15 @@ var markNodeAsRead = function(e)
     e.target
   );
 };
+var markAllNodeAsRead = function(e)
+{
+  for(var i = 0; i < markAsReadNodes.length; i++)
+  {
+    var click = w.createEvent("MouseEvents");
+    click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    w.getElementById('marker-' + markAsReadNodes[i]).dispatchEvent(click);
+  }
+}
 /**
  * Checks that the arrray contains the specified element
  * @param {String,Number,Array,Object} value
@@ -580,7 +616,6 @@ var parseComments = function(comments, newComments, indentComments)
       if(C.parent != -1)
       {
         var Bl = builder.buildComExtraParent(C.parent);
-        HLog.log(Bl.getElementsByTagName('a')[0].n);
         C.footerLinks.appendChild(Bl);
       }
       if(insertPermalink)
@@ -701,7 +736,7 @@ var Transform = function(ob)
   this.dur = 10;
   this.i = 0;
   this.do(this);
-}
+};
 /**
  * make the transformation
  * @param {Object} THIS reference to the Transform.prototype object
@@ -714,8 +749,43 @@ Transform.prototype.do = function(THIS)
     setTimeout(THIS.do, THIS.dur/0.1, THIS);
     THIS.i++;
   }
-}
+};
+/**
+ * Appends a new link to the top of the page, if there is new comment
+ * @param {String} [link]
+ */
+appendNewNotifier = function(link, mark)
+{
+  if(w.getElementById('newNotifier'))
+  {
+    return;
+  }
+  var div = w.createElement('div');
+  var a = w.createElement('a');
+  var ul = w.createElement('ul');
+  var li = w.createElement('li');
+  div.setAttribute('id', 'newNotifier');
+  a1 = a.cloneNode(a);
+  a1.setAttribute('href', (link || '#new'));
+  a1.appendChild(document.createTextNode(hupperBundles.getString('firstNew')));
+  a2 = a.cloneNode(a);
+  a2.addEventListener('click', markAllNodeAsRead, false);
+  a2.setAttribute('href', 'javascript:void(0);');
+  a2.appendChild(document.createTextNode(hupperBundles.getString('markAllRead')));
 
+  li1 = li.cloneNode(true);
+  li2 = li.cloneNode(true);
+  li1.appendChild(a1);
+  li2.appendChild(a2);
+  ul.appendChild(li1);
+  if(mark)
+  {
+    ul.appendChild(li2);
+    div.setAttribute('class', 'big');
+  }
+  div.appendChild(ul);
+  w.getElementsByTagName('body')[0].appendChild(div);
+}
 /**
  * Adds my own styles to the hup.hu header
  * @param {Object} o event object
@@ -752,6 +822,9 @@ var addHupStyles = function(o)
   styles += '.hnav * { margin-left: 2px; margin-right: 2px; }';
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
+  styles += '#newNotifier { position:absolute;top:0;right: 30px; width: 190px;border-bottom: 1px solid #999;border-left: 1px solid #999;border-right:1px solid #999;background-color:#F6F6EB;text-align:center;height:20px;}';
+  styles += '#newNotifier ul { list-style: none;padding:0;margin:0;}';
+  styles += '#newNotifier.big { height: 35px; }';
 
   var st = w.createElement('style');
   var sti = w.createTextNode(styles);
@@ -768,6 +841,9 @@ var HUPPER = function(e)
   w = e.originalTarget;
   if(w.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/))
   {
+    L = new HLog();
+    ww = e.target;
+    markAsReadNodes = new Array();
     addHupStyles();
     var body = w.getElementsByTagName('body')[0];
     var p = w.getElementById('primary');
@@ -780,11 +856,20 @@ var HUPPER = function(e)
       newComments = c[1];
       indentComments = c[2];
       parseComments(comments, newComments, indentComments);
+      if(newComments.length && HupperPrefs.showqnavbox())
+      {
+        appendNewNotifier();
+      }
     }
     else if(HupperPrefs.insertnewtexttonode())
     {
-      parseNodes(getNodes()[1]);
+      var newNodes = getNodes()[1]
+      parseNodes(newNodes);
+      if(newNodes.length > 0 && HupperPrefs.showqnavbox())
+      {
+        appendNewNotifier('#newhupnode0', true);
+      }
     }
-    HLog.log('initialized');
+    L.log('initialized');
   }
 };
