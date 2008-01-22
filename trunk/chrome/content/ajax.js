@@ -37,6 +37,7 @@ var HupAjax = function(pars, el)
 
   this.req.onreadystatechange = stChg(this, false);
   this.req.send(this.pars); 
+  return true;
 };
 HupAjax.prototype =
 {

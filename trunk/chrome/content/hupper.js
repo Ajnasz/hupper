@@ -1,49 +1,63 @@
 /**
  * hupper.js
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @version 0.0.4.7
  * @licence General Public Licence v2
  */
 var HLog = function()
 {
   this.s = this.serv();
-}
-HLog.prototype = {
+};
+HLog.prototype = 
+{
   // mozilla log service
   s: null,
   msg: null,
-  serv: function() {  return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService) },
+  serv: function()
+  {
+    return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+  },
   /**
-   * @param {String} 
+   * @param {String}
    */
   log: function()
   {
-    this.msg = new String(); 
-    for(var i = 0; i < arguments.length; i++)
+    this.msg = new String();
+    for (var i = 0; i < arguments.length; i++) 
     {
-      // this.msg.push(arguments[i]);
       this.msg += ', ' + arguments[i];
     }
-    try
+    try 
     {
       this.s.logStringMessage('HUPPER: ' + this.msg.replace(/^, /, ''));
-    }
-    catch(e)
+    } 
+    catch (e) 
     {
       // alert(this.msg.join(', '));
       // alert(this.msg);
-    }
-  }
+    };
+      }
+};
+/**
+ * Namespace, to store the static variables
+ */
+var HupperVars =
+{
+  trollCommentHeaderClass: 'trollHeader',
+  trollCommentClass: 'trollComment',
+  hupperCommentHeaderClass: 'hupperHeader',
+  hupperCommentHeader: 'hupperComment'
 };
 /**
  * Namespace, which is used to returns the preferences value
  */
-var HupperPrefs = {
+var HupperPrefs = 
+{
   // pref types: BoolPref, CharPref, IntPref
   // http://developer.mozilla.org/en/docs/Code_snippets:Preferences
   prefManager: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch),
   /**
-   * @return {Array} the returned array contains the names of the trolls
+   * @return {Array} The returned array contains the names of the trolls
    */
   trolls: function()
   {
@@ -51,7 +65,7 @@ var HupperPrefs = {
     return trolls.split(',');
   },
   /**
-   * @return {String} hexa code color
+   * @return {String} Hexa code color
    */
   trollcolor: function()
   {
@@ -73,7 +87,7 @@ var HupperPrefs = {
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
   /**
-   * @return {Array} the returned array contains the names of the huppers
+   * @return {Array} The returned array contains the names of the huppers
    */
   huppers: function()
   {
@@ -81,7 +95,7 @@ var HupperPrefs = {
     return huppers.split(',');
   },
   /**
-   * @return {String} hexa code color
+   * @return {String} Hexa code color
    */
   huppercolor: function()
   {
@@ -150,10 +164,16 @@ var HupperPrefs = {
   {
     return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
   },
+  /**
+   * @return {Boolean}
+   */
   fadeparentcomment: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
   },
+  /**
+   * @return {Boolean}
+   */
   showqnavbox: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.showqnavbox');
@@ -167,7 +187,8 @@ var nodeHeaderBuilder = function()
   var spa = w.createElement('span');
   var listItem = w.createElement('li');
   var a = w.createElement('a');
-
+  
+  // Localized strings
   var firstLinkText = hupperBundles.getString('FirstLinkText');
   var lastLinkText = hupperBundles.getString('LastLinkText');
   var prevLinkText = hupperBundles.getString('PrevLinkText');
@@ -175,27 +196,31 @@ var nodeHeaderBuilder = function()
   var topLinkText = hupperBundles.getString('TopLinkText');
   var backLinkText = hupperBundles.getString('BackLinkText');
   var parentLinkText = hupperBundles.getString('ParentLinkText');
-
+  
+  // Footer text nodes
   var parentTextItem = w.createTextNode(parentLinkText);
   var permaTextItem = w.createTextNode('permalink');
   var topTextItem = w.createTextNode(topLinkText);
   var backTextItem = w.createTextNode(backLinkText);
-
+  
+  // Title text nodes
   var fit = w.createTextNode(firstLinkText);
   var lat = w.createTextNode(lastLinkText);
   var prt = w.createTextNode(prevLinkText);
   var net = w.createTextNode(nextLinkText);
   var newCt = w.createTextNode(HupperPrefs.newcommenttext());
-
+  
+  // Mark as read node
   var markR = a.cloneNode(true);
   markR.appendChild(w.createTextNode(hupperBundles.getString('markingText')));
   markR.setAttribute('class', 'marker');
-
+  
   return {
     /**
      * Builds a link node
-     * @param {Object} tn a textNode
-     * @param {String} path path to point the link
+     * 
+     * @param {Object} tn A textNode
+     * @param {String} path Path to point the link
      * @return {Object}
      */
     buildLink: function(tn, path)
@@ -207,6 +232,7 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a link which points to the specified path with the next link str
+     * 
      * @param {String} path Path for the next node
      * @return {Object}
      */
@@ -215,7 +241,8 @@ var nodeHeaderBuilder = function()
       return this.buildLink(net.cloneNode(true), '#' + path);
     },
     /**
-     * Builds a link which points to the specified path with the prev link text 
+     * Builds a link which points to the specified path with the prev link text
+     * 
      * @param {String} path Path for the next node
      * @return {Object}
      */
@@ -225,7 +252,8 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a text node with the first text
-     * @return {Object}
+     * 
+     * @return {Object} Span element within first link text
      */
     buildFirstLink: function()
     {
@@ -235,7 +263,8 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a text node with the last text
-     * @return {Object}
+     * 
+     * @return {Object} Span element with within last link text
      */
     buildLastLink: function()
     {
@@ -245,19 +274,19 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a mark as read linknode
-     * @return {Object}
+     * @return {Object} Link (a) element
      */
-    buildMarker: function(path)
+    buildMarker: function(path, i)
     {
       var mr = markR.cloneNode(true);
       mr.setAttribute('path', path);
-      mr.setAttribute('id', 'marker-' + path.replace(/.*\/(\d+$)/, '$1'));
+      mr.setAttribute('id', 'marker-' + i);
       mr.addEventListener('click', markNodeAsRead, true);
       return mr;
     },
     /**
      * Builds a text node with [new] text
-     * @return {Object}
+     * @return {Object} Span element, within a next link
      */
     buildNewText: function()
     {
@@ -269,17 +298,17 @@ var nodeHeaderBuilder = function()
     /**
      * Builds an invisible link with a name attribute
      * @param {Number} i id of the node
-     * @return {Object}
+     * @return {Object} Link (a) element
      */
     buildNameLink: function(i)
     {
       var liaC = a.cloneNode(true);
-      liaC.setAttribute('name', 'newhupnode' + i);
+      liaC.setAttribute('name', 'n-' + i);
       return liaC;
     },
     /**
      * Builds a link node which points to the top of the page
-     * @return {Object}
+     * @return {Object} Li element, within a link which points to the top of the page
      */
     buildComExtraTop: function()
     {
@@ -289,7 +318,7 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a link node which points to the previous page
-     * @return {Object}
+     * @return {Object} Li element, which point to the previous history page
      */
     buildComExtraBack: function()
     {
@@ -299,21 +328,20 @@ var nodeHeaderBuilder = function()
     },
     /**
      * Builds a link node which points to the comment's parent comment
-     * @param {String} parent the parent comment id
-     * @return {Object}
+     * @param {String} parent The parent comment id
+     * @return {Object} Li element, which points to the parent comment
      */
     buildComExtraParent: function(parent)
     {
       var tmpList = listItem.cloneNode(true);
       var link = this.buildLink(parentTextItem.cloneNode(true), '#' + parent.id);
-      if(HupperPrefs.fadeparentcomment())
+      // if fading enabled, add an event listener, which will fades the parent node
+      if (HupperPrefs.fadeparentcomment()) 
       {
-        link.addEventListener('click',
-          function(e)
-          {
-            new Transform(e.target.n.comment);
-          }, false
-        );
+        link.addEventListener('click', function(e)
+        {
+          new Transform(e.target.n.comment);
+        }, false);
         link.n = parent;
       }
       tmpList.appendChild(link);
@@ -330,7 +358,7 @@ var nodeHeaderBuilder = function()
       tmpList.appendChild(this.buildLink(permaTextItem.cloneNode(true), '#' + cid));
       return tmpList;
     }
-  }
+  };
 };
 /**
  * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
@@ -342,25 +370,25 @@ var nodeHeaderBuilder = function()
  */
 var getElementsByClassName = function(par, cn, el, force)
 {
-  if(!el)
+  if (!el) 
   {
-      el = 'div';
+    el = 'div';
   }
-  if(!par)
+  if (!par) 
   {
-    if(force == true)
+    if (force == true) 
     {
       par = w.getElementsByTagName('body')[0];
     }
-    else
+    else 
     {
       return new Array();
     }
   }
-  var ts = par.getElementsByTagName(el), out = new Array(), i, tsl = ts.length;;
-  for(i = 0; i < tsl; i++)
+  var ts = par.getElementsByTagName(el), out = new Array(), i, tsl = ts.length;
+  for (i = 0; i < tsl; i++) 
   {
-    if(hasClass(ts[i], cn))
+    if (hasClass(ts[i], cn)) 
     {
       out.push(ts[i]);
     }
@@ -388,21 +416,22 @@ var getElementsByClassName = function(par, cn, el, force)
 var getComments = function()
 {
   var COMS = w.getElementById('comments');
-  if(!COMS)
+  if (!COMS) 
   {
     return false;
   }
   var ds = COMS.getElementsByTagName('div');
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
-  for(i = 0; i < dsl; i++)
+  for (i = 0; i < dsl; i++) 
   {
-    if(hasClass(ds[i], 'comment'))
+    if (hasClass(ds[i], 'comment')) 
     {
-      header = getElementsByClassName(ds[i],'submitted', 'div')[0];
+      header = getElementsByClassName(ds[i], 'submitted', 'div')[0];
       footer = getElementsByClassName(ds[i], 'link', 'div')[0];
       cont = getElementsByClassName(ds[i], 'content', 'div')[0];
       newComm = getElementsByClassName(ds[i], 'new', 'span');
-      comment = {
+      comment = 
+      {
         comment: ds[i],
         header: header,
         footer: footer,
@@ -411,17 +440,17 @@ var getComments = function()
         footerLinks: footer.getElementsByTagName('ul')[0],
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
-        user: (typeof header.childNodes[1] != 'undefined') ?  header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
-      }
+        user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
+      };
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
-      if(typeof indentComments[comment.indent] == 'undefined')
+      if (typeof indentComments[comment.indent] == 'undefined') 
       {
         indentComments[comment.indent] = new Array();
       }
       indentComments[comment.indent].push(comments.length);
       comments.push(comment);
-      if(comment.newComm)
+      if (comment.newComm) 
       {
         newComments.push(comment);
       }
@@ -447,30 +476,24 @@ var getNodes = function()
   var c = w.getElementById('content-both');
   var ds = c.getElementsByTagName('div');
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
-  for(i = 0; i < dsl; i++)
+  for (i = 0; i < dsl; i++) 
   {
-    if(hasClass(ds[i], 'node'))
+    if (hasClass(ds[i], 'node')) 
     {
       header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
       footer = hasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
-      node = {
+      node = 
+      {
         header: header,
         path: header.firstChild.getAttribute('href'),
         submitData: submitData,
         cont: cont,
         footer: footer,
-        newc: getElementsByClassName(footer,'comment_new_comments', 'li').length > 0 ? true : false
-      }
+        newc: getElementsByClassName(footer, 'comment_new_comments', 'li').length > 0 ? true : false
+      };
       node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
-      /*
-      nodes.push(node);
-      if(node.newc)
-      {
-        newnodes.push(node);
-      }
-      */
     }
   }
   return new Array(nodes, newnodes);
@@ -482,31 +505,31 @@ var getNodes = function()
 var parseNodes = function(nodes)
 {
   var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
-  for(i = 0; i < nl; i++)
+  for (i = 0; i < nl; i++) 
   {
-    if(nodes[i].newc)
+    if (nodes[i].newc) 
     {
       sp = spa.cloneNode(true);
       sp.setAttribute('class', 'nnew');
-      mread = builder.buildMarker(nodes[i].path);
-      markAsReadNodes.push(nodes[i].path.replace(/.*\/(\d+$)/, '$1'));
+      mread = builder.buildMarker(nodes[i].path, i);
+      markAsReadNodes.push(mread);
       sp.appendChild(mread);
       sp.appendChild(builder.buildNewText());
       nodes[i].header.parentNode.insertBefore(builder.buildNameLink(i), nodes[i].header);
-
-      if(i > 0)
+      
+      if (i > 0) 
       {
-        sp.appendChild(builder.buildPrevLink('newhupnode' + (i-1)));
+        sp.appendChild(builder.buildPrevLink('n-' + (i - 1)));
       }
-      else
+      else 
       {
         sp.appendChild(builder.buildFirstLink());
       }
-      if(i < nl-1)
+      if (i < nl - 1) 
       {
-        sp.appendChild(builder.buildNextLink('newhupnode' + (i+1)));
+        sp.appendChild(builder.buildNextLink('n-' + (i + 1)));
       }
-      else
+      else 
       {
         sp.appendChild(builder.buildLastLink());
       }
@@ -516,44 +539,50 @@ var parseNodes = function(nodes)
 };
 /**
  * Send an AJAX HEAD request to the server, to remove the unread nodes
- * @param {Object} e event object
+ * @param {Object} e Event object
  * @see HupAjax
  */
 var markNodeAsRead = function(e)
 {
   new HupAjax(
+  {
+    method: 'head',
+    url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
+    successHandler: function()
     {
-      method: 'head',
-      url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
-      successHandler: function()
+      this.el.innerHTML = hupperBundles.getString('markingSuccess');
+      if (this.el.nextSibling.getAttribute('class') == 'hnew') 
       {
-        this.el.innerHTML = hupperBundles.getString('markingSuccess');
-        if(this.el.nextSibling.getAttribute('class') == 'hnew')
-        {
-          this.el.parentNode.removeChild(this.el.nextSibling);
-        }
-      },
-      loadHandler: function()
-      {
-        this.el.innerHTML = '<img src="chrome://hupper/skin/ajax-loader.gif" alt="marking..." />';
-      },
-      errorHandler: function()
-      {
-        this.el.innerHTML = hupperBundles.getString('markingError');
+        this.el.parentNode.removeChild(this.el.nextSibling);
       }
     },
-    e.target
-  );
+    loadHandler: function()
+    {
+      var img = w.createElement('img');
+      img.setAttribute('src', 'chrome://hupper/skin/ajax-loader.gif');
+      img.setAttribute('alt', 'marking...');
+      removeChilds(this.el);
+      this.el.appendChild(img);
+    },
+    errorHandler: function()
+    {
+      var t = w.createTextNode(hupperBundles.getString('markingError'));
+      removeChilds(this.el);
+      this.el.appendChild(t);
+    }
+  }, e.target);
 };
 var markAllNodeAsRead = function(e)
 {
-  for(var i = 0; i < markAsReadNodes.length; i++)
+  var n = e.target.markNodes;
+  var d = document || w;
+  for (var i = 0; i < n.length; i++) 
   {
-    var click = w.createEvent("MouseEvents");
+    var click = d.createEvent("MouseEvents");
     click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    w.getElementById('marker-' + markAsReadNodes[i]).dispatchEvent(click);
+    n[i].dispatchEvent(click);
   }
-}
+};
 /**
  * Checks that the arrray contains the specified element
  * @param {String,Number,Array,Object} value
@@ -561,13 +590,14 @@ var markAllNodeAsRead = function(e)
  */
 Array.prototype.inArray = function(value)
 {
-  var i, l = this.length;
-  for(i = 0; i < l; i++)
+  var i = this.length - 1;
+  while (this[i]) 
   {
-    if(this[i] === value)
+    if (this[i] === value) 
     {
       return true;
     }
+    i--;
   }
   return false;
 };
@@ -587,71 +617,72 @@ var parseComments = function(comments, newComments, indentComments)
   var filterhuppers = HupperPrefs.filterhuppers();
   var extraCommentLinks = HupperPrefs.extraCommentLinks();
   var insertPermalink = HupperPrefs.insertPermalink();
-
+  
   var builder = new nodeHeaderBuilder(), ps;
-  comments.map(
-    function(C)
+  comments.map(function(C)
+  {
+    if (filtertrolls) 
     {
-      if(filtertrolls)
+      if (trolls.inArray(C.user)) 
       {
-        if(trolls.inArray(C.user))
-        {
-          addClass(C.comment, ' trollComment');
-          addClass(C.header, ' trollCommentHeader');
-        }
-      }
-      if(filterhuppers)
-      {
-        if(huppers.inArray(C.user))
-        {
-          addClass(C.comment, 'hupperComment');
-          addClass(C.header, 'hupperCommentHeader');
-        }
-      }
-      if(extraCommentLinks)
-      {
-        C.footerLinks.appendChild(builder.buildComExtraTop());
-        C.footerLinks.appendChild(builder.buildComExtraBack());
-      }
-      if(C.parent != -1)
-      {
-        var Bl = builder.buildComExtraParent(C.parent);
-        C.footerLinks.appendChild(Bl);
-      }
-      if(insertPermalink)
-      {
-        C.footerLinks.appendChild(builder.buildComExtraPerma(C.id));
+        addClass(C.comment, HupperVars.trollCommentClass);
+        addClass(C.header, HupperVars.trollCommentHeaderClass);
       }
     }
-  );
-  if(replacenewcommenttext || prevnextlinks)
+    if (filterhuppers) 
+    {
+      if (huppers.inArray(C.user)) 
+      {
+        addClass(C.comment, HupperVars.hupperCommentClass);
+        addClass(C.header, HupperVars.hupperCommentHeaderClass);
+      }
+    }
+    if (extraCommentLinks) 
+    {
+      C.footerLinks.appendChild(builder.buildComExtraTop());
+      C.footerLinks.appendChild(builder.buildComExtraBack());
+    }
+    if (C.parent != -1) 
+    {
+      var Bl = builder.buildComExtraParent(C.parent);
+      C.footerLinks.appendChild(Bl);
+    }
+    if (insertPermalink) 
+    {
+      C.footerLinks.appendChild(builder.buildComExtraPerma(C.id));
+    }
+  });
+  if (replacenewcommenttext || prevnextlinks) 
   {
     var spanNode = w.createElement('span'), tmpSpan1, ncl = newComments.length, i;
-    for(i = 0; i < ncl; i++)
+    for (i = 0; i < ncl; i++) 
     {
       tmpSpan1 = spanNode.cloneNode(true);
       tmpSpan1.setAttribute('class', 'hnav');
-      if(prevnextlinks)
+      if (prevnextlinks) 
       {
-        if(i > 0)
+        if (i > 0) 
         {
           tmpSpan1.appendChild(builder.buildPrevLink(newComments[i - 1].id));
         }
-        else
+        else 
         {
           tmpSpan1.appendChild(builder.buildFirstLink());
         }
-        if(i < ncl-1)
+        if (i < ncl - 1) 
         {
           tmpSpan1.appendChild(builder.buildNextLink(newComments[i + 1].id));
         }
-        else
+        else 
         {
           tmpSpan1.appendChild(builder.buildLastLink());
         }
       }
-      newComments[i].comment.removeChild(newComments[i].newComm);
-      tmpSpan1.appendChild(builder.buildNewText());
+      if (replacenewcommenttext) 
+      {
+        newComments[i].comment.removeChild(newComments[i].newComm);
+        tmpSpan1.appendChild(builder.buildNewText());
+      }
       newComments[i].header.insertBefore(tmpSpan1, newComments[i].header.firstChild);
     }
   }
@@ -659,16 +690,16 @@ var parseComments = function(comments, newComments, indentComments)
 /**
  * Adds the specified class to the element
  * @param {Object} el DOM element
- * @param {String} c class name
+ * @param {String} c Class name
  */
 var addClass = function(el, c)
 {
   var curClass = el.getAttribute('class');
-  if(curClass === null)
+  if (curClass === null) 
   {
     el.setAttribute('class', c);
   }
-  else
+  else 
   {
     el.setAttribute('class', curClass + ' ' + c);
   }
@@ -676,7 +707,7 @@ var addClass = function(el, c)
 /**
  * Removes the specified class from the element
  * @param {Object} el DOM element
- * @param {String} c class name
+ * @param {String} c Class name
  */
 var removeClass = function(el, c)
 {
@@ -684,18 +715,30 @@ var removeClass = function(el, c)
 };
 /**
  * Checks that the element has the specified class or not
- * @param {Object} el
- * @param {String} c
+ * @param {Object} el Element
+ * @param {String} c Class name
  * @return {Boolean}
  */
 var hasClass = function(el, c)
 {
-  if(!el || !c)
+  if (!el || !c) 
   {
     return false;
   }
   cl = new RegExp(c);
   return cl.test(el.getAttribute('class'));
+};
+/**
+ * Removes all childnode of the element
+ *
+ * @param {Object} element
+ */
+var removeChilds = function(element)
+{
+  while (element.firstChild) 
+  {
+    element.removeChild(element.firstChild);
+  }
 };
 /**
  * @param {Array} indentedComments
@@ -704,11 +747,11 @@ var hasClass = function(el, c)
  */
 var getParentComment = function(indentedComments, comment)
 {
-  if(comment.indent > 0)
+  if (comment.indent > 0) 
   {
-    return indentedComments[(comment.indent-1)][(indentedComments[(comment.indent-1)].length-1)];
+    return indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)];
   }
-  else
+  else 
   {
     return false;
   }
@@ -720,7 +763,7 @@ var getParentComment = function(indentedComments, comment)
 var getIndent = function(el)
 {
   var indent = 0;
-  while(hasClass(el.parentNode, 'indent'))
+  while (hasClass(el.parentNode, 'indent')) 
   {
     el = el.parentNode;
     indent++;
@@ -735,18 +778,18 @@ var Transform = function(ob)
   this.ob = ob;
   this.dur = 10;
   this.i = 0;
-  this.do(this);
+  this.run(this);
 };
 /**
  * make the transformation
  * @param {Object} THIS reference to the Transform.prototype object
  */
-Transform.prototype.do = function(THIS)
+Transform.prototype.run = function(THIS)
 {
-  THIS.ob.style.opacity = 0.1*THIS.i;
-  if(THIS.i < THIS.dur)
+  THIS.ob.style.opacity = 0.1 * THIS.i;
+  if (THIS.i < THIS.dur) 
   {
-    setTimeout(THIS.do, THIS.dur/0.1, THIS);
+    setTimeout(THIS.run, THIS.dur / 0.1, THIS);
     THIS.i++;
   }
 };
@@ -754,61 +797,80 @@ Transform.prototype.do = function(THIS)
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
  */
-appendNewNotifier = function(link, mark)
+var appendNewNotifier = function(link, mark)
 {
-  if(w.getElementById('newNotifier'))
+  var hupperBlockId = 'block-hupper-0'; // newNotifier
+  if (w.getElementById(hupperBlockId)) 
   {
     return;
   }
   var div = w.createElement('div');
+  var h2 = w.createElement('h2');
   var a = w.createElement('a');
   var ul = w.createElement('ul');
   var li = w.createElement('li');
-  div.setAttribute('id', 'newNotifier');
+  li.setAttribute('class', 'leaf');
+  
+  h2.appendChild(w.createTextNode('Hupper'));
+
   a1 = a.cloneNode(a);
   a1.setAttribute('href', (link || '#new'));
-  a1.appendChild(document.createTextNode(hupperBundles.getString('firstNew')));
-  a2 = a.cloneNode(a);
-  a2.addEventListener('click', markAllNodeAsRead, false);
-  a2.setAttribute('href', 'javascript:void(0);');
-  a2.appendChild(document.createTextNode(hupperBundles.getString('markAllRead')));
-
+  a1.appendChild(w.createTextNode(hupperBundles.getString('firstNew')));
   li1 = li.cloneNode(true);
-  li2 = li.cloneNode(true);
   li1.appendChild(a1);
-  li2.appendChild(a2);
+
+  ul.setAttribute('class', 'menu');
   ul.appendChild(li1);
-  if(mark)
+
+  if (mark) 
   {
+    a2 = a.cloneNode(a);
+    a2.addEventListener('click', markAllNodeAsRead, false);
+    a2.markNodes = markAsReadNodes;
+    a2.setAttribute('href', 'javascript:void(0);');
+    a2.appendChild(w.createTextNode(hupperBundles.getString('markAllRead')));
+  
+    li2 = li.cloneNode(true);
+    li2.appendChild(a2);
     ul.appendChild(li2);
-    div.setAttribute('class', 'big');
+    // div.setAttribute('class', 'big');
   }
-  div.appendChild(ul);
-  w.getElementsByTagName('body')[0].appendChild(div);
-}
+  var blockDiv = div.cloneNode(div);
+  var contentDiv = div.cloneNode(div);
+  contentDiv.setAttribute('class', 'content');
+  contentDiv.appendChild(ul);
+
+  blockDiv.appendChild(h2);
+  blockDiv.appendChild(contentDiv);
+  blockDiv.setAttribute('id', hupperBlockId);
+  blockDiv.setAttribute('class', 'block block-hupper');
+
+  var googleBlock = w.getElementById('block-block-8');
+  googleBlock.parentNode.insertBefore(blockDiv, googleBlock);
+};
 /**
  * Adds my own styles to the hup.hu header
- * @param {Object} o event object
+ * @param {Object} e event object
  */
-var addHupStyles = function(o)
+var addHupStyles = function(e)
 {
   var styles = '';
-  switch(HupperPrefs.trollfiltermethod())
+  switch (HupperPrefs.trollfiltermethod())
   {
     case 'hide':
-      styles += '.trollComment {display:none !important;}';
-    break;
+      styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
+      break;
     case 'hilight':
     default:
-      styles += '.trollCommentHeader {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
-    break;
-  }
-  styles += '.hupperCommentHeader {background-color: ' + HupperPrefs.huppercolor() + ' !important;}';
+      styles += '.' + HupperVars.trollCommentHeaderClass + ' {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
+      break;
+  };
+  styles += '.' + HupperVars.hupperCommentHeaderClass + ' {background-color: ' + HupperPrefs.huppercolor() + ' !important;}';
   styles += '#filteredhuppers, #filteredtrolls {display:block; !important;}';
   styles += '#tags {background-color:#F6F6EB; }';
   styles += '#tags h4 {margin: 0;padding:0; }';
   styles += '#tags ul {list-style:none;padding:0;margin:0;}#tags li {padding-left:5px;margin:0;}';
-  if(HupperPrefs.hilightForumLinesOnHover())
+  if (HupperPrefs.hilightForumLinesOnHover()) 
   {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
@@ -822,10 +884,7 @@ var addHupStyles = function(o)
   styles += '.hnav * { margin-left: 2px; margin-right: 2px; }';
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
-  styles += '#newNotifier { position:absolute;top:0;right: 30px; width: 190px;border-bottom: 1px solid #999;border-left: 1px solid #999;border-right:1px solid #999;background-color:#F6F6EB;text-align:center;height:20px;}';
-  styles += '#newNotifier ul { list-style: none;padding:0;margin:0;}';
-  styles += '#newNotifier.big { height: 35px; }';
-
+  
   var st = w.createElement('style');
   var sti = w.createTextNode(styles);
   st.setAttribute('type', 'text/css');
@@ -838,38 +897,39 @@ var addHupStyles = function(o)
  */
 var HUPPER = function(e)
 {
-  w = e.originalTarget;
-  if(w.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/))
+  var ww = e.originalTarget;
+  if (ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
   {
+    w = ww;
     L = new HLog();
-    ww = e.target;
     markAsReadNodes = new Array();
     addHupStyles();
     var body = w.getElementsByTagName('body')[0];
     var p = w.getElementById('primary');
     p.getElementsByTagName('a')[0].name = 'top';
     hupperBundles = document.getElementById('hupper-bundles');
-    if(w.getElementById('comments'))
+    if (w.getElementById('comments')) 
     {
       var c = getComments();
       comments = c[0];
       newComments = c[1];
       indentComments = c[2];
       parseComments(comments, newComments, indentComments);
-      if(newComments.length && HupperPrefs.showqnavbox())
+      if (newComments.length && HupperPrefs.showqnavbox()) 
       {
         appendNewNotifier();
       }
     }
-    else if(HupperPrefs.insertnewtexttonode())
-    {
-      var newNodes = getNodes()[1]
-      parseNodes(newNodes);
-      if(newNodes.length > 0 && HupperPrefs.showqnavbox())
+    else 
+      if (HupperPrefs.insertnewtexttonode()) 
       {
-        appendNewNotifier('#newhupnode0', true);
+        var newNodes = getNodes()[1];
+        parseNodes(newNodes);
+        if (newNodes.length > 0 && HupperPrefs.showqnavbox()) 
+        {
+          appendNewNotifier('#n-0', true);
+        }
       }
-    }
     L.log('initialized');
   }
 };

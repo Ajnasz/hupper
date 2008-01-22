@@ -190,6 +190,7 @@ savePreferences = function()
   hp.set.extracommentlinks(document.getElementById('enable-extra-comment-links').checked);
   hp.set.hilightforumlinesonhover(document.getElementById('hilight-forum-lines-onhover').checked);
   hp.set.insertpermalink(document.getElementById('insert-permalink').checked);
+  hp.set.insertnewtexttonode(document.getElementById('insert-new-text-to-node').checked);
   hp.set.fadeparentcomment(document.getElementById('fade-parent-comment').checked);
   hp.set.showqnavbox(document.getElementById('show-quick-nav-box').checked);
 };

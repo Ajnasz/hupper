@@ -16,7 +16,7 @@ pref("extensions.hupper.tags", "{}");
 pref("extensions.hupper.extracommentlinks", true);
 pref("extensions.hupper.hilightforumlinesonhover", true);
 
-pref("extensions.hupper.insertpermalink", true);
+pref("extensions.hupper.insertpermalink", false);
 
 pref("extensions.hupper.insertnewtexttonode", true);
 pref("extensions.hupper.fadeparentcomment", true);
