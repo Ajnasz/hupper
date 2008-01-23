@@ -23,7 +23,7 @@ HLog.prototype =
   log: function()
   {
     this.msg = new String();
-    for (var i = 0; i < arguments.length; i++) 
+    for(var i = 0; i < arguments.length; i++) 
     {
       this.msg += ', ' + arguments[i];
     }
@@ -31,12 +31,12 @@ HLog.prototype =
     {
       this.s.logStringMessage('HUPPER: ' + this.msg.replace(/^, /, ''));
     } 
-    catch (e) 
+    catch(e) 
     {
       // alert(this.msg.join(', '));
       // alert(this.msg);
     };
-      }
+  }
 };
 /**
  * Namespace, to store the static variables
@@ -184,9 +184,9 @@ var HupperPrefs =
  */
 var nodeHeaderBuilder = function()
 {
-  var spa = w.createElement('span');
-  var listItem = w.createElement('li');
-  var a = w.createElement('a');
+  var spa = El.Span();
+  var listItem = El.Li();
+  var a = El.A();
   
   // Localized strings
   var firstLinkText = hupperBundles.getString('FirstLinkText');
@@ -198,22 +198,22 @@ var nodeHeaderBuilder = function()
   var parentLinkText = hupperBundles.getString('ParentLinkText');
   
   // Footer text nodes
-  var parentTextItem = w.createTextNode(parentLinkText);
-  var permaTextItem = w.createTextNode('permalink');
-  var topTextItem = w.createTextNode(topLinkText);
-  var backTextItem = w.createTextNode(backLinkText);
+  var parentTextItem = El.Txt(parentLinkText);
+  var permaTextItem = El.Txt('permalink');
+  var topTextItem = El.Txt(topLinkText);
+  var backTextItem = El.Txt(backLinkText);
   
   // Title text nodes
-  var fit = w.createTextNode(firstLinkText);
-  var lat = w.createTextNode(lastLinkText);
-  var prt = w.createTextNode(prevLinkText);
-  var net = w.createTextNode(nextLinkText);
-  var newCt = w.createTextNode(HupperPrefs.newcommenttext());
+  var fit = El.Txt(firstLinkText);
+  var lat = El.Txt(lastLinkText);
+  var prt = El.Txt(prevLinkText);
+  var net = El.Txt(nextLinkText);
+  var newCt = El.Txt(HupperPrefs.newcommenttext());
   
   // Mark as read node
   var markR = a.cloneNode(true);
-  markR.appendChild(w.createTextNode(hupperBundles.getString('markingText')));
-  markR.setAttribute('class', 'marker');
+  El.Add(El.Txt(hupperBundles.getString('markingText')), markR);
+  El.AddClass(markR, 'marker');
   
   return {
     /**
@@ -226,7 +226,7 @@ var nodeHeaderBuilder = function()
     buildLink: function(tn, path)
     {
       var l = a.cloneNode(true);
-      l.appendChild(tn);
+      El.Add(tn, l);
       l.setAttribute('href', path);
       return l;
     },
@@ -258,7 +258,7 @@ var nodeHeaderBuilder = function()
     buildFirstLink: function()
     {
       var nsp = spa.cloneNode(true);
-      nsp.appendChild(fit);
+      El.Add(fit, nsp);
       return nsp;
     },
     /**
@@ -269,7 +269,7 @@ var nodeHeaderBuilder = function()
     buildLastLink: function()
     {
       var nsp = spa.cloneNode(true);
-      nsp.appendChild(lat);
+      El.Add(lat, nsp);
       return nsp;
     },
     /**
@@ -291,8 +291,8 @@ var nodeHeaderBuilder = function()
     buildNewText: function()
     {
       var nsp = spa.cloneNode(true);
-      nsp.setAttribute('class', 'hnew');
-      nsp.appendChild(newCt.cloneNode(true));
+      El.AddClass(nsp, 'hnew');
+      El.Add(newCt.cloneNode(true), nsp);
       return nsp;
     },
     /**
@@ -313,7 +313,7 @@ var nodeHeaderBuilder = function()
     buildComExtraTop: function()
     {
       var tmpList = listItem.cloneNode(true);
-      tmpList.appendChild(this.buildLink(topTextItem.cloneNode(true), '#top'));
+      El.Add(this.buildLink(topTextItem.cloneNode(true), '#top'), tmpList);
       return tmpList;
     },
     /**
@@ -323,7 +323,7 @@ var nodeHeaderBuilder = function()
     buildComExtraBack: function()
     {
       var tmpList = listItem.cloneNode(true);
-      tmpList.appendChild(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'));
+      El.Add(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'), tmpList);
       return tmpList;
     },
     /**
@@ -336,7 +336,7 @@ var nodeHeaderBuilder = function()
       var tmpList = listItem.cloneNode(true);
       var link = this.buildLink(parentTextItem.cloneNode(true), '#' + parent.id);
       // if fading enabled, add an event listener, which will fades the parent node
-      if (HupperPrefs.fadeparentcomment()) 
+      if(HupperPrefs.fadeparentcomment()) 
       {
         link.addEventListener('click', function(e)
         {
@@ -344,7 +344,7 @@ var nodeHeaderBuilder = function()
         }, false);
         link.n = parent;
       }
-      tmpList.appendChild(link);
+      El.Add(link, tmpList);
       return tmpList;
     },
     /**
@@ -355,45 +355,10 @@ var nodeHeaderBuilder = function()
     buildComExtraPerma: function(cid)
     {
       var tmpList = listItem.cloneNode(true);
-      tmpList.appendChild(this.buildLink(permaTextItem.cloneNode(true), '#' + cid));
+      El.Add(this.buildLink(permaTextItem.cloneNode(true), '#' + cid), tmpList);
       return tmpList;
     }
   };
-};
-/**
- * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
- * @param {Object} par parent element node
- * @param {String} cn className
- * @param {String} el element type
- * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
- * @return {Array}
- */
-var getElementsByClassName = function(par, cn, el, force)
-{
-  if (!el) 
-  {
-    el = 'div';
-  }
-  if (!par) 
-  {
-    if (force == true) 
-    {
-      par = w.getElementsByTagName('body')[0];
-    }
-    else 
-    {
-      return new Array();
-    }
-  }
-  var ts = par.getElementsByTagName(el), out = new Array(), i, tsl = ts.length;
-  for (i = 0; i < tsl; i++) 
-  {
-    if (hasClass(ts[i], cn)) 
-    {
-      out.push(ts[i]);
-    }
-  }
-  return out;
 };
 /**
  * Collects the comment nodes and filter them into another 2 array too by their properties: comments, newComments, indentComments the indenComments just contains an index which specify the comment index in the comments array
@@ -415,21 +380,21 @@ var getElementsByClassName = function(par, cn, el, force)
  */
 var getComments = function()
 {
-  var COMS = w.getElementById('comments');
-  if (!COMS) 
+  var COMS = El.GetId('comments');
+  if(!COMS) 
   {
     return false;
   }
-  var ds = COMS.getElementsByTagName('div');
+  var ds = El.Tag('div', COMS);
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
-  for (i = 0; i < dsl; i++) 
+  for(i = 0; i < dsl; i++) 
   {
-    if (hasClass(ds[i], 'comment')) 
+    if(El.HasClass(ds[i], 'comment')) 
     {
-      header = getElementsByClassName(ds[i], 'submitted', 'div')[0];
-      footer = getElementsByClassName(ds[i], 'link', 'div')[0];
-      cont = getElementsByClassName(ds[i], 'content', 'div')[0];
-      newComm = getElementsByClassName(ds[i], 'new', 'span');
+      header = El.GetByClass(ds[i], 'submitted', 'div')[0];
+      footer = El.GetByClass(ds[i], 'link', 'div')[0];
+      cont = El.GetByClass(ds[i], 'content', 'div')[0];
+      newComm = El.GetByClass(ds[i], 'new', 'span');
       comment = 
       {
         comment: ds[i],
@@ -437,20 +402,20 @@ var getComments = function()
         footer: footer,
         cont: cont,
         newComm: (newComm.length) ? newComm[0] : false,
-        footerLinks: footer.getElementsByTagName('ul')[0],
+        footerLinks: El.Tag('ul', footer)[0],
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
         user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       };
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
-      if (typeof indentComments[comment.indent] == 'undefined') 
+      if(typeof indentComments[comment.indent] == 'undefined') 
       {
         indentComments[comment.indent] = new Array();
       }
       indentComments[comment.indent].push(comments.length);
       comments.push(comment);
-      if (comment.newComm) 
+      if(comment.newComm) 
       {
         newComments.push(comment);
       }
@@ -473,17 +438,17 @@ var getComments = function()
  */
 var getNodes = function()
 {
-  var c = w.getElementById('content-both');
-  var ds = c.getElementsByTagName('div');
+  var c = El.GetId('content-both');
+  var ds = El.Tag('div', c);
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
-  for (i = 0; i < dsl; i++) 
+  for(i = 0; i < dsl; i++) 
   {
-    if (hasClass(ds[i], 'node')) 
+    if(El.HasClass(ds[i], 'node')) 
     {
       header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
-      footer = hasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
+      footer = El.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
       node = 
       {
         header: header,
@@ -491,7 +456,7 @@ var getNodes = function()
         submitData: submitData,
         cont: cont,
         footer: footer,
-        newc: getElementsByClassName(footer, 'comment_new_comments', 'li').length > 0 ? true : false
+        newc: El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false
       };
       node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
@@ -504,36 +469,36 @@ var getNodes = function()
  */
 var parseNodes = function(nodes)
 {
-  var spa = w.createElement('span'), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
-  for (i = 0; i < nl; i++) 
+  var spa = El.Span(), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
+  for(i = 0; i < nl; i++) 
   {
-    if (nodes[i].newc) 
+    if(nodes[i].newc) 
     {
       sp = spa.cloneNode(true);
-      sp.setAttribute('class', 'nnew');
+      El.AddClass(sp, 'nnew');
       mread = builder.buildMarker(nodes[i].path, i);
       markAsReadNodes.push(mread);
-      sp.appendChild(mread);
-      sp.appendChild(builder.buildNewText());
-      nodes[i].header.parentNode.insertBefore(builder.buildNameLink(i), nodes[i].header);
+      El.Add(mread, sp);
+      El.Add(builder.buildNewText(), sp);
+      El.Insert(builder.buildNameLink(i), nodes[i].header);
       
-      if (i > 0) 
+      if(i > 0) 
       {
-        sp.appendChild(builder.buildPrevLink('n-' + (i - 1)));
+        El.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
       }
       else 
       {
-        sp.appendChild(builder.buildFirstLink());
+        El.Add(builder.buildFirstLink(), sp);
       }
-      if (i < nl - 1) 
+      if(i < nl - 1) 
       {
-        sp.appendChild(builder.buildNextLink('n-' + (i + 1)));
+        El.Add(builder.buildNextLink('n-' + (i + 1)), sp);
       }
       else 
       {
-        sp.appendChild(builder.buildLastLink());
+        El.Add(builder.buildLastLink(), sp);
       }
-      nodes[i].header.insertBefore(sp, nodes[i].header.firstChild);
+      El.Insert(sp, nodes[i].header.firstChild);
     }
   }
 };
@@ -551,24 +516,24 @@ var markNodeAsRead = function(e)
     successHandler: function()
     {
       this.el.innerHTML = hupperBundles.getString('markingSuccess');
-      if (this.el.nextSibling.getAttribute('class') == 'hnew') 
+      if(this.el.nextSibling.getAttribute('class') == 'hnew') 
       {
-        this.el.parentNode.removeChild(this.el.nextSibling);
+        El.Remove(this.el.nextSibling, this.el.parentNode);
       }
     },
     loadHandler: function()
     {
-      var img = w.createElement('img');
+      var img = El.Img();
       img.setAttribute('src', 'chrome://hupper/skin/ajax-loader.gif');
       img.setAttribute('alt', 'marking...');
       removeChilds(this.el);
-      this.el.appendChild(img);
+      El.Add(img, this.el);
     },
     errorHandler: function()
     {
-      var t = w.createTextNode(hupperBundles.getString('markingError'));
+      var t = El.Txt(hupperBundles.getString('markingError'));
       removeChilds(this.el);
-      this.el.appendChild(t);
+      El.Add(t, this.el);
     }
   }, e.target);
 };
@@ -576,7 +541,7 @@ var markAllNodeAsRead = function(e)
 {
   var n = e.target.markNodes;
   var d = document || w;
-  for (var i = 0; i < n.length; i++) 
+  for(var i = 0; i < n.length; i++) 
   {
     var click = d.createEvent("MouseEvents");
     click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -591,9 +556,9 @@ var markAllNodeAsRead = function(e)
 Array.prototype.inArray = function(value)
 {
   var i = this.length - 1;
-  while (this[i]) 
+  while(this[i]) 
   {
-    if (this[i] === value) 
+    if(this[i] === value) 
     {
       return true;
     }
@@ -621,112 +586,71 @@ var parseComments = function(comments, newComments, indentComments)
   var builder = new nodeHeaderBuilder(), ps;
   comments.map(function(C)
   {
-    if (filtertrolls) 
+    if(filtertrolls) 
     {
-      if (trolls.inArray(C.user)) 
+      if(trolls.inArray(C.user)) 
       {
-        addClass(C.comment, HupperVars.trollCommentClass);
-        addClass(C.header, HupperVars.trollCommentHeaderClass);
+        El.AddClass(C.comment, HupperVars.trollCommentClass);
+        El.AddClass(C.header, HupperVars.trollCommentHeaderClass);
       }
     }
-    if (filterhuppers) 
+    if(filterhuppers) 
     {
-      if (huppers.inArray(C.user)) 
+      if(huppers.inArray(C.user)) 
       {
-        addClass(C.comment, HupperVars.hupperCommentClass);
-        addClass(C.header, HupperVars.hupperCommentHeaderClass);
+        El.AddClass(C.comment, HupperVars.hupperCommentClass);
+        El.AddClass(C.header, HupperVars.hupperCommentHeaderClass);
       }
     }
-    if (extraCommentLinks) 
+    if(extraCommentLinks) 
     {
-      C.footerLinks.appendChild(builder.buildComExtraTop());
-      C.footerLinks.appendChild(builder.buildComExtraBack());
+      El.Add(builder.buildComExtraTop(), C.footerLinks);
+      El.Add(builder.buildComExtraBack(), C.footerLinks);
     }
-    if (C.parent != -1) 
+    if(C.parent != -1) 
     {
       var Bl = builder.buildComExtraParent(C.parent);
-      C.footerLinks.appendChild(Bl);
+      El.Add(Bl, C.footerLinks);
     }
-    if (insertPermalink) 
+    if(insertPermalink) 
     {
-      C.footerLinks.appendChild(builder.buildComExtraPerma(C.id));
+      El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
     }
   });
-  if (replacenewcommenttext || prevnextlinks) 
+  if(replacenewcommenttext || prevnextlinks) 
   {
-    var spanNode = w.createElement('span'), tmpSpan1, ncl = newComments.length, i;
-    for (i = 0; i < ncl; i++) 
+    var spanNode = El.Span(), tmpSpan1, ncl = newComments.length, i;
+    for(i = 0; i < ncl; i++) 
     {
       tmpSpan1 = spanNode.cloneNode(true);
-      tmpSpan1.setAttribute('class', 'hnav');
-      if (prevnextlinks) 
+      El.AddClass(tmpSpan1, 'hnav');
+      if(prevnextlinks) 
       {
-        if (i > 0) 
+        if(i > 0) 
         {
-          tmpSpan1.appendChild(builder.buildPrevLink(newComments[i - 1].id));
+          El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1);
         }
         else 
         {
-          tmpSpan1.appendChild(builder.buildFirstLink());
+          El.Add(builder.buildFirstLink(), tmpSpan1);
         }
-        if (i < ncl - 1) 
+        if(i < ncl - 1) 
         {
-          tmpSpan1.appendChild(builder.buildNextLink(newComments[i + 1].id));
+          El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1);
         }
         else 
         {
-          tmpSpan1.appendChild(builder.buildLastLink());
+          El.Add(builder.buildLastLink(), tmpSpan1);
         }
       }
-      if (replacenewcommenttext) 
+      if(replacenewcommenttext) 
       {
-        newComments[i].comment.removeChild(newComments[i].newComm);
-        tmpSpan1.appendChild(builder.buildNewText());
+        El.Remove(newComments[i].newComm, newComments[i].comment);
+        El.Add(builder.buildNewText(), tmpSpan1);
       }
-      newComments[i].header.insertBefore(tmpSpan1, newComments[i].header.firstChild);
+      El.Insert(tmpSpan1, newComments[i].header.firstChild);
     }
   }
-};
-/**
- * Adds the specified class to the element
- * @param {Object} el DOM element
- * @param {String} c Class name
- */
-var addClass = function(el, c)
-{
-  var curClass = el.getAttribute('class');
-  if (curClass === null) 
-  {
-    el.setAttribute('class', c);
-  }
-  else 
-  {
-    el.setAttribute('class', curClass + ' ' + c);
-  }
-};
-/**
- * Removes the specified class from the element
- * @param {Object} el DOM element
- * @param {String} c Class name
- */
-var removeClass = function(el, c)
-{
-  el.setAttribute('class', el.getAttribute('class').replace(c, ''));
-};
-/**
- * Checks that the element has the specified class or not
- * @param {Object} el Element
- * @param {String} c Class name
- * @return {Boolean}
- */
-var hasClass = function(el, c)
-{
-  if (!el || !c) 
-  {
-    return false;
-  }
-  cl = new RegExp(c);
-  return cl.test(el.getAttribute('class'));
 };
 /**
  * Removes all childnode of the element
@@ -735,9 +659,9 @@ var hasClass = function(el, c)
  */
 var removeChilds = function(element)
 {
-  while (element.firstChild) 
+  while(element.firstChild) 
   {
-    element.removeChild(element.firstChild);
+    El.Remove(element.firstChild, element);
   }
 };
 /**
@@ -747,7 +671,7 @@ var removeChilds = function(element)
  */
 var getParentComment = function(indentedComments, comment)
 {
-  if (comment.indent > 0) 
+  if(comment.indent > 0) 
   {
     return indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)];
   }
@@ -763,7 +687,7 @@ var getParentComment = function(indentedComments, comment)
 var getIndent = function(el)
 {
   var indent = 0;
-  while (hasClass(el.parentNode, 'indent')) 
+  while(El.HasClass(el.parentNode, 'indented')) 
   {
     el = el.parentNode;
     indent++;
@@ -787,7 +711,7 @@ var Transform = function(ob)
 Transform.prototype.run = function(THIS)
 {
   THIS.ob.style.opacity = 0.1 * THIS.i;
-  if (THIS.i < THIS.dur) 
+  if(THIS.i < THIS.dur) 
   {
     setTimeout(THIS.run, THIS.dur / 0.1, THIS);
     THIS.i++;
@@ -800,53 +724,52 @@ Transform.prototype.run = function(THIS)
 var appendNewNotifier = function(link, mark)
 {
   var hupperBlockId = 'block-hupper-0'; // newNotifier
-  if (w.getElementById(hupperBlockId)) 
+  if(El.GetId(hupperBlockId)) 
   {
     return;
   }
-  var div = w.createElement('div');
-  var h2 = w.createElement('h2');
-  var a = w.createElement('a');
-  var ul = w.createElement('ul');
-  var li = w.createElement('li');
-  li.setAttribute('class', 'leaf');
+  var div = El.Div();
+  var h2 = El.El('h2');
+  var a = El.A();
+  var ul = El.Ul();
+  var li = El.Li();
+  El.AddClass(li, 'leaf');
   
-  h2.appendChild(w.createTextNode('Hupper'));
+  El.Add(El.Txt('Hupper'), h2);
 
   a1 = a.cloneNode(a);
   a1.setAttribute('href', (link || '#new'));
-  a1.appendChild(w.createTextNode(hupperBundles.getString('firstNew')));
+  El.Add(El.Txt(hupperBundles.getString('firstNew')), a1);
   li1 = li.cloneNode(true);
-  li1.appendChild(a1);
+  El.Add(a1, li1);
 
-  ul.setAttribute('class', 'menu');
-  ul.appendChild(li1);
+  El.AddClass(ul, 'menu');
+  El.Add(li1, ul);
 
-  if (mark) 
+  if(mark) 
   {
     a2 = a.cloneNode(a);
     a2.addEventListener('click', markAllNodeAsRead, false);
     a2.markNodes = markAsReadNodes;
     a2.setAttribute('href', 'javascript:void(0);');
-    a2.appendChild(w.createTextNode(hupperBundles.getString('markAllRead')));
+    El.Add(El.Txt(hupperBundles.getString('markAllRead')), a2);
   
     li2 = li.cloneNode(true);
-    li2.appendChild(a2);
-    ul.appendChild(li2);
-    // div.setAttribute('class', 'big');
+    El.Add(a2, li2);
+    El.Add(li2, ul);
   }
   var blockDiv = div.cloneNode(div);
   var contentDiv = div.cloneNode(div);
-  contentDiv.setAttribute('class', 'content');
-  contentDiv.appendChild(ul);
+  El.AddClass(contentDiv, 'content');
+  El.Add(ul, contentDiv);
 
-  blockDiv.appendChild(h2);
-  blockDiv.appendChild(contentDiv);
+  El.Add(h2, blockDiv);
+  El.Add(contentDiv, blockDiv);
   blockDiv.setAttribute('id', hupperBlockId);
-  blockDiv.setAttribute('class', 'block block-hupper');
+  El.AddClass(blockDiv, 'block block-hupper');
 
-  var googleBlock = w.getElementById('block-block-8');
-  googleBlock.parentNode.insertBefore(blockDiv, googleBlock);
+  var googleBlock = El.GetId('block-block-8');
+  El.Insert(blockDiv, googleBlock);
 };
 /**
  * Adds my own styles to the hup.hu header
@@ -855,7 +778,7 @@ var appendNewNotifier = function(link, mark)
 var addHupStyles = function(e)
 {
   var styles = '';
-  switch (HupperPrefs.trollfiltermethod())
+  switch(HupperPrefs.trollfiltermethod())
   {
     case 'hide':
       styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
@@ -870,7 +793,7 @@ var addHupStyles = function(e)
   styles += '#tags {background-color:#F6F6EB; }';
   styles += '#tags h4 {margin: 0;padding:0; }';
   styles += '#tags ul {list-style:none;padding:0;margin:0;}#tags li {padding-left:5px;margin:0;}';
-  if (HupperPrefs.hilightForumLinesOnHover()) 
+  if(HupperPrefs.hilightForumLinesOnHover()) 
   {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
@@ -885,11 +808,186 @@ var addHupStyles = function(e)
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
   
-  var st = w.createElement('style');
-  var sti = w.createTextNode(styles);
+  var st = El.El('style');
   st.setAttribute('type', 'text/css');
-  st.appendChild(sti);
-  w.getElementsByTagName('head')[0].appendChild(st);
+  El.Add(El.Txt(styles), st);
+  El.Add(st, El.Tag('head')[0]);
+};
+var Elementer = function()
+{
+  var doc = w;
+  var li = doc.createElement('li');
+  var ul = doc.createElement('ul');
+  var div = doc.createElement('div');
+  var span = doc.createElement('span')
+  var a = doc.createElement('a')
+  var img = doc.createElement('img')
+  return {
+    Li: function()
+    {
+      return li.cloneNode(true);
+    },
+    Ul: function()
+    {
+      return ul.cloneNode(true);
+    },
+    Div: function()
+    {
+      return div.cloneNode(true);
+    },
+    Span: function()
+    {
+      return span.cloneNode(true);
+    },
+    A: function()
+    {
+      return a.cloneNode(true);
+    },
+    Img: function()
+    {
+      return img.cloneNode(true);
+    },
+    El: function(el)
+    {
+      return doc.createElement(el);
+    },
+    Txt: function(text)
+    {
+      return doc.createTextNode(text);
+    },
+    Add: function(elem, parent)
+    {
+      parent.appendChild(elem);
+    },
+    Insert: function(elem, before)
+    {
+      before.parentNode.insertBefore(elem, before);
+    },
+    Remove: function(elem, parent)
+    {
+      if(typeof parent == 'object')
+      {
+        parent.removeChild(elem);
+      }
+      else
+      {
+        elem.parentNode.removeChild(elem);
+      }
+    },
+    Tag: function(tag, parent)
+    {
+      if(typeof parent == 'object')
+      {
+        return parent.getElementsByTagName(tag);
+      }
+      return doc.getElementsByTagName(tag);
+    },
+    GetBody: function()
+    {
+      if(this.body)
+      {
+        return this.body;
+      }
+      this.body = this.Tag('body')[0];
+      return this.body;
+    },
+    GetId: function(id, parent)
+    {
+      if(!this.elements)
+      {
+        this.elements = new Object();
+      }
+      if(!this.elements[id])
+      {
+        if(typeof parent == 'object')
+        {
+          this.elements[id] = parent.getElementById(id);
+        }
+        else
+        {
+          this.elements[id] = doc.getElementById(id);
+        }
+      }
+      return this.elements[id];
+    },
+    /**
+    * Adds the specified class to the element
+    * @param {Object} el DOM element
+    * @param {String} c Class name
+    */
+    AddClass: function(el, c)
+    {
+      var curClass = el.getAttribute('class');
+      if(curClass === null) 
+      {
+        el.setAttribute('class', c);
+      }
+      else 
+      {
+        el.setAttribute('class', curClass + ' ' + c);
+      }
+    },
+    /**
+    * Removes the specified class from the element
+    * @param {Object} el DOM element
+    * @param {String} c Class name
+    */
+    RemoveClass: function(el, c)
+    {
+      el.setAttribute('class', el.getAttribute('class').replace(c, ''));
+    },
+    /**
+    * Checks that the element has the specified class or not
+    * @param {Object} el Element
+    * @param {String} c Class name
+    * @return {Boolean}
+    */
+    HasClass: function(el, c)
+    {
+      if(!el || !c) 
+      {
+        return false;
+      }
+      cl = new RegExp('\\b' + c + '\\b');
+      return cl.test(el.getAttribute('class'));
+    },
+
+    /**
+    * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
+    * @param {Object} par parent element node
+    * @param {String} cn className
+    * @param {String} el element type
+    * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
+    * @return {Array}
+    */
+    GetByClass: function(par, cn, el, force)
+    {
+      if(!el) 
+      {
+        el = 'div';
+      }
+      if(!par) 
+      {
+        if(force == true) 
+        {
+          par = this.GetBody();
+        }
+        else 
+        {
+          return new Array();
+        }
+      }
+      var ts = this.Tag(el, par), out = new Array(), i, tsl = ts.length;
+      for(i = 0; i < tsl; i++) 
+      {
+        if(this.HasClass(ts[i], cn)) 
+        {
+          out.push(ts[i]);
+        }
+      }
+      return out;
+    }
+  };
 };
 /**
  * Initialization function, runs when the page is loaded
@@ -898,38 +996,41 @@ var addHupStyles = function(e)
 var HUPPER = function(e)
 {
   var ww = e.originalTarget;
-  if (ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
+  if(ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
   {
     w = ww;
+    El = new Elementer();
     L = new HLog();
     markAsReadNodes = new Array();
     addHupStyles();
-    var body = w.getElementsByTagName('body')[0];
-    var p = w.getElementById('primary');
-    p.getElementsByTagName('a')[0].name = 'top';
+    var body = El.GetBody();
+    var p = El.GetId('primary');
+    El.Tag('a', p)[0].name = 'top';
     hupperBundles = document.getElementById('hupper-bundles');
-    if (w.getElementById('comments')) 
+    if(El.GetId('comments')) 
     {
       var c = getComments();
       comments = c[0];
       newComments = c[1];
       indentComments = c[2];
       parseComments(comments, newComments, indentComments);
-      if (newComments.length && HupperPrefs.showqnavbox()) 
+      if(newComments.length && HupperPrefs.showqnavbox()) 
       {
         appendNewNotifier();
       }
     }
     else 
-      if (HupperPrefs.insertnewtexttonode()) 
+    {
+      if(HupperPrefs.insertnewtexttonode()) 
       {
         var newNodes = getNodes()[1];
         parseNodes(newNodes);
-        if (newNodes.length > 0 && HupperPrefs.showqnavbox()) 
+        if(newNodes.length > 0 && HupperPrefs.showqnavbox()) 
         {
           appendNewNotifier('#n-0', true);
         }
       }
+    }
     L.log('initialized');
   }
 };
