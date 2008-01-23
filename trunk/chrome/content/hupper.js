@@ -184,9 +184,9 @@ var HupperPrefs =
  */
 var nodeHeaderBuilder = function()
 {
-  var spa = El.Span();
-  var listItem = El.Li();
-  var a = El.A();
+  var spa = HupEl.Span();
+  var listItem = HupEl.Li();
+  var a = HupEl.A();
   
   // Localized strings
   var firstLinkText = hupperBundles.getString('FirstLinkText');
@@ -198,22 +198,22 @@ var nodeHeaderBuilder = function()
   var parentLinkText = hupperBundles.getString('ParentLinkText');
   
   // Footer text nodes
-  var parentTextItem = El.Txt(parentLinkText);
-  var permaTextItem = El.Txt('permalink');
-  var topTextItem = El.Txt(topLinkText);
-  var backTextItem = El.Txt(backLinkText);
+  var parentTextItem = HupEl.Txt(parentLinkText);
+  var permaTextItem = HupEl.Txt('permalink');
+  var topTextItem = HupEl.Txt(topLinkText);
+  var backTextItem = HupEl.Txt(backLinkText);
   
   // Title text nodes
-  var fit = El.Txt(firstLinkText);
-  var lat = El.Txt(lastLinkText);
-  var prt = El.Txt(prevLinkText);
-  var net = El.Txt(nextLinkText);
-  var newCt = El.Txt(HupperPrefs.newcommenttext());
+  var fit = HupEl.Txt(firstLinkText);
+  var lat = HupEl.Txt(lastLinkText);
+  var prt = HupEl.Txt(prevLinkText);
+  var net = HupEl.Txt(nextLinkText);
+  var newCt = HupEl.Txt(HupperPrefs.newcommenttext());
   
   // Mark as read node
   var markR = a.cloneNode(true);
-  El.Add(El.Txt(hupperBundles.getString('markingText')), markR);
-  El.AddClass(markR, 'marker');
+  HupEl.Add(HupEl.Txt(hupperBundles.getString('markingText')), markR);
+  HupEl.AddClass(markR, 'marker');
   
   return {
     /**
@@ -226,7 +226,7 @@ var nodeHeaderBuilder = function()
     buildLink: function(tn, path)
     {
       var l = a.cloneNode(true);
-      El.Add(tn, l);
+      HupEl.Add(tn, l);
       l.setAttribute('href', path);
       return l;
     },
@@ -258,7 +258,7 @@ var nodeHeaderBuilder = function()
     buildFirstLink: function()
     {
       var nsp = spa.cloneNode(true);
-      El.Add(fit, nsp);
+      HupEl.Add(fit, nsp);
       return nsp;
     },
     /**
@@ -269,7 +269,7 @@ var nodeHeaderBuilder = function()
     buildLastLink: function()
     {
       var nsp = spa.cloneNode(true);
-      El.Add(lat, nsp);
+      HupEl.Add(lat, nsp);
       return nsp;
     },
     /**
@@ -291,8 +291,8 @@ var nodeHeaderBuilder = function()
     buildNewText: function()
     {
       var nsp = spa.cloneNode(true);
-      El.AddClass(nsp, 'hnew');
-      El.Add(newCt.cloneNode(true), nsp);
+      HupEl.AddClass(nsp, 'hnew');
+      HupEl.Add(newCt.cloneNode(true), nsp);
       return nsp;
     },
     /**
@@ -313,7 +313,7 @@ var nodeHeaderBuilder = function()
     buildComExtraTop: function()
     {
       var tmpList = listItem.cloneNode(true);
-      El.Add(this.buildLink(topTextItem.cloneNode(true), '#top'), tmpList);
+      HupEl.Add(this.buildLink(topTextItem.cloneNode(true), '#top'), tmpList);
       return tmpList;
     },
     /**
@@ -323,7 +323,7 @@ var nodeHeaderBuilder = function()
     buildComExtraBack: function()
     {
       var tmpList = listItem.cloneNode(true);
-      El.Add(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'), tmpList);
+      HupEl.Add(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'), tmpList);
       return tmpList;
     },
     /**
@@ -344,7 +344,7 @@ var nodeHeaderBuilder = function()
         }, false);
         link.n = parent;
       }
-      El.Add(link, tmpList);
+      HupEl.Add(link, tmpList);
       return tmpList;
     },
     /**
@@ -355,7 +355,7 @@ var nodeHeaderBuilder = function()
     buildComExtraPerma: function(cid)
     {
       var tmpList = listItem.cloneNode(true);
-      El.Add(this.buildLink(permaTextItem.cloneNode(true), '#' + cid), tmpList);
+      HupEl.Add(this.buildLink(permaTextItem.cloneNode(true), '#' + cid), tmpList);
       return tmpList;
     }
   };
@@ -380,21 +380,21 @@ var nodeHeaderBuilder = function()
  */
 var getComments = function()
 {
-  var COMS = El.GetId('comments');
+  var COMS = HupEl.GetId('comments');
   if(!COMS) 
   {
     return false;
   }
-  var ds = El.Tag('div', COMS);
+  var ds = HupEl.Tag('div', COMS);
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
   for(i = 0; i < dsl; i++) 
   {
-    if(El.HasClass(ds[i], 'comment')) 
+    if(HupEl.HasClass(ds[i], 'comment')) 
     {
-      header = El.GetByClass(ds[i], 'submitted', 'div')[0];
-      footer = El.GetByClass(ds[i], 'link', 'div')[0];
-      cont = El.GetByClass(ds[i], 'content', 'div')[0];
-      newComm = El.GetByClass(ds[i], 'new', 'span');
+      header = HupEl.GetByClass(ds[i], 'submitted', 'div')[0];
+      footer = HupEl.GetByClass(ds[i], 'link', 'div')[0];
+      cont = HupEl.GetByClass(ds[i], 'content', 'div')[0];
+      newComm = HupEl.GetByClass(ds[i], 'new', 'span');
       comment = 
       {
         comment: ds[i],
@@ -402,7 +402,7 @@ var getComments = function()
         footer: footer,
         cont: cont,
         newComm: (newComm.length) ? newComm[0] : false,
-        footerLinks: El.Tag('ul', footer)[0],
+        footerLinks: HupEl.Tag('ul', footer)[0],
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
         user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
@@ -438,17 +438,17 @@ var getComments = function()
  */
 var getNodes = function()
 {
-  var c = El.GetId('content-both');
-  var ds = El.Tag('div', c);
+  var c = HupEl.GetId('content-both');
+  var ds = HupEl.Tag('div', c);
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
   for(i = 0; i < dsl; i++) 
   {
-    if(El.HasClass(ds[i], 'node')) 
+    if(HupEl.HasClass(ds[i], 'node')) 
     {
       header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
-      footer = El.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
+      footer = HupEl.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
       node = 
       {
         header: header,
@@ -456,7 +456,7 @@ var getNodes = function()
         submitData: submitData,
         cont: cont,
         footer: footer,
-        newc: El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false
+        newc: HupEl.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false
       };
       node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
@@ -469,36 +469,36 @@ var getNodes = function()
  */
 var parseNodes = function(nodes)
 {
-  var spa = El.Span(), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
+  var spa = HupEl.Span(), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
   for(i = 0; i < nl; i++) 
   {
     if(nodes[i].newc) 
     {
       sp = spa.cloneNode(true);
-      El.AddClass(sp, 'nnew');
+      HupEl.AddClass(sp, 'nnew');
       mread = builder.buildMarker(nodes[i].path, i);
-      markAsReadNodes.push(mread);
-      El.Add(mread, sp);
-      El.Add(builder.buildNewText(), sp);
-      El.Insert(builder.buildNameLink(i), nodes[i].header);
+      HupmarkAsReadNodes.push(mread);
+      HupEl.Add(mread, sp);
+      HupEl.Add(builder.buildNewText(), sp);
+      HupEl.Insert(builder.buildNameLink(i), nodes[i].header);
       
       if(i > 0) 
       {
-        El.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
+        HupEl.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
       }
       else 
       {
-        El.Add(builder.buildFirstLink(), sp);
+        HupEl.Add(builder.buildFirstLink(), sp);
       }
       if(i < nl - 1) 
       {
-        El.Add(builder.buildNextLink('n-' + (i + 1)), sp);
+        HupEl.Add(builder.buildNextLink('n-' + (i + 1)), sp);
       }
       else 
       {
-        El.Add(builder.buildLastLink(), sp);
+        HupEl.Add(builder.buildLastLink(), sp);
       }
-      El.Insert(sp, nodes[i].header.firstChild);
+      HupEl.Insert(sp, nodes[i].header.firstChild);
     }
   }
 };
@@ -518,29 +518,29 @@ var markNodeAsRead = function(e)
       this.el.innerHTML = hupperBundles.getString('markingSuccess');
       if(this.el.nextSibling.getAttribute('class') == 'hnew') 
       {
-        El.Remove(this.el.nextSibling, this.el.parentNode);
+        HupEl.Remove(this.el.nextSibling, this.el.parentNode);
       }
     },
     loadHandler: function()
     {
-      var img = El.Img();
+      var img = HupEl.Img();
       img.setAttribute('src', 'chrome://hupper/skin/ajax-loader.gif');
       img.setAttribute('alt', 'marking...');
       removeChilds(this.el);
-      El.Add(img, this.el);
+      HupEl.Add(img, this.el);
     },
     errorHandler: function()
     {
-      var t = El.Txt(hupperBundles.getString('markingError'));
+      var t = HupEl.Txt(hupperBundles.getString('markingError'));
       removeChilds(this.el);
-      El.Add(t, this.el);
+      HupEl.Add(t, this.el);
     }
   }, e.target);
 };
 var markAllNodeAsRead = function(e)
 {
   var n = e.target.markNodes;
-  var d = document || w;
+  var d = document || Hupw;
   for(var i = 0; i < n.length; i++) 
   {
     var click = d.createEvent("MouseEvents");
@@ -553,12 +553,12 @@ var markAllNodeAsRead = function(e)
  * @param {String,Number,Array,Object} value
  * @return {Boolean}
  */
-Array.prototype.inArray = function(value)
+var inArray = function(value, array)
 {
-  var i = this.length - 1;
-  while(this[i]) 
+  var i = array.length - 1;
+  while(array[i]) 
   {
-    if(this[i] === value) 
+    if(array[i] === value) 
     {
       return true;
     }
@@ -588,67 +588,67 @@ var parseComments = function(comments, newComments, indentComments)
   {
     if(filtertrolls) 
     {
-      if(trolls.inArray(C.user)) 
+      if(inArray(C.user, trolls)) 
       {
-        El.AddClass(C.comment, HupperVars.trollCommentClass);
-        El.AddClass(C.header, HupperVars.trollCommentHeaderClass);
+        HupEl.AddClass(C.comment, HupperVars.trollCommentClass);
+        HupEl.AddClass(C.header, HupperVars.trollCommentHeaderClass);
       }
     }
     if(filterhuppers) 
     {
-      if(huppers.inArray(C.user)) 
+      if(inArray(C.user, huppers)) 
       {
-        El.AddClass(C.comment, HupperVars.hupperCommentClass);
-        El.AddClass(C.header, HupperVars.hupperCommentHeaderClass);
+        HupEl.AddClass(C.comment, HupperVars.hupperCommentClass);
+        HupEl.AddClass(C.header, HupperVars.hupperCommentHeaderClass);
       }
     }
     if(extraCommentLinks) 
     {
-      El.Add(builder.buildComExtraTop(), C.footerLinks);
-      El.Add(builder.buildComExtraBack(), C.footerLinks);
+      HupEl.Add(builder.buildComExtraTop(), C.footerLinks);
+      HupEl.Add(builder.buildComExtraBack(), C.footerLinks);
     }
     if(C.parent != -1) 
     {
       var Bl = builder.buildComExtraParent(C.parent);
-      El.Add(Bl, C.footerLinks);
+      HupEl.Add(Bl, C.footerLinks);
     }
     if(insertPermalink) 
     {
-      El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
+      HupEl.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
     }
   });
   if(replacenewcommenttext || prevnextlinks) 
   {
-    var spanNode = El.Span(), tmpSpan1, ncl = newComments.length, i;
+    var spanNode = HupEl.Span(), tmpSpan1, ncl = newComments.length, i;
     for(i = 0; i < ncl; i++) 
     {
       tmpSpan1 = spanNode.cloneNode(true);
-      El.AddClass(tmpSpan1, 'hnav');
+      HupEl.AddClass(tmpSpan1, 'hnav');
       if(prevnextlinks) 
       {
         if(i > 0) 
         {
-          El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1);
+          HupEl.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1);
         }
         else 
         {
-          El.Add(builder.buildFirstLink(), tmpSpan1);
+          HupEl.Add(builder.buildFirstLink(), tmpSpan1);
         }
         if(i < ncl - 1) 
         {
-          El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1);
+          HupEl.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1);
         }
         else 
         {
-          El.Add(builder.buildLastLink(), tmpSpan1);
+          HupEl.Add(builder.buildLastLink(), tmpSpan1);
         }
       }
       if(replacenewcommenttext) 
       {
-        El.Remove(newComments[i].newComm, newComments[i].comment);
-        El.Add(builder.buildNewText(), tmpSpan1);
+        HupEl.Remove(newComments[i].newComm, newComments[i].comment);
+        HupEl.Add(builder.buildNewText(), tmpSpan1);
       }
-      El.Insert(tmpSpan1, newComments[i].header.firstChild);
+      HupEl.Insert(tmpSpan1, newComments[i].header.firstChild);
     }
   }
 };
@@ -661,7 +661,7 @@ var removeChilds = function(element)
 {
   while(element.firstChild) 
   {
-    El.Remove(element.firstChild, element);
+    HupEl.Remove(element.firstChild, element);
   }
 };
 /**
@@ -687,7 +687,7 @@ var getParentComment = function(indentedComments, comment)
 var getIndent = function(el)
 {
   var indent = 0;
-  while(El.HasClass(el.parentNode, 'indented')) 
+  while(HupEl.HasClass(el.parentNode, 'indented')) 
   {
     el = el.parentNode;
     indent++;
@@ -724,52 +724,52 @@ Transform.prototype.run = function(THIS)
 var appendNewNotifier = function(link, mark)
 {
   var hupperBlockId = 'block-hupper-0'; // newNotifier
-  if(El.GetId(hupperBlockId)) 
+  if(HupEl.GetId(hupperBlockId)) 
   {
     return;
   }
-  var div = El.Div();
-  var h2 = El.El('h2');
-  var a = El.A();
-  var ul = El.Ul();
-  var li = El.Li();
-  El.AddClass(li, 'leaf');
+  var div = HupEl.Div();
+  var h2 = HupEl.El('h2');
+  var a = HupEl.A();
+  var ul = HupEl.Ul();
+  var li = HupEl.Li();
+  HupEl.AddClass(li, 'leaf');
   
-  El.Add(El.Txt('Hupper'), h2);
+  HupEl.Add(HupEl.Txt('Hupper'), h2);
 
   a1 = a.cloneNode(a);
   a1.setAttribute('href', (link || '#new'));
-  El.Add(El.Txt(hupperBundles.getString('firstNew')), a1);
+  HupEl.Add(HupEl.Txt(hupperBundles.getString('firstNew')), a1);
   li1 = li.cloneNode(true);
-  El.Add(a1, li1);
+  HupEl.Add(a1, li1);
 
-  El.AddClass(ul, 'menu');
-  El.Add(li1, ul);
+  HupEl.AddClass(ul, 'menu');
+  HupEl.Add(li1, ul);
 
   if(mark) 
   {
     a2 = a.cloneNode(a);
     a2.addEventListener('click', markAllNodeAsRead, false);
-    a2.markNodes = markAsReadNodes;
+    a2.markNodes = HupmarkAsReadNodes;
     a2.setAttribute('href', 'javascript:void(0);');
-    El.Add(El.Txt(hupperBundles.getString('markAllRead')), a2);
+    HupEl.Add(HupEl.Txt(hupperBundles.getString('markAllRead')), a2);
   
     li2 = li.cloneNode(true);
-    El.Add(a2, li2);
-    El.Add(li2, ul);
+    HupEl.Add(a2, li2);
+    HupEl.Add(li2, ul);
   }
   var blockDiv = div.cloneNode(div);
   var contentDiv = div.cloneNode(div);
-  El.AddClass(contentDiv, 'content');
-  El.Add(ul, contentDiv);
+  HupEl.AddClass(contentDiv, 'content');
+  HupEl.Add(ul, contentDiv);
 
-  El.Add(h2, blockDiv);
-  El.Add(contentDiv, blockDiv);
+  HupEl.Add(h2, blockDiv);
+  HupEl.Add(contentDiv, blockDiv);
   blockDiv.setAttribute('id', hupperBlockId);
-  El.AddClass(blockDiv, 'block block-hupper');
+  HupEl.AddClass(blockDiv, 'block block-hupper');
 
-  var googleBlock = El.GetId('block-block-8');
-  El.Insert(blockDiv, googleBlock);
+  var googleBlock = HupEl.GetId('block-block-8');
+  HupEl.Insert(blockDiv, googleBlock);
 };
 /**
  * Adds my own styles to the hup.hu header
@@ -808,14 +808,14 @@ var addHupStyles = function(e)
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
   
-  var st = El.El('style');
+  var st = HupEl.El('style');
   st.setAttribute('type', 'text/css');
-  El.Add(El.Txt(styles), st);
-  El.Add(st, El.Tag('head')[0]);
+  HupEl.Add(HupEl.Txt(styles), st);
+  HupEl.Add(st, HupEl.Tag('head')[0]);
 };
 var Elementer = function()
 {
-  var doc = w;
+  var doc = Hupw;
   var li = doc.createElement('li');
   var ul = doc.createElement('ul');
   var div = doc.createElement('div');
@@ -998,16 +998,16 @@ var HUPPER = function(e)
   var ww = e.originalTarget;
   if(ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
   {
-    w = ww;
-    El = new Elementer();
-    L = new HLog();
-    markAsReadNodes = new Array();
+    Hupw = ww;
+    HupEl = new Elementer();
+    HupL = new HLog();
+    HupmarkAsReadNodes = new Array();
     addHupStyles();
-    var body = El.GetBody();
-    var p = El.GetId('primary');
-    El.Tag('a', p)[0].name = 'top';
+    var body = HupEl.GetBody();
+    var p = HupEl.GetId('primary');
+    HupEl.Tag('a', p)[0].name = 'top';
     hupperBundles = document.getElementById('hupper-bundles');
-    if(El.GetId('comments')) 
+    if(HupEl.GetId('comments')) 
     {
       var c = getComments();
       comments = c[0];
@@ -1031,6 +1031,6 @@ var HUPPER = function(e)
         }
       }
     }
-    L.log('initialized');
+    HupL.log('initialized');
   }
 };
