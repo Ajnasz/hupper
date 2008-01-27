@@ -526,13 +526,13 @@ var markNodeAsRead = function(e)
       var img = HupEl.Img();
       img.setAttribute('src', 'chrome://hupper/skin/ajax-loader.gif');
       img.setAttribute('alt', 'marking...');
-      removeChilds(this.el);
+      HupEl.RemoveAll(this.el);
       HupEl.Add(img, this.el);
     },
     errorHandler: function()
     {
       var t = HupEl.Txt(hupperBundles.getString('markingError'));
-      removeChilds(this.el);
+      HupEl.RemoveAll(this.el);
       HupEl.Add(t, this.el);
     }
   }, e.target);
@@ -650,18 +650,6 @@ var parseComments = function(comments, newComments, indentComments)
       }
       HupEl.Insert(tmpSpan1, newComments[i].header.firstChild);
     }
-  }
-};
-/**
- * Removes all childnode of the element
- *
- * @param {Object} element
- */
-var removeChilds = function(element)
-{
-  while(element.firstChild) 
-  {
-    HupEl.Remove(element.firstChild, element);
   }
 };
 /**
@@ -813,6 +801,10 @@ var addHupStyles = function(e)
   HupEl.Add(HupEl.Txt(styles), st);
   HupEl.Add(st, HupEl.Tag('head')[0]);
 };
+/**
+ * Namespace to create and manipulate DOM elements
+ * @constructor
+ */
 var Elementer = function()
 {
   var doc = Hupw;
@@ -823,46 +815,99 @@ var Elementer = function()
   var a = doc.createElement('a')
   var img = doc.createElement('img')
   return {
+    /**
+     * Creates an 'li' element
+     * @return {Object} li element
+     */
     Li: function()
     {
       return li.cloneNode(true);
     },
+    /**
+     * Creates an 'ul' element
+     * @return {Object} ul element
+     */
     Ul: function()
     {
       return ul.cloneNode(true);
     },
+    /**
+     * Creates an 'div' element
+     * @return {Object} div element
+     */
     Div: function()
     {
       return div.cloneNode(true);
     },
+    /**
+     * Creates an 'span' element
+     * @return {Object} span element
+     */
     Span: function()
     {
       return span.cloneNode(true);
     },
+    /**
+     * Creates an 'a' element
+     * @return {Object} a element
+     */
     A: function()
     {
       return a.cloneNode(true);
     },
+    /**
+     * Creates an 'img' element
+     * @return {Object} img element
+     */
     Img: function()
     {
       return img.cloneNode(true);
     },
+    /**
+     * Creates a specified element
+     * @param {String} el type of element
+     * @return {Object} li element
+     */
     El: function(el)
     {
       return doc.createElement(el);
     },
+    /**
+     * Creates a text element
+     * @return {Object} text element
+     */
     Txt: function(text)
     {
       return doc.createTextNode(text);
     },
+    /**
+     * Adds a child element
+     * @param {Object} elem addable element
+     * @param {Object} parent Element, where the new element will appended
+     * @return {Object} returns the element
+     */
+
     Add: function(elem, parent)
     {
       parent.appendChild(elem);
+      return elem;
     },
+    /**
+     * Inserts an element before another element
+     * @param {Object} elem insertable element
+     * @param {Object} before element before the new elem will inserted
+     * @return {Object} returns the elem
+     */
     Insert: function(elem, before)
     {
       before.parentNode.insertBefore(elem, before);
+      return elem;
     },
+    /**
+     * Removes the specified element
+     * @param {Object} elem removable childnode
+     * @param {Object} parent
+     */
     Remove: function(elem, parent)
     {
       if(typeof parent == 'object')
@@ -874,6 +919,32 @@ var Elementer = function()
         elem.parentNode.removeChild(elem);
       }
     },
+    /**
+    * Removes all childnode of the element
+    * @param {Object} element
+    */
+    RemoveAll: function(element)
+    {
+      while(element.firstChild) 
+      {
+        this.Remove(element.firstChild, element);
+      }
+    },
+    /**
+     * @param {Object} inner the new content element
+     * @param {Object} obj updatable element
+     */
+    Update: function(inner, obj)
+    {
+      this.RemoveAll(obj);
+      this.Add(inner, obj);
+    },
+    /**
+     * Collects the elements by their tag name
+     * @param {String} tag the elements tag name
+     * @param {Objecŧ} [parent] parent element
+     * @return {Array}
+     */
     Tag: function(tag, parent)
     {
       if(typeof parent == 'object')
@@ -882,6 +953,11 @@ var Elementer = function()
       }
       return doc.getElementsByTagName(tag);
     },
+
+    /**
+     * Returns the document body
+     * @return {Object}
+     */
     GetBody: function()
     {
       if(this.body)
@@ -891,6 +967,12 @@ var Elementer = function()
       this.body = this.Tag('body')[0];
       return this.body;
     },
+    /**
+     * Returns an element by it's id
+     * @param {String} id Id of the element
+     * @param {Object} [parent] parent element
+     * @return {Object}
+     */
     GetId: function(id, parent)
     {
       if(!this.elements)
@@ -964,7 +1046,7 @@ var Elementer = function()
     {
       if(!el) 
       {
-        el = 'div';
+        el = '*';
       }
       if(!par) 
       {
@@ -986,9 +1068,112 @@ var Elementer = function()
         }
       }
       return out;
+    },
+    /**
+     * @param {String} text link content
+     * @param {String} href url of the link
+     * @param {Object} [params] extra parameters. Format: {paramName: 'paramValue'[, ...]}
+     * @return {Object} link object
+     */
+    createLink: function(text, href, params)
+    {
+      var l = this.A();
+      l.setAttribute('href', href);
+      if(typeof this.params == 'object')
+      {
+        for(par in params)
+        {
+          if(par == 'class')
+          {
+            this.AddClass(l, par.class);
+          }
+          else
+          {
+            l.setAttribute(par, params[par]);
+          }
+        }
+      }
+      this.Add(this.Txt(text), l)
+      return l;
     }
   };
 };
+/**
+ * Make links from the block titles
+ * @constructor
+ */
+var makeTitleLinks = function()
+{
+  for(site in this) {
+    this[site]();
+  }
+};
+makeTitleLinks.prototype = {
+  /**
+   * title for wiki block
+   */
+  wiki: function()
+  {
+    new makeTitleLinks.makeTitle('block-aggregator-feed-3', 'http://wiki.hup.hu');
+  },
+  /**
+  * title for blog block
+  */
+  blog: function()
+  {
+    new makeTitleLinks.makeTitle('block-blog-0', '/blog');
+  },
+  /**
+  * title for search block
+  */
+  search: function()
+  {
+    new makeTitleLinks.makeTitle('block-search-0', '/search');
+  },
+  /**
+  * title for poll block
+  */
+  poll: function()
+  {
+    new makeTitleLinks.makeTitle('block-poll-40', '/poll');
+  },
+  /**
+  * title for flickr block
+  */
+  flickr: function()
+  {
+    new makeTitleLinks.makeTitle('block-aggregator-feed-40', 'http://www.flickr.com/photos/h_u_p/');
+  },
+  /**
+  * title for tag cloud block
+  */
+  temak: function()
+  {
+    new makeTitleLinks.makeTitle('block-tagadelic-1', '/temak');
+  }
+};
+/**
+ * Compose the title link
+ * @constructor
+ * @param {String} contId Id of the title container div
+ * @param {String} url the url of the title
+ */
+makeTitleLinks.makeTitle = function(contId, url)
+{
+  this.titleCont = HupEl.GetId(contId);
+  if(this.titleCont)
+  {
+    this.title = HupEl.Tag('h2', this.titleCont)[0];
+    this.content =this.title.innerHTML;
+    HupEl.Update(HupEl.createLink(this.content, url), this.title);
+  }
+};
+makeTitleLinks.makeTitle.prototype = {
+  titleCont: null,
+  title: null,
+  content: null
+};
+
 /**
  * Initialization function, runs when the page is loaded
  * @param {Object} e window load event object
@@ -1001,12 +1186,13 @@ var HUPPER = function(e)
     Hupw = ww;
     HupEl = new Elementer();
     HupL = new HLog();
+    hupperBundles = document.getElementById('hupper-bundles');
     HupmarkAsReadNodes = new Array();
     addHupStyles();
     var body = HupEl.GetBody();
     var p = HupEl.GetId('primary');
     HupEl.Tag('a', p)[0].name = 'top';
-    hupperBundles = document.getElementById('hupper-bundles');
+    new makeTitleLinks();
     if(HupEl.GetId('comments')) 
     {
       var c = getComments();
