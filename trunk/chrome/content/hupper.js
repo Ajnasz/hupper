@@ -721,13 +721,12 @@ var appendNewNotifier = function(link, mark)
   var a = HUP.El.A();
   var ul = HUP.El.Ul();
   var li = HUP.El.Li();
+  var a1, a2, li1, li2;
   HUP.El.AddClass(li, 'leaf');
   
   HUP.El.Add(HUP.El.Txt('Hupper'), h2);
 
-  a1 = a.cloneNode(a);
-  a1.setAttribute('href', (link || '#new'));
-  HUP.El.Add(HUP.El.Txt(HUP.Bundles.getString('firstNew')), a1);
+  a1 = HUP.El.CreateLink(HUP.Bundles.getString('firstNew'), link || '#new');
   li1 = li.cloneNode(true);
   HUP.El.Add(a1, li1);
 
@@ -736,11 +735,9 @@ var appendNewNotifier = function(link, mark)
 
   if(mark) 
   {
-    a2 = a.cloneNode(a);
+    a2 = HUP.El.CreateLink(HUP.Bundles.getString('markAllRead'), 'javascript:void(0)');
     a2.addEventListener('click', markAllNodeAsRead, false);
     a2.markNodes = HUP.markReadNodes;
-    a2.setAttribute('href', 'javascript:void(0);');
-    HUP.El.Add(HUP.El.Txt(HUP.Bundles.getString('markAllRead')), a2);
   
     li2 = li.cloneNode(true);
     HUP.El.Add(a2, li2);
@@ -1075,7 +1072,7 @@ var Elementer = function()
      * @param {Object} [params] extra parameters. Format: {paramName: 'paramValue'[, ...]}
      * @return {Object} link object
      */
-    createLink: function(text, href, params)
+    CreateLink: function(text, href, params)
     {
       var l = this.A();
       l.setAttribute('href', href);
@@ -1172,7 +1169,7 @@ makeTitleLinks.prototype = {
     if(titleCont)
     {
       var title = HUP.El.Tag('h2', titleCont)[0];
-      HUP.El.Update(HUP.El.createLink(title.innerHTML, url), title);
+      HUP.El.Update(HUP.El.CreateLink(title.innerHTML, url), title);
     }
   }
 };
@@ -1185,8 +1182,11 @@ var HUPPER = function(e)
   var ww = e.originalTarget;
   if(ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
   {
+    /**
+     * A unique global object to store all global objects/array/... of the Hupper Extension
+     */
     HUP = {};
-    // HUP document obj
+    // HUP document object
     HUP.w = ww;
     // Elementer
     HUP.El = new Elementer();
@@ -1194,11 +1194,11 @@ var HUPPER = function(e)
     HUP.L = new HLog();
     // Lang stuffs
     HUP.Bundles = document.getElementById('hupper-bundles');
+    // Stores the mark as read nodes
     HUP.markReadNodes = new Array();
     addHupStyles();
-    var body = HUP.El.GetBody();
-    var p = HUP.El.GetId('primary');
-    HUP.El.Tag('a', p)[0].name = 'top';
+    HUP.El.Tag('a', HUP.El.GetId('primary'))[0].name = 'top';
+    // Create links from the titles
     new makeTitleLinks();
     if(HUP.El.GetId('comments')) 
     {
