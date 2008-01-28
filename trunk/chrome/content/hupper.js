@@ -205,23 +205,13 @@ var nodeHeaderBuilder = function()
   var backLinkText = HUP.Bundles.getString('BackLinkText');
   var parentLinkText = HUP.Bundles.getString('ParentLinkText');
   
-  // Footer text nodes
-  var parentTextItem = HUP.El.Txt(parentLinkText);
-  var permaTextItem = HUP.El.Txt('permalink');
-  var topTextItem = HUP.El.Txt(topLinkText);
-  var backTextItem = HUP.El.Txt(backLinkText);
-  
   // Title text nodes
   var fit = HUP.El.Txt(firstLinkText);
   var lat = HUP.El.Txt(lastLinkText);
-  var prt = HUP.El.Txt(prevLinkText);
-  var net = HUP.El.Txt(nextLinkText);
   var newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
   
   // Mark as read node
-  // var markR = a.cloneNode(true);
   var markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
-  // HUP.El.Add(HUP.El.Txt(HUP.Bundles.getString('markingText')), markR);
   HUP.El.AddClass(markR, 'marker');
   
   return {
@@ -356,7 +346,23 @@ var nodeHeaderBuilder = function()
   };
 };
 /**
- * Collects the comment nodes and filter them into another 2 array too by their properties: comments, newComments, indentComments the indenComments just contains an index which specify the comment index in the comments array
+ * Collects the comment nodes and filter them into another 2 array too by their 
+ * roperties: comments, newComments, indentComments the indenComments just contains
+ * an index which specify the comment index in the comments array
+ *
+ * Comment processing:
+ *   get the header of the comment
+ *   get the footer of the comment
+ *   get the content of the comment
+ *   get the 'new' marker of the comment
+ *   create a comment object
+ *   get the parent comment index or false
+ *   if we have a number, the comment has a parent
+ *   if the indent level isn't exits in the indencComments var, create it as an array
+ *   push the comment into its level
+ *   push the comment into the comments array
+ *   if the comment is new, push it into the new comments array
+ *
  * @var {Array} comments an array, which conatains all comment
  * @var {Array} indentComments an array, which contains only the indented comments
  * @var {Array} newComments an array, which contains only the unread comments
@@ -373,6 +379,7 @@ var nodeHeaderBuilder = function()
  * @var {Object} comment.parent parent node of the comment
  * @return {Array} 0 => comments object, 1 => only new comments, 
  */
+
 var getComments = function()
 {
   var coms = HUP.El.GetId('comments');
@@ -402,20 +409,14 @@ var getComments = function()
         indent: getIndent(ds[i]),
         user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       };
-      // get the parent comment index or false
       parentComment = getParentComment(indentComments, comment);
-      // if we have a number, the comment has a parent
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
-      // if the indent level isn't exits in the indencComments var, create it as an array
       if(typeof indentComments[comment.indent] == 'undefined') 
       {
         indentComments[comment.indent] = new Array();
       }
-      // push the comment into its level
       indentComments[comment.indent].push(comments.length);
-      // push the comment into the comments array
       comments.push(comment);
-      // if the comment is new, push it into the new comments array
       if(comment.newComm) 
       {
         newComments.push(comment);
@@ -524,9 +525,7 @@ var markNodeAsRead = function(e)
     },
     loadHandler: function()
     {
-      var img = HUP.El.Img();
-      img.setAttribute('src', 'chrome://hupper/skin/ajax-loader.gif');
-      img.setAttribute('alt', 'marking...');
+      var img = HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
       HUP.El.RemoveAll(this.el);
       HUP.El.Add(img, this.el);
     },
@@ -538,6 +537,10 @@ var markNodeAsRead = function(e)
     }
   }, e.target);
 };
+/**
+ * Marks as read all nodes, which have unread items
+ * @param {Object} e event object
+ */
 var markAllNodeAsRead = function(e)
 {
   var n = e.target.markNodes;
@@ -835,11 +838,16 @@ var Elementer = function()
     },
     /**
      * Creates an 'img' element
+     * @param {String} src source of the image
+     * @param {String} alt image alternate text
      * @return {Object} img element
      */
-    Img: function()
+    Img: function(src, alt)
     {
-      return img.cloneNode(true);
+      var img = img.cloneNode(true);
+      img.setAttribute('src', src);
+      img.setAttribute('alt', alt);
+      return img;
     },
     /**
      * Creates a specified element
