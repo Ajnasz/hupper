@@ -1,8 +1,16 @@
 /**
  * hupper.js
+ *
+ * This file is part of the Hupper Firefox extnsion,
+ *  which adds some extra feature for the http://hup.hu site
+ * http://ajnasz.hu/blog/20070616/hupper-extension
+ *
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @version 0.0.4.7
  * @licence General Public Licence v2
+ */
+
+/**
+ * Mozilla logging service
  */
 var HLog = function()
 {
@@ -211,25 +219,12 @@ var nodeHeaderBuilder = function()
   var newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
   
   // Mark as read node
-  var markR = a.cloneNode(true);
-  HUP.El.Add(HUP.El.Txt(HUP.Bundles.getString('markingText')), markR);
+  // var markR = a.cloneNode(true);
+  var markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
+  // HUP.El.Add(HUP.El.Txt(HUP.Bundles.getString('markingText')), markR);
   HUP.El.AddClass(markR, 'marker');
   
   return {
-    /**
-     * Builds a link node
-     * 
-     * @param {Object} tn A textNode
-     * @param {String} path Path to point the link
-     * @return {Object}
-     */
-    buildLink: function(tn, path)
-    {
-      var l = a.cloneNode(true);
-      HUP.El.Add(tn, l);
-      l.setAttribute('href', path);
-      return l;
-    },
     /**
      * Builds a link which points to the specified path with the next link str
      * 
@@ -238,7 +233,7 @@ var nodeHeaderBuilder = function()
      */
     buildNextLink: function(path)
     {
-      return this.buildLink(net.cloneNode(true), '#' + path);
+      return HUP.El.CreateLink(nextLinkText, '#' + path);
     },
     /**
      * Builds a link which points to the specified path with the prev link text
@@ -248,7 +243,7 @@ var nodeHeaderBuilder = function()
      */
     buildPrevLink: function(path)
     {
-      return this.buildLink(prt.cloneNode(true), '#' + path);
+      return HUP.El.CreateLink(prevLinkText, '#' + path);
     },
     /**
      * Builds a text node with the first text
@@ -313,7 +308,7 @@ var nodeHeaderBuilder = function()
     buildComExtraTop: function()
     {
       var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(this.buildLink(topTextItem.cloneNode(true), '#top'), tmpList);
+      HUP.El.Add(HUP.El.CreateLink(topLinkText, '#top'), tmpList);
       return tmpList;
     },
     /**
@@ -323,7 +318,7 @@ var nodeHeaderBuilder = function()
     buildComExtraBack: function()
     {
       var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(this.buildLink(backTextItem.cloneNode(true), 'javascript:history.back();'), tmpList);
+      HUP.El.Add(HUP.El.CreateLink(backLinkText, 'javascript:history.back();'), tmpList);
       return tmpList;
     },
     /**
@@ -334,13 +329,13 @@ var nodeHeaderBuilder = function()
     buildComExtraParent: function(parent)
     {
       var tmpList = listItem.cloneNode(true);
-      var link = this.buildLink(parentTextItem.cloneNode(true), '#' + parent.id);
+      var link = HUP.El.CreateLink(parentLinkText, '#' + parent.id);
       // if fading enabled, add an event listener, which will fades the parent node
       if(HupperPrefs.fadeparentcomment()) 
       {
         link.addEventListener('click', function(e)
         {
-          new Transform(e.target.n.comment);
+          new Transform(e.target.n.comment, 'FadeIn');
         }, false);
         link.n = parent;
       }
@@ -355,7 +350,7 @@ var nodeHeaderBuilder = function()
     buildComExtraPerma: function(cid)
     {
       var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(this.buildLink(permaTextItem.cloneNode(true), '#' + cid), tmpList);
+      HUP.El.Add(HUP.El.CreateLink('permalink', '#' + cid), tmpList);
       return tmpList;
     }
   };
@@ -376,16 +371,16 @@ var nodeHeaderBuilder = function()
  * @var {Number} comment.indent indetion level of the comment
  * @var {String} comment.user the name of the user who sent the comment
  * @var {Object} comment.parent parent node of the comment
- * @return {Array}
+ * @return {Array} 0 => comments object, 1 => only new comments, 
  */
 var getComments = function()
 {
-  var COMS = HUP.El.GetId('comments');
-  if(!COMS) 
+  var coms = HUP.El.GetId('comments');
+  if(!coms) 
   {
     return false;
   }
-  var ds = HUP.El.Tag('div', COMS);
+  var ds = HUP.El.GetTag('div', coms);
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
   for(i = 0; i < dsl; i++) 
   {
@@ -402,19 +397,25 @@ var getComments = function()
         footer: footer,
         cont: cont,
         newComm: (newComm.length) ? newComm[0] : false,
-        footerLinks: HUP.El.Tag('ul', footer)[0],
+        footerLinks: HUP.El.GetFirstTag('ul', footer),
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
         user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       };
+      // get the parent comment index or false
       parentComment = getParentComment(indentComments, comment);
+      // if we have a number, the comment has a parent
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
+      // if the indent level isn't exits in the indencComments var, create it as an array
       if(typeof indentComments[comment.indent] == 'undefined') 
       {
         indentComments[comment.indent] = new Array();
       }
+      // push the comment into its level
       indentComments[comment.indent].push(comments.length);
+      // push the comment into the comments array
       comments.push(comment);
+      // if the comment is new, push it into the new comments array
       if(comment.newComm) 
       {
         newComments.push(comment);
@@ -434,12 +435,12 @@ var getComments = function()
  * @var {Object} node.cont
  * @var {Object} node.cont
  * @var {Boolean} node.newc true, if the node have unread comments
- * @return {Array}
+ * @return {Array} 0 => all node, 1 => only new nodes
  */
 var getNodes = function()
 {
   var c = HUP.El.GetId('content-both');
-  var ds = HUP.El.Tag('div', c);
+  var ds = HUP.El.GetTag('div', c);
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
   for(i = 0; i < dsl; i++) 
   {
@@ -653,12 +654,15 @@ var parseComments = function(comments, newComments, indentComments)
   }
 };
 /**
+ * Check, that the comment is an answer for another comment or not,
+ * returns the index of the parent comment or 
  * @param {Array} indentedComments
  * @param {Object} comment
  * @return {Number,Boolean} returns an array index number or false
  */
 var getParentComment = function(indentedComments, comment)
 {
+  // if the comment is indented
   if(comment.indent > 0) 
   {
     return indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)];
@@ -669,6 +673,7 @@ var getParentComment = function(indentedComments, comment)
   }
 };
 /**
+ * Get the indent level of the element
  * @param {Object} el
  * @return {Number} how indented the comment
  */
@@ -683,29 +688,6 @@ var getIndent = function(el)
   return indent;
 };
 /**
- * @param {Object} ob transformable object
- */
-var Transform = function(ob)
-{
-  this.ob = ob;
-  this.dur = 10;
-  this.i = 0;
-  this.run(this);
-};
-/**
- * make the transformation
- * @param {Object} THIS reference to the Transform.prototype object
- */
-Transform.prototype.run = function(THIS)
-{
-  THIS.ob.style.opacity = 0.1 * THIS.i;
-  if(THIS.i < THIS.dur) 
-  {
-    setTimeout(THIS.run, THIS.dur / 0.1, THIS);
-    THIS.i++;
-  }
-};
-/**
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
  */
@@ -718,7 +700,6 @@ var appendNewNotifier = function(link, mark)
   }
   var div = HUP.El.Div();
   var h2 = HUP.El.El('h2');
-  var a = HUP.El.A();
   var ul = HUP.El.Ul();
   var li = HUP.El.Li();
   var a1, a2, li1, li2;
@@ -796,7 +777,7 @@ var addHupStyles = function(e)
   var st = HUP.El.El('style');
   st.setAttribute('type', 'text/css');
   HUP.El.Add(HUP.El.Txt(styles), st);
-  HUP.El.Add(st, HUP.El.Tag('head')[0]);
+  HUP.El.Add(st, HUP.El.GetFirstTag('head'));
 };
 /**
  * Namespace to create and manipulate DOM elements
@@ -942,7 +923,7 @@ var Elementer = function()
      * @param {Objecŧ} [parent] parent element
      * @return {Array}
      */
-    Tag: function(tag, parent)
+    GetTag: function(tag, parent)
     {
       if(typeof parent == 'object')
       {
@@ -950,7 +931,17 @@ var Elementer = function()
       }
       return doc.getElementsByTagName(tag);
     },
-
+    /**
+     * Returns the first matching tag
+     * @see GetTag
+     * @param {String} tag the elements tag name
+     * @param {Objecŧ} [parent] parent element
+     * @return {Object} first element node
+     */
+    GetFirstTag: function(tag, parent)
+    {
+      return this.GetTag(tag, parent)[0];
+    },
     /**
      * Returns the document body
      * @return {Object}
@@ -961,7 +952,7 @@ var Elementer = function()
       {
         return this.body;
       }
-      this.body = this.Tag('body')[0];
+      this.body = this.GetFirstTag('body');
       return this.body;
     },
     /**
@@ -1056,7 +1047,7 @@ var Elementer = function()
           return new Array();
         }
       }
-      var ts = this.Tag(el, par), out = new Array(), i, tsl = ts.length;
+      var ts = this.GetTag(el, par), out = new Array(), i, tsl = ts.length;
       for(i = 0; i < tsl; i++) 
       {
         if(this.HasClass(ts[i], cn)) 
@@ -1068,27 +1059,14 @@ var Elementer = function()
     },
     /**
      * @param {String} text link content
-     * @param {String} href url of the link
-     * @param {Object} [params] extra parameters. Format: {paramName: 'paramValue'[, ...]}
+     * @param {String} [href] url of the link
      * @return {Object} link object
      */
-    CreateLink: function(text, href, params)
+    CreateLink: function(text, href)
     {
       var l = this.A();
-      l.setAttribute('href', href);
-      if(typeof this.params == 'object')
-      {
-        for(par in params)
-        {
-          if(par == 'class')
-          {
-            this.AddClass(l, par.class);
-          }
-          else
-          {
-            l.setAttribute(par, params[par]);
-          }
-        }
+      if(href) { 
+        l.setAttribute('href', href);
       }
       this.Add(this.Txt(text), l)
       return l;
@@ -1168,7 +1146,7 @@ makeTitleLinks.prototype = {
     var titleCont = HUP.El.GetId(contId);
     if(titleCont)
     {
-      var title = HUP.El.Tag('h2', titleCont)[0];
+      var title = HUP.El.GetFirstTag('h2', titleCont);
       HUP.El.Update(HUP.El.CreateLink(title.innerHTML, url), title);
     }
   }
@@ -1197,7 +1175,7 @@ var HUPPER = function(e)
     // Stores the mark as read nodes
     HUP.markReadNodes = new Array();
     addHupStyles();
-    HUP.El.Tag('a', HUP.El.GetId('primary'))[0].name = 'top';
+    HUP.El.GetFirstTag('a', HUP.El.GetId('primary')).name = 'top';
     // Create links from the titles
     new makeTitleLinks();
     if(HUP.El.GetId('comments')) 
