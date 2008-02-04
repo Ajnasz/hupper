@@ -1,10 +1,14 @@
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * ajax.js
+ * @author Koszti Lajos [Ajnasz] {@link http://ajnasz.hu http://ajnasz.hu} ajnasz@ajnasz.hu 
  * @license GPL v2
+ * for more detials see the licence.txt file
  */
 /**
  * Creates an AJAX request
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @class HupAjax sends request to the {@link http://hup.hu hup.hu} site
+ * @constructor
  * @param {Object} pars object to overwrite the default parameters
  */
 var HupAjax = function(pars, el)
@@ -47,6 +51,11 @@ HupAjax.prototype =
   el: null,
   method: 'get',
   agent: 'Hupper Firefox extension 0.0.4.6',
+  /**
+   * Runs on statechange
+   * @param {Object} pars
+   * @return The error or load or successhandler state
+   */
   handler: function(pars)
   {
     try
@@ -80,16 +89,27 @@ HupAjax.prototype =
       return this.errorHandler('no readyState', e);
     }
   },
+  /**
+   * runs if the request was success
+   */
   successHandler: function()
   {
     return this.req.responseText;
   },
+  /**
+   * runs if the request was not success
+   * @param {String} msg Error message string
+   * @param {Int} er Error code
+   */
   errorHandler: function(msg, er)
   {
     Hog.log('Ajax error: ' + msg + ' || ' + er);
     HLog.log(this.url);
     return false;
   },
+  /**
+   * runs the request doesn't finished
+   */
   loadHandler: function()
   {
     return true;
