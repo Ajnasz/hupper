@@ -1,16 +1,19 @@
 /**
  * hupper.js
+ * @fileoverview This file is part of the Hupper Firefox extension,
+ * which adds some extra feature for the {@link http://hup.hu hup.hu} site
+ * {@link http://ajnasz.hu/blog/20070616/hupper-extension Hupper Firefox Extension}
  *
- * This file is part of the Hupper Firefox extnsion,
- *  which adds some extra feature for the http://hup.hu site
- * http://ajnasz.hu/blog/20070616/hupper-extension
- *
+ * Copyright (C) 2007-2008
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @licence General Public Licence v2
+ * @license General Public Licence v2
+ * for more details see the licence.txt file
  */
 
 /**
  * Mozilla logging service
+ * @class HLog is a class to make the logging easier
+ * @constructor
  */
 var HLog = function()
 {
@@ -18,15 +21,25 @@ var HLog = function()
 };
 HLog.prototype = 
 {
-  // mozilla log service
+  /**
+   * Stores a log service
+   */
   s: null,
+  /**
+   * Stores the loggable message
+   */
   msg: null,
+  /**
+   * Mozilla log service initialization method
+   * @return Mozilla log service
+   * @type Service
+   */
   serv: function()
   {
     return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
   },
   /**
-   * @param {String}
+   * @param {String} arguments The arguments will be written to the error console 
    */
   log: function()
   {
@@ -48,11 +61,13 @@ HLog.prototype =
 };
 /**
  * Namespace, to store the static variables
+ * @final
  */
 var HupperVars =
 {
   trollCommentHeaderClass: 'trollHeader',
   trollCommentClass: 'trollComment',
+  trollCommentAnswersClass: 'trollCommentAnswer',
   hupperCommentHeaderClass: 'hupperHeader',
   hupperCommentHeader: 'hupperComment'
 };
@@ -61,11 +76,15 @@ var HupperVars =
  */
 var HupperPrefs = 
 {
-  // pref types: BoolPref, CharPref, IntPref
-  // http://developer.mozilla.org/en/docs/Code_snippets:Preferences
+  /**
+   * Prefernce mozilla service
+   * pref types: BoolPref, CharPref, IntPref
+   * {@link http://developer.mozilla.org/en/docs/Code_snippets:Preferences developer.mozilla.org}
+   */
   prefManager: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch),
   /**
-   * @return {Array} The returned array contains the names of the trolls
+   * @return The returned array contains the names of the trolls
+   * @type Array
    */
   trolls: function()
   {
@@ -73,21 +92,23 @@ var HupperPrefs =
     return trolls.split(',');
   },
   /**
-   * @return {String} Hexa code color
+   * @return Hexa code color
+   * @type String
    */
   trollcolor: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.trollcolor');
   },
   /**
-   * @return {Boolean}
+   * @type {Boolean}
    */
   filtertrolls: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.filtertrolls');
   },
   /**
-   * @return {String} hide, hilight
+   * @return hide or hilight the trolls
+   * @type String
    */
   trollfiltermethod: function()
   {
@@ -95,7 +116,8 @@ var HupperPrefs =
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
   /**
-   * @return {Array} The returned array contains the names of the huppers
+   * @return The returned array contains the names of the huppers
+   * @type Array
    */
   huppers: function()
   {
@@ -103,84 +125,85 @@ var HupperPrefs =
     return huppers.split(',');
   },
   /**
-   * @return {String} Hexa code color
+   * @return Hexa code color
+   * @type String
    */
   huppercolor: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.huppercolor');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   filterhuppers: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.filterhuppers');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   replacenewcommenttext: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.replacenewcommenttext');
   },
   /**
-   * @return {String}
+   * @type String
    */
   newcommenttext: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.newcommenttext');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   prevnextlinks: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.prevnextlinks');
   },
   /**
-   * @return {String}
+   * @type String
    */
   tags: function()
   {
     return this.prefManager.getCharPref('extensions.hupper.tags');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   extraCommentLinks: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.extracommentlinks');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   hilightForumLinesOnHover: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.hilightforumlinesonhover');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   insertPermalink: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.insertpermalink');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   insertnewtexttonode: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   fadeparentcomment: function()
   {
     return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
   },
   /**
-   * @return {Boolean}
+   * @type Boolean
    */
   showqnavbox: function()
   {
@@ -189,197 +212,195 @@ var HupperPrefs =
 };
 /**
  * Namespace to build links, lists etc.
+ * @class nodeHeaderBuilder Namespace to build links, lists etc.
+ * @constructor
  */
 var nodeHeaderBuilder = function()
 {
-  var spa = HUP.El.Span();
-  var listItem = HUP.El.Li();
-  var a = HUP.El.A();
-  
-  // Localized strings
-  var firstLinkText = HUP.Bundles.getString('FirstLinkText');
-  var lastLinkText = HUP.Bundles.getString('LastLinkText');
-  var prevLinkText = HUP.Bundles.getString('PrevLinkText');
-  var nextLinkText = HUP.Bundles.getString('NextLinkText');
-  var topLinkText = HUP.Bundles.getString('TopLinkText');
-  var backLinkText = HUP.Bundles.getString('BackLinkText');
-  var parentLinkText = HUP.Bundles.getString('ParentLinkText');
+  /**
+   * @final
+   */
+  this.firstLinkText = HUP.Bundles.getString('FirstLinkText');
+  /**
+   * @final
+   */
+  this.lastLinkText = HUP.Bundles.getString('LastLinkText');
+  /**
+   * @final
+   */
+  this.prevLinkText = HUP.Bundles.getString('PrevLinkText');
+  /**
+   * @final
+   */
+  this.nextLinkText = HUP.Bundles.getString('NextLinkText');
+  /**
+   * @final
+   */
+  this.topLinkText = HUP.Bundles.getString('TopLinkText');
+  /**
+   * @final
+   */
+  this.backLinkText = HUP.Bundles.getString('BackLinkText');
+  /**
+   * @final
+   */
+  this.parentLinkText = HUP.Bundles.getString('ParentLinkText');
   
   // Title text nodes
-  var fit = HUP.El.Txt(firstLinkText);
-  var lat = HUP.El.Txt(lastLinkText);
-  var newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
+  this.fit = HUP.El.Txt(this.firstLinkText);
+  this.lat = HUP.El.Txt(this.lastLinkText);
+  this.newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
   
   // Mark as read node
-  var markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
-  HUP.El.AddClass(markR, 'marker');
-  
-  return {
-    /**
-     * Builds a link which points to the specified path with the next link str
-     * 
-     * @param {String} path Path for the next node
-     * @return {Object}
-     */
-    buildNextLink: function(path)
+  this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
+  HUP.El.AddClass(this.markR, 'marker');
+};
+nodeHeaderBuilder.prototype = {
+  /**
+    * Builds a link which points to the specified path with the next link str
+    * @param {String} path Path for the next node
+    * @return A DOM link (a) object within the ~Next~ text
+    * @type Element
+    */
+  buildNextLink: function(path)
+  {
+    return HUP.El.CreateLink(this.nextLinkText, '#' + path);
+  },
+  /**
+    * Builds a link which points to the specified path with the prev link text
+    * @param {String} path Path for the next node
+    * @return A DOM link (a) object within the ~Prev~ text
+    * @type Element
+    */
+  buildPrevLink: function(path)
+  {
+    return HUP.El.CreateLink(this.prevLinkText, '#' + path);
+  },
+  /**
+    * Builds a text node with the first text
+    * @return Span element within first link text
+    * @type Element
+    */
+  buildFirstLink: function()
+  {
+    var nsp = HUP.El.Span();
+    HUP.El.Add(this.fit, nsp);
+    return nsp;
+  },
+  /**
+    * Builds a text node with the last text
+    * @return Span element with within last link text
+    * @type Element
+    */
+  buildLastLink: function()
+  {
+    var nsp = HUP.El.Span();
+    HUP.El.Add(this.lat, nsp);
+    return nsp;
+  },
+  /**
+    * Builds a mark as read linknode
+    * @return Link (a) element
+    * @param {String} path the path to the node
+    * @param {Int} i marker id
+    * @type Element
+    */
+  buildMarker: function(path, i)
+  {
+    var mr = this.markR.cloneNode(true);
+    mr.setAttribute('path', path);
+    mr.setAttribute('id', 'marker-' + i);
+    mr.addEventListener('click', markNodeAsRead, true);
+    return mr;
+  },
+  /**
+    * Builds a text node with [new] text
+    * @return Span element, within a next link
+    * @type Element
+    */
+  buildNewText: function()
+  {
+    var nsp = HUP.El.Span();
+    HUP.El.AddClass(nsp, 'hnew');
+    HUP.El.Add(this.newCt.cloneNode(true), nsp);
+    return nsp;
+  },
+  /**
+    * Builds an invisible link with a name attribute
+    * @param {Int} i id of the node
+    * @return Link (a) element only with name attribute
+    * @type Element
+    */
+  buildNameLink: function(i)
+  {
+    var liaC = HUP.El.A();
+    liaC.setAttribute('name', 'n-' + i);
+    return liaC;
+  },
+  /**
+    * Builds a link node which points to the top of the page
+    * @return Li element, within a link which points to the top of the page
+    * @type Element
+    */
+  buildComExtraTop: function()
+  {
+    var tmpList = HUP.El.Li();
+    HUP.El.Add(HUP.El.CreateLink(this.topLinkText, '#'), tmpList);
+    return tmpList;
+  },
+  /**
+    * Builds a link node which points to the previous page
+    * @return Li element with a link, which point to the previous history page
+    * @type Element
+    */
+  buildComExtraBack: function()
+  {
+    var tmpList = HUP.El.Li();
+    HUP.El.Add(HUP.El.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
+    return tmpList;
+  },
+  /**
+    * Builds a link node which points to the comment's parent comment
+    * @param {String} parent The parent comment id
+    * @return Li element with a link, which points to the parent comment
+    * @type Element
+    */
+  buildComExtraParent: function(parent)
+  {
+    var tmpList = HUP.El.Li();
+    var link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
+    // if fading enabled, add an event listener, which will fades the parent node
+    if(HupperPrefs.fadeparentcomment()) 
     {
-      return HUP.El.CreateLink(nextLinkText, '#' + path);
-    },
-    /**
-     * Builds a link which points to the specified path with the prev link text
-     * 
-     * @param {String} path Path for the next node
-     * @return {Object}
-     */
-    buildPrevLink: function(path)
-    {
-      return HUP.El.CreateLink(prevLinkText, '#' + path);
-    },
-    /**
-     * Builds a text node with the first text
-     * 
-     * @return {Object} Span element within first link text
-     */
-    buildFirstLink: function()
-    {
-      var nsp = spa.cloneNode(true);
-      HUP.El.Add(fit, nsp);
-      return nsp;
-    },
-    /**
-     * Builds a text node with the last text
-     * 
-     * @return {Object} Span element with within last link text
-     */
-    buildLastLink: function()
-    {
-      var nsp = spa.cloneNode(true);
-      HUP.El.Add(lat, nsp);
-      return nsp;
-    },
-    /**
-     * Builds a mark as read linknode
-     * @return {Object} Link (a) element
-     */
-    buildMarker: function(path, i)
-    {
-      var mr = markR.cloneNode(true);
-      mr.setAttribute('path', path);
-      mr.setAttribute('id', 'marker-' + i);
-      mr.addEventListener('click', markNodeAsRead, true);
-      return mr;
-    },
-    /**
-     * Builds a text node with [new] text
-     * @return {Object} Span element, within a next link
-     */
-    buildNewText: function()
-    {
-      var nsp = spa.cloneNode(true);
-      HUP.El.AddClass(nsp, 'hnew');
-      HUP.El.Add(newCt.cloneNode(true), nsp);
-      return nsp;
-    },
-    /**
-     * Builds an invisible link with a name attribute
-     * @param {Number} i id of the node
-     * @return {Object} Link (a) element
-     */
-    buildNameLink: function(i)
-    {
-      var liaC = a.cloneNode(true);
-      liaC.setAttribute('name', 'n-' + i);
-      return liaC;
-    },
-    /**
-     * Builds a link node which points to the top of the page
-     * @return {Object} Li element, within a link which points to the top of the page
-     */
-    buildComExtraTop: function()
-    {
-      var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(HUP.El.CreateLink(topLinkText, '#top'), tmpList);
-      return tmpList;
-    },
-    /**
-     * Builds a link node which points to the previous page
-     * @return {Object} Li element, which point to the previous history page
-     */
-    buildComExtraBack: function()
-    {
-      var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(HUP.El.CreateLink(backLinkText, 'javascript:history.back();'), tmpList);
-      return tmpList;
-    },
-    /**
-     * Builds a link node which points to the comment's parent comment
-     * @param {String} parent The parent comment id
-     * @return {Object} Li element, which points to the parent comment
-     */
-    buildComExtraParent: function(parent)
-    {
-      var tmpList = listItem.cloneNode(true);
-      var link = HUP.El.CreateLink(parentLinkText, '#' + parent.id);
-      // if fading enabled, add an event listener, which will fades the parent node
-      if(HupperPrefs.fadeparentcomment()) 
+      link.addEventListener('click', function(e)
       {
-        link.addEventListener('click', function(e)
-        {
-          new Transform(e.target.n.comment, 'FadeIn');
-        }, false);
-        link.n = parent;
-      }
-      HUP.El.Add(link, tmpList);
-      return tmpList;
-    },
-    /**
-     * Builds a link with a permalink text
-     * @param {String} cid
-     * @return {Object}
-     */
-    buildComExtraPerma: function(cid)
-    {
-      var tmpList = listItem.cloneNode(true);
-      HUP.El.Add(HUP.El.CreateLink('permalink', '#' + cid), tmpList);
-      return tmpList;
+        new Transform(e.target.n.comment, 'FadeIn');
+      }, false);
+      link.n = parent;
     }
-  };
+    HUP.El.Add(link, tmpList);
+    return tmpList;
+  },
+  /**
+    * Builds a link with a permalink text
+    * @param {String} cid
+    * @return Li element, with a link, which points to exactly to the comment
+    * @type Element
+    */
+  buildComExtraPerma: function(cid)
+  {
+    var tmpList = HUP.El.Li();
+    HUP.El.Add(HUP.El.CreateLink('permalink', '#' + cid), tmpList);
+    return tmpList;
+  }
 };
 /**
  * Collects the comment nodes and filter them into another 2 array too by their 
  * roperties: comments, newComments, indentComments the indenComments just contains
  * an index which specify the comment index in the comments array
- *
- * Comment processing:
- *   get the header of the comment
- *   get the footer of the comment
- *   get the content of the comment
- *   get the 'new' marker of the comment
- *   create a comment object
- *   get the parent comment index or false
- *   if we have a number, the comment has a parent
- *   if the indent level isn't exits in the indencComments var, create it as an array
- *   push the comment into its level
- *   push the comment into the comments array
- *   if the comment is new, push it into the new comments array
- *
- * @var {Array} comments an array, which conatains all comment
- * @var {Array} indentComments an array, which contains only the indented comments
- * @var {Array} newComments an array, which contains only the unread comments
- * @var {Object} comment an object which contains all data of the comment
- * @var {Object} comment.comment the whole node which contains the comment
- * @var {Object} comment.header comment node first childNode with 'submitted' className
- * @var {Object} comment.footer comment node first childnode with 'link' className
- * @var {Object} comment.cont content node of the comment
- * @var {Array} comment.newComm an array with the node which contains the 'új' string (if exists, else empty array)
- * @var {Object, Array} comment.footerLinks a node which contains the links in the footer
- * @var {Number} comment.id id of the comment
- * @var {Number} comment.indent indetion level of the comment
- * @var {String} comment.user the name of the user who sent the comment
- * @var {Object} comment.parent parent node of the comment
- * @return {Array} 0 => comments object, 1 => only new comments, 
+ * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments, 
+ * @type Array
  */
-
 var getComments = function()
 {
   var coms = HUP.El.GetId('comments');
@@ -407,6 +428,7 @@ var getComments = function()
         footerLinks: HUP.El.GetFirstTag('ul', footer),
         id: ds[i].previousSibling.previousSibling.id,
         indent: getIndent(ds[i]),
+        childs: getChildComment(ds[i]),
         user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
       };
       parentComment = getParentComment(indentComments, comment);
@@ -436,7 +458,8 @@ var getComments = function()
  * @var {Object} node.cont
  * @var {Object} node.cont
  * @var {Boolean} node.newc true, if the node have unread comments
- * @return {Array} 0 => all node, 1 => only new nodes
+ * @return An arry with all nodes and only new nodes 0 => all node, 1 => only new nodes
+ * @type Array
  */
 var getNodes = function()
 {
@@ -506,7 +529,8 @@ var parseNodes = function(nodes)
 };
 /**
  * Send an AJAX HEAD request to the server, to remove the unread nodes
- * @param {Object} e Event object
+ * @param {Event} e Event object
+ * @requires HupAjax
  * @see HupAjax
  */
 var markNodeAsRead = function(e)
@@ -539,7 +563,7 @@ var markNodeAsRead = function(e)
 };
 /**
  * Marks as read all nodes, which have unread items
- * @param {Object} e event object
+ * @param {Event} e event object
  */
 var markAllNodeAsRead = function(e)
 {
@@ -555,7 +579,7 @@ var markAllNodeAsRead = function(e)
 /**
  * Checks that the arrray contains the specified element
  * @param {String,Number,Array,Object} value
- * @return {Boolean}
+ * @type {Boolean}
  */
 var inArray = function(value, array)
 {
@@ -596,6 +620,9 @@ var parseComments = function(comments, newComments, indentComments)
       {
         HUP.El.AddClass(C.comment, HupperVars.trollCommentClass);
         HUP.El.AddClass(C.header, HupperVars.trollCommentHeaderClass);
+        if(C.childs != -1) {
+          HUP.El.AddClass(C.childs, HupperVars.trollCommentAnswersClass);
+        }
       }
     }
     if(filterhuppers) 
@@ -660,8 +687,9 @@ var parseComments = function(comments, newComments, indentComments)
  * Check, that the comment is an answer for another comment or not,
  * returns the index of the parent comment or 
  * @param {Array} indentedComments
- * @param {Object} comment
- * @return {Number,Boolean} returns an array index number or false
+ * @param {Comment} comment
+ * @return returns an array index number or false
+ * @type {Int,False} 
  */
 var getParentComment = function(indentedComments, comment)
 {
@@ -675,10 +703,19 @@ var getParentComment = function(indentedComments, comment)
     return false;
   }
 };
+
+var getChildComment = function(comment) {
+  var child = comment.nextSibling.nextSibling;
+  if(HUP.El.HasClass(child, 'indented')) {
+    return child;
+  }
+  return -1;
+}
 /**
  * Get the indent level of the element
- * @param {Object} el
- * @return {Number} how indented the comment
+ * @param {Element} el
+ * @return how indented the comment
+ * @type Int
  */
 var getIndent = function(el)
 {
@@ -742,7 +779,7 @@ var appendNewNotifier = function(link, mark)
 };
 /**
  * Adds my own styles to the hup.hu header
- * @param {Object} e event object
+ * @param {Event} e event object
  */
 var addHupStyles = function(e)
 {
@@ -751,6 +788,7 @@ var addHupStyles = function(e)
   {
     case 'hide':
       styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
+      styles += '.' + HupperVars.trollCommentAnswersClass + ' {display:none !important;}';
       break;
     case 'hilight':
     default:
@@ -783,303 +821,316 @@ var addHupStyles = function(e)
   HUP.El.Add(st, HUP.El.GetFirstTag('head'));
 };
 /**
- * Namespace to create and manipulate DOM elements
+ * Class to create and manipulate DOM elements
  * @constructor
  */
 var Elementer = function()
 {
-  var doc = HUP.w;
-  var li = doc.createElement('li');
-  var ul = doc.createElement('ul');
-  var div = doc.createElement('div');
-  var span = doc.createElement('span')
-  var a = doc.createElement('a')
-  var img = doc.createElement('img')
-  return {
-    /**
-     * Creates an 'li' element
-     * @return {Object} li element
-     */
-    Li: function()
-    {
-      return li.cloneNode(true);
-    },
-    /**
-     * Creates an 'ul' element
-     * @return {Object} ul element
-     */
-    Ul: function()
-    {
-      return ul.cloneNode(true);
-    },
-    /**
-     * Creates an 'div' element
-     * @return {Object} div element
-     */
-    Div: function()
-    {
-      return div.cloneNode(true);
-    },
-    /**
-     * Creates an 'span' element
-     * @return {Object} span element
-     */
-    Span: function()
-    {
-      return span.cloneNode(true);
-    },
-    /**
-     * Creates an 'a' element
-     * @return {Object} a element
-     */
-    A: function()
-    {
-      return a.cloneNode(true);
-    },
-    /**
-     * Creates an 'img' element
-     * @param {String} src source of the image
-     * @param {String} alt image alternate text
-     * @return {Object} img element
-     */
-    Img: function(src, alt)
-    {
-      var img = img.cloneNode(true);
-      img.setAttribute('src', src);
-      img.setAttribute('alt', alt);
-      return img;
-    },
-    /**
-     * Creates a specified element
-     * @param {String} el type of element
-     * @return {Object} li element
-     */
-    El: function(el)
-    {
-      return doc.createElement(el);
-    },
-    /**
-     * Creates a text element
-     * @return {Object} text element
-     */
-    Txt: function(text)
-    {
-      return doc.createTextNode(text);
-    },
-    /**
-     * Adds a child element
-     * @param {Object} elem addable element
-     * @param {Object} parent Element, where the new element will appended
-     * @return {Object} returns the element
-     */
+  this.doc = HUP.w;
+  this.li = this.doc.createElement('li');
+  this.ul = this.doc.createElement('ul');
+  this.div = this.doc.createElement('div');
+  this.span = this.doc.createElement('span')
+  this.a = this.doc.createElement('a')
+  this.img = this.doc.createElement('img')
+}
+Elementer.prototype = {
+  /**
+    * Creates an 'li' element
+    * @return Li element
+    * @type Element
+    */
+  Li: function()
+  {
+    return this.li.cloneNode(true);
+  },
+  /**
+    * Creates an 'ul' element
+    * @return Ul element
+    * @type Element
+    */
+  Ul: function()
+  {
+    return this.ul.cloneNode(true);
+  },
+  /**
+    * Creates an 'div' element
+    * @return Div element
+    * @type Element
+    */
+  Div: function()
+  {
+    return this.div.cloneNode(true);
+  },
+  /**
+    * Creates an 'span' element
+    * @return Span element
+    * @type Element
+    */
+  Span: function()
+  {
+    return this.span.cloneNode(true);
+  },
+  /**
+    * Creates an 'a' element
+    * @return A element
+    * @type Element
+    */
+  A: function()
+  {
+    return this.a.cloneNode(true);
+  },
+  /**
+    * Creates an 'img' element
+    * @param {String} src source of the image
+    * @param {String} alt image alternate text
+    * @return Img element
+    * @type Element
+    */
+  Img: function(src, alt)
+  {
+    var img = this.img.cloneNode(true);
+    img.setAttribute('src', src);
+    img.setAttribute('alt', alt);
+    return img;
+  },
+  /**
+    * Creates a specified element
+    * @param {String} el type of element
+    * @return Li element
+    * @type Element
+    */
+  El: function(el)
+  {
+    return this.doc.createElement(el);
+  },
+  /**
+    * Creates a text element
+    * @return Text element
+    * @type Element
+    */
+  Txt: function(text)
+  {
+    return this.doc.createTextNode(text);
+  },
+  /**
+    * Adds a child element
+    * @param {Element} elem addable element
+    * @param {Element} parent Element, where the new element will appended
+    * @return Returns the element
+    * @type Element
+    */
 
-    Add: function(elem, parent)
+  Add: function(elem, parent)
+  {
+    parent.appendChild(elem);
+    return elem;
+  },
+  /**
+    * Inserts an element before another element
+    * @param {Element} elem insertable element
+    * @param {Element} before element before the new elem will inserted
+    * @return Returns the elem
+    * @type Element
+    */
+  Insert: function(elem, before)
+  {
+    before.parentNode.insertBefore(elem, before);
+    return elem;
+  },
+  /**
+    * Removes the specified element
+    * @param {Element} elem removable childnode
+    * @param {Element} parent
+    */
+  Remove: function(elem, parent)
+  {
+    if(typeof parent == 'object')
     {
-      parent.appendChild(elem);
-      return elem;
-    },
-    /**
-     * Inserts an element before another element
-     * @param {Object} elem insertable element
-     * @param {Object} before element before the new elem will inserted
-     * @return {Object} returns the elem
-     */
-    Insert: function(elem, before)
+      parent.removeChild(elem);
+    }
+    else
     {
-      before.parentNode.insertBefore(elem, before);
-      return elem;
-    },
-    /**
-     * Removes the specified element
-     * @param {Object} elem removable childnode
-     * @param {Object} parent
-     */
-    Remove: function(elem, parent)
+      elem.parentNode.removeChild(elem);
+    }
+  },
+  /**
+  * Removes all childnode of the element
+  * @param {Element} element
+  */
+  RemoveAll: function(element)
+  {
+    while(element.firstChild) 
+    {
+      this.Remove(element.firstChild, element);
+    }
+  },
+  /**
+    * @param {Element} inner the new content element
+    * @param {Element} obj updatable element
+    */
+  Update: function(inner, obj)
+  {
+    this.RemoveAll(obj);
+    this.Add(inner, obj);
+  },
+  /**
+    * Collects the elements by their tag name
+    * @param {String} tag the elements tag name
+    * @param {Element} [parent] parent element
+    * @return An array which contains the elements with the given tagname
+    * @type {Array}
+    */
+  GetTag: function(tag, parent)
+  {
+    if(typeof parent == 'object')
+    {
+      return parent.getElementsByTagName(tag);
+    }
+    return this.doc.getElementsByTagName(tag);
+  },
+  /**
+    * Returns the first matching tag
+    * @see #GetTag
+    * @param {String} tag the elements tag name
+    * @param {Objecŧ} [parent] parent element
+    * @return First element node
+    * @type Element
+    */
+  GetFirstTag: function(tag, parent)
+  {
+    return this.GetTag(tag, parent)[0];
+  },
+  /**
+    * Returns the document body
+    * @type Element
+    */
+  GetBody: function()
+  {
+    if(this.body)
+    {
+      return this.body;
+    }
+    this.body = this.GetFirstTag('body');
+    return this.body;
+  },
+  /**
+    * Returns an element by it's id
+    * @param {String} id Id of the element
+    * @param {Element} [parent] parent element
+    * @type Element
+    */
+  GetId: function(id, parent)
+  {
+    if(!this.elements)
+    {
+      this.elements = new Object();
+    }
+    if(!this.elements[id])
     {
       if(typeof parent == 'object')
       {
-        parent.removeChild(elem);
+        this.elements[id] = parent.getElementById(id);
       }
       else
       {
-        elem.parentNode.removeChild(elem);
+        this.elements[id] = this.doc.getElementById(id);
       }
-    },
-    /**
-    * Removes all childnode of the element
-    * @param {Object} element
-    */
-    RemoveAll: function(element)
+    }
+    return this.elements[id];
+  },
+  /**
+  * Adds the specified class to the element
+  * @param {Element} el DOM element
+  * @param {String} c Class name
+  */
+  AddClass: function(el, c)
+  {
+    var curClass = el.getAttribute('class');
+    if(curClass === null) 
     {
-      while(element.firstChild) 
+      el.setAttribute('class', c);
+    }
+    else 
+    {
+      el.setAttribute('class', curClass + ' ' + c);
+    }
+  },
+  /**
+  * Removes the specified class from the element
+  * @param {Element} el DOM element
+  * @param {String} c Class name
+  */
+  RemoveClass: function(el, c)
+  {
+    el.setAttribute('class', el.getAttribute('class').replace(c, ''));
+  },
+  /**
+  * Checks that the element has the specified class or not
+  * @param {Element} el Element
+  * @param {String} c Class name
+  * @type {Boolean}
+  */
+  HasClass: function(el, c)
+  {
+    if(!el || !c) 
+    {
+      return false;
+    }
+    cl = new RegExp('\\b' + c + '\\b');
+    return cl.test(el.getAttribute('class'));
+  },
+
+  /**
+  * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
+  * @param {Element} par parent element node
+  * @param {String} cn className
+  * @param {String} el element type
+  * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
+  * @type {Array}
+  */
+  GetByClass: function(par, cn, el, force)
+  {
+    if(!el) 
+    {
+      el = '*';
+    }
+    if(!par) 
+    {
+      if(force == true) 
       {
-        this.Remove(element.firstChild, element);
-      }
-    },
-    /**
-     * @param {Object} inner the new content element
-     * @param {Object} obj updatable element
-     */
-    Update: function(inner, obj)
-    {
-      this.RemoveAll(obj);
-      this.Add(inner, obj);
-    },
-    /**
-     * Collects the elements by their tag name
-     * @param {String} tag the elements tag name
-     * @param {Objecŧ} [parent] parent element
-     * @return {Array}
-     */
-    GetTag: function(tag, parent)
-    {
-      if(typeof parent == 'object')
-      {
-        return parent.getElementsByTagName(tag);
-      }
-      return doc.getElementsByTagName(tag);
-    },
-    /**
-     * Returns the first matching tag
-     * @see GetTag
-     * @param {String} tag the elements tag name
-     * @param {Objecŧ} [parent] parent element
-     * @return {Object} first element node
-     */
-    GetFirstTag: function(tag, parent)
-    {
-      return this.GetTag(tag, parent)[0];
-    },
-    /**
-     * Returns the document body
-     * @return {Object}
-     */
-    GetBody: function()
-    {
-      if(this.body)
-      {
-        return this.body;
-      }
-      this.body = this.GetFirstTag('body');
-      return this.body;
-    },
-    /**
-     * Returns an element by it's id
-     * @param {String} id Id of the element
-     * @param {Object} [parent] parent element
-     * @return {Object}
-     */
-    GetId: function(id, parent)
-    {
-      if(!this.elements)
-      {
-        this.elements = new Object();
-      }
-      if(!this.elements[id])
-      {
-        if(typeof parent == 'object')
-        {
-          this.elements[id] = parent.getElementById(id);
-        }
-        else
-        {
-          this.elements[id] = doc.getElementById(id);
-        }
-      }
-      return this.elements[id];
-    },
-    /**
-    * Adds the specified class to the element
-    * @param {Object} el DOM element
-    * @param {String} c Class name
-    */
-    AddClass: function(el, c)
-    {
-      var curClass = el.getAttribute('class');
-      if(curClass === null) 
-      {
-        el.setAttribute('class', c);
+        par = this.GetBody();
       }
       else 
       {
-        el.setAttribute('class', curClass + ' ' + c);
+        return new Array();
       }
-    },
-    /**
-    * Removes the specified class from the element
-    * @param {Object} el DOM element
-    * @param {String} c Class name
-    */
-    RemoveClass: function(el, c)
-    {
-      el.setAttribute('class', el.getAttribute('class').replace(c, ''));
-    },
-    /**
-    * Checks that the element has the specified class or not
-    * @param {Object} el Element
-    * @param {String} c Class name
-    * @return {Boolean}
-    */
-    HasClass: function(el, c)
-    {
-      if(!el || !c) 
-      {
-        return false;
-      }
-      cl = new RegExp('\\b' + c + '\\b');
-      return cl.test(el.getAttribute('class'));
-    },
-
-    /**
-    * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
-    * @param {Object} par parent element node
-    * @param {String} cn className
-    * @param {String} el element type
-    * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
-    * @return {Array}
-    */
-    GetByClass: function(par, cn, el, force)
-    {
-      if(!el) 
-      {
-        el = '*';
-      }
-      if(!par) 
-      {
-        if(force == true) 
-        {
-          par = this.GetBody();
-        }
-        else 
-        {
-          return new Array();
-        }
-      }
-      var ts = this.GetTag(el, par), out = new Array(), i, tsl = ts.length;
-      for(i = 0; i < tsl; i++) 
-      {
-        if(this.HasClass(ts[i], cn)) 
-        {
-          out.push(ts[i]);
-        }
-      }
-      return out;
-    },
-    /**
-     * @param {String} text link content
-     * @param {String} [href] url of the link
-     * @return {Object} link object
-     */
-    CreateLink: function(text, href)
-    {
-      var l = this.A();
-      if(href) { 
-        l.setAttribute('href', href);
-      }
-      this.Add(this.Txt(text), l)
-      return l;
     }
-  };
+    var ts = this.GetTag(el, par), out = new Array(), i, tsl = ts.length;
+    for(i = 0; i < tsl; i++) 
+    {
+      if(this.HasClass(ts[i], cn)) 
+      {
+        out.push(ts[i]);
+      }
+    }
+    return out;
+  },
+  /**
+    * @param {String} text link content
+    * @param {String} [href] url of the link
+    * @return link object
+    * @type Element
+    */
+  CreateLink: function(text, href)
+  {
+    var l = this.A();
+    if(href) { 
+      l.setAttribute('href', href);
+    }
+    this.Add(this.Txt(text), l)
+    return l;
+  }
 };
 /**
  * Make links from the block titles
@@ -1087,12 +1138,15 @@ var Elementer = function()
  */
 var makeTitleLinks = function()
 {
-  for(title in this.titles) {
-    this.titles[title](this.makeTitle);
+  for(box in this.boxes) {
+    this.boxes[box](this.makeTitle);
   }
 };
 makeTitleLinks.prototype = {
-  titles: {
+  /**
+   * Title creator functions
+   */
+  boxes: {
     /**
      * title for wiki block
      * @param {Function} makeTitle 
@@ -1140,12 +1194,19 @@ makeTitleLinks.prototype = {
     temak: function(makeTitle)
     {
       makeTitle('block-tagadelic-1', '/temak');
+    },
+    /**
+     * title for new comments block
+     * @param {Function} makeTitle 
+     */
+    tracker: function(makeTitle)
+    {
+      makeTitle('block-comment-0', '/tracker');
     }
   },
 
   /**
    * Compose the title link
-   * @constructor
    * @param {String} contId Id of the title container div
    * @param {String} url the url of the title
    */
@@ -1154,14 +1215,61 @@ makeTitleLinks.prototype = {
     var titleCont = HUP.El.GetId(contId);
     if(titleCont)
     {
-      var title = HUP.El.GetFirstTag('h2', titleCont);
-      HUP.El.Update(HUP.El.CreateLink(title.innerHTML, url), title);
+      var t = HUP.El.GetFirstTag('h2', titleCont);
+      HUP.El.Update(HUP.El.CreateLink(t.innerHTML, url), t);
     }
   }
 };
 /**
+ * @class Timer is small bencmark utility
+ * @constructor
+ */
+var Timer = function() {
+  this.start();
+};
+Timer.prototype = {
+  /**
+   * Start the timer
+   */
+  start: function() {
+    this.startTime = new Date();
+  },
+  /**
+   * Stop the timer
+   */
+  stop: function() {
+    this.endTime = new Date();
+  },
+  /**
+   * Finish the run and return the result
+   * @return The difference between the start and the and in ms
+   * @type Int
+   */
+  finish: function() {
+    return this.endTime.getTime() - this.startTime.getTime();
+  }
+};
+var bindKeys = function() {
+  HUP.w.addEventListener('keyup', checkKeypress, false);
+}
+var checkKeypress = function(event) {
+  if(event.shiftKey && event.altKey) {
+    switch(e.keyCode) {
+      case 78:
+        // next
+        if(/^#/.test(location.hash)) {
+          return;
+        }
+        break;
+      case 80:
+        // pref
+        break;
+    }
+  }
+}
+/**
  * Initialization function, runs when the page is loaded
- * @param {Object} e window load event object
+ * @param {Event} e window load event object
  */
 var HUPPER = function(e)
 {
@@ -1171,6 +1279,7 @@ var HUPPER = function(e)
     /**
      * A unique global object to store all global objects/array/... of the Hupper Extension
      */
+    var TIMER = new Timer();
     HUP = {};
     // HUP document object
     HUP.w = ww;
@@ -1183,7 +1292,6 @@ var HUPPER = function(e)
     // Stores the mark as read nodes
     HUP.markReadNodes = new Array();
     addHupStyles();
-    HUP.El.GetFirstTag('a', HUP.El.GetId('primary')).name = 'top';
     // Create links from the titles
     new makeTitleLinks();
     if(HUP.El.GetId('comments')) 
@@ -1210,6 +1318,7 @@ var HUPPER = function(e)
         }
       }
     }
-    HUP.L.log('initialized');
+    TIMER.stop();
+    HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
   }
 };
