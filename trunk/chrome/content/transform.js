@@ -46,6 +46,10 @@ var Transform = function(ob, type, opts)
  * @param {Object} THIS reference to the Transform.prototype object
  */
 Transform.prototype = {
+  /**
+   * Starts the transformation
+   * @param {String} type The type of the transformation
+   */
   start: function(type)
   {
     switch(type)
@@ -82,6 +86,10 @@ Transform.prototype = {
         break;
     }
   },
+  /**
+   * Fade in the object
+   * @param {Transform} THIS
+   */
   FadeIn: function(THIS)
   {
     THIS.ob.style.height = '';
@@ -92,6 +100,10 @@ Transform.prototype = {
       THIS.i++;
     }
   },
+  /**
+   * Fade out the object
+   * @param {Transform} THIS
+   */
   FadeOut: function(THIS)
   {
     THIS.ob.style.opacity = 0.1*THIS.i;
@@ -105,6 +117,10 @@ Transform.prototype = {
       THIS.ob.style.display = 'none';
     }
   },
+  /**
+   * Slide up the object
+   * @param {Transform} THIS
+   */
   SlideUp: function(THIS)
   {
     var s = THIS.obHeight / THIS.dur;
@@ -119,6 +135,10 @@ Transform.prototype = {
       THIS.ob.style.display = 'none';
     }
   },
+  /**
+   * Slide down the object
+   * @param {Transform} THIS
+   */
   SlideDown: function(THIS)
   {
     var s = THIS.obHeight / THIS.dur;
