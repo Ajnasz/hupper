@@ -50,7 +50,7 @@ HupAjax.prototype =
   req: null,
   el: null,
   method: 'get',
-  agent: 'Hupper Firefox extension 0.0.4.6',
+  agent: 'Hupper Firefox extension 0.0.5',
   /**
    * Runs on statechange
    * @param {Object} pars
