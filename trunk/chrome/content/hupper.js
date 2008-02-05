@@ -116,6 +116,15 @@ var HupperPrefs =
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
   /**
+   * @return also hide the answers of a troll comment
+   * @type String
+   */
+  hidetrollanswers: function()
+  {
+    // hide, hilight
+    return this.prefManager.getBoolPref('extensions.hupper.hidetrollanswers');
+  },
+  /**
    * @return The returned array contains the names of the huppers
    * @type Array
    */
@@ -788,7 +797,9 @@ var addHupStyles = function(e)
   {
     case 'hide':
       styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
-      styles += '.' + HupperVars.trollCommentAnswersClass + ' {display:none !important;}';
+      if(HupperPrefs.hidetrollanswers()) {
+        styles += '.' + HupperVars.trollCommentAnswersClass + ' {display:none !important;}';
+      }
       break;
     case 'hilight':
     default:
@@ -833,6 +844,7 @@ var Elementer = function()
   this.span = this.doc.createElement('span')
   this.a = this.doc.createElement('a')
   this.img = this.doc.createElement('img')
+  this.GetBody();
 }
 Elementer.prototype = {
   /**

@@ -36,6 +36,7 @@
           <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
         </menupopup>
       </menulist>
+      <checkbox id="hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
 
       <!-- trollfiter section end -->
 

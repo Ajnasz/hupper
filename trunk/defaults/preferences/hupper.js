@@ -1,6 +1,7 @@
 pref("extensions.hupper.filtertrolls", true);
 pref("extensions.hupper.trolls", '');
 pref("extensions.hupper.trollfiltermethod", 'hilight');
+pref("extensions.hupper.hidetrollanswers", true);
 pref("extensions.hupper.trollcolor", '#CFB2A7');
 
 pref("extensions.hupper.huppers", '');

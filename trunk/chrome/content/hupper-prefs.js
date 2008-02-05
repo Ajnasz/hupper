@@ -80,82 +80,72 @@ HP.prototype = {
     showqnavbox: function()
     {
       return this.M.getBoolPref('extensions.hupper.showqnavbox');
+    },
+    hidetrollanswers: function(value) {
+      return this.M.getBoolPref('extensions.hupper.hidetrollanswers');
     }
 
   },
   set: {
     M: this.M,
-    trolls: function(value)
-    {
+    trolls: function(value) {
       this.M.setCharPref('extensions.hupper.trolls', value);
     },
     /**
     * @return {Boolean}
     */
-    filtertrolls: function(value)
-    {
+    filtertrolls: function(value) {
       this.M.setBoolPref('extensions.hupper.filtertrolls', value);
     },
     /**
     * @return hide, hilight
     */
-    trollfiltermethod: function(value)
-    {
+    trollfiltermethod: function(value) {
       // hide, hilight
       this.M.setCharPref('extensions.hupper.trollfiltermethod', value);
     },
-    trollcolor: function(value)
-    {
+    trollcolor: function(value) {
       this.M.setCharPref('extensions.hupper.trollcolor', value);
     },
     /**
     * @return {String}
     */
-    huppers: function(value)
-    {
+    huppers: function(value) {
       this.M.setCharPref('extensions.hupper.huppers', value);
     },
-    filterhuppers: function(value)
-    {
+    filterhuppers: function(value) {
       this.M.setBoolPref('extensions.hupper.filterhuppers', value);
     },
-    huppercolor: function(value)
-    {
+    huppercolor: function(value) {
       this.M.setCharPref('extensions.hupper.huppercolor', value);
     },
-    replacenewcommenttext: function(value)
-    {
+    replacenewcommenttext: function(value) {
       this.M.setBoolPref('extensions.hupper.replacenewcommenttext', value);
     },
-    newcommenttext: function(value)
-    {
+    newcommenttext: function(value) {
       this.M.setCharPref('extensions.hupper.newcommenttext', value);
     },
-    extracommentlinks: function(value)
-    {
+    extracommentlinks: function(value) {
       this.M.setBoolPref('extensions.hupper.extracommentlinks', value);
     },
-    hilightforumlinesonhover: function(value)
-    {
+    hilightforumlinesonhover: function(value) {
       this.M.setBoolPref('extensions.hupper.hilightforumlinesonhover', value);
     },
-    insertpermalink: function(value)
-    {
+    insertpermalink: function(value) {
       this.M.setBoolPref('extensions.hupper.insertpermalink', value);
     },
-    insertnewtexttonode: function(value)
-    {
+    insertnewtexttonode: function(value) {
       this.M.setBoolPref('extensions.hupper.insertnewtexttonode', value);
     },
-    fadeparentcomment: function(value)
-    {
+    fadeparentcomment: function(value) {
       this.M.setBoolPref('extensions.hupper.fadeparentcomment', value);
     },
-    showqnavbox: function(value)
-    {
+    showqnavbox: function(value) {
       this.M.setBoolPref('extensions.hupper.showqnavbox', value);
+    },
+    hidetrollanswers: function(value) {
+      this.M.setBoolPref('extensions.hupper.hidetrollanswers', value);
     }
- 
   }
 };
 setPrefWinVals = function()
@@ -175,6 +165,7 @@ setPrefWinVals = function()
   document.getElementById('insert-new-text-to-node').checked = hp.get.insertnewtexttonode();
   document.getElementById('fade-parent-comment').checked = hp.get.fadeparentcomment();
   document.getElementById('show-quick-nav-box').checked = hp.get.showqnavbox();
+  document.getElementById('hide-troll-answers').checked = hp.get.hidetrollanswers();
 };
 savePreferences = function()
 {
@@ -193,9 +184,23 @@ savePreferences = function()
   hp.set.insertnewtexttonode(document.getElementById('insert-new-text-to-node').checked);
   hp.set.fadeparentcomment(document.getElementById('fade-parent-comment').checked);
   hp.set.showqnavbox(document.getElementById('show-quick-nav-box').checked);
+  hp.set.hidetrollanswers(document.getElementById('hide-troll-answers').checked);
 };
+var disableFields = function() {
+  document.getElementById('trollfilter-method').addEventListener('command', onChangeFilterMethod, false);
+};
+var onChangeFilterMethod = function() {
+  if(document.getElementById('trollfilter-method').value == 'hide') {
+    document.getElementById('hide-troll-answers').disabled = false;
+  }
+  else {
+    document.getElementById('hide-troll-answers').disabled = true;
+  }
+}
 StartHupperPrefernces = function()
 {
   hp = new HP();
+  disableFields();
   setPrefWinVals();
+  onChangeFilterMethod();
 };

@@ -4,6 +4,7 @@
 <!ENTITY Hupper.trollfiltermethod "Trollok hozzászólásit eltüntető effekt">
 <!ENTITY Hupper.trollfilter.hide "Elrejtés">
 <!ENTITY Hupper.trollfilter.hilight "Kiemelés">
+<!ENTITY Hupper.trollfilter.hideanswers "Troll hozzászólásra érkezett válaszok elrejtése">
 
 <!ENTITY Hupper.enablehupperfilter "Hupperszűrő engedélyezése">
 <!ENTITY Hupper.huppers "Hupperek (vesszővel elválasztott felhasználónevek)">
