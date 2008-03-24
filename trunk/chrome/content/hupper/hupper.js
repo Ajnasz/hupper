@@ -15,12 +15,10 @@
  * @class HLog is a class to make the logging easier
  * @constructor
  */
-var HLog = function()
-{
+var HLog = function() {
   this.s = this.serv();
 };
-HLog.prototype = 
-{
+HLog.prototype = {
   /**
    * Stores a log service
    */
@@ -34,26 +32,21 @@ HLog.prototype =
    * @return Mozilla log service
    * @type Service
    */
-  serv: function()
-  {
+  serv: function() {
     return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
   },
   /**
    * @param {String} arguments The arguments will be written to the error console 
    */
-  log: function()
-  {
+  log: function() {
     this.msg = new String();
-    for(var i = 0; i < arguments.length; i++) 
-    {
+    for(var i = 0; i < arguments.length; i++) {
       this.msg += ', ' + arguments[i];
     }
-    try 
-    {
+    try {
       this.s.logStringMessage('HUPPER: ' + this.msg.replace(/^, /, ''));
     } 
-    catch(e) 
-    {
+    catch(e) {
       // alert(this.msg.join(', '));
       // alert(this.msg);
     };
@@ -63,8 +56,7 @@ HLog.prototype =
  * Namespace, to store the static variables
  * @final
  */
-var HupperVars =
-{
+var HupperVars = {
   trollCommentHeaderClass: 'trollHeader',
   trollCommentClass: 'trollComment',
   trollCommentAnswersClass: 'trollCommentAnswer',
@@ -74,8 +66,7 @@ var HupperVars =
 /**
  * Namespace, which is used to returns the preferences value
  */
-var HupperPrefs = 
-{
+var HupperPrefs = {
   /**
    * Prefernce mozilla service
    * pref types: BoolPref, CharPref, IntPref
@@ -86,8 +77,7 @@ var HupperPrefs =
    * @return The returned array contains the names of the trolls
    * @type Array
    */
-  trolls: function()
-  {
+  trolls: function() {
     var trolls = this.prefManager.getCharPref('extensions.hupper.trolls');
     return trolls.split(',');
   },
@@ -95,23 +85,20 @@ var HupperPrefs =
    * @return Hexa code color
    * @type String
    */
-  trollcolor: function()
-  {
+  trollcolor: function() {
     return this.prefManager.getCharPref('extensions.hupper.trollcolor');
   },
   /**
    * @type {Boolean}
    */
-  filtertrolls: function()
-  {
+  filtertrolls: function() {
     return this.prefManager.getBoolPref('extensions.hupper.filtertrolls');
   },
   /**
    * @return hide or hilight the trolls
    * @type String
    */
-  trollfiltermethod: function()
-  {
+  trollfiltermethod: function() {
     // hide, hilight
     return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
   },
@@ -119,8 +106,7 @@ var HupperPrefs =
    * @return also hide the answers of a troll comment
    * @type String
    */
-  hidetrollanswers: function()
-  {
+  hidetrollanswers: function() {
     // hide, hilight
     return this.prefManager.getBoolPref('extensions.hupper.hidetrollanswers');
   },
@@ -128,8 +114,7 @@ var HupperPrefs =
    * @return The returned array contains the names of the huppers
    * @type Array
    */
-  huppers: function()
-  {
+  huppers: function() {
     var huppers = this.prefManager.getCharPref('extensions.hupper.huppers');
     return huppers.split(',');
   },
@@ -137,86 +122,77 @@ var HupperPrefs =
    * @return Hexa code color
    * @type String
    */
-  huppercolor: function()
-  {
+  huppercolor: function() {
     return this.prefManager.getCharPref('extensions.hupper.huppercolor');
   },
   /**
    * @type Boolean
    */
-  filterhuppers: function()
-  {
+  filterhuppers: function() {
     return this.prefManager.getBoolPref('extensions.hupper.filterhuppers');
   },
   /**
    * @type Boolean
    */
-  replacenewcommenttext: function()
-  {
+  replacenewcommenttext: function() {
     return this.prefManager.getBoolPref('extensions.hupper.replacenewcommenttext');
   },
   /**
    * @type String
    */
-  newcommenttext: function()
-  {
+  newcommenttext: function() {
     return this.prefManager.getCharPref('extensions.hupper.newcommenttext');
   },
   /**
    * @type Boolean
    */
-  prevnextlinks: function()
-  {
+  prevnextlinks: function() {
     return this.prefManager.getBoolPref('extensions.hupper.prevnextlinks');
   },
   /**
    * @type String
    */
-  tags: function()
-  {
+  tags: function() {
     return this.prefManager.getCharPref('extensions.hupper.tags');
   },
   /**
    * @type Boolean
    */
-  extraCommentLinks: function()
-  {
+  extraCommentLinks: function() {
     return this.prefManager.getBoolPref('extensions.hupper.extracommentlinks');
   },
   /**
    * @type Boolean
    */
-  hilightForumLinesOnHover: function()
-  {
+  hilightForumLinesOnHover: function() {
     return this.prefManager.getBoolPref('extensions.hupper.hilightforumlinesonhover');
   },
   /**
    * @type Boolean
    */
-  insertPermalink: function()
-  {
+  insertPermalink: function() {
     return this.prefManager.getBoolPref('extensions.hupper.insertpermalink');
   },
   /**
    * @type Boolean
    */
-  insertnewtexttonode: function()
-  {
+  insertnewtexttonode: function() {
     return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
   },
   /**
    * @type Boolean
    */
-  fadeparentcomment: function()
-  {
+  fadeparentcomment: function() {
     return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
   },
   /**
    * @type Boolean
    */
-  showqnavbox: function()
-  {
+  showqnavbox: function() {
     return this.prefManager.getBoolPref('extensions.hupper.showqnavbox');
+  },
+  hideads: function() {
+    return this.prefManager.getBoolPref('extensions.hupper.hideads');
   }
 };
 /**
@@ -224,8 +200,7 @@ var HupperPrefs =
  * @class nodeHeaderBuilder Namespace to build links, lists etc.
  * @constructor
  */
-var nodeHeaderBuilder = function()
-{
+var nodeHeaderBuilder = function() {
   /**
    * @final
    */
@@ -271,8 +246,7 @@ nodeHeaderBuilder.prototype = {
     * @return A DOM link (a) object within the ~Next~ text
     * @type Element
     */
-  buildNextLink: function(path)
-  {
+  buildNextLink: function(path) {
     return HUP.El.CreateLink(this.nextLinkText, '#' + path);
   },
   /**
@@ -281,8 +255,7 @@ nodeHeaderBuilder.prototype = {
     * @return A DOM link (a) object within the ~Prev~ text
     * @type Element
     */
-  buildPrevLink: function(path)
-  {
+  buildPrevLink: function(path) {
     return HUP.El.CreateLink(this.prevLinkText, '#' + path);
   },
   /**
@@ -290,8 +263,7 @@ nodeHeaderBuilder.prototype = {
     * @return Span element within first link text
     * @type Element
     */
-  buildFirstLink: function()
-  {
+  buildFirstLink: function() {
     var nsp = HUP.El.Span();
     HUP.El.Add(this.fit, nsp);
     return nsp;
@@ -301,8 +273,7 @@ nodeHeaderBuilder.prototype = {
     * @return Span element with within last link text
     * @type Element
     */
-  buildLastLink: function()
-  {
+  buildLastLink: function() {
     var nsp = HUP.El.Span();
     HUP.El.Add(this.lat, nsp);
     return nsp;
@@ -314,8 +285,7 @@ nodeHeaderBuilder.prototype = {
     * @param {Int} i marker id
     * @type Element
     */
-  buildMarker: function(path, i)
-  {
+  buildMarker: function(path, i) {
     var mr = this.markR.cloneNode(true);
     mr.setAttribute('path', path);
     mr.setAttribute('id', 'marker-' + i);
@@ -327,8 +297,7 @@ nodeHeaderBuilder.prototype = {
     * @return Span element, within a next link
     * @type Element
     */
-  buildNewText: function()
-  {
+  buildNewText: function() {
     var nsp = HUP.El.Span();
     HUP.El.AddClass(nsp, 'hnew');
     HUP.El.Add(this.newCt.cloneNode(true), nsp);
@@ -340,8 +309,7 @@ nodeHeaderBuilder.prototype = {
     * @return Link (a) element only with name attribute
     * @type Element
     */
-  buildNameLink: function(i)
-  {
+  buildNameLink: function(i) {
     var liaC = HUP.El.A();
     liaC.setAttribute('name', 'n-' + i);
     return liaC;
@@ -351,8 +319,7 @@ nodeHeaderBuilder.prototype = {
     * @return Li element, within a link which points to the top of the page
     * @type Element
     */
-  buildComExtraTop: function()
-  {
+  buildComExtraTop: function() {
     var tmpList = HUP.El.Li();
     HUP.El.Add(HUP.El.CreateLink(this.topLinkText, '#'), tmpList);
     return tmpList;
@@ -362,8 +329,7 @@ nodeHeaderBuilder.prototype = {
     * @return Li element with a link, which point to the previous history page
     * @type Element
     */
-  buildComExtraBack: function()
-  {
+  buildComExtraBack: function() {
     var tmpList = HUP.El.Li();
     HUP.El.Add(HUP.El.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
     return tmpList;
@@ -374,15 +340,12 @@ nodeHeaderBuilder.prototype = {
     * @return Li element with a link, which points to the parent comment
     * @type Element
     */
-  buildComExtraParent: function(parent)
-  {
+  buildComExtraParent: function(parent) {
     var tmpList = HUP.El.Li();
     var link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
     // if fading enabled, add an event listener, which will fades the parent node
-    if(HupperPrefs.fadeparentcomment()) 
-    {
-      link.addEventListener('click', function(e)
-      {
+    if(HupperPrefs.fadeparentcomment()) {
+      link.addEventListener('click', function(e) {
         new Transform(e.target.n.comment, 'FadeIn');
       }, false);
       link.n = parent;
@@ -396,8 +359,7 @@ nodeHeaderBuilder.prototype = {
     * @return Li element, with a link, which points to exactly to the comment
     * @type Element
     */
-  buildComExtraPerma: function(cid)
-  {
+  buildComExtraPerma: function(cid) {
     var tmpList = HUP.El.Li();
     HUP.El.Add(HUP.El.CreateLink('permalink', '#' + cid), tmpList);
     return tmpList;
@@ -410,25 +372,20 @@ nodeHeaderBuilder.prototype = {
  * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments, 
  * @type Array
  */
-var getComments = function()
-{
+var getComments = function() {
   var coms = HUP.El.GetId('comments');
-  if(!coms) 
-  {
+  if(!coms) {
     return false;
   }
   var ds = HUP.El.GetTag('div', coms);
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
-  for(i = 0; i < dsl; i++) 
-  {
-    if(HUP.El.HasClass(ds[i], 'comment')) 
-    {
+  for(i = 0; i < dsl; i++) {
+    if(HUP.El.HasClass(ds[i], 'comment')) {
       header = HUP.El.GetByClass(ds[i], 'submitted', 'div')[0];
       footer = HUP.El.GetByClass(ds[i], 'link', 'div')[0];
       cont = HUP.El.GetByClass(ds[i], 'content', 'div')[0];
       newComm = HUP.El.GetByClass(ds[i], 'new', 'span');
-      comment = 
-      {
+      comment = {
         comment: ds[i],
         header: header,
         footer: footer,
@@ -442,14 +399,12 @@ var getComments = function()
       };
       parentComment = getParentComment(indentComments, comment);
       comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
-      if(typeof indentComments[comment.indent] == 'undefined') 
-      {
+      if(typeof indentComments[comment.indent] == 'undefined') {
         indentComments[comment.indent] = new Array();
       }
       indentComments[comment.indent].push(comments.length);
       comments.push(comment);
-      if(comment.newComm) 
-      {
+      if(comment.newComm) {
         newComments.push(comment);
       }
     }
@@ -470,23 +425,19 @@ var getComments = function()
  * @return An arry with all nodes and only new nodes 0 => all node, 1 => only new nodes
  * @type Array
  */
-var getNodes = function()
-{
+var getNodes = function() {
   var c = HUP.El.GetId('content-both');
   var ds = HUP.El.GetTag('div', c);
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
-  for(i = 0; i < dsl; i++) 
-  {
-    if(HUP.El.HasClass(ds[i], 'node')) 
-    {
+  for(i = 0; i < dsl; i++) {
+    if(HUP.El.HasClass(ds[i], 'node')) {
       header = ds[i].childNodes[1];
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
       footer = HUP.El.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
-      node = 
-      {
+      node = {
         header: header,
-        path: header.firstChild.getAttribute('href'),
+        path: Stringer.trim(header.firstChild.getAttribute('href')),
         submitData: submitData,
         cont: cont,
         footer: footer,
@@ -501,13 +452,10 @@ var getNodes = function()
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
  * @param {Array} nodes
  */
-var parseNodes = function(nodes)
-{
+var parseNodes = function(nodes) {
   var spa = HUP.El.Span(), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
-  for(i = 0; i < nl; i++) 
-  {
-    if(nodes[i].newc) 
-    {
+  for(i = 0; i < nl; i++) {
+    if(nodes[i].newc) {
       sp = spa.cloneNode(true);
       HUP.El.AddClass(sp, 'nnew');
       mread = builder.buildMarker(nodes[i].path, i);
@@ -516,22 +464,17 @@ var parseNodes = function(nodes)
       HUP.El.Add(builder.buildNewText(), sp);
       HUP.El.Insert(builder.buildNameLink(i), nodes[i].header);
       
-      if(i > 0) 
-      {
+      if(i > 0) {
         HUP.El.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
-      }
-      else 
-      {
+      } else {
         HUP.El.Add(builder.buildFirstLink(), sp);
       }
-      if(i < nl - 1) 
-      {
+      if(i < nl - 1) {
         HUP.El.Add(builder.buildNextLink('n-' + (i + 1)), sp);
-      }
-      else 
-      {
+      } else {
         HUP.El.Add(builder.buildLastLink(), sp);
       }
+      HUP.w.nextLinks.push('n-' + (i));
       HUP.El.Insert(sp, nodes[i].header.firstChild);
     }
   }
@@ -542,28 +485,22 @@ var parseNodes = function(nodes)
  * @requires HupAjax
  * @see HupAjax
  */
-var markNodeAsRead = function(e)
-{
-  new HupAjax(
-  {
+var markNodeAsRead = function(e) {
+  new HupAjax( {
     method: 'head',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
-    successHandler: function()
-    {
+    successHandler: function() {
       this.el.innerHTML = HUP.Bundles.getString('markingSuccess');
-      if(this.el.nextSibling.getAttribute('class') == 'hnew') 
-      {
+      if(this.el.nextSibling.getAttribute('class') == 'hnew') {
         HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
       }
     },
-    loadHandler: function()
-    {
+    loadHandler: function() {
       var img = HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
       HUP.El.RemoveAll(this.el);
       HUP.El.Add(img, this.el);
     },
-    errorHandler: function()
-    {
+    errorHandler: function() {
       var t = HUP.El.Txt(HUP.Bundles.getString('markingError'));
       HUP.El.RemoveAll(this.el);
       HUP.El.Add(t, this.el);
@@ -574,12 +511,10 @@ var markNodeAsRead = function(e)
  * Marks as read all nodes, which have unread items
  * @param {Event} e event object
  */
-var markAllNodeAsRead = function(e)
-{
+var markAllNodeAsRead = function(e) {
   var n = e.target.markNodes;
   var d = document || HUP.w;
-  for(var i = 0; i < n.length; i++) 
-  {
+  for(var i = 0; i < n.length; i++) {
     var click = d.createEvent("MouseEvents");
     click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     n[i].dispatchEvent(click);
@@ -590,13 +525,10 @@ var markAllNodeAsRead = function(e)
  * @param {String,Number,Array,Object} value
  * @type {Boolean}
  */
-var inArray = function(value, array)
-{
+var inArray = function(value, array) {
   var i = array.length - 1;
-  while(array[i]) 
-  {
-    if(array[i] === value) 
-    {
+  while(array[i]) {
+    if(array[i] === value) {
       return true;
     }
     i--;
@@ -609,8 +541,7 @@ var inArray = function(value, array)
  * @param {Array} newComments
  * @param {Array} indentComments
  */
-var parseComments = function(comments, newComments, indentComments)
-{
+var parseComments = function(comments, newComments, indentComments) {
   var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
   var prevnextlinks = HupperPrefs.prevnextlinks();
   var trolls = HupperPrefs.trolls();
@@ -621,12 +552,9 @@ var parseComments = function(comments, newComments, indentComments)
   var insertPermalink = HupperPrefs.insertPermalink();
   
   var builder = new nodeHeaderBuilder(), ps;
-  comments.map(function(C)
-  {
-    if(filtertrolls) 
-    {
-      if(inArray(C.user, trolls)) 
-      {
+  comments.map(function(C) {
+    if(filtertrolls) {
+      if(inArray(C.user, trolls)) {
         HUP.El.AddClass(C.comment, HupperVars.trollCommentClass);
         HUP.El.AddClass(C.header, HupperVars.trollCommentHeaderClass);
         if(C.childs != -1) {
@@ -634,57 +562,43 @@ var parseComments = function(comments, newComments, indentComments)
         }
       }
     }
-    if(filterhuppers) 
-    {
-      if(inArray(C.user, huppers)) 
-      {
+    if(filterhuppers) {
+      if(inArray(C.user, huppers)) {
         HUP.El.AddClass(C.comment, HupperVars.hupperCommentClass);
         HUP.El.AddClass(C.header, HupperVars.hupperCommentHeaderClass);
       }
     }
-    if(extraCommentLinks) 
-    {
+    if(extraCommentLinks) {
       HUP.El.Add(builder.buildComExtraTop(), C.footerLinks);
       HUP.El.Add(builder.buildComExtraBack(), C.footerLinks);
     }
-    if(C.parent != -1) 
-    {
+    if(C.parent != -1) {
       var Bl = builder.buildComExtraParent(C.parent);
       HUP.El.Add(Bl, C.footerLinks);
     }
-    if(insertPermalink) 
-    {
+    if(insertPermalink) {
       HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
     }
   });
-  if(replacenewcommenttext || prevnextlinks) 
-  {
+  if(replacenewcommenttext || prevnextlinks) {
     var spanNode = HUP.El.Span(), tmpSpan1, ncl = newComments.length, i;
-    for(i = 0; i < ncl; i++) 
-    {
+    for(i = 0; i < ncl; i++) {
       tmpSpan1 = spanNode.cloneNode(true);
       HUP.El.AddClass(tmpSpan1, 'hnav');
-      if(prevnextlinks) 
-      {
-        if(i > 0) 
-        {
+      if(prevnextlinks) {
+        if(i > 0) {
           HUP.El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1);
-        }
-        else 
-        {
+        } else {
           HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
         }
-        if(i < ncl - 1) 
-        {
+        if(i < ncl - 1) {
           HUP.El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1);
-        }
-        else 
-        {
+        } else {
           HUP.El.Add(builder.buildLastLink(), tmpSpan1);
         }
+        HUP.w.nextLinks.push(newComments[i].id);
       }
-      if(replacenewcommenttext) 
-      {
+      if(replacenewcommenttext) {
         HUP.El.Remove(newComments[i].newComm, newComments[i].comment);
         HUP.El.Add(builder.buildNewText(), tmpSpan1);
       }
@@ -700,17 +614,9 @@ var parseComments = function(comments, newComments, indentComments)
  * @return returns an array index number or false
  * @type {Int,False} 
  */
-var getParentComment = function(indentedComments, comment)
-{
+var getParentComment = function(indentedComments, comment) {
   // if the comment is indented
-  if(comment.indent > 0) 
-  {
-    return indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)];
-  }
-  else 
-  {
-    return false;
-  }
+  return (comment.indent > 0) ? indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)] : false;
 };
 
 var getChildComment = function(comment) {
@@ -726,11 +632,9 @@ var getChildComment = function(comment) {
  * @return how indented the comment
  * @type Int
  */
-var getIndent = function(el)
-{
+var getIndent = function(el) {
   var indent = 0;
-  while(HUP.El.HasClass(el.parentNode, 'indented')) 
-  {
+  while(HUP.El.HasClass(el.parentNode, 'indented')) {
     el = el.parentNode;
     indent++;
   }
@@ -740,11 +644,9 @@ var getIndent = function(el)
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
  */
-var appendNewNotifier = function(link, mark)
-{
+var appendNewNotifier = function(link, mark) {
   var hupperBlockId = 'block-hupper-0'; // newNotifier
-  if(HUP.El.GetId(hupperBlockId)) 
-  {
+  if(HUP.El.GetId(hupperBlockId)) {
     return;
   }
   var div = HUP.El.Div();
@@ -763,8 +665,7 @@ var appendNewNotifier = function(link, mark)
   HUP.El.AddClass(ul, 'menu');
   HUP.El.Add(li1, ul);
 
-  if(mark) 
-  {
+  if(mark) {
     a2 = HUP.El.CreateLink(HUP.Bundles.getString('markAllRead'), 'javascript:void(0)');
     a2.addEventListener('click', markAllNodeAsRead, false);
     a2.markNodes = HUP.markReadNodes;
@@ -790,11 +691,9 @@ var appendNewNotifier = function(link, mark)
  * Adds my own styles to the hup.hu header
  * @param {Event} e event object
  */
-var addHupStyles = function(e)
-{
+var addHupStyles = function(e) {
   var styles = '';
-  switch(HupperPrefs.trollfiltermethod())
-  {
+  switch(HupperPrefs.trollfiltermethod()) {
     case 'hide':
       styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
       if(HupperPrefs.hidetrollanswers()) {
@@ -811,8 +710,7 @@ var addHupStyles = function(e)
   styles += '#tags {background-color:#F6F6EB; }';
   styles += '#tags h4 {margin: 0;padding:0; }';
   styles += '#tags ul {list-style:none;padding:0;margin:0;}#tags li {padding-left:5px;margin:0;}';
-  if(HupperPrefs.hilightForumLinesOnHover()) 
-  {
+  if(HupperPrefs.hilightForumLinesOnHover()) {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
   styles += 'input, textarea { border: 1px solid #999 !important; padding: 2px !important; margin-bottom: 5px !important; }';
@@ -825,6 +723,7 @@ var addHupStyles = function(e)
   styles += '.hnav * { margin-left: 2px; margin-right: 2px; }';
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
+  styles += '.hidden {display: none;}';
   
   var st = HUP.El.El('style');
   st.setAttribute('type', 'text/css');
@@ -835,8 +734,7 @@ var addHupStyles = function(e)
  * Class to create and manipulate DOM elements
  * @constructor
  */
-var Elementer = function()
-{
+var Elementer = function() {
   this.doc = HUP.w;
   this.li = this.doc.createElement('li');
   this.ul = this.doc.createElement('ul');
@@ -852,8 +750,7 @@ Elementer.prototype = {
     * @return Li element
     * @type Element
     */
-  Li: function()
-  {
+  Li: function() {
     return this.li.cloneNode(true);
   },
   /**
@@ -861,8 +758,7 @@ Elementer.prototype = {
     * @return Ul element
     * @type Element
     */
-  Ul: function()
-  {
+  Ul: function() {
     return this.ul.cloneNode(true);
   },
   /**
@@ -870,8 +766,7 @@ Elementer.prototype = {
     * @return Div element
     * @type Element
     */
-  Div: function()
-  {
+  Div: function() {
     return this.div.cloneNode(true);
   },
   /**
@@ -879,8 +774,7 @@ Elementer.prototype = {
     * @return Span element
     * @type Element
     */
-  Span: function()
-  {
+  Span: function() {
     return this.span.cloneNode(true);
   },
   /**
@@ -888,8 +782,7 @@ Elementer.prototype = {
     * @return A element
     * @type Element
     */
-  A: function()
-  {
+  A: function() {
     return this.a.cloneNode(true);
   },
   /**
@@ -899,8 +792,7 @@ Elementer.prototype = {
     * @return Img element
     * @type Element
     */
-  Img: function(src, alt)
-  {
+  Img: function(src, alt) {
     var img = this.img.cloneNode(true);
     img.setAttribute('src', src);
     img.setAttribute('alt', alt);
@@ -912,8 +804,7 @@ Elementer.prototype = {
     * @return Li element
     * @type Element
     */
-  El: function(el)
-  {
+  El: function(el) {
     return this.doc.createElement(el);
   },
   /**
@@ -921,8 +812,7 @@ Elementer.prototype = {
     * @return Text element
     * @type Element
     */
-  Txt: function(text)
-  {
+  Txt: function(text) {
     return this.doc.createTextNode(text);
   },
   /**
@@ -933,8 +823,7 @@ Elementer.prototype = {
     * @type Element
     */
 
-  Add: function(elem, parent)
-  {
+  Add: function(elem, parent) {
     parent.appendChild(elem);
     return elem;
   },
@@ -945,8 +834,7 @@ Elementer.prototype = {
     * @return Returns the elem
     * @type Element
     */
-  Insert: function(elem, before)
-  {
+  Insert: function(elem, before) {
     before.parentNode.insertBefore(elem, before);
     return elem;
   },
@@ -955,25 +843,15 @@ Elementer.prototype = {
     * @param {Element} elem removable childnode
     * @param {Element} parent
     */
-  Remove: function(elem, parent)
-  {
-    if(typeof parent == 'object')
-    {
-      parent.removeChild(elem);
-    }
-    else
-    {
-      elem.parentNode.removeChild(elem);
-    }
+  Remove: function(elem, parent) {
+    (typeof parent == 'object') ? parent.removeChild(elem) : elem.parentNode.removeChild(elem);
   },
   /**
   * Removes all childnode of the element
   * @param {Element} element
   */
-  RemoveAll: function(element)
-  {
-    while(element.firstChild) 
-    {
+  RemoveAll: function(element) {
+    while(element.firstChild) {
       this.Remove(element.firstChild, element);
     }
   },
@@ -981,8 +859,7 @@ Elementer.prototype = {
     * @param {Element} inner the new content element
     * @param {Element} obj updatable element
     */
-  Update: function(inner, obj)
-  {
+  Update: function(inner, obj) {
     this.RemoveAll(obj);
     this.Add(inner, obj);
   },
@@ -993,10 +870,8 @@ Elementer.prototype = {
     * @return An array which contains the elements with the given tagname
     * @type {Array}
     */
-  GetTag: function(tag, parent)
-  {
-    if(typeof parent == 'object')
-    {
+  GetTag: function(tag, parent) {
+    if(typeof parent == 'object') {
       return parent.getElementsByTagName(tag);
     }
     return this.doc.getElementsByTagName(tag);
@@ -1009,18 +884,15 @@ Elementer.prototype = {
     * @return First element node
     * @type Element
     */
-  GetFirstTag: function(tag, parent)
-  {
+  GetFirstTag: function(tag, parent) {
     return this.GetTag(tag, parent)[0];
   },
   /**
     * Returns the document body
     * @type Element
     */
-  GetBody: function()
-  {
-    if(this.body)
-    {
+  GetBody: function() {
+    if(this.body) {
       return this.body;
     }
     this.body = this.GetFirstTag('body');
@@ -1032,20 +904,14 @@ Elementer.prototype = {
     * @param {Element} [parent] parent element
     * @type Element
     */
-  GetId: function(id, parent)
-  {
-    if(!this.elements)
-    {
+  GetId: function(id, parent) {
+    if(!this.elements) {
       this.elements = new Object();
     }
-    if(!this.elements[id])
-    {
-      if(typeof parent == 'object')
-      {
+    if(!this.elements[id]) {
+      if(typeof parent == 'object') {
         this.elements[id] = parent.getElementById(id);
-      }
-      else
-      {
+      } else {
         this.elements[id] = this.doc.getElementById(id);
       }
     }
@@ -1056,25 +922,16 @@ Elementer.prototype = {
   * @param {Element} el DOM element
   * @param {String} c Class name
   */
-  AddClass: function(el, c)
-  {
+  AddClass: function(el, c) {
     var curClass = el.getAttribute('class');
-    if(curClass === null) 
-    {
-      el.setAttribute('class', c);
-    }
-    else 
-    {
-      el.setAttribute('class', curClass + ' ' + c);
-    }
+    (curClass === null) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
   /**
   * Removes the specified class from the element
   * @param {Element} el DOM element
   * @param {String} c Class name
   */
-  RemoveClass: function(el, c)
-  {
+  RemoveClass: function(el, c) {
     el.setAttribute('class', el.getAttribute('class').replace(c, ''));
   },
   /**
@@ -1083,10 +940,8 @@ Elementer.prototype = {
   * @param {String} c Class name
   * @type {Boolean}
   */
-  HasClass: function(el, c)
-  {
-    if(!el || !c) 
-    {
+  HasClass: function(el, c) {
+    if(!el || !c) {
       return false;
     }
     cl = new RegExp('\\b' + c + '\\b');
@@ -1101,28 +956,20 @@ Elementer.prototype = {
   * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
   * @type {Array}
   */
-  GetByClass: function(par, cn, el, force)
-  {
-    if(!el) 
-    {
+  GetByClass: function(par, cn, el, force) {
+    if(!el) {
       el = '*';
     }
-    if(!par) 
-    {
-      if(force == true) 
-      {
+    if(!par) {
+      if(force == true) {
         par = this.GetBody();
-      }
-      else 
-      {
+      } else {
         return new Array();
       }
     }
     var ts = this.GetTag(el, par), out = new Array(), i, tsl = ts.length;
-    for(i = 0; i < tsl; i++) 
-    {
-      if(this.HasClass(ts[i], cn)) 
-      {
+    for(i = 0; i < tsl; i++) {
+      if(this.HasClass(ts[i], cn)) {
         out.push(ts[i]);
       }
     }
@@ -1134,8 +981,7 @@ Elementer.prototype = {
     * @return link object
     * @type Element
     */
-  CreateLink: function(text, href)
-  {
+  CreateLink: function(text, href) {
     var l = this.A();
     if(href) { 
       l.setAttribute('href', href);
@@ -1144,12 +990,16 @@ Elementer.prototype = {
     return l;
   }
 };
+Stringer = {
+  trim: function(str) {
+    return str.replace(/^\s+|\s+$/g, '');
+  }
+}
 /**
  * Make links from the block titles
  * @constructor
  */
-var makeTitleLinks = function()
-{
+var makeTitleLinks = function() {
   for(box in this.boxes) {
     this.boxes[box](this.makeTitle);
   }
@@ -1163,56 +1013,49 @@ makeTitleLinks.prototype = {
      * title for wiki block
      * @param {Function} makeTitle 
      */
-    wiki: function(makeTitle)
-    {
+    wiki: function(makeTitle) {
       makeTitle('block-aggregator-feed-3', 'http://wiki.hup.hu');
     },
     /**
      * title for blog block
      * @param {Function} makeTitle 
      */
-    blog: function(makeTitle)
-    {
+    blog: function(makeTitle) {
       makeTitle('block-blog-0', '/blog');
     },
     /**
      * title for search block
      * @param {Function} makeTitle 
      */
-    search: function(makeTitle)
-    {
+    search: function(makeTitle) {
       makeTitle('block-search-0', '/search');
     },
     /**
      * title for poll block
      * @param {Function} makeTitle 
      */
-    poll: function(makeTitle)
-    {
+    poll: function(makeTitle) {
       makeTitle('block-poll-40', '/poll');
     },
     /**
      * title for flickr block
      * @param {Function} makeTitle 
      */
-    flickr: function(makeTitle)
-    {
+    flickr: function(makeTitle) {
       makeTitle('block-aggregator-feed-40', 'http://www.flickr.com/photos/h_u_p/');
     },
     /**
      * title for tag cloud block
      * @param {Function} makeTitle 
      */
-    temak: function(makeTitle)
-    {
+    temak: function(makeTitle) {
       makeTitle('block-tagadelic-1', '/temak');
     },
     /**
      * title for new comments block
      * @param {Function} makeTitle 
      */
-    tracker: function(makeTitle)
-    {
+    tracker: function(makeTitle) {
       makeTitle('block-comment-0', '/tracker');
     }
   },
@@ -1222,11 +1065,9 @@ makeTitleLinks.prototype = {
    * @param {String} contId Id of the title container div
    * @param {String} url the url of the title
    */
-  makeTitle: function(contId, url)
-  {
+  makeTitle: function(contId, url) {
     var titleCont = HUP.El.GetId(contId);
-    if(titleCont)
-    {
+    if(titleCont) {
       var t = HUP.El.GetFirstTag('h2', titleCont);
       HUP.El.Update(HUP.El.CreateLink(t.innerHTML, url), t);
     }
@@ -1262,36 +1103,62 @@ Timer.prototype = {
   }
 };
 var bindKeys = function() {
-  HUP.w.addEventListener('keyup', checkKeypress, false);
-}
-var checkKeypress = function(event) {
-  if(event.shiftKey && event.altKey) {
-    switch(e.keyCode) {
-      case 78:
+  HUP.w.addEventListener('keyup', function(event) {
+//  if(event.shiftKey && event.altKey) {
+    switch(event.keyCode) {
+      case 78: // n
         // next
-        if(/^#/.test(location.hash)) {
-          return;
+        if(/^#/.test(HUP.w.location.hash)) {
+          var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
+          if(HUP.w.nextLinks[curIndex+1]) {
+            HUP.w.location.hash = HUP.w.nextLinks[curIndex+1];
+          } else if(HUP.w.nextLinks[0]) {
+            HUP.w.location.hash = HUP.w.nextLinks[0];
+          }
+        } else if(HUP.w.nextLinks.length) {
+          HUP.w.location.hash = HUP.w.nextLinks[0];
         }
         break;
-      case 80:
-        // pref
+      case 77: // m
+        // prev
+        if(/^#/.test(HUP.w.location.hash)) {
+          var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
+          if(curIndex != 0) {
+            HUP.w.location.hash = HUP.w.nextLinks[curIndex-1];
+          } else if(HUP.w.nextLinks[HUP.w.nextLinks.length-1]) {
+            HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+          }
+        } else if(HUP.w.nextLinks.length) {
+          HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+        }
         break;
     }
-  }
-}
+  },
+    false);
+};
+
+var HideHupAds = function() {
+  var ids = new Array();
+  ids.push(HUP.El.GetId('block-block-18'));
+  ids.map(function(ad) {
+    if(ad) {
+      HUP.El.AddClass(ad, 'hidden');
+    }
+  });
+};
+
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
  */
-var HUPPER = function(e)
-{
+var HUPPER = function(e) {
+  try {
   var ww = e.originalTarget;
-  if(ww.location.href.match(/^https?:\/\/(?:www\.)?hup\.hu/)) 
-  {
+  if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href)) {
+    var TIMER = new Timer();
     /**
      * A unique global object to store all global objects/array/... of the Hupper Extension
      */
-    var TIMER = new Timer();
     HUP = {};
     // HUP document object
     HUP.w = ww;
@@ -1303,34 +1170,37 @@ var HUPPER = function(e)
     HUP.Bundles = document.getElementById('hupper-bundles');
     // Stores the mark as read nodes
     HUP.markReadNodes = new Array();
+    HUP.w.nextLinks = new Array();
     addHupStyles();
     // Create links from the titles
     new makeTitleLinks();
-    if(HUP.El.GetId('comments')) 
-    {
+    // if comments are available
+    if(HUP.El.GetId('comments')) {
       var c = getComments();
       comments = c[0];
       newComments = c[1];
       indentComments = c[2];
       parseComments(comments, newComments, indentComments);
-      if(newComments.length && HupperPrefs.showqnavbox()) 
-      {
+      if(newComments.length && HupperPrefs.showqnavbox()) {
         appendNewNotifier();
       }
-    }
-    else 
-    {
-      if(HupperPrefs.insertnewtexttonode()) 
-      {
+    } else {
+      if(HupperPrefs.insertnewtexttonode()) {
         var newNodes = getNodes()[1];
         parseNodes(newNodes);
-        if(newNodes.length > 0 && HupperPrefs.showqnavbox()) 
-        {
+        if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {
           appendNewNotifier('#n-0', true);
         }
       }
     }
+    if(HupperPrefs.hideads()) {
+      HideHupAds();
+    }
+//    bindKeys();
     TIMER.stop();
     HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
+  }
+  } catch(e) {
+    HUP.L.log(e.message);
   }
 };

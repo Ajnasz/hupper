@@ -11,15 +11,12 @@
  * @constructor
  * @param {Object} pars object to overwrite the default parameters
  */
-var HupAjax = function(pars, el)
-{
-  if(typeof pars.url == 'undefined')
-  {
+var HupAjax = function(pars, el) {
+  if(typeof pars.url == 'undefined') {
     return false;
   }
 
-  var stChg = function(ob, p)
-  {
+  var stChg = function(ob, p) {
     return function() { ob.handler(p); }
   }
 
@@ -43,8 +40,7 @@ var HupAjax = function(pars, el)
   this.req.send(this.pars); 
   return true;
 };
-HupAjax.prototype =
-{
+HupAjax.prototype = {
   url: null,
   pars: null,
   req: null,
@@ -56,44 +52,35 @@ HupAjax.prototype =
    * @param {Object} pars
    * @return The error or load or successhandler state
    */
-  handler: function(pars)
-  {
-    try
-    {
-      if (this.req.readyState == 4)
-      {
-        if(this.req.status != 'undefined')
-        {
-          if(this.req.status == 200)
-          {
+  handler: function(pars) {
+    try {
+      if (this.req.readyState == 4) {
+        if(this.req.status != 'undefined') {
+          if(this.req.status == 200) {
             return this.successHandler();
           }
-          else
-          {
+          else {
             return this.errorHandler('status code - ' + this.req.status);
           }
         }
-        else
-        {
+        else {
           return this.errorHandler('no status code');
 
         }
       }
-      else
-      {
+      else {
         return this.loadHandler();
       }
     }
-    catch(e)
-    {
+    catch(e) {
       return this.errorHandler('no readyState', e);
     }
   },
+  
   /**
    * runs if the request was success
    */
-  successHandler: function()
-  {
+  successHandler: function() {
     return this.req.responseText;
   },
   /**
@@ -101,8 +88,7 @@ HupAjax.prototype =
    * @param {String} msg Error message string
    * @param {Int} er Error code
    */
-  errorHandler: function(msg, er)
-  {
+  errorHandler: function(msg, er) {
     Hog.log('Ajax error: ' + msg + ' || ' + er);
     HLog.log(this.url);
     return false;
@@ -110,8 +96,7 @@ HupAjax.prototype =
   /**
    * runs the request doesn't finished
    */
-  loadHandler: function()
-  {
+  loadHandler: function() {
     return true;
   }
 };

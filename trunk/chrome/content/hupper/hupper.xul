@@ -10,8 +10,8 @@
     window.addEventListener("DOMContentLoaded", HUPPER, false);
   ]]>
   </script>
-  <stringbundlest>
+  <stringbundlset id="stringbundleset">
     <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
-  </stringbundlest>
+  </stringbundlset>
 </overlay>
 

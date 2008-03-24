@@ -23,3 +23,5 @@ pref("extensions.hupper.insertnewtexttonode", true);
 pref("extensions.hupper.fadeparentcomment", true);
 
 pref("extensions.hupper.showqnavbox", true);
+
+pref("extensions.hupper.hideads", false);

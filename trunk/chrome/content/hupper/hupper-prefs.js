@@ -83,8 +83,10 @@ HP.prototype = {
     },
     hidetrollanswers: function(value) {
       return this.M.getBoolPref('extensions.hupper.hidetrollanswers');
+    },
+    hideads: function(value) {
+      return this.M.getBoolPref('extensions.hupper.hideads');
     }
-
   },
   set: {
     M: this.M,
@@ -145,7 +147,11 @@ HP.prototype = {
     },
     hidetrollanswers: function(value) {
       this.M.setBoolPref('extensions.hupper.hidetrollanswers', value);
+    },
+    hideads: function(value) {
+      this.M.setBoolPref('extensions.hupper.hideads', value);
     }
+
   }
 };
 setPrefWinVals = function()
