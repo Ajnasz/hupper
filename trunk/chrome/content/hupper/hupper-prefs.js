@@ -2,90 +2,76 @@
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
  * @licence General Public Licence v2 
  */
-HP = function()
-{
+HP = function() {
   this.M = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
   this.get.M = this.set.M = this.M;
 };
 HP.prototype = {
   M: null, // Manager
   get: {
-    trolls: function()
-    {
+    trolls: function() {
       return this.M.getCharPref('extensions.hupper.trolls');
     },
     /**
     * @return {Boolean}
     */
-    filtertrolls: function()
-    {
+    filtertrolls: function() {
       return this.M.getBoolPref('extensions.hupper.filtertrolls');
     },
-    trollcolor: function()
-    {
+    trollcolor: function() {
       return this.M.getCharPref('extensions.hupper.trollcolor');
     },
     /**
     * @return hide, hilight
     */
-    trollfiltermethod: function()
-    {
+    trollfiltermethod: function() {
       // hide, hilight
       return this.M.getCharPref('extensions.hupper.trollfiltermethod');
     },
     /**
     * @return {String}
     */
-    huppers: function()
-    {
+    huppers: function() {
       return this.M.getCharPref('extensions.hupper.huppers');
     },
-    filterhuppers: function()
-    {
+    filterhuppers: function() {
       return this.M.getBoolPref('extensions.hupper.filterhuppers');
     },
-    huppercolor: function()
-    {
+    huppercolor: function() {
       return this.M.getCharPref('extensions.hupper.huppercolor');
     },
-
-    replacenewcommenttext: function()
-    {
+    replacenewcommenttext: function() {
       return this.M.getBoolPref('extensions.hupper.replacenewcommenttext');
     },
-    newcommenttext: function()
-    {
+    newcommenttext: function() {
       return this.M.getCharPref('extensions.hupper.newcommenttext');
     },
-    extracommentlinks: function()
-    {
+    extracommentlinks: function() {
       return this.M.getBoolPref('extensions.hupper.extracommentlinks');
     },
-    hilightforumlinesonhover: function()
-    {
+    hilightforumlinesonhover: function() {
       return this.M.getBoolPref('extensions.hupper.hilightforumlinesonhover');
     },
-    insertpermalink: function()
-    {
+    insertpermalink: function() {
       return this.M.getBoolPref('extensions.hupper.insertpermalink');
     },
-    insertnewtexttonode: function()
-    {
+    insertnewtexttonode: function() {
       return this.M.getBoolPref('extensions.hupper.insertnewtexttonode');
     },
-    fadeparentcomment: function()
-    {
+    fadeparentcomment: function() {
       return this.M.getBoolPref('extensions.hupper.fadeparentcomment');
     },
-    showqnavbox: function()
-    {
+    showqnavbox: function() {
       return this.M.getBoolPref('extensions.hupper.showqnavbox');
     },
-    hidetrollanswers: function(value) {
+    hidetrollanswers: function() {
       return this.M.getBoolPref('extensions.hupper.hidetrollanswers');
     },
-    hideads: function(value) {
+    hideads: function() {
       return this.M.getBoolPref('extensions.hupper.hideads');
+    },
+    highlightusers: function() {
+      return this.M.getCharPref('extensions.hupper.highlightusers');
     }
   },
   set: {
@@ -151,11 +137,9 @@ HP.prototype = {
     hideads: function(value) {
       this.M.setBoolPref('extensions.hupper.hideads', value);
     }
-
   }
 };
-setPrefWinVals = function()
-{
+setPrefWinVals = function() {
   document.getElementById('enable-trollfilter').checked = hp.get.filtertrolls();
   document.getElementById('trolls').value = hp.get.trolls();
   document.getElementById('troll-color').value = hp.get.trollcolor();
@@ -173,8 +157,7 @@ setPrefWinVals = function()
   document.getElementById('show-quick-nav-box').checked = hp.get.showqnavbox();
   document.getElementById('hide-troll-answers').checked = hp.get.hidetrollanswers();
 };
-savePreferences = function()
-{
+savePreferences = function() {
   hp.set.filtertrolls(document.getElementById('enable-trollfilter').checked);
   hp.set.trolls(document.getElementById('trolls').value);
   hp.set.trollcolor(document.getElementById('troll-color').value);
@@ -198,15 +181,75 @@ var disableFields = function() {
 var onChangeFilterMethod = function() {
   if(document.getElementById('trollfilter-method').value == 'hide') {
     document.getElementById('hide-troll-answers').disabled = false;
-  }
-  else {
+  } else {
     document.getElementById('hide-troll-answers').disabled = true;
   }
 }
-StartHupperPrefernces = function()
-{
+
+/*
+var UserColor = function(hp) {
+  var colorlist = document.getElementById('usercolorlist');
+  var treechildren = colorlist.getElementsByTagName('treechildren')[0];
+  var highlightUsers = hp.get.highlightusers().split(',');
+  var hh = {}, bh;
+  for(var i = 0; i < highlightUsers.length; i++) {
+    bh = highlightUsers[i].split(':');
+    treechildren.appendChild(this.creatUserColor(bh));
+  }
+};
+
+UserColor.prototype = {
+  creatUserColor: function(userdata) {
+    var treeitem = document.createElement('treeitem');
+    var treerow = document.createElement('treerow');
+    var treecell = document.createElement('treecell');
+    treecell.setAttribute('editable', true);
+    var username = treecell.cloneNode(true);
+    var color = treecell.cloneNode(true);
+    username.setAttribute('label', userdata[0]);
+    username.addEventListener('change', function() {alert(this.value)}, false);
+    color.setAttribute('label', userdata[1]);
+    treerow.appendChild(username);
+    treerow.appendChild(color);
+    treeitem.appendChild(treerow);
+    return treeitem;
+  }
+};
+*/
+var userColor = function(hp) {
+  var highlightUsers = hp.get.highlightusers().split(','), bh;
+  /*
+  this.childData = {
+    ["Username", "Color"]
+  }
+  */
+  this.visibleData = new Array();
+  for(var i = 0; i < highlightUsers.length; i++) {
+    this.visibleData.push(highlightUsers[i].split(':'));
+  }
+  this.treeBox = null;
+  this.selection = null;
+  this.rowCount = function(){ return this.visibleData.length; };
+  this.setTree = function(treeBox){ this.treeBox = treeBox; };
+  this.getCellText = function(idx, column){ return this.visibleData[idx][0]; };
+  this.isContainer = function(idx){ return this.visibleData[idx][1]; };
+  this.isContainerOpen = function(idx){ return this.visibleData[idx][2]; };
+  this.isContainerEmpty = function(idx){ return false; };
+  this.isSeparator = function(idx){ return false; };
+  this.isSorted = function(){ return false; };
+  this.isEditable = function(idx, column){ return false; };
+};
+
+StartHupperPrefernces = function() {
   hp = new HP();
   disableFields();
   setPrefWinVals();
   onChangeFilterMethod();
+  //new UserColor(hp);
+  try {
+    var treeView = new userColor(hp)
+    document.getElementById('usercolorlist').view = treeView;
+  } catch(e) {
+    HUP.L.log(e.message, e.lineNumber);
+  }
 };
