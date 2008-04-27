@@ -9,7 +9,6 @@
  * @license General Public Licence v2
  * for more details see the licence.txt file
  */
-
 /**
  * Mozilla logging service
  * @class HLog is a class to make the logging easier
@@ -36,7 +35,7 @@ HLog.prototype = {
     return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
   },
   /**
-   * @param {String} arguments The arguments will be written to the error console 
+   * @param {String} arguments The arguments will be written to the error console
    */
   log: function() {
     this.msg = new String();
@@ -45,7 +44,7 @@ HLog.prototype = {
     }
     try {
       this.s.logStringMessage('HUPPER: ' + this.msg.replace(/^, /, ''));
-    } 
+    }
     catch(e) {
       // alert(this.msg.join(', '));
       // alert(this.msg);
@@ -193,6 +192,9 @@ var HupperPrefs = {
   },
   hideads: function() {
     return this.prefManager.getBoolPref('extensions.hupper.hideads');
+  },
+  highlightusers: function() {
+    return this.prefManager.getCharPref('extensions.hupper.highlightusers');
   }
 };
 /**
@@ -381,24 +383,7 @@ var getComments = function() {
   var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
   for(i = 0; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'comment')) {
-      header = HUP.El.GetByClass(ds[i], 'submitted', 'div')[0];
-      footer = HUP.El.GetByClass(ds[i], 'link', 'div')[0];
-      cont = HUP.El.GetByClass(ds[i], 'content', 'div')[0];
-      newComm = HUP.El.GetByClass(ds[i], 'new', 'span');
-      comment = {
-        comment: ds[i],
-        header: header,
-        footer: footer,
-        cont: cont,
-        newComm: (newComm.length) ? newComm[0] : false,
-        footerLinks: HUP.El.GetFirstTag('ul', footer),
-        id: ds[i].previousSibling.previousSibling.id,
-        indent: getIndent(ds[i]),
-        childs: getChildComment(ds[i]),
-        user: (typeof header.childNodes[1] != 'undefined') ? header.childNodes[1].innerHTML : header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1')
-      };
-      parentComment = getParentComment(indentComments, comment);
-      comment.parent = (typeof parentComment != 'undefined' && parentComment !== false) ? comments[parentComment] : -1;
+      comment = new HUPComment(ds[i], indentComments, comments);
       if(typeof indentComments[comment.indent] == 'undefined') {
         indentComments[comment.indent] = new Array();
       }
@@ -431,13 +416,14 @@ var getNodes = function() {
   var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
   for(i = 0; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'node')) {
-      header = ds[i].childNodes[1];
+      // header = ds[i].childNodes[1];
+      header = HUP.El.GetFirstTag('h2', ds[i]);
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
       footer = HUP.El.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
       node = {
         header: header,
-        path: Stringer.trim(header.firstChild.getAttribute('href')),
+        path: Stringer.trim(HUP.El.GetFirstTag('a', header).getAttribute('href')),
         submitData: submitData,
         cont: cont,
         footer: footer,
@@ -463,7 +449,7 @@ var parseNodes = function(nodes) {
       HUP.El.Add(mread, sp);
       HUP.El.Add(builder.buildNewText(), sp);
       HUP.El.Insert(builder.buildNameLink(i), nodes[i].header);
-      
+
       if(i > 0) {
         HUP.El.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
       } else {
@@ -550,36 +536,38 @@ var parseComments = function(comments, newComments, indentComments) {
   var filterhuppers = HupperPrefs.filterhuppers();
   var extraCommentLinks = HupperPrefs.extraCommentLinks();
   var insertPermalink = HupperPrefs.insertPermalink();
-  
+  var highlightUsers = HupperPrefs.highlightusers().split(',');
+  var hh = {}, bh;
+  for(var i = 0; i < highlightUsers.length; i++) {
+    bh = highlightUsers[i].split(':');
+    hh[bh[0]] = bh[1];
+  }
   var builder = new nodeHeaderBuilder(), ps;
+  try {
+  
   comments.map(function(C) {
     if(filtertrolls) {
       if(inArray(C.user, trolls)) {
-        HUP.El.AddClass(C.comment, HupperVars.trollCommentClass);
-        HUP.El.AddClass(C.header, HupperVars.trollCommentHeaderClass);
-        if(C.childs != -1) {
-          HUP.El.AddClass(C.childs, HupperVars.trollCommentAnswersClass);
-        }
+        C.highlightTroll();
       }
     }
     if(filterhuppers) {
       if(inArray(C.user, huppers)) {
-        HUP.El.AddClass(C.comment, HupperVars.hupperCommentClass);
-        HUP.El.AddClass(C.header, HupperVars.hupperCommentHeaderClass);
+        C.highlightHupper();
       }
     }
     if(extraCommentLinks) {
-      HUP.El.Add(builder.buildComExtraTop(), C.footerLinks);
-      HUP.El.Add(builder.buildComExtraBack(), C.footerLinks);
+      C.addExtraLinks(builder);
     }
     if(C.parent != -1) {
-      var Bl = builder.buildComExtraParent(C.parent);
-      HUP.El.Add(Bl, C.footerLinks);
+      C.addComExtraParent(builder);
     }
     if(insertPermalink) {
       HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
     }
+    C.highlightComment(hh);
   });
+  } catch(e) {HUP.L.log(e.message, e.lineNumber)}
   if(replacenewcommenttext || prevnextlinks) {
     var spanNode = HUP.El.Span(), tmpSpan1, ncl = newComments.length, i;
     for(i = 0; i < ncl; i++) {
@@ -599,46 +587,11 @@ var parseComments = function(comments, newComments, indentComments) {
         HUP.w.nextLinks.push(newComments[i].id);
       }
       if(replacenewcommenttext) {
-        HUP.El.Remove(newComments[i].newComm, newComments[i].comment);
-        HUP.El.Add(builder.buildNewText(), tmpSpan1);
+        newComments[i].replaceNewCommentText(builder, tmpSpan1)
       }
       HUP.El.Insert(tmpSpan1, newComments[i].header.firstChild);
     }
   }
-};
-/**
- * Check, that the comment is an answer for another comment or not,
- * returns the index of the parent comment or 
- * @param {Array} indentedComments
- * @param {Comment} comment
- * @return returns an array index number or false
- * @type {Int,False} 
- */
-var getParentComment = function(indentedComments, comment) {
-  // if the comment is indented
-  return (comment.indent > 0) ? indentedComments[(comment.indent - 1)][(indentedComments[(comment.indent - 1)].length - 1)] : false;
-};
-
-var getChildComment = function(comment) {
-  var child = comment.nextSibling.nextSibling;
-  if(HUP.El.HasClass(child, 'indented')) {
-    return child;
-  }
-  return -1;
-}
-/**
- * Get the indent level of the element
- * @param {Element} el
- * @return how indented the comment
- * @type Int
- */
-var getIndent = function(el) {
-  var indent = 0;
-  while(HUP.El.HasClass(el.parentNode, 'indented')) {
-    el = el.parentNode;
-    indent++;
-  }
-  return indent;
 };
 /**
  * Appends a new link to the top of the page, if there is new comment
@@ -822,7 +775,6 @@ Elementer.prototype = {
     * @return Returns the element
     * @type Element
     */
-
   Add: function(elem, parent) {
     parent.appendChild(elem);
     return elem;
@@ -947,7 +899,6 @@ Elementer.prototype = {
     cl = new RegExp('\\b' + c + '\\b');
     return cl.test(el.getAttribute('class'));
   },
-
   /**
   * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
   * @param {Element} par parent element node
@@ -990,7 +941,7 @@ Elementer.prototype = {
     return l;
   }
 };
-Stringer = {
+var Stringer = {
   trim: function(str) {
     return str.replace(/^\s+|\s+$/g, '');
   }
@@ -1136,7 +1087,6 @@ var bindKeys = function() {
   },
     false);
 };
-
 var HideHupAds = function() {
   var ids = new Array();
   ids.push(HUP.El.GetId('block-block-18'));
@@ -1146,7 +1096,6 @@ var HideHupAds = function() {
     }
   });
 };
-
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -1201,6 +1150,6 @@ var HUPPER = function(e) {
     HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
   }
   } catch(e) {
-    HUP.L.log(e.message);
+    HUP.L.log(e.message, e.lineNumber);
   }
 };
