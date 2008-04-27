@@ -25,3 +25,4 @@ pref("extensions.hupper.fadeparentcomment", true);
 pref("extensions.hupper.showqnavbox", true);
 
 pref("extensions.hupper.hideads", false);
+pref("extensions.hupper.highlightusers", "Ajnasz:#fff000");
