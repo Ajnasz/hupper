@@ -22,3 +22,4 @@
 <!ENTITY Hupper.fadeparentcomment "Szülő hozzászólás áttűnés">
 
 <!ENTITY Hupper.showquicknavbox "Gyors navigációs doboz mutatása">
+<!ENTITY Hupper.highlightuser "Felhasználók hozzászólásinak kiemelése (név:#fff999,név2:#999fff)">

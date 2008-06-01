@@ -22,3 +22,4 @@
 <!ENTITY Hupper.fadeparentcomment "Fade parent comment">
 
 <!ENTITY Hupper.showquicknavbox "Show quick navigation box">
+<!ENTITY Hupper.highlightuser "Highlight user comments (username:#fff999,username2:#999fff)">
