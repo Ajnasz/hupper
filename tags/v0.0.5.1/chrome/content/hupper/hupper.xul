@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://hupper/locale/hupper.dtd">
+
+<overlay id="hupper-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://hupper/content/ajax.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hlog.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
+
+  <script type="application/x-javascript">
+  <![CDATA[
+    window.addEventListener("DOMContentLoaded", HUPPER, false);
+  ]]>
+  </script>
+  <stringbundlset id="stringbundleset">
+    <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
+  </stringbundlset>
+</overlay>
+
