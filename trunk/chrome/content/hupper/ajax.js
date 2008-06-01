@@ -37,7 +37,7 @@ var HupAjax = function(pars, el) {
   this.req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
   this.req.onreadystatechange = stChg(this, false);
-  this.req.send(this.pars); 
+  this.req.send(this.pars);
   return true;
 };
 HupAjax.prototype = {
@@ -46,7 +46,7 @@ HupAjax.prototype = {
   req: null,
   el: null,
   method: 'get',
-  agent: 'Hupper Firefox extension 0.0.5',
+  agent: 'Hupper Firefox extension 0.0.5.1',
   /**
    * Runs on statechange
    * @param {Object} pars
@@ -76,7 +76,6 @@ HupAjax.prototype = {
       return this.errorHandler('no readyState', e);
     }
   },
-  
   /**
    * runs if the request was success
    */
