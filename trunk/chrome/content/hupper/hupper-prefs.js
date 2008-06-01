@@ -136,7 +136,10 @@ HP.prototype = {
     },
     hideads: function(value) {
       this.M.setBoolPref('extensions.hupper.hideads', value);
-    }
+    },
+    highlightusers: function(value) {
+      this.M.setCharPref('extensions.hupper.highlightusers', value);
+    },
   }
 };
 setPrefWinVals = function() {
@@ -156,6 +159,7 @@ setPrefWinVals = function() {
   document.getElementById('fade-parent-comment').checked = hp.get.fadeparentcomment();
   document.getElementById('show-quick-nav-box').checked = hp.get.showqnavbox();
   document.getElementById('hide-troll-answers').checked = hp.get.hidetrollanswers();
+  document.getElementById('hupper-highlightusers').value = hp.get.highlightusers();
 };
 savePreferences = function() {
   hp.set.filtertrolls(document.getElementById('enable-trollfilter').checked);
@@ -174,6 +178,7 @@ savePreferences = function() {
   hp.set.fadeparentcomment(document.getElementById('fade-parent-comment').checked);
   hp.set.showqnavbox(document.getElementById('show-quick-nav-box').checked);
   hp.set.hidetrollanswers(document.getElementById('hide-troll-answers').checked);
+  hp.set.highlightusers(document.getElementById('hupper-highlightusers').value);
 };
 var disableFields = function() {
   document.getElementById('trollfilter-method').addEventListener('command', onChangeFilterMethod, false);
@@ -184,72 +189,12 @@ var onChangeFilterMethod = function() {
   } else {
     document.getElementById('hide-troll-answers').disabled = true;
   }
-}
-
-/*
-var UserColor = function(hp) {
-  var colorlist = document.getElementById('usercolorlist');
-  var treechildren = colorlist.getElementsByTagName('treechildren')[0];
-  var highlightUsers = hp.get.highlightusers().split(',');
-  var hh = {}, bh;
-  for(var i = 0; i < highlightUsers.length; i++) {
-    bh = highlightUsers[i].split(':');
-    treechildren.appendChild(this.creatUserColor(bh));
-  }
 };
-
-UserColor.prototype = {
-  creatUserColor: function(userdata) {
-    var treeitem = document.createElement('treeitem');
-    var treerow = document.createElement('treerow');
-    var treecell = document.createElement('treecell');
-    treecell.setAttribute('editable', true);
-    var username = treecell.cloneNode(true);
-    var color = treecell.cloneNode(true);
-    username.setAttribute('label', userdata[0]);
-    username.addEventListener('change', function() {alert(this.value)}, false);
-    color.setAttribute('label', userdata[1]);
-    treerow.appendChild(username);
-    treerow.appendChild(color);
-    treeitem.appendChild(treerow);
-    return treeitem;
-  }
-};
-*/
-var userColor = function(hp) {
-  var highlightUsers = hp.get.highlightusers().split(','), bh;
-  /*
-  this.childData = {
-    ["Username", "Color"]
-  }
-  */
-  this.visibleData = new Array();
-  for(var i = 0; i < highlightUsers.length; i++) {
-    this.visibleData.push(highlightUsers[i].split(':'));
-  }
-  this.treeBox = null;
-  this.selection = null;
-  this.rowCount = function(){ return this.visibleData.length; };
-  this.setTree = function(treeBox){ this.treeBox = treeBox; };
-  this.getCellText = function(idx, column){ return this.visibleData[idx][0]; };
-  this.isContainer = function(idx){ return this.visibleData[idx][1]; };
-  this.isContainerOpen = function(idx){ return this.visibleData[idx][2]; };
-  this.isContainerEmpty = function(idx){ return false; };
-  this.isSeparator = function(idx){ return false; };
-  this.isSorted = function(){ return false; };
-  this.isEditable = function(idx, column){ return false; };
-};
-
-StartHupperPrefernces = function() {
+var StartHupperPrefernces = function() {
+  HUP = {};
+  HUP.L = new HLog();
   hp = new HP();
   disableFields();
   setPrefWinVals();
   onChangeFilterMethod();
-  //new UserColor(hp);
-  try {
-    var treeView = new userColor(hp)
-    document.getElementById('usercolorlist').view = treeView;
-  } catch(e) {
-    HUP.L.log(e.message, e.lineNumber);
-  }
 };
