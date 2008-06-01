@@ -47,7 +47,7 @@ HUPComment.prototype = {
    * @param {Array} all comments
    */
   getParent: function(indentComments, comments) {
-    var parent = (this.indent > 0) ? indentComments[(this.indent - 1)][(indentComments[(this.indent - 1)].length - 1)] : false;
+    var parent = (this.indent > 0 && indentComments[(this.indent-1)]) ? indentComments[(this.indent - 1)][(indentComments[(this.indent - 1)].length - 1)] : false;
     this.parent = (typeof parent != 'undefined' && parent !== false) ? comments[parent] : -1;
   },
   highLightComment: function(color) {
