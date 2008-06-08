@@ -5,74 +5,68 @@
 <dialog
   id="hupper-prefs"
   title="Hupper Preferences"
-  ondialogaccept="savePreferences();"
+  ondialogaccept="return savePreferences();"
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
   <script type="application/x-javascript">
-  <![CDATA[
+    <![CDATA[
     window.addEventListener('load', StartHupperPrefernces, false);
-  ]]>
+    ]]>
   </script>
 
-  <groupbox flex="1">
-    <caption label="Hupper Preferences" />
-    <vbox>
+  <tabbox id="hupper-tabbox">
+    <tabs>
+      <tab label="General" />
+      <tab label="Comment color" />
+    </tabs>
+    <tabpanels>
+      <tabpanel>
+        <groupbox>
+          <checkbox id="enable-new-comment-changer" label="&Hupper.enablenewcommentchange;" />
+          <label control="new-comment-text" value="&Hupper.newcommenttext;" />
+          <textbox id="new-comment-text"  />
+          <checkbox id="enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
+          <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
+          <checkbox id="insert-permalink" label="&Hupper.insertpermalink;" />
+          <checkbox id="insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
+          <checkbox id="fade-parent-comment" label="&Hupper.fadeparentcomment;" />
+          <checkbox id="show-quick-nav-box" label="&Hupper.showquicknavbox;" />
+        </groupbox>
+      </tabpanel>
+      <tabpanel>
+        <groupbox flex="1">
+          <caption label="Hupper Preferences" />
+          <!-- trollfiter section -->
+          <checkbox id="enable-trollfilter" label="&Hupper.enabletrollfilter;" />
+          <label control="trolls" value="&Hupper.trolls;" />
+          <textbox id="trolls"  />
+          <label control="troll-color" value="&Hupper.trollcolor;" />
+          <textbox id="troll-color" />
+          <label control="trollfilter-method" value="&Hupper.trollfiltermethod;" />
+          <menulist id="trollfilter-method">
+            <menupopup>
+              <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
+              <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
+            </menupopup>
+          </menulist>
+          <checkbox id="hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
+          <!-- trollfiter section end -->
+          <separator class="groove" />
+          <!-- hupper filter section -->
+          <checkbox id="enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
+          <label control="huppers" value="&Hupper.huppers;" />
+          <textbox id="huppers"  />
+          <label control="hupper-color" value="&Hupper.huppercolor;" />
+          <textbox id="hupper-color" />
+          <!-- hupper filter section end -->
+          <separator class="groove" />
+          <label control="hupper-highlightusers" value="&Hupper.highlightuser;"/>
+          <textbox id="hupper-highlightusers" />
+        </groupbox>
+      </tabpanel>
 
-      <!-- trollfiter section -->
-
-      <checkbox id="enable-trollfilter" label="&Hupper.enabletrollfilter;" />
-
-      <label control="trolls" value="&Hupper.trolls;" />
-      <textbox id="trolls"  />
-
-      <label control="troll-color" value="&Hupper.trollcolor;" />
-      <textbox id="troll-color" />
-
-      <label control="trollfilter-method" value="&Hupper.trollfiltermethod;" />
-      <menulist id="trollfilter-method">
-        <menupopup>
-          <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
-          <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
-        </menupopup>
-      </menulist>
-      <checkbox id="hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
-
-      <!-- trollfiter section end -->
-
-      <separator class="groove" />
-
-      <!-- hupper filter section -->
-
-      <checkbox id="enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
-
-      <label control="huppers" value="&Hupper.huppers;" />
-      <textbox id="huppers"  />
-
-      <label control="hupper-color" value="&Hupper.huppercolor;" />
-      <textbox id="hupper-color" />
-
-      <!-- hupper filter section end -->
-
-      <separator class="groove" />
-
-      <label control="hupper-highlightusers" value="&Hupper.highlightuser;"/>
-      <textbox id="hupper-highlightusers" />
-
-      <separator class="groove" />
-      <checkbox id="enable-new-comment-changer" label="&Hupper.enablenewcommentchange;" />
-
-      <label control="new-comment-text" value="&Hupper.newcommenttext;" />
-      <textbox id="new-comment-text"  />
-
-      <checkbox id="enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
-      <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
-      <checkbox id="insert-permalink" label="&Hupper.insertpermalink;" />
-      <checkbox id="insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
-      <checkbox id="fade-parent-comment" label="&Hupper.fadeparentcomment;" />
-      <checkbox id="show-quick-nav-box" label="&Hupper.showquicknavbox;" />
-
-    </vbox>
-  </groupbox>
+    </tabpanels>
+  </tabbox>
 </dialog>
