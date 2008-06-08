@@ -162,6 +162,7 @@ setPrefWinVals = function() {
   document.getElementById('hupper-highlightusers').value = hp.get.highlightusers();
 };
 savePreferences = function() {
+  if(!checkHLUsers()) {return false;}
   hp.set.filtertrolls(document.getElementById('enable-trollfilter').checked);
   hp.set.trolls(document.getElementById('trolls').value);
   hp.set.trollcolor(document.getElementById('troll-color').value);
@@ -179,6 +180,7 @@ savePreferences = function() {
   hp.set.showqnavbox(document.getElementById('show-quick-nav-box').checked);
   hp.set.hidetrollanswers(document.getElementById('hide-troll-answers').checked);
   hp.set.highlightusers(document.getElementById('hupper-highlightusers').value);
+  return true;
 };
 var disableFields = function() {
   document.getElementById('trollfilter-method').addEventListener('command', onChangeFilterMethod, false);
@@ -189,6 +191,31 @@ var onChangeFilterMethod = function() {
   } else {
     document.getElementById('hide-troll-answers').disabled = true;
   }
+};
+var checkHLUsers = function() {
+  var hlUsers = document.getElementById('hupper-highlightusers').value.split(',');
+  var trolls = document.getElementById('troll-color').value.split(',');
+  var huppers = document.getElementById('huppers').value.split(',');
+  var hlUsersObj = {};
+  for(var i = 0, hlUser; i < hlUsers.length; i++) {
+    hlUser = hlUsers[i].split(':');
+    hlUsersObj[hlUser[0]] = hlUsers[1];
+  }
+  var used = new Array();
+  for(i = 0; i < huppers.length; i++) {
+    if(hlUsersObj[huppers[i]]) {
+      used.push(huppers[i]);
+    }
+  }
+  for(i = 0; i < trolls.length; i++) {
+    if(hlUsersObj[huppers[i]]) {
+      used.push(huppers[i]);
+    }
+  }
+  if(used.length > 0) {
+    return confirm(used.join(',') + ' already highlighted as hupper or troll')
+  }
+  return true;
 };
 var StartHupperPrefernces = function() {
   HUP = {};
