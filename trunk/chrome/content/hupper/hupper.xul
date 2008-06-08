@@ -9,12 +9,25 @@
   <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
 
   <script type="application/x-javascript">
-  <![CDATA[
+    <![CDATA[
     window.addEventListener("DOMContentLoaded", HUPPER, false);
-  ]]>
+    window.addEventListener('load', function(){
+      new HUPStatusClickHandling(document.getElementById('HUP-statusbar'));
+      if(document.getElementById('HUP-toolbar-button')) {
+        new HUPStatusClickHandling(document.getElementById('HUP-toolbar-button'));
+      }
+    }, false);
+    ]]>
   </script>
   <stringbundlset id="stringbundleset">
     <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
   </stringbundlset>
+
+  <statusbar id="status-bar">
+    <statusbarpanel class="statusbarpanel-iconic" id="HUP-statusbar" status="none" tooltip="HUP-statusbar-tooltip" context="HUP-statusbar-menu">
+      <image id="HUP-statusbar-image" width="16" height="16" src="chrome://hupper/skin/hupper-small.png" />
+      <label id="HUP-statusbar-label" value="HUP" collapsed="true" crop="end" style="width:0;margin:0" />
+    </statusbarpanel>
+  </statusbar>
 </overlay>
 

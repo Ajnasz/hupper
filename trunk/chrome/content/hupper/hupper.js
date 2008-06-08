@@ -189,12 +189,12 @@ var nodeHeaderBuilder = function() {
    * @final
    */
   this.parentLinkText = HUP.Bundles.getString('ParentLinkText');
-  
+
   // Title text nodes
   this.fit = HUP.El.Txt(this.firstLinkText);
   this.lat = HUP.El.Txt(this.lastLinkText);
   this.newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
-  
+
   // Mark as read node
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
   HUP.El.AddClass(this.markR, 'marker');
@@ -326,10 +326,10 @@ nodeHeaderBuilder.prototype = {
   }
 };
 /**
- * Collects the comment nodes and filter them into another 2 array too by their 
+ * Collects the comment nodes and filter them into another 2 array too by their
  * roperties: comments, newComments, indentComments the indenComments just contains
  * an index which specify the comment index in the comments array
- * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments, 
+ * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments,
  * @type Array
  */
 var getComments = function() {
@@ -502,7 +502,7 @@ var parseComments = function(comments, newComments, indentComments) {
   }
   var builder = new nodeHeaderBuilder(), ps;
   try {
-  
+
   comments.map(function(C) {
     if(filtertrolls) {
       if(inArray(C.user, trolls)) {
@@ -566,7 +566,7 @@ var appendNewNotifier = function(link, mark) {
   var li = HUP.El.Li();
   var a1, a2, li1, li2;
   HUP.El.AddClass(li, 'leaf');
-  
+
   HUP.El.Add(HUP.El.Txt('Hupper'), h2);
 
   a1 = HUP.El.CreateLink(HUP.Bundles.getString('firstNew'), link || '#new');
@@ -580,7 +580,7 @@ var appendNewNotifier = function(link, mark) {
     a2 = HUP.El.CreateLink(HUP.Bundles.getString('markAllRead'), 'javascript:void(0)');
     a2.addEventListener('click', markAllNodeAsRead, false);
     a2.markNodes = HUP.markReadNodes;
-  
+
     li2 = li.cloneNode(true);
     HUP.El.Add(a2, li2);
     HUP.El.Add(li2, ul);
@@ -635,7 +635,7 @@ var addHupStyles = function(e) {
   styles += '.submitted { padding: 2px !important; }';
   styles += '.marker { cursor: pointer; color: #000; }';
   styles += '.hidden {display: none;}';
-  
+
   var st = HUP.El.El('style');
   st.setAttribute('type', 'text/css');
   HUP.El.Add(HUP.El.Txt(styles), st);
@@ -892,7 +892,7 @@ Elementer.prototype = {
     */
   CreateLink: function(text, href) {
     var l = this.A();
-    if(href) { 
+    if(href) {
       l.setAttribute('href', href);
     }
     this.Add(this.Txt(text), l)
@@ -920,49 +920,49 @@ makeTitleLinks.prototype = {
   boxes: {
     /**
      * title for wiki block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     wiki: function(makeTitle) {
       makeTitle('block-aggregator-feed-3', 'http://wiki.hup.hu');
     },
     /**
      * title for blog block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     blog: function(makeTitle) {
       makeTitle('block-blog-0', '/blog');
     },
     /**
      * title for search block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     search: function(makeTitle) {
       makeTitle('block-search-0', '/search');
     },
     /**
      * title for poll block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     poll: function(makeTitle) {
       makeTitle('block-poll-40', '/poll');
     },
     /**
      * title for flickr block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     flickr: function(makeTitle) {
       makeTitle('block-aggregator-feed-40', 'http://www.flickr.com/photos/h_u_p/');
     },
     /**
      * title for tag cloud block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     temak: function(makeTitle) {
       makeTitle('block-tagadelic-1', '/temak');
     },
     /**
      * title for new comments block
-     * @param {Function} makeTitle 
+     * @param {Function} makeTitle
      */
     tracker: function(makeTitle) {
       makeTitle('block-comment-0', '/tracker');
@@ -1011,39 +1011,47 @@ Timer.prototype = {
     return this.endTime.getTime() - this.startTime.getTime();
   }
 };
-var bindKeys = function() {
+var bindHUPKeys = function() {
   HUP.w.addEventListener('keyup', function(event) {
 //  if(event.shiftKey && event.altKey) {
     switch(event.keyCode) {
       case 78: // n
         // next
-        if(/^#/.test(HUP.w.location.hash)) {
-          var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
-          if(HUP.w.nextLinks[curIndex+1]) {
-            HUP.w.location.hash = HUP.w.nextLinks[curIndex+1];
-          } else if(HUP.w.nextLinks[0]) {
-            HUP.w.location.hash = HUP.w.nextLinks[0];
-          }
-        } else if(HUP.w.nextLinks.length) {
-          HUP.w.location.hash = HUP.w.nextLinks[0];
-        }
+        HUPJump.next();
         break;
       case 77: // m
         // prev
-        if(/^#/.test(HUP.w.location.hash)) {
-          var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
-          if(curIndex != 0) {
-            HUP.w.location.hash = HUP.w.nextLinks[curIndex-1];
-          } else if(HUP.w.nextLinks[HUP.w.nextLinks.length-1]) {
-            HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
-          }
-        } else if(HUP.w.nextLinks.length) {
-          HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
-        }
+        HUPJump.prev();
         break;
     }
   },
     false);
+};
+var HUPJump = {
+  next: function() {
+    if(/^#/.test(HUP.w.location.hash)) {
+      var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
+      if(HUP.w.nextLinks[curIndex+1]) {
+        HUP.w.location.hash = HUP.w.nextLinks[curIndex+1];
+      } else if(HUP.w.nextLinks[0]) {
+        HUP.w.location.hash = HUP.w.nextLinks[0];
+      }
+    } else if(HUP.w.nextLinks.length) {
+      HUP.w.location.hash = HUP.w.nextLinks[0];
+    }
+  },
+  prev: function() {
+    if(/^#/.test(HUP.w.location.hash)) {
+      var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
+      if(curIndex != 0) {
+        HUP.w.location.hash = HUP.w.nextLinks[curIndex-1];
+      } else if(HUP.w.nextLinks[HUP.w.nextLinks.length-1]) {
+        HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+      }
+    } else if(HUP.w.nextLinks.length) {
+      HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+    }
+  }
 };
 var HideHupAds = function() {
   var ids = new Array();
@@ -1054,6 +1062,50 @@ var HideHupAds = function() {
     }
   });
 };
+/**
+ * @param {Object} event
+ */
+var HUPStatusClickHandling = function(ob) {
+  this.statusBar = ob;
+  if(!this.statusBar) { return; }
+  this.observe();
+};
+HUPStatusClickHandling.prototype = {
+  st: null,
+  statusBar: null,
+  /**
+   * add the event handler to the statusbar icon
+   */
+  observe: function() {
+    this.statusBar.addEventListener('click', this.click, false);
+    if(this.st == 2) {
+      this.statusBar.addEventListener('dblclick', this.click, false);
+    }
+  },
+  /**
+   * event handler runs when user click on the statusbar icon
+   * event.button:
+   *   0 = left click
+   *   1 = middle click
+   *   2 = right click
+   * @param {Object} event
+   */
+  click: function(event) {
+    var currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
+    HUP.L.log(currentTab.currentURI.spec);
+    if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) { return; }
+    switch(event.button) {
+      case 0:
+        HUPJump.next();
+      break;
+
+      case 2:
+        HUPJump.prev();
+      break;
+    }
+  }
+};
+
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -1103,7 +1155,7 @@ var HUPPER = function(e) {
     if(HupperPrefs.hideads()) {
       HideHupAds();
     }
-//    bindKeys();
+//    bindHUPKeys();
     TIMER.stop();
     HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
   }
