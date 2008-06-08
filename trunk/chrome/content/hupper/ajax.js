@@ -1,12 +1,12 @@
 /**
  * ajax.js
- * @author Koszti Lajos [Ajnasz] {@link http://ajnasz.hu http://ajnasz.hu} ajnasz@ajnasz.hu 
+ * @author Koszti Lajos [Ajnasz] {@link http://ajnasz.hu http://ajnasz.hu} ajnasz@ajnasz.hu
  * @license GPL v2
  * for more detials see the licence.txt file
  */
 /**
  * Creates an AJAX request
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @class HupAjax sends request to the {@link http://hup.hu hup.hu} site
  * @constructor
  * @param {Object} pars object to overwrite the default parameters
@@ -46,7 +46,7 @@ HupAjax.prototype = {
   req: null,
   el: null,
   method: 'get',
-  agent: 'Hupper Firefox extension 0.0.5.1',
+  agent: 'Hupper Firefox extension 0.0.5.2a',
   /**
    * Runs on statechange
    * @param {Object} pars
