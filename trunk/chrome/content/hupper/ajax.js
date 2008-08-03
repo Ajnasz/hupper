@@ -65,7 +65,6 @@ HupAjax.prototype = {
         }
         else {
           return this.errorHandler('no status code');
-
         }
       }
       else {
