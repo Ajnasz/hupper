@@ -1,13 +1,17 @@
 /**
  * @constructor
  * @class HUPComment
- * @param {Element} a comment node
+ * @param {Element} commentNode HTML Element
  */
 var HUPComment = function(commentNode, indentComments, comments) {
   this.comment = commentNode;
   this.header = HUP.El.GetByClass(this.comment, 'submitted', 'div')[0];
   this.footer = HUP.El.GetByClass(this.comment, 'link', 'div')[0];
   this.cont = HUP.El.GetByClass(this.comment, 'content', 'div')[0];
+  this.getDate();
+  if(HUP.w.location.search.replace(/\?page=/, '') > 0) {
+    this.todayComment();
+  }
   this.newComment();
   this.footerLinks = HUP.El.GetFirstTag('ul', this.footer);
   this.id = this.comment.previousSibling.previousSibling.id;
@@ -36,6 +40,22 @@ HUPComment.prototype = {
     }
     this.indent = indent;
   },
+  todayComment: function() {
+    var _comment = this;
+    var appendNew = function() {
+      var s = HUP.El.Span();
+      HUP.El.AddClass(s, 'new');
+      HUP.El.Add(HUP.El.Txt('új'), s);
+      HUP.El.Insert(s, _comment.comment.firstChild);
+      var a = HUP.El.A();
+      a.setAttribute('id', 'new');
+      HUP.El.Insert(a, _comment.comment.firstChild);
+    }
+    var today =  new Date();
+    if(this.date.getFullYear() == today.getFullYear() && this.date.getMonth() == today.getMonth() && this.date.getDate() == today.getDate()) {
+      appendNew(this.header);
+    }
+  },
   newComment: function() {
     var newNodes = HUP.El.GetByClass(this.comment, 'new', 'span');
     this.newComm = newNodes.length ? newNodes[0] : false;
@@ -49,6 +69,23 @@ HUPComment.prototype = {
   getParent: function(indentComments, comments) {
     var parent = (this.indent > 0 && indentComments[(this.indent-1)]) ? indentComments[(this.indent - 1)][(indentComments[(this.indent - 1)].length - 1)] : false;
     this.parent = (typeof parent != 'undefined' && parent !== false) ? comments[parent] : -1;
+  },
+  getDate: function() {
+    var a = this.header.childNodes[2].textContent;
+    var outObj = {};
+    var dayNames = {'hétfő': 1, 'kedd': 2, 'szerda': 3, 'csütörtök': 4, 'péntek': 5, 'szombat': 6, 'vasárnap': 7};
+    var monthNames = {'január': 0, 'február': 1, 'március': 2, 'április': 3, 'május': 4, 'június': 5, 'július': 6, 'augusztus': 7, 'szeptember': 8, 'október': 9, 'november': 10, 'december': 11};
+    var dateRex = new RegExp(/[\s\|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/);
+    a.replace(dateRex, function(all, year, month, day, dayname, hour, min) {
+      var date = new Date();
+      date.setYear(year);
+      date.setMonth(monthNames[month]);
+      date.setDate(day);
+      date.setHours(hour);
+      date.setMinutes(min);
+      outObj = date;
+    });
+    this.date = outObj;
   },
   highLightComment: function(color) {
     if(/[0-9a-f#]+/i.test(color)) { // hexa
