@@ -338,7 +338,7 @@ var getComments = function() {
     return false;
   }
   var ds = HUP.El.GetTag('div', coms);
-  var header, footer, el, comments = new Array(), newComm, parentComment, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
+  var comments = new Array(), newComm, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
   for(i = 0; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'comment')) {
       comment = new HUPComment(ds[i], indentComments, comments);
@@ -595,7 +595,7 @@ var appendNewNotifier = function(link, mark) {
   blockDiv.setAttribute('id', hupperBlockId);
   HUP.El.AddClass(blockDiv, 'block block-hupper');
 
-  var googleBlock = HUP.El.GetId('block-block-8');
+  var googleBlock = HUP.El.GetId('block-user-1');
   HUP.El.Insert(blockDiv, googleBlock);
 };
 /**
@@ -904,6 +904,23 @@ var Stringer = {
     return str.replace(/^\s+|\s+$/g, '');
   }
 }
+var todayCommentsAreNew = function(comments) {
+  var today =  new Date();
+  var THIS = this;
+  comments.map(function(comment) {
+    if(comment.date.getFullYear() == today.getFullYear() && comment.date.getMonth() == today.getMonth() && comment.date.getDate() == today.getDate()) {
+      THIS.appendNew(comment.header);
+    }
+  });
+};
+todayCommentsAreNew.prototype = {
+  appendNew: function(elem) {
+    var s = HUP.El.Span();
+    HUP.El.AddClass(s, 'new');
+    HUP.El.Add(HUP.El.Txt('új'), s);
+    HUP.El.Add(s, elem);
+  }
+}
 /**
  * Make links from the block titles
  * @constructor
@@ -1092,7 +1109,6 @@ HUPStatusClickHandling.prototype = {
    */
   click: function(event) {
     var currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
-    HUP.L.log(currentTab.currentURI.spec);
     if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) { return; }
     switch(event.button) {
       case 0:
