@@ -157,10 +157,10 @@ var HupperPrefs = {
 };
 /**
  * Namespace to build links, lists etc.
- * @class nodeHeaderBuilder Namespace to build links, lists etc.
+ * @class NodeHeaderBuilder Namespace to build links, lists etc.
  * @constructor
  */
-var nodeHeaderBuilder = function() {
+var NodeHeaderBuilder = function() {
   /**
    * @final
    */
@@ -199,7 +199,7 @@ var nodeHeaderBuilder = function() {
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
   HUP.El.AddClass(this.markR, 'marker');
 };
-nodeHeaderBuilder.prototype = {
+var NodeHeaderBuilder.prototype = {
   /**
     * Builds a link which points to the specified path with the next link str
     * @param {String} path Path for the next node
@@ -397,7 +397,7 @@ var getNodes = function() {
  * @param {Array} nodes
  */
 var parseNodes = function(nodes) {
-  var spa = HUP.El.Span(), sp, builder = new nodeHeaderBuilder(), nl = nodes.length, i, mread;
+  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), nl = nodes.length, i, mread;
   for(i = 0; i < nl; i++) {
     if(nodes[i].newc) {
       sp = spa.cloneNode(true);
@@ -500,7 +500,7 @@ var parseComments = function(comments, newComments, indentComments) {
     bh = highlightUsers[i].split(':');
     hh[bh[0]] = bh[1];
   }
-  var builder = new nodeHeaderBuilder(), ps;
+  var builder = new NodeHeaderBuilder(), ps;
   try {
 
   comments.map(function(C) {
