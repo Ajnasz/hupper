@@ -926,77 +926,53 @@ todayCommentsAreNew.prototype = {
  * @constructor
  */
 var makeTitleLinks = function() {
-  for(box in this.boxes) {
-    this.boxes[box](this.makeTitle);
-  }
-};
-makeTitleLinks.prototype = {
-  /**
-   * Title creator functions
-   */
-  boxes: {
-    /**
-     * title for wiki block
-     * @param {Function} makeTitle
-     */
-    wiki: function(makeTitle) {
-      makeTitle('block-aggregator-feed-3', 'http://wiki.hup.hu');
-    },
-    /**
-     * title for blog block
-     * @param {Function} makeTitle
-     */
-    blog: function(makeTitle) {
-      makeTitle('block-blog-0', '/blog');
-    },
-    /**
-     * title for search block
-     * @param {Function} makeTitle
-     */
-    search: function(makeTitle) {
-      makeTitle('block-search-0', '/search');
-    },
-    /**
-     * title for poll block
-     * @param {Function} makeTitle
-     */
-    poll: function(makeTitle) {
-      makeTitle('block-poll-40', '/poll');
-    },
-    /**
-     * title for flickr block
-     * @param {Function} makeTitle
-     */
-    flickr: function(makeTitle) {
-      makeTitle('block-aggregator-feed-40', 'http://www.flickr.com/photos/h_u_p/');
-    },
-    /**
-     * title for tag cloud block
-     * @param {Function} makeTitle
-     */
-    temak: function(makeTitle) {
-      makeTitle('block-tagadelic-1', '/temak');
-    },
-    /**
-     * title for new comments block
-     * @param {Function} makeTitle
-     */
-    tracker: function(makeTitle) {
-      makeTitle('block-comment-0', '/tracker');
-    }
-  },
-
   /**
    * Compose the title link
    * @param {String} contId Id of the title container div
    * @param {String} url the url of the title
    */
-  makeTitle: function(contId, url) {
+  var makeTitle = function(contId, url) {
     var titleCont = HUP.El.GetId(contId);
     if(titleCont) {
       var t = HUP.El.GetFirstTag('h2', titleCont);
       HUP.El.Update(HUP.El.CreateLink(t.innerHTML, url), t);
     }
+  }
+/**
+   * Title creator functions
+   */
+  var boxes = {
+    wiki: {
+      id: 'block-aggregator-feed-3',
+      url: 'http://wiki.hup.hu'
+    },
+    blog: {
+      id: 'block-blog-0',
+      url: '/blog'
+    },
+    search: {
+      id: 'block-search-0',
+      url: '/search'
+    },
+    poll: {
+      id: 'block-poll-40',
+      url: '/poll'
+    },
+    flickr: {
+      id: 'block-aggregator-feed-40',
+      url: 'http://www.flickr.com/photos/h_u_p/'
+    },
+    temak: {
+      id: 'block-tagadelic-1',
+      url: '/temak'
+    },
+    tracker: {
+      id: 'block-comment-0',
+      url: '/tracker'
+    }
+  };
+  for(box in boxes) {
+    makeTitle(boxes[box].id, boxes[box].url);
   }
 };
 /**
@@ -1148,7 +1124,7 @@ var HUPPER = function(e) {
     HUP.w.nextLinks = new Array();
     addHupStyles();
     // Create links from the titles
-    new makeTitleLinks();
+    makeTitleLinks();
     // if comments are available
     if(HUP.El.GetId('comments')) {
       var c = getComments();
