@@ -1,7 +1,21 @@
 /**
+ * hupcomment.js
+ * * @fileoverview This file is part of the Hupper Firefox extension,
+ * which adds some extra feature for the {@link http://hup.hu hup.hu} site
+ * {@link http://ajnasz.hu/blog/20070616/hupper-extension Hupper Firefox Extension}
+ *
+ * Copyright (C) 2007-2008
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * @license General Public Licence v2
+ * for more details see the licence.txt file
+ */
+
+/**
  * @constructor
  * @class HUPComment
  * @param {Element} commentNode HTML Element
+ * @param {Array} indentComments comments, which are indented
+ * @param {Array} comments all comment of the page
  */
 var HUPComment = function(commentNode, indentComments, comments) {
   this.comment = commentNode;
@@ -18,7 +32,7 @@ var HUPComment = function(commentNode, indentComments, comments) {
   this.footerLinks = HUP.El.GetFirstTag('ul', this.footer);
   this.getIndent(); // get indent state
   this.getChildComment(); // get child comments
-  this.user = (typeof this.header.childNodes[1] != 'undefined') ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
+  this.user = this.deletedUser ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
   this.getParent(indentComments, comments);
 };
 HUPComment.prototype = {
@@ -110,17 +124,31 @@ HUPComment.prototype = {
     HUP.El.AddClass(this.comment, HupperVars.hupperCommentClass);
     HUP.El.AddClass(this.header, HupperVars.hupperCommentHeaderClass);
   },
+  /**
+   * @param {NodeHeaderBuilder} builder
+   */
   addExtraLinks: function(builder) {
     HUP.El.Add(builder.buildComExtraTop(), this.footerLinks);
     HUP.El.Add(builder.buildComExtraBack(), this.footerLinks);
   },
+  /**
+  * replace the 'uj' text in the header of newly posted comments
+   * @param {NodeHeaderBuilder} builder
+   * @param {Element} tmpSpan1
+  */
   replaceNewCommentText: function(builder, tmpSpan1) {
     HUP.El.Remove(this.newComm, this.comment);
     HUP.El.Add(builder.buildNewText(), tmpSpan1);
   },
+  /**
+   * @param {NodeHeaderBuilder} builder
+   */
   addComExtraParent: function(builder) {
     HUP.El.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
-  },
+  };
+  /**
+   * @param {Object} users
+   */
   highlightComment: function(users) {
     if(users[this.user]) {
       this.highLightComment(users[this.user]);
