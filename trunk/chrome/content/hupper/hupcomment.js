@@ -5,19 +5,20 @@
  */
 var HUPComment = function(commentNode, indentComments, comments) {
   this.comment = commentNode;
+  this.id = this.comment.previousSibling.previousSibling.id;
   this.header = HUP.El.GetByClass(this.comment, 'submitted', 'div')[0];
   this.footer = HUP.El.GetByClass(this.comment, 'link', 'div')[0];
   this.cont = HUP.El.GetByClass(this.comment, 'content', 'div')[0];
+  this.isDeletedUser();
   this.getDate();
   if(HUP.w.location.search.replace(/\?page=/, '') > 0) {
     this.todayComment();
   }
   this.newComment();
   this.footerLinks = HUP.El.GetFirstTag('ul', this.footer);
-  this.id = this.comment.previousSibling.previousSibling.id;
   this.getIndent(); // get indent state
   this.getChildComment(); // get child comments
-  this.user = (typeof this.header.childNodes[1] != 'undefined') ? this.header.childNodes[1].innerHTML : this.header.innerHTML.replace(/[^\(]+\( ([^ ]+).*/, '$1');
+  this.user = (typeof this.header.childNodes[1] != 'undefined') ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
   this.getParent(indentComments, comments);
 };
 HUPComment.prototype = {
@@ -71,7 +72,7 @@ HUPComment.prototype = {
     this.parent = (typeof parent != 'undefined' && parent !== false) ? comments[parent] : -1;
   },
   getDate: function() {
-    var a = this.header.childNodes[2].textContent;
+    var a = this.deletedUser ? this.header.textContent : this.header.childNodes[2].textContent;
     var outObj = {};
     var dayNames = {'hétfő': 1, 'kedd': 2, 'szerda': 3, 'csütörtök': 4, 'péntek': 5, 'szombat': 6, 'vasárnap': 7};
     var monthNames = {'január': 0, 'február': 1, 'március': 2, 'április': 3, 'május': 4, 'június': 5, 'július': 6, 'augusztus': 7, 'szeptember': 8, 'október': 9, 'november': 10, 'december': 11};
@@ -86,6 +87,9 @@ HUPComment.prototype = {
       outObj = date;
     });
     this.date = outObj;
+  },
+  isDeletedUser: function() {
+    this.deletedUser = this.header.getElementsByTagName('a').length == 0;
   },
   highLightComment: function(color) {
     if(/[0-9a-f#]+/i.test(color)) { // hexa
