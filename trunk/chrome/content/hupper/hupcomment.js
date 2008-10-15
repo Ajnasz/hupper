@@ -145,7 +145,7 @@ HUPComment.prototype = {
    */
   addComExtraParent: function(builder) {
     HUP.El.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
-  };
+  },
   /**
    * @param {Object} users
    */
