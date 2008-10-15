@@ -199,7 +199,7 @@ var NodeHeaderBuilder = function() {
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
   HUP.El.AddClass(this.markR, 'marker');
 };
-var NodeHeaderBuilder.prototype = {
+NodeHeaderBuilder.prototype = {
   /**
     * Builds a link which points to the specified path with the next link str
     * @param {String} path Path for the next node
@@ -1152,6 +1152,17 @@ var HUPPER = function(e) {
     HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
   }
   } catch(e) {
-    HUP.L.log(e.message, e.lineNumber);
+    Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber);
   }
 };
+HUPPER.init = function() {
+  var appcontent = document.getElementById("appcontent");   // browser
+  if(appcontent) {
+    appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
+  }
+  new HUPStatusClickHandling(document.getElementById('HUP-statusbar'));
+  if(document.getElementById('HUP-toolbar-button')) {
+    new HUPStatusClickHandling(document.getElementById('HUP-toolbar-button'));
+  }
+};
+window.addEventListener('load', function(){ HUPPER.init(); }, false);
