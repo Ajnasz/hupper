@@ -5,20 +5,8 @@
   <script type="application/x-javascript" src="chrome://hupper/content/ajax.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
-
-  <script type="application/x-javascript">
-    <![CDATA[
-    window.addEventListener("DOMContentLoaded", HUPPER, false);
-    window.addEventListener('load', function(){
-      new HUPStatusClickHandling(document.getElementById('HUP-statusbar'));
-      if(document.getElementById('HUP-toolbar-button')) {
-        new HUPStatusClickHandling(document.getElementById('HUP-toolbar-button'));
-      }
-    }, false);
-    ]]>
-  </script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <stringbundlset id="stringbundleset">
     <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
   </stringbundlset>
