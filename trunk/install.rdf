@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>hupper@ajnasz.hu</em:id>
     <em:name>Hupper</em:name>
-    <em:version>0.0.5.2a</em:version>
+    <em:version>###VERSION###</em:version>
 
     <!-- Firefox -->
     <em:targetApplication>
