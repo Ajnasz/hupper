@@ -338,8 +338,8 @@ var getComments = function() {
     return false;
   }
   var ds = HUP.El.GetTag('div', coms);
-  var comments = new Array(), newComm, indentComments = new Array(), newComments = new Array(), dsl = ds.length, i, cont;
-  for(i = 0; i < dsl; i++) {
+  var comments = new Array(), newComm, indentComments = new Array(), newComments = new Array();
+  for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'comment')) {
       comment = new HUPComment(ds[i], indentComments, comments);
       if(typeof indentComments[comment.indent] == 'undefined') {
@@ -371,10 +371,9 @@ var getComments = function() {
 var getNodes = function() {
   var c = HUP.El.GetId('content-both');
   var ds = HUP.El.GetTag('div', c);
-  var nodes = new Array(), newnodes = new Array(), node = {}, dsl = ds.length, i, header, submitData, cont, footer;
-  for(i = 0; i < dsl; i++) {
+  var nodes = new Array(), newnodes = new Array(), node = {}, header, submitData, cont, footer;
+  for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'node')) {
-      // header = ds[i].childNodes[1];
       header = HUP.El.GetFirstTag('h2', ds[i]);
       submitData = ds[i].childNodes[3];
       cont = ds[i].childNodes[5];
@@ -397,8 +396,8 @@ var getNodes = function() {
  * @param {Array} nodes
  */
 var parseNodes = function(nodes) {
-  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), nl = nodes.length, i, mread;
-  for(i = 0; i < nl; i++) {
+  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread;
+  for(var i = 0, nl = nodes.length; i < nl; i++) {
     if(nodes[i].newc) {
       sp = spa.cloneNode(true);
       HUP.El.AddClass(sp, 'nnew');
@@ -407,17 +406,8 @@ var parseNodes = function(nodes) {
       HUP.El.Add(mread, sp);
       HUP.El.Add(builder.buildNewText(), sp);
       HUP.El.Insert(builder.buildNameLink(i), nodes[i].header);
-
-      if(i > 0) {
-        HUP.El.Add(builder.buildPrevLink('n-' + (i - 1)), sp);
-      } else {
-        HUP.El.Add(builder.buildFirstLink(), sp);
-      }
-      if(i < nl - 1) {
-        HUP.El.Add(builder.buildNextLink('n-' + (i + 1)), sp);
-      } else {
-        HUP.El.Add(builder.buildLastLink(), sp);
-      }
+      (i > 0) ? HUP.El.Add(builder.buildPrevLink('n-' + (i - 1)), sp) : HUP.El.Add(builder.buildFirstLink(), sp);
+      (i < nl - 1) ? HUP.El.Add(builder.buildNextLink('n-' + (i + 1)), sp) : HUP.El.Add(builder.buildLastLink(), sp);
       HUP.w.nextLinks.push('n-' + (i));
       HUP.El.Insert(sp, nodes[i].header.firstChild);
     }
@@ -458,7 +448,7 @@ var markNodeAsRead = function(e) {
 var markAllNodeAsRead = function(e) {
   var n = e.target.markNodes;
   var d = document || HUP.w;
-  for(var i = 0; i < n.length; i++) {
+  for(var i = 0, nl = n.length; i < nl; i++) {
     var click = d.createEvent("MouseEvents");
     click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     n[i].dispatchEvent(click);
@@ -496,7 +486,7 @@ var parseComments = function(comments, newComments, indentComments) {
   var insertPermalink = HupperPrefs.insertPermalink();
   var highlightUsers = HupperPrefs.highlightusers().split(',');
   var hh = {}, bh;
-  for(var i = 0; i < highlightUsers.length; i++) {
+  for(var i = 0, hl = highlightUsers.length; i < hl; i++) {
     bh = highlightUsers[i].split(':');
     hh[bh[0]] = bh[1];
   }
@@ -527,21 +517,13 @@ var parseComments = function(comments, newComments, indentComments) {
   });
   } catch(e) {HUP.L.log(e.message, e.lineNumber)}
   if(replacenewcommenttext || prevnextlinks) {
-    var spanNode = HUP.El.Span(), tmpSpan1, ncl = newComments.length, i;
-    for(i = 0; i < ncl; i++) {
+    var spanNode = HUP.El.Span(), tmpSpan1;
+    for(var i = 0, ncl = newComments.length; i < ncl; i++) {
       tmpSpan1 = spanNode.cloneNode(true);
       HUP.El.AddClass(tmpSpan1, 'hnav');
       if(prevnextlinks) {
-        if(i > 0) {
-          HUP.El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1);
-        } else {
-          HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
-        }
-        if(i < ncl - 1) {
-          HUP.El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1);
-        } else {
-          HUP.El.Add(builder.buildLastLink(), tmpSpan1);
-        }
+        (i > 0) ? HUP.El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1) : HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
+        (i < ncl - 1) ? HUP.El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1) : HUP.El.Add(builder.buildLastLink(), tmpSpan1);
         HUP.w.nextLinks.push(newComments[i].id);
       }
       if(replacenewcommenttext) {
@@ -858,17 +840,16 @@ Elementer.prototype = {
     return cl.test(el.getAttribute('class'));
   },
   /**
-  * Collects the elements, which are has the specified className (cn) and childNodes of the specified node (par)
+  * Collects the elements, which has the specified className (cn) and childNodes of the specified node (par)
   * @param {Element} par parent element node
-  * @param {String} cn className
+  * @param {String} cn The className
   * @param {String} el element type
   * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
+  * @return the elements which are childnodes of the parent and has the specified classname
   * @type {Array}
   */
   GetByClass: function(par, cn, el, force) {
-    if(!el) {
-      el = '*';
-    }
+    el = el ? el.toUpperCase() : el = '*';
     if(!par) {
       if(force == true) {
         par = this.GetBody();
@@ -876,10 +857,21 @@ Elementer.prototype = {
         return new Array();
       }
     }
-    var ts = this.GetTag(el, par), out = new Array(), i, tsl = ts.length;
-    for(i = 0; i < tsl; i++) {
-      if(this.HasClass(ts[i], cn)) {
-        out.push(ts[i]);
+    var out = new Array();
+    // try to use the native getElementsByClassName method
+    try {
+      var ts = par.getElementsByClassName(cn);
+      for(var i = 0, tsl = ts.length; i < tsl; i++) {
+        if(ts[i].tagName == el) {
+          out.push(ts[i]);
+        }
+      }
+    } catch(e) {
+      var ts = this.GetTag(el, par);
+      for(var i = 0, tsl = ts.length; i < tsl; i++) {
+        if(this.HasClass(ts[i], cn)) {
+          out.push(ts[i]);
+        }
       }
     }
     return out;
@@ -971,7 +963,7 @@ var makeTitleLinks = function() {
       url: '/tracker'
     }
   };
-  for(box in boxes) {
+  for(var box in boxes) {
     makeTitle(boxes[box].id, boxes[box].url);
   }
 };
