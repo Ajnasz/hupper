@@ -1,6 +1,6 @@
 /**
  * hupcomment.js
- * * @fileoverview This file is part of the Hupper Firefox extension,
+ * @fileoverview This file is part of the Hupper Firefox extension,
  * which adds some extra feature for the {@link http://hup.hu hup.hu} site
  * {@link http://ajnasz.hu/blog/20070616/hupper-extension Hupper Firefox Extension}
  *
@@ -57,18 +57,14 @@ HUPComment.prototype = {
   },
   todayComment: function() {
     var _comment = this;
-    var appendNew = function() {
-      var s = HUP.El.Span();
+    var today =  new Date();
+    if(this.date.getFullYear() == today.getFullYear() && this.date.getMonth() == today.getMonth() && this.date.getDate() == today.getDate()) {
+      var s = HUP.El.Span(), a = HUP.El.A();
       HUP.El.AddClass(s, 'new');
       HUP.El.Add(HUP.El.Txt('új'), s);
       HUP.El.Insert(s, _comment.comment.firstChild);
-      var a = HUP.El.A();
       a.setAttribute('id', 'new');
       HUP.El.Insert(a, _comment.comment.firstChild);
-    }
-    var today =  new Date();
-    if(this.date.getFullYear() == today.getFullYear() && this.date.getMonth() == today.getMonth() && this.date.getDate() == today.getDate()) {
-      appendNew(this.header);
     }
   },
   newComment: function() {
