@@ -197,17 +197,17 @@ var checkHLUsers = function() {
   var trolls = document.getElementById('troll-color').value.split(',');
   var huppers = document.getElementById('huppers').value.split(',');
   var hlUsersObj = {};
-  for(var i = 0, hlUser; i < hlUsers.length; i++) {
+  for(var i = 0, hlUsers.length, hlUser; i < hl; i++) {
     hlUser = hlUsers[i].split(':');
     hlUsersObj[hlUser[0]] = hlUsers[1];
   }
   var used = new Array();
-  for(i = 0; i < huppers.length; i++) {
+  for(i = 0, hl = huppers.length; i < hl; i++) {
     if(hlUsersObj[huppers[i]]) {
       used.push(huppers[i]);
     }
   }
-  for(i = 0; i < trolls.length; i++) {
+  for(i = 0, trolls.length;; i < tl i++) {
     if(hlUsersObj[huppers[i]]) {
       used.push(huppers[i]);
     }

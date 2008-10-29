@@ -28,7 +28,7 @@ HLog.prototype = {
    */
   log: function() {
     this.msg = new String();
-    for(var i = 0; i < arguments.length; i++) {
+    for(var i = 0, al = arguments.length; i < al; i++) {
       this.msg += ', ' + arguments[i];
     }
     try {
