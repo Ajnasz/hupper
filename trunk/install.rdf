@@ -24,7 +24,7 @@
 
     <em:creator>Lajos Koszti [Ajnasz]; http://ajnasz.hu</em:creator>
     <em:contributor>phaul</em:contributor>
-    <em:description>Adds some feature to http://hup.hu website</em:description>
+    <em:description>Browse the HUP easily</em:description>
     <em:homepageURL>http://ajnasz.hu/blog/20070616/hupper-extension</em:homepageURL>
     <em:iconURL>chrome://hupper/skin/hupper.png</em:iconURL>
     <em:optionsURL>chrome://hupper/content/hupper-prefs.xul</em:optionsURL>
