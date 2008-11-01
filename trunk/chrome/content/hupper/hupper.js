@@ -1010,29 +1010,33 @@ var bindHUPKeys = function() {
   },
     false);
 };
-var HUPJump = {
+var HUPJump = function(win, nextLinks) {
+  this.window = win;
+  this.nextLinks = nextLinks;
+}
+HUPJump.prototype = {
   next: function() {
     if(/^#/.test(HUP.w.location.hash)) {
-      var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
-      if(HUP.w.nextLinks[curIndex+1]) {
-        HUP.w.location.hash = HUP.w.nextLinks[curIndex+1];
-      } else if(HUP.w.nextLinks[0]) {
-        HUP.w.location.hash = HUP.w.nextLinks[0];
+      var curIndex = this.nextLinks.indexOf(this.window.location.hash.replace(/^#/, ''));
+      if(this.nextLinks[curIndex+1]) {
+        this.window.location.hash = this.nextLinks[curIndex+1];
+      } else if(this.nextLinks[0]) {
+        this.window.location.hash = this.nextLinks[0];
       }
-    } else if(HUP.w.nextLinks.length) {
-      HUP.w.location.hash = HUP.w.nextLinks[0];
+    } else if(this.nextLinks.length) {
+      this.window.location.hash = this.nextLinks[0];
     }
   },
   prev: function() {
-    if(/^#/.test(HUP.w.location.hash)) {
-      var curIndex = HUP.w.nextLinks.indexOf(HUP.w.location.hash.replace(/^#/, ''));
+    if(/^#/.test(this.window.location.hash)) {
+      var curIndex = this.nextLinks.indexOf(this.window.location.hash.replace(/^#/, ''));
       if(curIndex != 0) {
-        HUP.w.location.hash = HUP.w.nextLinks[curIndex-1];
-      } else if(HUP.w.nextLinks[HUP.w.nextLinks.length-1]) {
-        HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+        this.window.location.hash = this.nextLinks[curIndex-1];
+      } else if(this.nextLinks[this.nextLinks.length-1]) {
+        this.window.location.hash = this.nextLinks[HUP.w.nextLinks.length-1];
       }
-    } else if(HUP.w.nextLinks.length) {
-      HUP.w.location.hash = HUP.w.nextLinks[HUP.w.nextLinks.length-1];
+    } else if(this.nextLinks.length) {
+      this.window.location.hash = this.nextLinks[this.nextLinks.length-1];
     }
   }
 };
@@ -1078,11 +1082,11 @@ HUPStatusClickHandling.prototype = {
     if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) { return; }
     switch(event.button) {
       case 0:
-        HUPJump.next();
+        currentTab.contentDocument.Jumps.next();
       break;
 
       case 2:
-        HUPJump.prev();
+        currentTab.contentDocument.Jumps.prev();
       break;
     }
   }
@@ -1138,6 +1142,7 @@ var HUPPER = function(e) {
       HideHupAds();
     }
 //    bindHUPKeys();
+    HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
     TIMER.stop();
     HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
   }
