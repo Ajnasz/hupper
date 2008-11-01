@@ -1085,8 +1085,12 @@ HUPStatusClickHandling.prototype = {
         currentTab.contentDocument.Jumps.next();
       break;
 
-      case 2:
+     case 2:
         currentTab.contentDocument.Jumps.prev();
+      break;
+
+     case 3:
+      HupAccountManager.logIn();
       break;
     }
   }

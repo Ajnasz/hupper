@@ -7,12 +7,15 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hp.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>
   <stringbundlset id="stringbundleset">
     <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />
   </stringbundlset>
 
   <statusbar id="status-bar">
-    <statusbarpanel class="statusbarpanel-iconic" id="HUP-statusbar" status="none" tooltip="HUP-statusbar-tooltip" context="HUP-statusbar-menu">
+    <statusbarpanel class="statusbarpanel-iconic" id="HUP-statusbar" status="none" tooltip="HUP-statusbar-tooltip">
       <image id="HUP-statusbar-image" width="16" height="16" src="chrome://hupper/skin/hupper-small.png" />
       <label id="HUP-statusbar-label" value="HUP" collapsed="true" crop="end" style="width:0;margin:0" />
     </statusbarpanel>
