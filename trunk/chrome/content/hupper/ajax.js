@@ -34,7 +34,10 @@ var HupAjax = function(pars, el) {
   this.req.setRequestHeader('User-Agent', this.agent);
   this.req.setRequestHeader('Accept-Charset','utf-8');
   this.req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-  this.req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
+  if(this.method.toLowerCase() == 'post') {
+    this.req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+  }
 
   this.req.onreadystatechange = stChg(this, false);
   this.req.send(this.pars);
@@ -87,8 +90,8 @@ HupAjax.prototype = {
    * @param {Int} er Error code
    */
   errorHandler: function(msg, er) {
-    Hog.log('Ajax error: ' + msg + ' || ' + er);
-    HLog.log(this.url);
+    HUP.L.log('Ajax error: ' + msg + ' || ' + er);
+    HUP.L.log(this.url);
     return false;
   },
   /**
