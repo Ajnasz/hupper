@@ -8,8 +8,11 @@
   ondialogaccept="return savePreferences();"
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://hupper/content/hp.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
+  <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>
   <script type="application/x-javascript">
     <![CDATA[
     window.addEventListener('load', StartHupperPrefernces, false);
@@ -18,8 +21,9 @@
 
   <tabbox id="hupper-tabbox">
     <tabs>
-      <tab label="General" />
-      <tab label="Comment color" />
+      <tab label="&Hupper.tabgeneral;" />
+       <tab label="&Hupper.tabcomment;" />
+       <tab label="&Hupper.tabaccount;" />
     </tabs>
     <tabpanels>
       <tabpanel>
@@ -64,6 +68,14 @@
           <separator class="groove" />
           <label control="hupper-highlightusers" value="&Hupper.highlightuser;"/>
           <textbox id="hupper-highlightusers" />
+        </groupbox>
+      </tabpanel>
+      <tabpanel>
+        <groupbox>
+          <label contrl="hupper-username" value="&Hupper.username;"/>
+          <textbox id="hupper-username"/>
+          <label contrl="hupper-password" value="&Hupper.password;"/>
+          <textbox id="hupper-password" type="password"/>
         </groupbox>
       </tabpanel>
 
