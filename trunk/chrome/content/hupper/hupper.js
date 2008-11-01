@@ -606,8 +606,6 @@ var addHupStyles = function(e) {
   if(HupperPrefs.hilightForumLinesOnHover()) {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
-  styles += 'input, textarea { border: 1px solid #999 !important; padding: 2px !important; margin-bottom: 5px !important; }';
-  styles += 'input:focus, textarea:focus { border-color: #000 !important; }';
   styles += '.hnew { color: red; font-weight: bold; }';
   styles += '.nnew { float:right; }';
   styles += '.nnew, .nnew a { font-size:10px; font-weight: normal; }';
