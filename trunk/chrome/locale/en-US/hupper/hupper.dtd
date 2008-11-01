@@ -23,3 +23,10 @@
 
 <!ENTITY Hupper.showquicknavbox "Show quick navigation box">
 <!ENTITY Hupper.highlightuser "Highlight user comments (username:#fff999,username2:#999fff)">
+
+
+<!ENTITY Hupper.tabgeneral "General">
+<!ENTITY Hupper.tabcomment "Comment color">
+<!ENTITY Hupper.tabaccount "Account information">
+<!ENTITY Hupper.username "Username:">
+<!ENTITY Hupper.password "Password:">
