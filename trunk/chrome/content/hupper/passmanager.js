@@ -6,9 +6,9 @@
 
 /**
  * @constructor
- * @class _passwordManager Interface to handle easily the user accounts on ff2 and ff3
+ * @class _HUPPasswordManager Interface to handle easily the user accounts on ff2 and ff3
  */
-var _passwordManager = function() {
+var _HUPPasswordManager = function() {
   this.url = 'chrome://hupper';
   this.username = 'Hupper';
 
