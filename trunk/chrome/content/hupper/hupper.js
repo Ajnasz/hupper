@@ -1078,21 +1078,56 @@ HUPStatusClickHandling.prototype = {
    * @param {Object} event
    */
   click: function(event) {
-    var currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
-    if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) { return; }
     switch(event.button) {
       case 0:
+        var currentTab = this.openHUP();
         currentTab.contentDocument.Jumps.next();
       break;
 
      case 2:
+        var currentTab = this.openHUP();
         currentTab.contentDocument.Jumps.prev();
       break;
 
-     case 3:
+     case 1:
       HupAccountManager.logIn();
+      var currentTab = this.openHUP();
       break;
     }
+  },
+  getOpenedHUP: function() {
+    var brl = gBrowser.browsers.length;
+    var outObj = {grTab: false, blankPage: false};
+    var r = new RegExp('^https?://(?:www\.)?hup.hu');
+    for(var i = 0 ; i < brl; i++) {
+      if(r.test(gBrowser.getBrowserAtIndex(i).currentURI.spec)) {
+        outObj.hupTab = i;
+        return outObj;
+      } else if(gBrowser.getBrowserAtIndex(i).currentURI.spec == 'about:blank' && outObj.blankPage === false) {
+        outObj.blankPage = i;
+      }
+    }
+    return outObj;
+  },
+  openHUP: function() {
+    var currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
+    if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) {
+      var openedHUP = this.getOpenedHUP();
+      if(openedHUP.hupTab === false) {
+        if(openedHUP.blankPage === false) {
+            currentTab = gBrowser.selectedTab = gBrowser.addTab('http://hup.hu');
+        } else {
+          gBrowser.mTabContainer.selectedIndex = openedHUP.blankPage;
+          gBrowser.loadURI('http://hup.hu');
+          gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.focus();
+        }
+        gBrowser
+      } else {
+        gBrowser.mTabContainer.selectedIndex = openedHUP.hupTab;
+      }
+      currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
+    }
+    return currentTab;
   }
 };
 
