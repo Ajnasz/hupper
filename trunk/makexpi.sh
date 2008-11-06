@@ -1,14 +1,14 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  HUPPERVER='0.0.5.2a';
+  VER='0.0.5.2a';
 else
-  HUPPERVER=$1;
+  VER=$1;
 fi
 
 START_DIR=`pwd`;
 TMP_DIR=/tmp;
-BUILD_DIR=$TMP_DIR/hupper_$HUPPERVER;
+BUILD_DIR=$TMP_DIR/hupper_$VER;
 ######################## Configuration END ##############################
 
 function cleanBuild {
@@ -44,10 +44,10 @@ function setVersion {
   if [ `pwd` != $BUILD_DIR ];then
     cd $BUILD_DIR;
   fi
-  echo "Set version to $HUPPERVER";
-  sed "s/###VERSION###/$HUPPERVER/g" install.rdf > install.rdf.tmp;
+  echo "Set version to $VER";
+  sed "s/###VERSION###/$VER/g" install.rdf > install.rdf.tmp;
   mv install.rdf.tmp install.rdf;
-  sed "s/###VERSION###/$HUPPERVER/g" chrome/content/hupper/ajax.js > chrome/content/hupper/ajax.js.tmp;
+  sed "s/###VERSION###/$VER/g" chrome/content/hupper/ajax.js > chrome/content/hupper/ajax.js.tmp;
   mv chrome/content/hupper/ajax.js.tmp chrome/content/hupper/ajax.js;
 }
 
