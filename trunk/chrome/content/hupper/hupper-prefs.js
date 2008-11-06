@@ -1,6 +1,6 @@
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu 
- * @licence General Public Licence v2 
+ * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
+ * @licence General Public Licence v2
  */
 setPrefWinVals = function() {
   document.getElementById('enable-trollfilter').checked = hp.get.filtertrolls();
@@ -20,7 +20,7 @@ setPrefWinVals = function() {
   document.getElementById('show-quick-nav-box').checked = hp.get.showqnavbox();
   document.getElementById('hide-troll-answers').checked = hp.get.hidetrollanswers();
   document.getElementById('hupper-highlightusers').value = hp.get.highlightusers();
-  document.getElementById('hupper-password').value = new _passwordManager().getPassword();
+  document.getElementById('hupper-password').value = new _HUPPasswordManager().getPassword();
   document.getElementById('hupper-username').value = hp.get.username();
 };
 savePreferences = function() {
@@ -43,7 +43,7 @@ savePreferences = function() {
   hp.set.hidetrollanswers(document.getElementById('hide-troll-answers').checked);
   hp.set.highlightusers(document.getElementById('hupper-highlightusers').value);
   hp.set.username(document.getElementById('hupper-username').value);
-  new _passwordManager().addPassword(document.getElementById('hupper-password').value);
+  new _HUPPasswordManager().addPassword(document.getElementById('hupper-password').value);
   return true;
 };
 var disableFields = function() {

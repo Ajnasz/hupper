@@ -10,7 +10,7 @@
  * Google account manager namespace,
  * check that the user is logged in,
  * logging in the user
- * @requires _passwordManager to get the users password
+ * @requires _HUPPasswordManager to get the users password
  * @requires #getFeedList function, to gets the feeds
  */
 var HupAccountManager = {
@@ -21,7 +21,7 @@ var HupAccountManager = {
    * @type {Boolean}
    */
   passwordManager: function() {
-    return new _passwordManager();
+    return new _HUPPasswordManager();
   },
   hp: function() {
     if(typeof hp == 'undefined') {
