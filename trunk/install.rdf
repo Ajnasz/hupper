@@ -28,6 +28,6 @@
     <em:homepageURL>http://ajnasz.hu/blog/20070616/hupper-extension</em:homepageURL>
     <em:iconURL>chrome://hupper/skin/hupper.png</em:iconURL>
     <em:optionsURL>chrome://hupper/content/hupper-prefs.xul</em:optionsURL>
-    <!--<em:updateURL>http://ajnasz.hu/files/hupper-update.rdf</em:updateURL>-->
+    <em:updateURL>https://www.mozdev.org/p/updates/hupper/hupper@ajnasz.hu/update.rdf</em:updateURL>
   </Description>
 </RDF>
