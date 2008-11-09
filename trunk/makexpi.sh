@@ -1,12 +1,14 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='0.0.5.2a';
+  VER='0.0.5.2';
 else
   VER=$1;
 fi
 
+PROJECT_NAME='hupper';
 START_DIR=`pwd`;
+DOWNLOAD_DIR='/var/www/hupper/cvs/downloads';
 TMP_DIR=/tmp;
 BUILD_DIR=$TMP_DIR/hupper_$VER;
 ######################## Configuration END ##############################
@@ -20,24 +22,32 @@ function cleanBuild {
 function buildXPI {
   echo "Creating Hupper installation package";
   cd chrome;
-  if [ -f hupper.jar ];then
-    echo "Delete hupper.jar";
-    rm hupper.jar;
+  if [ -f $PROJECT_NAME.jar ];then
+    echo "Delete $PROJECT_NAME.jar";
+    rm $PROJECT_NAME.jar;
   fi;
-  zip -r hupper.jar content/* -x \*.svn/\*;
-  zip -r hupper.jar locale/* -x \*.svn/*;
-  zip -r hupper.jar skin/* -x \*.svn/\*;
+  zip -r $PROJECT_NAME.jar content/* -x \*.svn/\*;
+  zip -r $PROJECT_NAME.jar locale/* -x \*.svn/*;
+  zip -r $PROJECT_NAME.jar skin/* -x \*.svn/\*;
 
   cd ..;
-  echo "Build package hupper.xpi";
-  rm hupper.xpi;
-  zip hupper.xpi chrome.manifest install.rdf chrome/hupper.jar defaults/preferences/hupper.js license.txt -x \*.svn/\*
+  echo "Build package $PROJECT_NAME.xpi";
+  rm $PROJECT_NAME.xpi;
+  zip $PROJECT_NAME.xpi chrome.manifest install.rdf chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
 
   echo "Replace old XPIs with the new one";
-  if [ -f $START_DIR/hupper.xpi ];then
-    rm $START_DIR/hupper.xpi;
+  if [ -d $DOWNLOAD_DIR ]; then
+    if [ -f $DOWNLOAD_DIR/hupper_$VER.xpi ];then
+      rm $DOWNLOAD_DIR/hupper_$VER.xpi;
+    fi;
+    cp $PROJECT_NAME.xpi $DOWNLOAD_DIR/hupper_$VER.xpi;
+  else
+    echo "Warning: Download dir does not exists!";
   fi;
-  cp hupper.xpi $START_DIR/;
+  if [ -f $START_DIR/$PROJECT_NAME.xpi ];then
+    rm $START_DIR/$PROJECT_NAME.xpi;
+  fi;
+  cp $PROJECT_NAME.xpi $START_DIR/;
   echo "Build finished!";
 }
 function setVersion {
@@ -47,8 +57,8 @@ function setVersion {
   echo "Set version to $VER";
   sed "s/###VERSION###/$VER/g" install.rdf > install.rdf.tmp;
   mv install.rdf.tmp install.rdf;
-  sed "s/###VERSION###/$VER/g" chrome/content/hupper/ajax.js > chrome/content/hupper/ajax.js.tmp;
-  mv chrome/content/hupper/ajax.js.tmp chrome/content/hupper/ajax.js;
+  sed "s/###VERSION###/$VER/g" chrome/content/$PROJECT_NAME/ajax.js > chrome/content/$PROJECT_NAME/ajax.js.tmp;
+  mv chrome/content/$PROJECT_NAME/ajax.js.tmp chrome/content/$PROJECT_NAME/ajax.js;
 }
 
 if [ -d $TMP_DIR ];then
