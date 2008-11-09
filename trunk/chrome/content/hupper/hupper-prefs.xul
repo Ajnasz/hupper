@@ -23,7 +23,7 @@
     <tabs>
       <tab label="&Hupper.tabgeneral;" />
        <tab label="&Hupper.tabcomment;" />
-       <tab label="&Hupper.tabaccount;" />
+       <!--       <tab label="&Hupper.tabaccount;" /> -->
     </tabs>
     <tabpanels>
       <tabpanel>
@@ -70,6 +70,7 @@
           <textbox id="hupper-highlightusers" />
         </groupbox>
       </tabpanel>
+      <!--
       <tabpanel>
         <groupbox>
           <label contrl="hupper-username" value="&Hupper.username;"/>
@@ -78,6 +79,7 @@
           <textbox id="hupper-password" type="password"/>
         </groupbox>
       </tabpanel>
+      -->
 
     </tabpanels>
   </tabbox>
