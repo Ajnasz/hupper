@@ -38,7 +38,7 @@ var HUPComment = function(commentNode, indentComments, comments) {
 HUPComment.prototype = {
   getChildComment: function() {
     var childs = this.comment.nextSibling.nextSibling;
-    if(HUP.El.HasClass(this.childs, 'indented')) {
+    if(HUP.El.HasClass(childs, 'indented')) {
       this.childs = childs;
     } else {
       this.childs = -1;
