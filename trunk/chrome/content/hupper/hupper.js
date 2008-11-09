@@ -1064,9 +1064,10 @@ HUPStatusClickHandling.prototype = {
    * add the event handler to the statusbar icon
    */
   observe: function() {
-    this.statusBar.addEventListener('click', this.click, false);
+    var _this = this;
+    this.statusBar.addEventListener('click', function(event){_this.click(event)}, false);
     if(this.st == 2) {
-      this.statusBar.addEventListener('dblclick', this.click, false);
+      this.statusBar.addEventListener('dblclick', function(event){_this.click(event)}, false);
     }
   },
   /**
@@ -1078,21 +1079,22 @@ HUPStatusClickHandling.prototype = {
    * @param {Object} event
    */
   click: function(event) {
-    switch(event.button) {
-      case 0:
-        var currentTab = this.openHUP();
-        currentTab.contentDocument.Jumps.next();
-      break;
+    var currentTab = this.openHUP();
+    if(currentTab.contentDocument.Jumps) {
+      switch(event.button) {
+        case 0:
+          currentTab.contentDocument.Jumps.next();
+        break;
 
-     case 2:
-        var currentTab = this.openHUP();
-        currentTab.contentDocument.Jumps.prev();
-      break;
+      case 2:
+          currentTab.contentDocument.Jumps.prev();
+        break;
 
-     case 1:
-      HupAccountManager.logIn();
-      var currentTab = this.openHUP();
-      break;
+      case 1:
+        // HupAccountManager.logIn();
+        // var currentTab = _this.openHUP();
+        break;
+      }
     }
   },
   getOpenedHUP: function() {
