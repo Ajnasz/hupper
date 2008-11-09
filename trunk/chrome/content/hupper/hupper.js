@@ -1099,7 +1099,7 @@ HUPStatusClickHandling.prototype = {
   },
   getOpenedHUP: function() {
     var brl = gBrowser.browsers.length;
-    var outObj = {grTab: false, blankPage: false};
+    var outObj = {hupTab: false, blankPage: false};
     var r = new RegExp('^https?://(?:www\.)?hup.hu');
     for(var i = 0 ; i < brl; i++) {
       if(r.test(gBrowser.getBrowserAtIndex(i).currentURI.spec)) {
