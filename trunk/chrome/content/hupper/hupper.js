@@ -197,7 +197,7 @@ var NodeHeaderBuilder = function() {
 
   // Mark as read node
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
-  HUP.El.AddClass(this.markR, 'marker');
+  HUP.El.AddClass(this.markR, 'mark');
 };
 NodeHeaderBuilder.prototype = {
   /**
@@ -613,7 +613,7 @@ var addHupStyles = function(e) {
   styles += '.hnav { float: right; padding-right: 5px; }';
   styles += '.hnav * { margin-left: 2px; margin-right: 2px; }';
   styles += '.submitted { padding: 2px !important; }';
-  styles += '.marker { cursor: pointer; color: #000; }';
+  styles += '.mark { cursor: pointer; color: #000; }';
   styles += '.hidden {display: none;}';
 
   var st = HUP.El.El('style');
