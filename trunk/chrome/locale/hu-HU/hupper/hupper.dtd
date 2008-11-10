@@ -1,7 +1,7 @@
 <!ENTITY Hupper.enabletrollfilter "Trollszűrő engedélyezése">
 <!ENTITY Hupper.trolls "Trollok (Vesszővel elválasztott felhasználónevek)">
 <!ENTITY Hupper.trollcolor "A Trollok hozzászólásainak fejlécének a színe">
-<!ENTITY Hupper.trollfiltermethod "Trollok hozzászólásit eltüntető effekt">
+<!ENTITY Hupper.trollfiltermethod "Trollok hozzászólásait eltüntető effekt">
 <!ENTITY Hupper.trollfilter.hide "Elrejtés">
 <!ENTITY Hupper.trollfilter.hilight "Kiemelés">
 <!ENTITY Hupper.trollfilter.hideanswers "Troll hozzászólásra érkezett válaszok elrejtése">
@@ -16,7 +16,7 @@
 <!ENTITY Hupper.insertnewtexttonode "Új jelző beszúrása azon cikkek fejlécébe, ahol olvasatlan hozzászólás van">
 <!ENTITY Hupper.fadeparentcomment "Szülő hozzászólás áttűnés">
 <!ENTITY Hupper.showquicknavbox "Gyors navigációs doboz mutatása">
-<!ENTITY Hupper.highlightuser "Felhasználók hozzászólásinak kiemelése (név:#fff999,név2:#999fff)">
+<!ENTITY Hupper.highlightuser "Felhasználók hozzászólásainak kiemelése (név:#fff999,név2:#999fff)">
 <!ENTITY Hupper.tabgeneral "Általános">
 <!ENTITY Hupper.tabcomment "Hozzászólás színezés">
 <!ENTITY Hupper.tabaccount "Felhasználói információk">
