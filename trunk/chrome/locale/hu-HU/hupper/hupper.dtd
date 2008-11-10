@@ -18,7 +18,7 @@
 <!ENTITY Hupper.showquicknavbox "Gyors navigációs doboz mutatása">
 <!ENTITY Hupper.highlightuser "Felhasználók hozzászólásinak kiemelése (név:#fff999,név2:#999fff)">
 <!ENTITY Hupper.tabgeneral "Általános">
-<!ENTITY Hupper.tabcomment "Comment színezés">
+<!ENTITY Hupper.tabcomment "Hozzászólás színezés">
 <!ENTITY Hupper.tabaccount "Felhasználói információk">
 <!ENTITY Hupper.username "Felhasználói név:">
 <!ENTITY Hupper.password "Jelszó:">
