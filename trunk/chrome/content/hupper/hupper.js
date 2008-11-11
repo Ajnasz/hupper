@@ -384,8 +384,10 @@ var getNodes = function() {
         submitData: submitData,
         cont: cont,
         footer: footer,
-        newc: HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false
+        newc: HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false,
+        taxonomy: HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag')[0].innerHTML
       };
+      HUP.L.log(node.taxonomy)
       node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
   }
@@ -814,7 +816,7 @@ Elementer.prototype = {
   */
   AddClass: function(el, c) {
     var curClass = el.getAttribute('class');
-    (curClass === null) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
+    (curClass === null || Stringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
   /**
   * Removes the specified class from the element
@@ -822,7 +824,8 @@ Elementer.prototype = {
   * @param {String} c Class name
   */
   RemoveClass: function(el, c) {
-    el.setAttribute('class', el.getAttribute('class').replace(c, ''));
+    var cl =  new RegExp('\\b' + c + '\\b');
+    el.setAttribute('class', el.getAttribute('class').replace(cl, ''));
   },
   /**
   * Checks that the element has the specified class or not
@@ -834,7 +837,7 @@ Elementer.prototype = {
     if(!el || !c) {
       return false;
     }
-    cl = new RegExp('\\b' + c + '\\b');
+    var cl = new RegExp('\\b' + c + '\\b');
     return cl.test(el.getAttribute('class'));
   },
   /**
@@ -875,6 +878,48 @@ Elementer.prototype = {
     return out;
   },
   /**
+   * @param {Element} par parent element node
+   * @param {String} attr attribitue name
+   * @param {String} [val] value of the attribute
+   * @param {String} el element type
+   * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
+   * @return the elements which are childnodes of the parent and has the specified attribute
+   * @type Array
+   */
+  GetByAttrib: function(par, el, attr, val, force) {
+    el = el ? el.toUpperCase() : el = '*';
+    if(!par) {
+      if(force == true) {
+        par = this.GetBody();
+      } else {
+        return new Array();
+      }
+    }
+    var out = new Array();
+    var ts = this.GetTag(el, par);
+    for(var i = 0, tsl = ts.length; i < tsl; i++) {
+      if(this.HasAttr(ts[i], attr, val)) {
+        out.push(ts[i]);
+      }
+    }
+    return out;
+  },
+  /**
+   * @param {Element} el an element
+   * @param {String} attr name of the attribute
+   * @param {String} [val] value of the attribute
+   * @returns true if the element has the attribute (if value specified the attribute value also checked)
+   * @type {Boolean}
+   */
+  HasAttr: function(el, attr, val) {
+    var a = el.getAttribute(attr);
+    if(typeof val == 'string') {
+      return (typeof a != 'undefined' && a == val);
+    } else {
+      return (typeof a != 'undefined');
+    }
+  },
+  /**
     * @param {String} text link content
     * @param {String} [href] url of the link
     * @return link object
@@ -892,23 +937,9 @@ Elementer.prototype = {
 var Stringer = {
   trim: function(str) {
     return str.replace(/^\s+|\s+$/g, '');
-  }
-}
-var todayCommentsAreNew = function(comments) {
-  var today =  new Date();
-  var THIS = this;
-  comments.map(function(comment) {
-    if(comment.date.getFullYear() == today.getFullYear() && comment.date.getMonth() == today.getMonth() && comment.date.getDate() == today.getDate()) {
-      THIS.appendNew(comment.header);
-    }
-  });
-};
-todayCommentsAreNew.prototype = {
-  appendNew: function(elem) {
-    var s = HUP.El.Span();
-    HUP.El.AddClass(s, 'new');
-    HUP.El.Add(HUP.El.Txt('új'), s);
-    HUP.El.Add(s, elem);
+  },
+  empty: function(str) {
+    return (this.trim(str) == '');
   }
 }
 /**
