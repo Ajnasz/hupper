@@ -269,9 +269,10 @@ NodeHeaderBuilder.prototype = {
     * @return Link (a) element only with name attribute
     * @type Element
     */
-  buildNameLink: function(i) {
+  buildNameLink: function(i, type) {
     var liaC = HUP.El.A();
-    liaC.setAttribute('name', 'n-' + i);
+    if(!type) type = 'n';
+    liaC.setAttribute('name', type + '-' + i);
     return liaC;
   },
   /**
@@ -371,23 +372,10 @@ var getComments = function() {
 var getNodes = function() {
   var c = HUP.El.GetId('content-both');
   var ds = HUP.El.GetTag('div', c);
-  var nodes = new Array(), newnodes = new Array(), node = {}, header, submitData, cont, footer;
+  var nodes = new Array(), newnodes = new Array();
   for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'node')) {
-      header = HUP.El.GetFirstTag('h2', ds[i]);
-      submitData = ds[i].childNodes[3];
-      cont = ds[i].childNodes[5];
-      footer = HUP.El.HasClass(ds[i].childNodes[7], 'links') ? ds[i].childNodes[7] : false;
-      node = {
-        header: header,
-        path: Stringer.trim(HUP.El.GetFirstTag('a', header).getAttribute('href')),
-        submitData: submitData,
-        cont: cont,
-        footer: footer,
-        newc: HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false,
-        taxonomy: HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag')[0].innerHTML
-      };
-      HUP.L.log(node.taxonomy)
+      node = new HUPNode(ds[i]);
       node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
   }
@@ -395,24 +383,25 @@ var getNodes = function() {
 };
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
- * @param {Array} nodes
+ * @3aram {Array} nodes
  */
-var parseNodes = function(nodes) {
-  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread;
-  for(var i = 0, nl = nodes.length; i < nl; i++) {
-    if(nodes[i].newc) {
-      sp = spa.cloneNode(true);
-      HUP.El.AddClass(sp, 'nnew');
-      mread = builder.buildMarker(nodes[i].path, i);
-      HUP.markReadNodes.push(mread);
-      HUP.El.Add(mread, sp);
-      HUP.El.Add(builder.buildNewText(), sp);
-      HUP.El.Insert(builder.buildNameLink(i), nodes[i].header);
-      (i > 0) ? HUP.El.Add(builder.buildPrevLink('n-' + (i - 1)), sp) : HUP.El.Add(builder.buildFirstLink(), sp);
-      (i < nl - 1) ? HUP.El.Add(builder.buildNextLink('n-' + (i + 1)), sp) : HUP.El.Add(builder.buildLastLink(), sp);
-      HUP.w.nextLinks.push('n-' + (i));
-      HUP.El.Insert(sp, nodes[i].header.firstChild);
+var parseNodes = function(nodes, newNodes) {
+  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread, next, prev;
+  for(var i = 0, nl = nodes.length, node; i < nl; i++) {
+    node = nodes[i];
+    if(node.newc) {
+      node.index = newNodes.indexOf(node);
+      node.next = (node.index == newNodes.length - 1) ? false : newNodes[node.index + 1].id;
+      node.previous = (node.index == 0) ? false : newNodes[node.index - 1].id;
+      node.addNewNodeLinks();
+      HUP.w.nextLinks.push('node-' + node.id);
     }
+    if(node.taxonomy && inArray(node.taxonomy, ['Apple', 'Linux', 'Internet'])) {
+      node.hide();
+    }
+  }
+  if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {
+    appendNewNotifier('#node-' + newNodes[0].id, true);
   }
 };
 /**
@@ -423,7 +412,7 @@ var parseNodes = function(nodes) {
  */
 var markNodeAsRead = function(e) {
   new HupAjax( {
-    method: 'head',
+    method: 'get',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
     successHandler: function() {
       this.el.innerHTML = HUP.Bundles.getString('markingSuccess');
@@ -815,6 +804,7 @@ Elementer.prototype = {
   * @param {String} c Class name
   */
   AddClass: function(el, c) {
+    if(!el || !c) return false;
     var curClass = el.getAttribute('class');
     (curClass === null || Stringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
@@ -824,6 +814,7 @@ Elementer.prototype = {
   * @param {String} c Class name
   */
   RemoveClass: function(el, c) {
+    if(!el || !c) return false;
     var cl =  new RegExp('\\b' + c + '\\b');
     el.setAttribute('class', el.getAttribute('class').replace(cl, ''));
   },
@@ -834,9 +825,7 @@ Elementer.prototype = {
   * @type {Boolean}
   */
   HasClass: function(el, c) {
-    if(!el || !c) {
-      return false;
-    }
+    if(!el || !c) return false;
     var cl = new RegExp('\\b' + c + '\\b');
     return cl.test(el.getAttribute('class'));
   },
@@ -1203,11 +1192,8 @@ var HUPPER = function(e) {
       }
     } else {
       if(HupperPrefs.insertnewtexttonode()) {
-        var newNodes = getNodes()[1];
-        parseNodes(newNodes);
-        if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {
-          appendNewNotifier('#n-0', true);
-        }
+        var nodes = getNodes();
+        parseNodes(nodes[0], nodes[1]);
       }
     }
     if(HupperPrefs.hideads()) {
