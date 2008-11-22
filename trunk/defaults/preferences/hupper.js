@@ -27,3 +27,5 @@ pref("extensions.hupper.showqnavbox", true);
 pref("extensions.hupper.hideads", false);
 pref("extensions.hupper.highlightusers", "username:#fff999,username2:#999fff");
 pref("extensions.hupper.username", '');
+
+pref("extensions.hupper.hidetaxonomy", '');
