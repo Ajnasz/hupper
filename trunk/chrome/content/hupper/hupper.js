@@ -153,6 +153,9 @@ var HupperPrefs = {
   },
   highlightusers: function() {
     return this.prefManager.getCharPref('extensions.hupper.highlightusers');
+  },
+  hidetaxonomy: function() {
+    return this.prefManager.getCharPref('extensions.hupper.hidetaxonomy');
   }
 };
 /**
@@ -376,7 +379,7 @@ var getNodes = function() {
   for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'node')) {
       node = new HUPNode(ds[i]);
-      node.newc ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
+      node.newc && !node.hidden ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
   }
   return new Array(nodes, newnodes);
@@ -395,9 +398,6 @@ var parseNodes = function(nodes, newNodes) {
       node.previous = (node.index == 0) ? false : newNodes[node.index - 1].id;
       node.addNewNodeLinks();
       HUP.w.nextLinks.push('node-' + node.id);
-    }
-    if(node.taxonomy && inArray(node.taxonomy, ['Apple', 'Linux', 'Internet'])) {
-      node.hide();
     }
   }
   if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {

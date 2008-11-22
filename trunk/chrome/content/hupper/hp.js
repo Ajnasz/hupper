@@ -71,6 +71,9 @@ HP.prototype = {
     },
     username: function() {
       return this.M.getCharPref('extensions.hupper.username');
+    },
+    hidetaxonomy: function() {
+      return this.M.getCharPref('extensions.hupper.hidetaxonomy');
     }
   },
   set: {
@@ -141,6 +144,9 @@ HP.prototype = {
     },
     username: function(value) {
       return this.M.setCharPref('extensions.hupper.username', value);
+    }
+    hidetaxonomy: function(value) {
+      return this.M.setCharPref('extensions.hupper.hidetaxonomy', value);
     }
   }
 };
