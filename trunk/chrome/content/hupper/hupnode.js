@@ -3,7 +3,7 @@ var HUPNode = function(node) {
   var submitData = node.childNodes[3];
   var cont = node.childNodes[5];
   var footer = HUP.El.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false;
-  this.elment = node,
+  this.element = node,
   this.id = parseInt(node.id.replace('node-', '')),
   this.header = header,
   this.path = Stringer.trim(HUP.El.GetFirstTag('a', header).getAttribute('href')),
@@ -12,14 +12,20 @@ var HUPNode = function(node) {
   this.footer = footer,
   this.newc = HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false,
   this.taxonomy = HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag').length > 0 ? HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag')[0].innerHTML : false
-  this.next = false;
-  this.previous = false;
+  var hideTaxonomies = HupperPrefs.hidetaxonomy().split(',');
+  if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
+    this.hide();
+  }
   this.builder = new NodeHeaderBuilder();
   this.addNnewSpan();
 };
 HUPNode.prototype = {
+  hidden: false,
+  next: false,
+  previous: false,
   hide: function() {
     HUP.El.AddClass(this.element, 'hidden');
+    this.hidden = true;
   },
   addNnewSpan: function() {
     this.sp = HUP.El.Span();
