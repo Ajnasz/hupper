@@ -1,0 +1,58 @@
+var HUPNode = function(node) {
+  var header = HUP.El.GetFirstTag('h2', node);
+  var submitData = node.childNodes[3];
+  var cont = node.childNodes[5];
+  var footer = HUP.El.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false;
+  this.elment = node,
+  this.id = parseInt(node.id.replace('node-', '')),
+  this.header = header,
+  this.path = Stringer.trim(HUP.El.GetFirstTag('a', header).getAttribute('href')),
+  this.submitData = submitData,
+  this.cont = cont,
+  this.footer = footer,
+  this.newc = HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false,
+  this.taxonomy = HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag').length > 0 ? HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag')[0].innerHTML : false
+  this.next = false;
+  this.previous = false;
+  this.builder = new NodeHeaderBuilder();
+  this.addNnewSpan();
+};
+HUPNode.prototype = {
+  hide: function() {
+    HUP.El.AddClass(this.element, 'hidden');
+  },
+  addNnewSpan: function() {
+    this.sp = HUP.El.Span();
+    HUP.El.AddClass(this.sp, 'nnew');
+    HUP.El.Insert(this.sp, this.header.firstChild);
+  },
+  /**
+   * @param {Integer} i node index
+   * @param {Integer} nl number of the nodes
+   */
+  addNewNodeLinks: function() {
+    this.addNameLink();
+    this.addMarkAsRead();
+    this.addNewText();
+    this.addPrev();
+    this.addNext();
+  },
+  addMarkAsRead: function() {
+    var mread = this.builder.buildMarker(this.path, this.id);
+    HUP.markReadNodes.push(mread);
+    HUP.El.Add(mread, this.sp);
+  },
+  addNewText: function() {
+    HUP.El.Add(this.builder.buildNewText(), this.sp);
+  },
+  addNameLink: function() {
+    // HUP.El.Insert(this.builder.buildNameLink('node-' + this.id), this.header);
+    HUP.El.Insert(this.builder.buildNameLink(this.id, 'node'), this.header);
+  },
+  addNext: function() {
+    this.next === false ? HUP.El.Add(this.builder.buildLastLink(), this.sp) : HUP.El.Add(this.builder.buildNextLink('node-' + this.next), this.sp);
+  },
+  addPrev: function() {
+    this.previous === false ? HUP.El.Add(this.builder.buildFirstLink(), this.sp) : HUP.El.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
+  }
+};
