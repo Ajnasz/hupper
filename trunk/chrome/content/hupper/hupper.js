@@ -386,7 +386,8 @@ var getNodes = function() {
 };
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
- * @3aram {Array} nodes
+ * @param {Array} nodes
+ * @param {Array} newNodes
  */
 var parseNodes = function(nodes, newNodes) {
   var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread, next, prev;
@@ -395,9 +396,9 @@ var parseNodes = function(nodes, newNodes) {
     if(node.newc) {
       node.index = newNodes.indexOf(node);
       node.next = (node.index == newNodes.length - 1) ? false : newNodes[node.index + 1].id;
-      node.previous = (node.index == 0) ? false : newNodes[node.index - 1].id;
+      node.previous = (node.index == 0 || !newNodes[node.index - 1]) ? false : newNodes[node.index - 1].id;
       node.addNewNodeLinks();
-      HUP.w.nextLinks.push('node-' + node.id);
+      if(!node.hidden) HUP.w.nextLinks.push('node-' + node.id);
     }
   }
   if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {
@@ -477,35 +478,30 @@ var parseComments = function(comments, newComments, indentComments) {
   var insertPermalink = HupperPrefs.insertPermalink();
   var highlightUsers = HupperPrefs.highlightusers().split(',');
   var hh = {}, bh;
-  for(var i = 0, hl = highlightUsers.length; i < hl; i++) {
-    bh = highlightUsers[i].split(':');
+  highlightUsers.forEach(function(hluser){
+    bh = hluser.split(':');
     hh[bh[0]] = bh[1];
-  }
+  });
   var builder = new NodeHeaderBuilder(), ps;
   try {
-
-  comments.map(function(C) {
-    if(filtertrolls) {
-      if(inArray(C.user, trolls)) {
+    comments.forEach(function(C) {
+      if(filtertrolls && inArray(C.user, trolls)) {
         C.highlightTroll();
       }
-    }
-    if(filterhuppers) {
-      if(inArray(C.user, huppers)) {
+      if(filterhuppers && inArray(C.user, huppers)) {
         C.highlightHupper();
       }
-    }
-    if(extraCommentLinks) {
-      C.addExtraLinks(builder);
-    }
-    if(C.parent != -1) {
-      C.addComExtraParent(builder);
-    }
-    if(insertPermalink) {
-      HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
-    }
-    C.highlightComment(hh);
-  });
+      if(extraCommentLinks) {
+        C.addExtraLinks(builder);
+      }
+      if(C.parent != -1) {
+        C.addComExtraParent(builder);
+      }
+      if(insertPermalink) {
+        HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
+      }
+      C.highlightComment(hh);
+    });
   } catch(e) {HUP.L.log(e.message, e.lineNumber)}
   if(replacenewcommenttext || prevnextlinks) {
     var spanNode = HUP.El.Span(), tmpSpan1;
@@ -1063,7 +1059,7 @@ HUPJump.prototype = {
 var HideHupAds = function() {
   var ids = new Array();
   ids.push(HUP.El.GetId('block-block-18'));
-  ids.map(function(ad) {
+  ids.forEach(function(ad) {
     if(ad) {
       HUP.El.AddClass(ad, 'hidden');
     }
