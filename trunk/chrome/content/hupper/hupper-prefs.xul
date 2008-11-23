@@ -37,6 +37,8 @@
           <checkbox id="insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
           <checkbox id="fade-parent-comment" label="&Hupper.fadeparentcomment;" />
           <checkbox id="show-quick-nav-box" label="&Hupper.showquicknavbox;" />
+          <label control="hide-taxonomy" value="&Hupper.hidetaxonomy;" />
+          <textbox id="hide-taxonomy" />
         </groupbox>
       </tabpanel>
       <tabpanel>
