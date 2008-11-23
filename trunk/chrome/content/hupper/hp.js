@@ -144,7 +144,7 @@ HP.prototype = {
     },
     username: function(value) {
       return this.M.setCharPref('extensions.hupper.username', value);
-    }
+    },
     hidetaxonomy: function(value) {
       return this.M.setCharPref('extensions.hupper.hidetaxonomy', value);
     }
