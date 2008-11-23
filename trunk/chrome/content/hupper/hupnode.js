@@ -12,7 +12,7 @@ var HUPNode = function(node) {
   this.footer = footer,
   this.newc = HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false,
   this.taxonomy = HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag').length > 0 ? HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag')[0].innerHTML : false
-  var hideTaxonomies = HupperPrefs.hidetaxonomy().split(',');
+  var hideTaxonomies = Stringer.trim(HupperPrefs.hidetaxonomy());
   if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
     this.hide();
   }
