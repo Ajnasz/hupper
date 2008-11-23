@@ -22,3 +22,4 @@
 <!ENTITY Hupper.tabaccount "Account information">
 <!ENTITY Hupper.username "Username:">
 <!ENTITY Hupper.password "Password:">
+<!ENTITY Hupper.hidetaxonomy "Hidable article types">
