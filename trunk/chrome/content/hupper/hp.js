@@ -74,6 +74,9 @@ HP.prototype = {
     },
     hidetaxonomy: function() {
       return this.M.getCharPref('extensions.hupper.hidetaxonomy');
+    },
+    showinstatusbar: function() {
+      return this.M.getBoolPref('extensions.hupper.showinstatusbar');
     }
   },
   set: {
@@ -147,6 +150,9 @@ HP.prototype = {
     },
     hidetaxonomy: function(value) {
       return this.M.setCharPref('extensions.hupper.hidetaxonomy', value);
+    },
+    showinstatusbar: function(value) {
+      return this.M.setBoolPref('extensions.hupper.showinstatusbar', value);
     }
   }
 };
