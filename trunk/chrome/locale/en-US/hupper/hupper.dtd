@@ -23,3 +23,4 @@
 <!ENTITY Hupper.username "Username:">
 <!ENTITY Hupper.password "Password:">
 <!ENTITY Hupper.hidetaxonomy "Hidable article types">
+<!ENTITY Hupper.showinstatusbar "Show icon in statusbar">
