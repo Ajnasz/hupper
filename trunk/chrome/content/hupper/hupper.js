@@ -156,6 +156,12 @@ var HupperPrefs = {
   },
   hidetaxonomy: function() {
     return this.prefManager.getCharPref('extensions.hupper.hidetaxonomy');
+  },
+  hidetaxonomy: function() {
+    return this.prefManager.getCharPref('extensions.hupper.hidetaxonomy');
+  },
+  showinstatusbar: function() {
+    return this.prefManager.getBoolPref('extensions.hupper.showinstatusbar');
   }
 };
 /**
@@ -1066,16 +1072,16 @@ var HideHupAds = function() {
   });
 };
 /**
- * @param {Object} event
+ * @param {Element} ob
  */
 var HUPStatusClickHandling = function(ob) {
-  this.statusBar = ob;
-  if(!this.statusBar) { return; }
+  this.ob = ob;
+  if(!this.ob) { return; }
   this.observe();
 };
 HUPStatusClickHandling.prototype = {
   st: null,
-  statusBar: null,
+  ob: null,
   /**
    * add the event handler to the statusbar icon
    */
@@ -1209,9 +1215,11 @@ HUPPER.init = function() {
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
   }
-  new HUPStatusClickHandling(document.getElementById('HUP-statusbar'));
-  if(document.getElementById('HUP-toolbar-button')) {
-    new HUPStatusClickHandling(document.getElementById('HUP-toolbar-button'));
+  var showInStatusbar = HupperPrefs.showinstatusbar();
+  var statusbar = document.getElementById('HUP-statusbar');
+  statusbar.hidden = !showInStatusbar;
+  if(showInStatusbar) {
+    new HUPStatusClickHandling(statusbar);
   }
 };
 window.addEventListener('load', function(){ HUPPER.init(); }, false);
