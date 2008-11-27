@@ -28,57 +28,58 @@
     <tabpanels>
       <tabpanel>
         <groupbox>
-          <checkbox id="enable-new-comment-changer" label="&Hupper.enablenewcommentchange;" />
-          <label control="new-comment-text" value="&Hupper.newcommenttext;" />
-          <textbox id="new-comment-text"  />
-          <checkbox id="enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
-          <checkbox id="hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
-          <checkbox id="insert-permalink" label="&Hupper.insertpermalink;" />
-          <checkbox id="insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
-          <checkbox id="fade-parent-comment" label="&Hupper.fadeparentcomment;" />
-          <checkbox id="show-quick-nav-box" label="&Hupper.showquicknavbox;" />
-          <label control="hide-taxonomy" value="&Hupper.hidetaxonomy;" />
-          <textbox id="hide-taxonomy" />
+          <checkbox id="HUP-enable-new-comment-changer" label="&Hupper.enablenewcommentchange;" />
+          <label control="HUP-new-comment-text" value="&Hupper.newcommenttext;" />
+          <textbox id="HUP-new-comment-text"  />
+          <checkbox id="HUP-enable-extra-comment-links" label="&Hupper.extracommentlinks;" />
+          <checkbox id="HUP-hilight-forum-lines-onhover" label="&Hupper.hilightforumlinesonhover;" />
+          <checkbox id="HUP-insert-permalink" label="&Hupper.insertpermalink;" />
+          <checkbox id="HUP-insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
+          <checkbox id="HUP-fade-parent-comment" label="&Hupper.fadeparentcomment;" />
+          <checkbox id="HUP-show-quick-nav-box" label="&Hupper.showquicknavbox;" />
+          <label control="HUP-hide-taxonomy" value="&Hupper.hidetaxonomy;" />
+          <textbox id="HUP-hide-taxonomy" />
+          <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
         </groupbox>
       </tabpanel>
       <tabpanel>
         <groupbox flex="1">
           <caption label="Hupper Preferences" />
           <!-- trollfiter section -->
-          <checkbox id="enable-trollfilter" label="&Hupper.enabletrollfilter;" />
-          <label control="trolls" value="&Hupper.trolls;" />
-          <textbox id="trolls"  />
-          <label control="troll-color" value="&Hupper.trollcolor;" />
-          <textbox id="troll-color" />
-          <label control="trollfilter-method" value="&Hupper.trollfiltermethod;" />
-          <menulist id="trollfilter-method">
+          <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
+          <label control="HUP-trolls" value="&Hupper.trolls;" />
+          <textbox id="HUP-trolls"  />
+          <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
+          <textbox id="HUP-troll-color" />
+          <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />
+          <menulist id="HUP-trollfilter-method">
             <menupopup>
               <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
               <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
             </menupopup>
           </menulist>
-          <checkbox id="hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
+          <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
           <!-- trollfiter section end -->
           <separator class="groove" />
           <!-- hupper filter section -->
-          <checkbox id="enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
-          <label control="huppers" value="&Hupper.huppers;" />
-          <textbox id="huppers"  />
-          <label control="hupper-color" value="&Hupper.huppercolor;" />
-          <textbox id="hupper-color" />
+          <checkbox id="HUP-enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
+          <label control="HUP-huppers" value="&Hupper.huppers;" />
+          <textbox id="HUP-huppers"  />
+          <label control="HUP-hupper-color" value="&Hupper.huppercolor;" />
+          <textbox id="HUP-hupper-color" />
           <!-- hupper filter section end -->
           <separator class="groove" />
-          <label control="hupper-highlightusers" value="&Hupper.highlightuser;"/>
-          <textbox id="hupper-highlightusers" />
+          <label control="HUP-hupper-highlightusers" value="&Hupper.highlightuser;"/>
+          <textbox id="HUP-hupper-highlightusers" />
         </groupbox>
       </tabpanel>
       <!--
       <tabpanel>
         <groupbox>
-          <label contrl="hupper-username" value="&Hupper.username;"/>
-          <textbox id="hupper-username"/>
-          <label contrl="hupper-password" value="&Hupper.password;"/>
-          <textbox id="hupper-password" type="password"/>
+          <label contrl="HUP-hupper-username" value="&Hupper.username;"/>
+          <textbox id="HUP-hupper-username"/>
+          <label contrl="HUP-hupper-password" value="&Hupper.password;"/>
+          <textbox id="HUP-hupper-password" type="password"/>
         </groupbox>
       </tabpanel>
       -->
