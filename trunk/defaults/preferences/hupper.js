@@ -29,3 +29,4 @@ pref("extensions.hupper.highlightusers", "username:#fff999,username2:#999fff");
 pref("extensions.hupper.username", '');
 
 pref("extensions.hupper.hidetaxonomy", '');
+pref("extensions.hupper.showinstatusbar", true);
