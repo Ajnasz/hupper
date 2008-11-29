@@ -11,19 +11,27 @@
 .submitted { padding: 2px !important; }
 .mark { cursor: pointer; color: #000; }
 .hidden {display: none;}
-.block .sidebar h2 {
+.block h2 {
   position: relative;
 }
 .block-button {
   background: transparent url('chrome://hupper/skin/block-icons.gif') no-repeat;
   border: 0;
-  float: right;
   height: 16px;
-  margin-left: 2px;
+  position: absolute;
   width: 16px;
+  z-index: -1;
+}
+.block:hover .block-button {
+  z-index: 1;
+}
+.hide-button,
+.show-button {
+  right: 18px;
 }
 .delete-button {
   background-position: 0 -32px;
+  right: 0;
 }
 .delete-button:hover {
   background-position: 0 -48px;
