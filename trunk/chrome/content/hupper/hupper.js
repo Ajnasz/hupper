@@ -453,7 +453,7 @@ var markNodeAsRead = function(e) {
  * @param {Event} e event object
  */
 var markAllNodeAsRead = function(e) {
-  var n = e.target.markNodes;
+  var n = HUP.markReadNodes;
   var d = document || HUP.w;
   for(var i = 0, nl = n.length; i < nl; i++) {
     var click = d.createEvent("MouseEvents");
@@ -540,47 +540,10 @@ var parseComments = function(comments, newComments, indentComments) {
  * @param {String} [link]
  */
 var appendNewNotifier = function(link, mark) {
-  var hupperBlockId = 'block-hupper-0'; // newNotifier
-  if(HUP.El.GetId(hupperBlockId)) {
-    return;
-  }
-  var div = HUP.El.Div();
-  var h2 = HUP.El.El('h2');
-  var ul = HUP.El.Ul();
-  var li = HUP.El.Li();
-  var a1, a2, li1, li2;
-  HUP.El.AddClass(li, 'leaf');
-
-  HUP.El.Add(HUP.El.Txt('Hupper'), h2);
-
-  a1 = HUP.El.CreateLink(HUP.Bundles.getString('firstNew'), link || '#new');
-  li1 = li.cloneNode(true);
-  HUP.El.Add(a1, li1);
-
-  HUP.El.AddClass(ul, 'menu');
-  HUP.El.Add(li1, ul);
-
+  HUP.menu.addMenuItem({name: HUP.Bundles.getString('firstNew'), href: link || '#new'})
   if(mark) {
-    a2 = HUP.El.CreateLink(HUP.Bundles.getString('markAllRead'), 'javascript:void(0)');
-    a2.addEventListener('click', markAllNodeAsRead, false);
-    a2.markNodes = HUP.markReadNodes;
-
-    li2 = li.cloneNode(true);
-    HUP.El.Add(a2, li2);
-    HUP.El.Add(li2, ul);
+    HUP.menu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: markAllNodeAsRead})
   }
-  var blockDiv = div.cloneNode(div);
-  var contentDiv = div.cloneNode(div);
-  HUP.El.AddClass(contentDiv, 'content');
-  HUP.El.Add(ul, contentDiv);
-
-  HUP.El.Add(h2, blockDiv);
-  HUP.El.Add(contentDiv, blockDiv);
-  blockDiv.setAttribute('id', hupperBlockId);
-  HUP.El.AddClass(blockDiv, 'block block-hupper');
-
-  var googleBlock = HUP.El.GetId('block-user-1');
-  HUP.El.Insert(blockDiv, googleBlock);
 };
 /**
  * Adds my own styles to the hup.hu header
@@ -816,6 +779,7 @@ var HUPPER = function(e) {
       HUP.L = new HLog();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
+      HUP.menu = new HUPMenu();
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
