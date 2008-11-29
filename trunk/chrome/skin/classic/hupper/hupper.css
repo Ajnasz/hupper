@@ -40,3 +40,6 @@
 .show-button:hover {
   background-position: 0 -80px;
 }
+.hide-submenu ul {
+  display: none;
+}
