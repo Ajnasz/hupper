@@ -77,6 +77,9 @@ HP.prototype = {
     },
     showinstatusbar: function() {
       return this.M.getBoolPref('extensions.hupper.showinstatusbar');
+    },
+    blocks: function() {
+      return this.M.getCharPref('extensions.hupper.blocks');
     }
   },
   set: {
@@ -153,7 +156,9 @@ HP.prototype = {
     },
     showinstatusbar: function(value) {
       return this.M.setBoolPref('extensions.hupper.showinstatusbar', value);
+    },
+    blocks: function(value) {
+      return this.M.setCharPref('extensions.hupper.blocks', value);
     }
   }
 };
-
