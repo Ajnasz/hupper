@@ -8,6 +8,7 @@
   <script type="application/x-javascript" src="chrome://hupper/content/json.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hup-elementer.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/menu.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupnode.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
