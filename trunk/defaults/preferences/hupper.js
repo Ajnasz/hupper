@@ -30,3 +30,5 @@ pref("extensions.hupper.username", '');
 
 pref("extensions.hupper.hidetaxonomy", '');
 pref("extensions.hupper.showinstatusbar", true);
+
+pref("extensions.hupper.blocks", '({})');
