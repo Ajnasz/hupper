@@ -233,6 +233,14 @@ HUPElementer.prototype = {
     return cl.test(el.getAttribute('class'));
   },
   /**
+  * Adds or removes the specified class from the element
+  * @param {Element} el DOM element
+  * @param {String} c Class name
+  */
+  ToggleClass: function(el, c) {
+   this.HasClass(el, c) ? this.RemoveClass(el, c) : this.AddClass(el, c);
+  },
+  /**
   * Collects the elements, which has the specified className (cn) and childNodes of the specified node (par)
   * @param {Element} par parent element node
   * @param {String} cn The className
@@ -324,6 +332,12 @@ HUPElementer.prototype = {
     }
     this.Add(this.Txt(text), l)
     return l;
+  },
+  Hide: function(el) {
+    this.AddClass(el, 'hidden');
+  },
+  Show: function(el) {
+    this.RemoveClass(el, 'hidden');
   }
 };
 
