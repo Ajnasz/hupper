@@ -4,9 +4,13 @@
 <overlay id="hupper-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://hupper/content/ajax.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hup-events.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/json.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hup-elementer.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupnode.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
