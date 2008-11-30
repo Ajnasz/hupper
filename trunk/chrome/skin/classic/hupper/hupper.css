@@ -14,15 +14,18 @@
 .block h2 {
   position: relative;
 }
-.block-button {
+.block-button,
+.block-move-button {
   background: transparent url('chrome://hupper/skin/block-icons.gif') no-repeat;
   border: 0;
+  cursor: pointer;
   height: 16px;
   position: absolute;
   width: 16px;
   z-index: -1;
 }
-.block:hover .block-button {
+.block:hover .block-button,
+.block:hover .block-move-button {
   z-index: 1;
 }
 .hide-button,
@@ -30,23 +33,60 @@
   right: 18px;
 }
 .delete-button {
-  background-position: 0 -32px;
+  background-position: -16px -32px;
   right: 0;
 }
 .delete-button:hover {
-  background-position: 0 -48px;
+  background-position: -16px -48px;
 }
 .hide-button {
-  background-position: 0 0;
+  background-position: -16px 0;
 }
 .hide-button:hover {
-  background-position: 0 -16px;
+  background-position: -16px -16px;
 }
 .show-button {
-  background-position: 0 -64px;
+  background-position: -32px -0px;
 }
 .show-button:hover {
+  background-position: -32px -16px;
+}
+
+
+.up-button {
+  background-position: 0 -64px;
+  left: 0;
+}
+.up-button:hover {
   background-position: 0 -80px;
+}
+
+.down-button {
+  background-position: -16px -64px;
+  left: 18px;
+}
+.down-button:hover {
+  background-position: -16px -80px;
+}
+
+.left-button {
+  background-position: 0 0;
+  left: 36px;
+}
+.left-button:hover {
+  background-position: 0 -16px;
+}
+
+.right-button {
+  background-position: 0 -32px;
+  left: 36px;
+}
+.right-button:hover {
+  background-position: 0 -48px;
+}
+#sidebar-left .left-button,
+#sidebar-right .right-button {
+  display: none;
 }
 .hide-submenu ul {
   display: none;
