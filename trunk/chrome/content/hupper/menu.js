@@ -5,11 +5,10 @@ HUPMenu.prototype = {
   block: null,
   id: 'block-hupper-0',
   create: function() {
-    var div = HUP.El.Div();
     this.titleNode = HUP.El.El('h2');
 
-    this.block = div.cloneNode(div);
-    this.contentNode = div.cloneNode(div);
+    this.block = HUP.El.Div();
+    this.contentNode = HUP.El.Div();
     HUP.El.AddClass(this.contentNode, 'content');
 
     HUP.El.Add(this.titleNode, this.block);
@@ -63,4 +62,4 @@ HUPMenu.prototype = {
   removeMenuItem: function(menuItem) {
     HUP.El.Remove(menuItem);
   }
-}
+};
