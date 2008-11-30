@@ -1,35 +1,51 @@
-var HUPBlock = function(block) {
-  if(!block || block.id == 'block-hupper-0') return;
+/**
+ * @class HUPBlock
+ * @constructor
+ * @param {Element} block
+ */
+var HUPBlock = function(block, sides, blockMenus) {
+  if(!block) return;
   this.block = block;
+  this.id = this.block.getAttribute('id');
+  this.blockMenus = blockMenus;
   this.titleNode = HUP.El.GetFirstTag('h2', this.block);
   var contents = HUP.El.GetByClass(this.block, 'content', 'div');
   this.contentNode = (contents.length) ? contents[0] : null;
   if(this.titleNode) {
     this.title = this.titleNode.innerHTML;
   }
-  this.id = this.block.getAttribute('id');
-  this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
   this.makeTitle();
-  this.addButtons();
+  if(this.id != 'block-hupper-0') {
+    this.addButtons();
+  }
+  this.addMoveButtons();
   var properties = HUPBlocksProperties.getBlock(this.id);
   if(properties) {
+    this.side = properties.side;
+    this.setIndex(properties.index);
     properties.hidden ? this.hide() : this.show();
     properties.contentHidden ? this.hideContent() : this.showContent();
+  } else {
+    this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+    this.setIndex(sides[this.side]);
+    this.saveProperties();
+    sides[this.side]++;
   }
 };
 HUPBlock.prototype = {
   hidden: false,
   contentHidden: false,
+  blocks: new Array(),
   hide: function() {
     HUP.El.Hide(this.block);
     this.hidden = true;
-    HUPBlockMenus.addBlockToMenu(this);
+    this.blockMenus.addBlockToMenu(this);
     this.saveProperties();
   },
   show: function() {
     HUP.El.Show(this.block);
     this.hidden = false;
-    HUPBlockMenus.removeBlockFromMenu(this);
+    this.blockMenus.removeBlockFromMenu(this);
     this.saveProperties();
   },
   hideContent: function() {
@@ -62,6 +78,55 @@ HUPBlock.prototype = {
       HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
     }
   },
+  moveUp: function() {
+    if(this.blocks.length == 0 || this.index == 0) return;
+    var currentIndex = this.index;
+    var _this = this;
+    if(this.blocks.some(function(bl, index, array) {
+      if(_this.index - 1 == bl.index && _this.side == bl.side && _this.blocks[index].titleNode) {
+        _this.blocks[index].setIndex(_this.index);
+        _this.index--;
+        return true;
+      }
+      return false;
+    })) {
+      this.saveProperties();
+      HUPRearrangeBlocks(this.blocks);
+    }
+  },
+  moveDown: function() {
+    if(this.blocks.length == 0 || !this.blocks[this.index + 1] || !this.blocks[this.index + 1].titleNode) return;
+    var _this = this;
+    if(this.blocks.some(function(bl, index, array) {
+      if(_this.index + 1 == bl.index && _this.side == bl.side) {
+        _this.blocks[index].setIndex(_this.index)
+        _this.index++;
+        return true;
+      }
+      return false;
+    })) {
+      this.saveProperties();
+      HUPRearrangeBlocks(this.blocks);
+    }
+  },
+  moveRight: function() {
+    if(this.side == 'right') return;
+    this.side = 'right';
+    this.index = -1;
+    this.saveProperties();
+    HUPRearrangeBlocks(this.blocks);
+  },
+  moveLeft: function() {
+    if(this.side == 'left') return;
+    this.side = 'left';
+    this.index = -1;
+    this.saveProperties();
+    HUPRearrangeBlocks(this.blocks);
+  },
+  setIndex: function(index) {
+    this.index = index;
+    this.saveProperties();
+  },
   addButtons: function() {
     if(!this.titleNode) return;
     var _this = this;
@@ -83,10 +148,38 @@ HUPBlock.prototype = {
     HUP.El.Insert(this.hideButton, this.titleNode.firstChild);
     HUP.El.Insert(this.delButton, this.titleNode.firstChild);
   },
+  addMoveButtons: function() {
+    if(!this.titleNode) return;
+    var _this = this;
+    this.upButton = HUP.El.Button(), this.downButton = HUP.El.Button(), this.leftButton = HUP.El.Button(), this.rightButton = HUP.El.Button();
+;
+    HUP.El.AddClass(this.upButton, 'up-button block-move-button');
+    HUP.El.AddClass(this.downButton, 'down-button block-move-button');
+    HUP.El.AddClass(this.leftButton, 'left-button block-move-button');
+    HUP.El.AddClass(this.rightButton, 'right-button block-move-button');
+    HUP.Ev.addEvent(this.upButton, 'click', function() {
+      _this.moveUp();
+    });
+    HUP.Ev.addEvent(this.downButton, 'click', function() {
+      _this.moveDown();
+    });
+    HUP.Ev.addEvent(this.leftButton, 'click', function() {
+      _this.moveLeft();
+    });
+    HUP.Ev.addEvent(this.rightButton, 'click', function() {
+      _this.moveRight();
+    });
+    HUP.El.Insert(this.upButton, this.titleNode.firstChild);
+    HUP.El.Insert(this.downButton, this.titleNode.firstChild);
+    HUP.El.Insert(this.leftButton, this.titleNode.firstChild);
+    HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
+  },
   saveProperties: function() {
     var props = {
       hidden: this.hidden,
-      contentHidden: this.contentHidden
+      contentHidden: this.contentHidden,
+      index: this.index,
+      side: this.side
     };
     HUPBlocksProperties.setBlock(this.id, props);
   }
@@ -108,32 +201,33 @@ HUPBlocksProperties = {
     return blocks[block];
   }
 };
-HUPBlockMenus = {
-  blocks: {},
+HUPBlockMenus = function(hupMenu) {
+  this.blocks = new Object();
+  this.hupMenu = hupMenu;
+};
+HUPBlockMenus.prototype = {
   addMenu: function() {
     if(this.menu) return;
-    this.menuitem = HUP.menu.addMenuItem({name: 'Restore hidden blocks', click: function() {HUP.El.ToggleClass(this.parentNode, 'hide-submenu');}});
+    this.menuitem = this.hupMenu.addMenuItem({name: 'Restore hidden blocks', click: function() {HUP.El.ToggleClass(this.parentNode, 'hide-submenu');}});
     HUP.El.AddClass(this.menuitem, 'hide-submenu');
-    this.menu = HUP.menu.addMenu(this.menuitem);
+    this.menu = this.hupMenu.addMenu(this.menuitem);
   },
   removeMenu: function() {
-    if(this.menuitem) {
-      HUP.menu.removeMenu(this.menu);
-      HUP.menu.removeMenuItem(this.menuitem);
+    if(this.menuitem || this.menu) {
+      this.hupMenu.removeMenu(this.menu);
+      this.hupMenu.removeMenuItem(this.menuitem);
       this.menuitem = null;
       this.menu = null;
     }
   },
   addBlockToMenu: function(block) {
-    HUP.L.log(block.id, this.blocks[block.id]);
     if(!this.blocks[block.id]) {
       if(!this.menu) this.addMenu();
       var _this = this;
-      this.blocks[block.id] = HUP.menu.addMenuItem({name: block.title, click: function() {block.show()}}, _this.menu);
+      this.blocks[block.id] = this.hupMenu.addMenuItem({name: block.title, click: function() {block.show()}}, _this.menu);
     }
   },
   removeBlockFromMenu: function(block) {
-    HUP.L.log(block.id, this.blocks[block.id]);
     if(this.blocks[block.id]) {
       HUP.El.Remove(this.blocks[block.id]);
       delete this.blocks[block.id];
@@ -142,4 +236,31 @@ HUPBlockMenus = {
     for(var i in this.blocks) {n++;}
     if(n == 0) this.removeMenu();
   }
-}
+};
+HUPRearrangeBlocks = function(blocks) {
+  blocks.sort(function(a, b) {
+    if(!a.titleNode) return -1;
+    if(a.side == 'left' && b.side == 'right') return -1;
+    if (a.side == 'right' && b.side == 'left') return 1;
+    if(a.index < b.index) return -1;
+    if(a.index > b.index) return 1;
+  });
+  var sides = {left:0, right:0};
+  blocks.forEach(function(block, index) {
+    if(blocks[index].side == 'left') {
+      blocks[index].setIndex(sides.left);
+      sides.left++;
+    }  else {
+      blocks[index].setIndex(sides.right);
+      sides.right++;
+    }
+  })
+  var left = HUP.El.GetId('sidebar-left');
+  var right = HUP.El.GetId('sidebar-right');
+  HUP.El.RemoveAll(left);
+  HUP.El.RemoveAll(right);
+  blocks.forEach(function(block, index, blocks){
+    (block.side == 'left') ? HUP.El.Add(block.block, left) : HUP.El.Add(block.block, right);
+    block.blocks = blocks;
+  });
+};
