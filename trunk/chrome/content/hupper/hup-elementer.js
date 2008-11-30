@@ -126,6 +126,7 @@ HUPElementer.prototype = {
     * @param {Element} parent
     */
   Remove: function(elem, parent) {
+    if(!elem || (!elem.parentNode && !parent)) return;
     (typeof parent == 'object') ? parent.removeChild(elem) : elem.parentNode.removeChild(elem);
   },
   /**
