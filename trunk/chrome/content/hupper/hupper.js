@@ -391,12 +391,16 @@ var getNodes = function() {
   return new Array(nodes, newnodes);
 };
 var getBlocks = function() {
-  return HUP.El.GetByClass(HUP.El.GetId('all'), 'block', 'div');
+  return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
-var parseBlocks = function(blocks) {
+var parseBlocks = function(blocks, blockMenus) {
+  var blockObjetcs =  new Array();
+  var sides = {right: 0, left: 0}, bl;
   blocks.forEach(function(block) {
-    new HUPBlock(block);
+    bl = new HUPBlock(block, sides, blockMenus);
+    blockObjetcs.push(bl);
   });
+  HUPRearrangeBlocks(blockObjetcs);
   HUP.L.log('blocks parsed');
 }
 /**
@@ -415,9 +419,6 @@ var parseNodes = function(nodes, newNodes) {
       node.addNewNodeLinks();
       if(!node.hidden) HUP.w.nextLinks.push('node-' + node.id);
     }
-  }
-  if(newNodes.length > 0 && HupperPrefs.showqnavbox()) {
-    appendNewNotifier('#node-' + newNodes[0].id, true);
   }
 };
 /**
@@ -517,7 +518,7 @@ var parseComments = function(comments, newComments, indentComments) {
       }
       C.highlightComment(hh);
     });
-  } catch(e) {HUP.L.log(e.message, e.lineNumber)}
+  } catch(e) {HUP.L.log(e.message, e.lineNumber, e.fileName)}
   if(replacenewcommenttext || prevnextlinks) {
     var spanNode = HUP.El.Span(), tmpSpan1;
     for(var i = 0, ncl = newComments.length; i < ncl; i++) {
@@ -539,10 +540,10 @@ var parseComments = function(comments, newComments, indentComments) {
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
  */
-var appendNewNotifier = function(link, mark) {
-  HUP.menu.addMenuItem({name: HUP.Bundles.getString('firstNew'), href: link || '#new'})
+var appendNewNotifier = function(link, mark, hupMenu) {
+  hupMenu.addMenuItem({name: HUP.Bundles.getString('firstNew'), href: link || '#new'})
   if(mark) {
-    HUP.menu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: markAllNodeAsRead})
+    hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: markAllNodeAsRead})
   }
 };
 /**
@@ -779,7 +780,7 @@ var HUPPER = function(e) {
       HUP.L = new HLog();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
-      HUP.menu = new HUPMenu();
+      var hupMenu = new HUPMenu();
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
@@ -792,19 +793,22 @@ var HUPPER = function(e) {
         indentComments = c[2];
         parseComments(comments, newComments, indentComments);
         if(newComments.length && HupperPrefs.showqnavbox()) {
-          appendNewNotifier();
+          appendNewNotifier(null, null, hupMenu);
         }
       } else {
         if(HupperPrefs.insertnewtexttonode()) {
           var nodes = getNodes();
           parseNodes(nodes[0], nodes[1]);
+          if(nodes[1].length > 0 && HupperPrefs.showqnavbox()) {
+            appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
+          }
         }
       }
+      var blocks = getBlocks();
+      parseBlocks(blocks, new HUPBlockMenus(hupMenu), hupMenu);
       if(HupperPrefs.hideads()) {
         HideHupAds();
       }
-      var blocks = getBlocks();
-      parseBlocks(blocks);
   //    bindHUPKeys();
       HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
       TIMER.stop();
