@@ -14,15 +14,17 @@
 .block h2 {
   position: relative;
 }
-.block-button,
-.block-move-button {
+.hupper-button {
   background: transparent url('chrome://hupper/skin/block-icons.gif') no-repeat;
   border: 0;
   cursor: pointer;
   height: 16px;
+  width: 16px;
+}
+.block-button,
+.block-move-button {
   position: absolute;
   top: 0;
-  width: 16px;
   z-index: -1;
 }
 .block:hover .block-button,
@@ -91,4 +93,17 @@
 }
 .hide-submenu ul {
   display: none;
+}
+.node table ul.links.inline li.first.last {
+  padding-right: 20px;
+  position: relative;
+}
+.taxonomy-button {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+li:hover .taxonomy-button {
+  display: block;
 }
