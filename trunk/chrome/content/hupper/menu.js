@@ -15,7 +15,7 @@ HUPMenu.prototype = {
     HUP.El.Add(this.contentNode, this.block);
     this.block.setAttribute('id', this.id);
     HUP.El.AddClass(this.block, 'block block-hupper');
-    HUP.El.Add(HUP.El.Txt('Hupper'), this.titleNode);
+    HUP.El.Add(HUP.El.CreateLink('Hupper', 'http://hupper.mozdev.org/'), this.titleNode);
   },
   add: function() {
     if(HUP.El.GetId(this.id) || this.block) return;
