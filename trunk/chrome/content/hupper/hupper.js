@@ -420,6 +420,9 @@ var parseNodes = function(nodes, newNodes) {
       if(!node.hidden) HUP.w.nextLinks.push('node-' + node.id);
     }
   }
+  nodes.forEach(function(node) {
+    node.addNodes(nodes);
+  });
 };
 /**
  * Send an AJAX HEAD request to the server, to remove the unread nodes
