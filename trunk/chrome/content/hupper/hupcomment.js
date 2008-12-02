@@ -32,7 +32,7 @@ var HUPComment = function(commentNode, indentComments, comments) {
   this.footerLinks = HUP.El.GetFirstTag('ul', this.footer);
   this.getIndent(); // get indent state
   this.getChildComment(); // get child comments
-  this.user = this.deletedUser ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
+  this.user = !this.deletedUser ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
   this.getParent(indentComments, comments);
 };
 HUPComment.prototype = {
