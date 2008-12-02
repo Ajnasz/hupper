@@ -780,11 +780,11 @@ var HUPPER = function(e) {
       HUP.L = new HLog();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
+      addHupStyles();
       var hupMenu = new HUPMenu();
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
-      addHupStyles();
       // if comments are available
       if(HUP.El.GetId('comments')) {
         var c = getComments();
