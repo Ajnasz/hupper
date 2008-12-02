@@ -21,6 +21,7 @@
   cursor: pointer;
   height: 16px;
   position: absolute;
+  top: 0;
   width: 16px;
   z-index: -1;
 }
