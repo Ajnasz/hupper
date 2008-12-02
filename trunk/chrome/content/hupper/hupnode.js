@@ -13,18 +13,22 @@ var HUPNode = function(node) {
   this.cont = cont;
   this.footer = footer;
   this.newc = HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
-  this.taxonomy = taxonomy.length > 0 ? taxonomy[0].innerHTML : false;
+  if(taxonomy.length > 0) {
+    this.taxonomy = taxonomy[0].innerHTML;
+    this.taxonomyNode = taxonomy[0];
+  } else {
+    this.taxonomy = null;
+    this.taxonomyNode = null;
+  }
   this.sender = sender.length ? {
     name: sender[0].innerHTML,
     id: parseInt(sender[0].href.replace('http://hup.hu/user/', '')),
     url: sender[0].href
   } : false;
-  var hideTaxonomies = Stringer.trim(HupperPrefs.hidetaxonomy());
-  if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
-    this.hide();
-  }
+  this.checkTaxonomy();
   this.builder = new NodeHeaderBuilder();
   this.addNnewSpan();
+  if(this.taxonomy) this.addTaxonomyCloser();
 };
 HUPNode.prototype = {
   hidden: false,
@@ -33,6 +37,12 @@ HUPNode.prototype = {
   hide: function() {
     HUP.El.AddClass(this.element, 'hidden');
     this.hidden = true;
+  },
+  checkTaxonomy: function() {
+    var hideTaxonomies = Stringer.trim(HupperPrefs.hidetaxonomy());
+    if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
+      this.hide();
+    }
   },
   addNnewSpan: function() {
     this.sp = HUP.El.Span();
@@ -67,5 +77,32 @@ HUPNode.prototype = {
   },
   addPrev: function() {
     this.previous === false ? HUP.El.Add(this.builder.buildFirstLink(), this.sp) : HUP.El.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
+  },
+  addTaxonomyCloser: function() {
+    this.taxonomyButton = HUP.El.Button();
+    HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
+    this.taxonomyButton.setAttribute('title', HUP.Bundles.getFormattedString('hideTaxonomy', [this.taxonomy]));
+    var _this = this;
+    HUP.Ev.addEvent(this.taxonomyButton, 'click', function(){
+      _this.addToHide();
+      HUPHideTaxonomyNodes(_this.nodes);
+    });
+    HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
+  },
+  addToHide: function() {
+    var taxonomies = HUP.hp.get.hidetaxonomy();
+    var rex = new RegExp('\\b' + this.taxonomy + '\\b');
+    if(!rex.test(taxonomies)) {
+      taxonomies = (Stringer.empty(taxonomies)) ? this.taxonomy : taxonomies += ',' + this.taxonomy;
+    }
+    HUP.hp.set.hidetaxonomy(taxonomies);
+  },
+  addNodes: function(nodes) {
+    this.nodes = nodes
   }
 };
+HUPHideTaxonomyNodes = function(nodes) {
+  nodes.forEach(function(node) {
+    node.checkTaxonomy();
+  });
+}
