@@ -145,9 +145,12 @@ HUPBlock.prototype = {
     if(!this.titleNode) return;
     var _this = this;
     this.delButton = HUP.El.Button(), this.hideButton = HUP.El.Button(), this.showButton = HUP.El.Button();
-    HUP.El.AddClass(this.delButton, 'delete-button block-button');
-    HUP.El.AddClass(this.hideButton, 'hide-button block-button');
-    HUP.El.AddClass(this.showButton, 'show-button block-button');
+    this.delButton.setAttribute('title', HUP.Bundles.getString('deleteBlock'));
+    this.hideButton.setAttribute('title', HUP.Bundles.getString('hideBlockContent'));
+    this.showButton.setAttribute('title', HUP.Bundles.getString('showBlockContent'));
+    HUP.El.AddClass(this.delButton, 'hupper-button delete-button block-button');
+    HUP.El.AddClass(this.hideButton, 'hupper-button hide-button block-button');
+    HUP.El.AddClass(this.showButton, 'hupper-button show-button block-button');
     HUP.El.Hide(this.showButton);
     HUP.Ev.addEvent(this.delButton, 'click', function() {
       _this.hide();
@@ -166,11 +169,14 @@ HUPBlock.prototype = {
     if(!this.titleNode) return;
     var _this = this;
     this.upButton = HUP.El.Button(), this.downButton = HUP.El.Button(), this.leftButton = HUP.El.Button(), this.rightButton = HUP.El.Button();
-;
-    HUP.El.AddClass(this.upButton, 'up-button block-move-button');
-    HUP.El.AddClass(this.downButton, 'down-button block-move-button');
-    HUP.El.AddClass(this.leftButton, 'left-button block-move-button');
-    HUP.El.AddClass(this.rightButton, 'right-button block-move-button');
+    this.upButton.setAttribute('title', HUP.Bundles.getString('moveBoxUp'));
+    this.downButton.setAttribute('title', HUP.Bundles.getString('moveBoxDown'));
+    this.leftButton.setAttribute('title', HUP.Bundles.getString('moveBoxLeft'));
+    this.rightButton.setAttribute('title', HUP.Bundles.getString('moveBoxRight'));
+    HUP.El.AddClass(this.upButton, 'hupper-button up-button block-move-button');
+    HUP.El.AddClass(this.downButton, 'hupper-button down-button block-move-button');
+    HUP.El.AddClass(this.leftButton, 'hupper-button left-button block-move-button');
+    HUP.El.AddClass(this.rightButton, 'hupper-button right-button block-move-button');
     HUP.Ev.addEvent(this.upButton, 'click', function() {
       _this.moveUp();
     });
