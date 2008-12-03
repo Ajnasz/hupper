@@ -109,7 +109,7 @@ HUPBlock.prototype = {
     if(!refBlock) refBlock = this;
     var thisIndex = this.blocks.indexOf(refBlock);
     var newIndex = thisIndex + 1;
-    while(!this.blocks[newIndex] || this.blocks[newIndex].side != this.side && this.blocks[newIndex+1]) {
+    while(this.blocks[newIndex+1] && this.blocks[newIndex].side != this.side) {
       newIndex++;
     }
     return this.blocks[newIndex];
@@ -118,7 +118,7 @@ HUPBlock.prototype = {
     if(!refBlock) refBlock = this;
     var thisIndex = this.blocks.indexOf(refBlock);
     var newIndex = thisIndex - 1;
-    while(!this.blocks[newIndex] && this.blocks[newIndex].side != this.side && this.blocks[newIndex-1]) {
+    while(this.blocks[newIndex-1] && this.blocks[newIndex].side != this.side) {
       newIndex--;
     }
     return this.blocks[newIndex];
