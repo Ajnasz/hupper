@@ -38,6 +38,10 @@ HUPNode.prototype = {
     HUP.El.AddClass(this.element, 'hidden');
     this.hidden = true;
   },
+  show: function() {
+    HUP.El.RemoveClass(this.element, 'hidden');
+    this.hidden = false;
+  },
   checkTaxonomy: function() {
     var hideTaxonomies = Stringer.trim(HupperPrefs.hidetaxonomy());
     if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
