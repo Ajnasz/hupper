@@ -66,23 +66,23 @@ HUPBlock.prototype = {
   },
   makeTitle: function() {
     var boxes = {
-        'block-aggregator-feed-3': 'http://wiki.hup.hu',
-        'block-blog-0': '/blog',
-        'block-search-0': '/search',
-        'block-poll-40': '/poll',
-        'block-aggregator-feed-40': 'http://www.flickr.com/photos/h_u_p/',
-        'block-tagadelic-1': '/temak',
-        'block-comment-0': '/tracker',
-        'block-aggregator-feed-46': 'http://www.linuxdevices.com',
-        'block-aggregator-feed-4': 'http://lwn.net',
         'block-aggregator-feed-13': 'http://distrowatch.com',
-        'block-aggregator-feed-44': 'http://hwsw.hu',
-        'block-aggregator-feed-2': 'http://www.kernel.org',
-        'block-poll-0': '/poll',
-        'block-aggregator-feed-47': 'http://undeadly.org',
         'block-aggregator-feed-19': 'http://www.freebsd.org',
+        'block-aggregator-feed-2': 'http://www.kernel.org',
+        'block-aggregator-feed-3': 'http://wiki.hup.hu',
+        'block-aggregator-feed-4': 'http://lwn.net',
+        'block-aggregator-feed-40': 'http://www.flickr.com/photos/h_u_p/',
         'block-aggregator-feed-41': 'http://blogs.sun.com',
-        'block-block-6': 'http://www.mozilla.com/firefox?from=sfx&uid=225821&t=308'
+        'block-aggregator-feed-44': 'http://hwsw.hu',
+        'block-aggregator-feed-46': 'http://www.linuxdevices.com',
+        'block-aggregator-feed-47': 'http://undeadly.org',
+        'block-block-6': 'http://www.mozilla.com/firefox?from=sfx&uid=225821&t=308',
+        'block-blog-0': '/blog',
+        'block-comment-0': '/tracker',
+        'block-poll-0': '/poll',
+        'block-poll-40': '/poll',
+        'block-search-0': '/search',
+        'block-tagadelic-1': '/temak'
 
     };
     if(boxes[this.id] && this.title && this.titleNode) {
