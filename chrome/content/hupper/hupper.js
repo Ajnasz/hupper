@@ -621,22 +621,6 @@ Timer.prototype = {
     return this.endTime.getTime() - this.startTime.getTime();
   }
 };
-var bindHUPKeys = function() {
-  HUP.w.addEventListener('keyup', function(event) {
-//  if(event.shiftKey && event.altKey) {
-    switch(event.keyCode) {
-      case 78: // n
-        // next
-        HUPJump.next();
-        break;
-      case 77: // m
-        // prev
-        HUPJump.prev();
-        break;
-    }
-  },
-    false);
-};
 var HUPJump = function(win, nextLinks) {
   this.window = win;
   this.nextLinks = nextLinks;
@@ -767,7 +751,7 @@ HUPStatusClickHandling.prototype = {
 var HUPPER = function(e) {
   try {
     var ww = e.originalTarget;
-    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href)) {
+    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/localhost\/hupper\/hg/.test(ww.location.href)) {
       var TIMER = new Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
