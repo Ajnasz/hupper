@@ -72,7 +72,18 @@ HUPBlock.prototype = {
         'block-poll-40': '/poll',
         'block-aggregator-feed-40': 'http://www.flickr.com/photos/h_u_p/',
         'block-tagadelic-1': '/temak',
-        'block-comment-0': '/tracker'
+        'block-comment-0': '/tracker',
+        'block-aggregator-feed-46': 'http://www.linuxdevices.com',
+        'block-aggregator-feed-4': 'http://lwn.net',
+        'block-aggregator-feed-13': 'http://distrowatch.com',
+        'block-aggregator-feed-44': 'http://hwsw.hu',
+        'block-aggregator-feed-2': 'http://www.kernel.org',
+        'block-poll-0': '/poll',
+        'block-aggregator-feed-47': 'http://undeadly.org',
+        'block-aggregator-feed-19': 'http://www.freebsd.org',
+        'block-aggregator-feed-41': 'http://blogs.sun.com',
+        'block-block-6': 'http://www.mozilla.com/firefox?from=sfx&uid=225821&t=308'
+
     };
     if(boxes[this.id] && this.title && this.titleNode) {
       HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
