@@ -10,14 +10,10 @@ var HUPBlock = function(block, sides, blockMenus) {
   this.blockMenus = blockMenus;
   this.titleNode = HUP.El.GetFirstTag('h2', this.block);
   var contents = HUP.El.GetByClass(this.block, 'content', 'div');
-  this.contentNode = (contents.length) ? contents[0] : null;
-  if(this.titleNode) {
-    this.title = this.titleNode.innerHTML;
-  }
+  this.contentNode = contents.length ? contents[0] : null;
+  if(this.titleNode) this.title = this.titleNode.innerHTML;
   this.makeTitle();
-  if(this.id != 'block-hupper-0') {
-    this.addButtons();
-  }
+  if(this.id != 'block-hupper-0') this.addButtons(); // exception for hup block
   this.addMoveButtons();
   var properties = HUPBlocksProperties.getBlock(this.id);
   if(properties) {
@@ -98,7 +94,6 @@ HUPBlock.prototype = {
     var thisIndex = this.index;
     this.blocks[this.blocks.indexOf(block)].index = thisIndex;
     this.index = newIndex;
-    HUP.L.log('a: ', this.blocks[newIndex].index, 'b: ', this.index);
     HUPRearrangeBlocks(this.blocks);
     this.saveProperties();
   },
@@ -109,10 +104,8 @@ HUPBlock.prototype = {
     }
     var thisIndex = this.index;
     var newIndex = block.index;
-    HUP.L.log(newIndex, thisIndex);
     this.blocks[this.blocks.indexOf(block)].index = thisIndex;
     this.index = newIndex;
-    HUP.L.log('a: ', this.blocks[newIndex].index, 'b: ', this.index);
     HUPRearrangeBlocks(this.blocks);
     this.saveProperties();
   },
@@ -148,20 +141,16 @@ HUPBlock.prototype = {
     this.saveProperties();
     HUPRearrangeBlocks(this.blocks);
   },
-  setIndex: function(index) {
+  setIndex: function(index, save) {
     this.index = index;
-    this.saveProperties();
+    if(save) this.saveProperties();
   },
   addButtons: function() {
     if(!this.titleNode) return;
     var _this = this;
-    this.delButton = HUP.El.Button(), this.hideButton = HUP.El.Button(), this.showButton = HUP.El.Button();
-    this.delButton.setAttribute('title', HUP.Bundles.getString('deleteBlock'));
-    this.hideButton.setAttribute('title', HUP.Bundles.getString('hideBlockContent'));
-    this.showButton.setAttribute('title', HUP.Bundles.getString('showBlockContent'));
-    HUP.El.AddClass(this.delButton, 'hupper-button delete-button block-button');
-    HUP.El.AddClass(this.hideButton, 'hupper-button hide-button block-button');
-    HUP.El.AddClass(this.showButton, 'hupper-button show-button block-button');
+    this.delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button');
+    this.hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button');
+    this.showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
     HUP.El.Hide(this.showButton);
     HUP.Ev.addEvent(this.delButton, 'click', function() {
       _this.hide();
@@ -178,16 +167,11 @@ HUPBlock.prototype = {
   },
   addMoveButtons: function() {
     if(!this.titleNode) return;
+    this.upButton = HUP.El.Button(HUP.Bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+    this.downButton = HUP.El.Button(HUP.Bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+    this.leftButton = HUP.El.Button(HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+    this.rightButton = HUP.El.Button(HUP.Bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
-    this.upButton = HUP.El.Button(), this.downButton = HUP.El.Button(), this.leftButton = HUP.El.Button(), this.rightButton = HUP.El.Button();
-    this.upButton.setAttribute('title', HUP.Bundles.getString('moveBoxUp'));
-    this.downButton.setAttribute('title', HUP.Bundles.getString('moveBoxDown'));
-    this.leftButton.setAttribute('title', HUP.Bundles.getString('moveBoxLeft'));
-    this.rightButton.setAttribute('title', HUP.Bundles.getString('moveBoxRight'));
-    HUP.El.AddClass(this.upButton, 'hupper-button up-button block-move-button');
-    HUP.El.AddClass(this.downButton, 'hupper-button down-button block-move-button');
-    HUP.El.AddClass(this.leftButton, 'hupper-button left-button block-move-button');
-    HUP.El.AddClass(this.rightButton, 'hupper-button right-button block-move-button');
     HUP.Ev.addEvent(this.upButton, 'click', function() {
       _this.moveUp();
     });
@@ -223,13 +207,12 @@ HUPBlocksProperties = {
     return HUPJson.decode(HUP.hp.get.blocks());
   },
   setBlock: function(block, props) {
-    blocks = this.get();
+    var blocks = this.get();
     blocks[block] = props;
     this.set(blocks);
   },
   getBlock: function(block) {
-    blocks = this.get();
-    return blocks[block];
+    return this.get()[block];
   }
 };
 HUPBlockMenus = function(hupMenu) {
@@ -280,11 +263,11 @@ HUPRearrangeBlocks = function(blocks) {
   });
   var sides = {left:1, right:1};
   blocks.forEach(function(block, index) {
-    if(blocks[index].side == 'left') {
-      blocks[index].setIndex(sides.left);
+    if(block.side == 'left') {
+      block.setIndex(sides.left, true);
       sides.left++;
     }  else {
-      blocks[index].setIndex(sides.right);
+      block.setIndex(sides.right, true);
       sides.right++;
     }
   });
@@ -293,7 +276,6 @@ HUPRearrangeBlocks = function(blocks) {
   HUP.El.RemoveAll(left);
   HUP.El.RemoveAll(right);
   blocks.forEach(function(block, index){
-    HUP.L.log(block.side, block.index);
     (block.side == 'left') ? HUP.El.Add(block.block, left) : HUP.El.Add(block.block, right);
     block.blocks = blocks;
   });
