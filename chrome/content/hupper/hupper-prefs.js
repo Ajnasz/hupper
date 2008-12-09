@@ -22,6 +22,7 @@ setPrefWinVals = function() {
   document.getElementById('HUP-hupper-highlightusers').value = hp.get.highlightusers();
   document.getElementById('HUP-hide-taxonomy').value = hp.get.hidetaxonomy();
   document.getElementById('HUP-show-in-statusbar').checked = hp.get.showinstatusbar();
+  document.getElementById('HUP-parseblocks').checked = hp.get.parseblocks();
   //document.getElementById('HUP-hupper-password').value = new _HUPPasswordManager().getPassword();
   //document.getElementById('HUP-hupper-username').value = hp.get.username();
 };
@@ -46,6 +47,7 @@ savePreferences = function() {
   hp.set.highlightusers(document.getElementById('HUP-hupper-highlightusers').value);
   hp.set.hidetaxonomy(document.getElementById('HUP-hide-taxonomy').value);
   hp.set.showinstatusbar(document.getElementById('HUP-show-in-statusbar').checked);
+  hp.set.parseblocks(document.getElementById('HUP-parseblocks').checked);
   //hp.set.username(document.getElementById('HUP-hupper-username').value);
   //new _HUPPasswordManager().addPassword(document.getElementById('HUP-hupper-password').value);
   return true;

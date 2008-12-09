@@ -40,6 +40,7 @@
           <label control="HUP-hide-taxonomy" value="&Hupper.hidetaxonomy;" />
           <textbox id="HUP-hide-taxonomy" />
           <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
+          <checkbox id="HUP-parseblocks" label="&Hupper.parseblocks;" />
         </groupbox>
       </tabpanel>
       <tabpanel>
