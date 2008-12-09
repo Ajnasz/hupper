@@ -395,10 +395,9 @@ var getBlocks = function() {
 };
 var parseBlocks = function(blocks, blockMenus) {
   var blockObjetcs =  new Array();
-  var sides = {right: 0, left: 0}, bl;
+  var sides = {right: 0, left: 0};
   blocks.forEach(function(block) {
-    bl = new HUPBlock(block, sides, blockMenus);
-    blockObjetcs.push(bl);
+    blockObjetcs.push(new HUPBlock(block, sides, blockMenus));
   });
   HUPRearrangeBlocks(blockObjetcs);
   HUP.L.log('blocks parsed');
@@ -775,9 +774,9 @@ var HUPPER = function(e) {
       // if comments are available
       if(HUP.El.GetId('comments')) {
         var c = getComments();
-        comments = c[0];
-        newComments = c[1];
-        indentComments = c[2];
+        var comments = c[0];
+        var newComments = c[1];
+        var indentComments = c[2];
         parseComments(comments, newComments, indentComments);
         if(newComments.length && HupperPrefs.showqnavbox()) {
           appendNewNotifier(null, null, hupMenu);
@@ -791,18 +790,20 @@ var HUPPER = function(e) {
           }
         }
       }
-      var blocks = getBlocks();
-      parseBlocks(blocks, new HUPBlockMenus(hupMenu), hupMenu);
-      if(HupperPrefs.hideads()) {
-        HideHupAds();
+      if(HUP.hp.get.parseblocks()) {
+        var blocks = getBlocks();
+        parseBlocks(blocks, new HUPBlockMenus(hupMenu), hupMenu);
       }
+//      if(HupperPrefs.hideads()) {
+//        HideHupAds();
+//      }
   //    bindHUPKeys();
       HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
       TIMER.stop();
       HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
     }
   } catch(e) {
-    Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber);
+    Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber, + ', ' + e.fileName);
   }
 };
 HUPPER.init = function() {
