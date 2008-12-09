@@ -15,52 +15,52 @@ var HUPElementer = function() {
 };
 HUPElementer.prototype = {
   /**
-    * Creates an 'li' element
-    * @return Li element
-    * @type Element
-    */
+   * Creates an 'li' element
+   * @return Li element
+   * @type Element
+   */
   Li: function() {
     return this.li.cloneNode(true);
   },
   /**
-    * Creates an 'ul' element
-    * @return Ul element
-    * @type Element
-    */
+   * Creates an 'ul' element
+   * @return Ul element
+   * @type Element
+   */
   Ul: function() {
     return this.ul.cloneNode(true);
   },
   /**
-    * Creates an 'div' element
-    * @return Div element
-    * @type Element
-    */
+   * Creates an 'div' element
+   * @return Div element
+   * @type Element
+   */
   Div: function() {
     return this.div.cloneNode(true);
   },
   /**
-    * Creates an 'span' element
-    * @return Span element
-    * @type Element
-    */
+   * Creates an 'span' element
+   * @return Span element
+   * @type Element
+   */
   Span: function() {
     return this.span.cloneNode(true);
   },
   /**
-    * Creates an 'a' element
-    * @return A element
-    * @type Element
-    */
+   * Creates an 'a' element
+   * @return A element
+   * @type Element
+   */
   A: function() {
     return this.a.cloneNode(true);
   },
   /**
-    * Creates an 'img' element
-    * @param {String} src source of the image
-    * @param {String} alt image alternate text
-    * @return Img element
-    * @type Element
-    */
+   * Creates an 'img' element
+   * @param {String} src source of the image
+   * @param {String} alt image alternate text
+   * @return Img element
+   * @type Element
+   */
   Img: function(src, alt) {
     var img = this.img.cloneNode(true);
     img.setAttribute('src', src);
@@ -68,44 +68,44 @@ HUPElementer.prototype = {
     return img;
   },
   /**
-    * Creates a 'button' element
-    * @return button element
-    * @type Element
-    */
-  Button: function(src, alt) {
+   * Creates a 'button' element
+   * @return button element
+   * @type Element
+   */
+  Button: function(title, class) {
     var button = this.button.cloneNode(true);
+    button.setAttribute('title', title);
+    this.AddClass(button, class);
     return button;
   },
   /**
-    * Creates a specified element
-    * @param {String} el type of element
-    * @return Li element
-    * @type Element
-    */
+   * Creates a specified element
+   * @param {String} el type of element
+   * @return Li element
+   * @type Element
+   */
   El: function(el) {
     return this.doc.createElement(el);
   },
   /**
-    * Creates a text element
-    * @return Text element
-    * @type Element
-    */
+   * Creates a text element
+   * @return Text element
+   * @type Element
+   */
   Txt: function(text) {
     return this.doc.createTextNode(text);
   },
   /**
-    * Adds a child element
-    * @param {Element} elem addable element
-    * @param {Element} parent Element, where the new element will appended
-    * @return Returns the element
-    * @type {Element,Null}
-    */
+   * Adds a child element
+   * @param {Element} elem addable element
+   * @param {Element} parent Element, where the new element will appended
+   * @return Returns the element
+   * @type {Element,Null}
+   */
   Add: function(elem, parent) {
     if(parent && elem) {
       parent.appendChild(elem);
       return elem;
-    } else {
-      HUP.L.log(elem.tagName);
     }
     return null;
   },
@@ -164,13 +164,12 @@ HUPElementer.prototype = {
     * @see #GetTag
     * @param {String} tag the elements tag name
     * @param {Objecŧ} [parent] parent element
-    * @return First element node
+    * @return First element node or null
     * @type Element
     */
   GetFirstTag: function(tag, parent) {
     var tags = this.GetTag(tag, parent);
-    if(tags.length) return tags[0];
-    return false;
+    return (tags.length) ? tags[0] : null;
   },
   /**
     * Returns the document body
@@ -180,7 +179,7 @@ HUPElementer.prototype = {
     if(this.body) {
       return this.body;
     }
-    this.body = this.GetFirstTag('body');
+    this.body = document.body;
     return this.body;
   },
   /**
@@ -251,7 +250,7 @@ HUPElementer.prototype = {
   * @type {Array}
   */
   GetByClass: function(par, cn, el, force) {
-    el = el ? el.toUpperCase() : el = '*';
+    el = el ? el.toUpperCase() : '*';
     if(!par) {
       if(force == true) {
         par = this.GetBody();
@@ -261,14 +260,10 @@ HUPElementer.prototype = {
     }
     var out = new Array();
     // try to use the native getElementsByClassName method
-    try {
+    if(document.getElementsByClassName) {
       var ts = par.getElementsByClassName(cn);
-      for(var i = 0, tsl = ts.length; i < tsl; i++) {
-        if(ts[i].tagName == el) {
-          out.push(ts[i]);
-        }
-      }
-    } catch(e) {
+      return el == '*' ? ts : Array.filter(ts, function(elem) {return elem.nodeName == el;});
+    } else {
       var ts = this.GetTag(el, par);
       for(var i = 0, tsl = ts.length; i < tsl; i++) {
         if(this.HasClass(ts[i], cn)) {
@@ -321,11 +316,11 @@ HUPElementer.prototype = {
     }
   },
   /**
-    * @param {String} text link content
-    * @param {String} [href] url of the link
-    * @return link object
-    * @type Element
-    */
+   * @param {String} text link content
+   * @param {String} [href] url of the link
+   * @return link object
+   * @type Element
+   */
   CreateLink: function(text, href) {
     var l = this.A();
     if(href) {
