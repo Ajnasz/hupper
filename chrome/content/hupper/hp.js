@@ -80,6 +80,9 @@ HP.prototype = {
     },
     blocks: function() {
       return this.M.getCharPref('extensions.hupper.blocks');
+    },
+    parseblocks: function() {
+      return this.M.getBoolPref('extensions.hupper.parseblocks');
     }
   },
   set: {
@@ -159,6 +162,9 @@ HP.prototype = {
     },
     blocks: function(value) {
       return this.M.setCharPref('extensions.hupper.blocks', value);
+    },
+    parseblocks: function(value) {
+      return this.M.setBoolPref('extensions.hupper.parseblocks', value);
     }
   }
 };
