@@ -37,16 +37,20 @@ HUPNode.prototype = {
   hide: function() {
     HUP.El.AddClass(this.element, 'hidden');
     this.hidden = true;
+    if(this.nodeMenu) {
+      this.nodeMenu.addNodeToMenu(this);
+    }
   },
   show: function() {
     HUP.El.RemoveClass(this.element, 'hidden');
     this.hidden = false;
+    if(this.nodeMenu) {
+      this.nodeMenu.removeNodeFromMenu(this);
+    }
   },
   checkTaxonomy: function() {
-    var hideTaxonomies = Stringer.trim(HupperPrefs.hidetaxonomy());
-    if(hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) {
-      this.hide();
-    }
+    var hideTaxonomies = Stringer.trim(HUP.hp.get.hidetaxonomy());
+    (hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) ? this.hide() : this.show();
   },
   addNnewSpan: function() {
     this.sp = HUP.El.Span();
@@ -101,12 +105,62 @@ HUPNode.prototype = {
     }
     HUP.hp.set.hidetaxonomy(taxonomies);
   },
-  addNodes: function(nodes) {
-    this.nodes = nodes
+  addNodes: function(nodes, nodeMenu) {
+    this.nodes = nodes;
+    this.nodeMenu = nodeMenu;
+    if(this.hidden) {
+      nodeMenu.addNodeToMenu(this);
+    }
+  }
+};
+HUPNodeMenus = function(hupMenu) {
+  this.nodes = new Object();
+  this.hupMenu = hupMenu;
+};
+HUPNodeMenus.prototype = {
+  addMenu: function() {
+    if(this.menu) return;
+    this.menuitem = this.hupMenu.addMenuItem({name: 'Restore hidden nodes', click: function() {
+      HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
+      HUP.El.ToggleClass(this.parentNode, 'collapsed');
+      HUP.El.ToggleClass(this.parentNode, 'expanded');
+    }}, null, true);
+    HUP.El.RemoveClass(this.menuitem, 'leaf');
+    HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
+    this.menu = this.hupMenu.addMenu(this.menuitem);
+  },
+  removeMenu: function() {
+    if(this.menuitem || this.menu) {
+      this.hupMenu.removeMenu(this.menu);
+      this.hupMenu.removeMenuItem(this.menuitem);
+      this.menuitem = null;
+      this.menu = null;
+    }
+  },
+  addNodeToMenu: function(node) {
+    if(!this.nodes[node.taxonomy]) {
+      if(!this.menu) this.addMenu();
+      var _this = this;
+      this.nodes[node.taxonomy] = this.hupMenu.addMenuItem({name: node.taxonomy, click: function() { node.show(); }}, _this.menu);
+    }
+  },
+  removeNodeFromMenu: function(node) {
+    if(this.nodes[node.taxonomy]) {
+      HUP.El.Remove(this.nodes[node.taxonomy]);
+      delete this.nodes[node.taxonomy];
+      var taxonomies = HUP.hp.get.hidetaxonomy();
+      var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
+      taxonomies = taxonomies.replace(rex, '');
+      HUP.hp.set.hidetaxonomy(taxonomies);
+      HUPHideTaxonomyNodes(node.nodes);
+    }
+    var n = 0;
+    for(var i in this.nodes) {n++;}
+    if(n == 0) this.removeMenu();
   }
 };
 HUPHideTaxonomyNodes = function(nodes) {
   nodes.forEach(function(node) {
     node.checkTaxonomy();
   });
-}
+};

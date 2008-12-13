@@ -404,7 +404,7 @@ var parseBlocks = function(blocks, blockMenus) {
  * @param {Array} nodes
  * @param {Array} newNodes
  */
-var parseNodes = function(nodes, newNodes) {
+var parseNodes = function(nodes, newNodes, nodeMenu) {
   var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread, next, prev;
   for(var i = 0, nl = nodes.length, node; i < nl; i++) {
     node = nodes[i];
@@ -417,7 +417,7 @@ var parseNodes = function(nodes, newNodes) {
     }
   }
   nodes.forEach(function(node) {
-    node.addNodes(nodes);
+    node.addNodes(nodes, nodeMenu);
   });
 };
 /**
@@ -779,7 +779,7 @@ var HUPPER = function(e) {
       } else {
         if(HupperPrefs.insertnewtexttonode()) {
           var nodes = getNodes();
-          parseNodes(nodes[0], nodes[1]);
+          parseNodes(nodes[0], nodes[1], new HUPNodeMenus(hupMenu));
           if(nodes[1].length > 0 && HupperPrefs.showqnavbox()) {
             appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
           }
@@ -789,10 +789,10 @@ var HUPPER = function(e) {
         var blocks = getBlocks();
         parseBlocks(blocks, new HUPBlockMenus(hupMenu), hupMenu);
       }
-//      if(HupperPrefs.hideads()) {
-//        HideHupAds();
-//      }
-//      bindHUPKeys();
+     //  if(HupperPrefs.hideads()) {
+     //    HideHupAds();
+     //  }
+     //  bindHUPKeys();
       HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
       TIMER.stop();
       HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
