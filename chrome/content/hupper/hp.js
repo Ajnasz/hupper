@@ -96,9 +96,6 @@ HP.prototype = {
     filtertrolls: function(value) {
       this.M.setBoolPref('extensions.hupper.filtertrolls', value);
     },
-    /**
-    * @return hide, hilight
-    */
     trollfiltermethod: function(value) {
       // hide, hilight
       this.M.setCharPref('extensions.hupper.trollfiltermethod', value);
@@ -106,9 +103,6 @@ HP.prototype = {
     trollcolor: function(value) {
       this.M.setCharPref('extensions.hupper.trollcolor', value);
     },
-    /**
-    * @return {String}
-    */
     huppers: function(value) {
       this.M.setCharPref('extensions.hupper.huppers', value);
     },
