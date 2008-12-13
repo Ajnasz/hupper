@@ -226,7 +226,7 @@ HUPBlockMenus.prototype = {
       HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
       HUP.El.ToggleClass(this.parentNode, 'collapsed');
       HUP.El.ToggleClass(this.parentNode, 'expanded');
-    }});
+    }}, null, true);
     HUP.El.RemoveClass(this.menuitem, 'leaf');
     HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
     this.menu = this.hupMenu.addMenu(this.menuitem);
