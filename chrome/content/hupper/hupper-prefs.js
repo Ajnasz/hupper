@@ -50,6 +50,10 @@ savePreferences = function() {
   HUP.hp.set.parseblocks(document.getElementById('HUP-parseblocks').checked);
   //HUP.hp.set.username(document.getElementById('HUP-hupper-username').value);
   //new _HUPPasswordManager().addPassword(document.getElementById('HUP-hupper-password').value);
+  var hideIcon = !HUP.hp.get.showinstatusbar();
+  HUP_mapWindows(function(win) {
+    win.document.getElementById('HUP-statusbar').hidden = hideIcon;
+  })
   return true;
 };
 var disableFields = function() {
@@ -88,6 +92,20 @@ var checkHLUsers = function() {
     return confirm(HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
   }
   return true;
+};
+/**
+ * Run the given parameter for every window
+ * @param {Function} onMap A function which should run for every opened window
+ */
+var HUP_mapWindows = function(onMap) {
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+  var enumerator = wm.getEnumerator('navigator:browser'), win, grid, tt;
+  while(enumerator.hasMoreElements()) {
+    win = enumerator.getNext();
+    if(typeof win != 'undefined' && typeof onMap == 'function') {
+      onMap(win);
+    }
+  }
 };
 var StartHupperPrefernces = function() {
   HUP = {};
