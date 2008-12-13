@@ -116,10 +116,6 @@ HUPComment.prototype = {
       HUP.El.AddClass(this.childs, HupperVars.trollCommentAnswersClass);
     }
   },
-  highlightHupper: function() {
-    HUP.El.AddClass(this.comment, HupperVars.hupperCommentClass);
-    HUP.El.AddClass(this.header, HupperVars.hupperCommentHeaderClass);
-  },
   /**
    * @param {NodeHeaderBuilder} builder
    */
