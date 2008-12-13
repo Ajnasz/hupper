@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='0.0.5.3a';
+  VER='0.0.5.3b';
 else
   VER=$1;
 fi
@@ -55,10 +55,15 @@ function setVersion {
     cd $BUILD_DIR;
   fi
   echo "Set version to $VER";
+
   sed "s/###VERSION###/$VER/g" install.rdf > install.rdf.tmp;
   mv install.rdf.tmp install.rdf;
+
   sed "s/###VERSION###/$VER/g" chrome/content/$PROJECT_NAME/ajax.js > chrome/content/$PROJECT_NAME/ajax.js.tmp;
   mv chrome/content/$PROJECT_NAME/ajax.js.tmp chrome/content/$PROJECT_NAME/ajax.js;
+
+  sed "s/###VERSION###/$VER/g" chrome/content/$PROJECT_NAME/postinstall.js > chrome/content/$PROJECT_NAME/postinstall.js.tmp;
+  mv chrome/content/$PROJECT_NAME/postinstall.js.tmp chrome/content/$PROJECT_NAME/postinstall.js;
 }
 
 if [ -d $TMP_DIR ];then
