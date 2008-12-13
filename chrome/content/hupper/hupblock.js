@@ -222,7 +222,7 @@ HUPBlockMenus = function(hupMenu) {
 HUPBlockMenus.prototype = {
   addMenu: function() {
     if(this.menu) return;
-    this.menuitem = this.hupMenu.addMenuItem({name: 'Restore hidden blocks', click: function() {
+    this.menuitem = this.hupMenu.addMenuItem({name:  HUP.Bundles.getString('restoreBlocks'), click: function() {
       HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
       HUP.El.ToggleClass(this.parentNode, 'collapsed');
       HUP.El.ToggleClass(this.parentNode, 'expanded');
