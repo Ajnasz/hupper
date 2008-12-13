@@ -43,7 +43,12 @@ HUPMenu.prototype = {
   removeMenu: function(menu) {
     HUP.El.Remove(menu);
   },
-  addMenuItem: function(menuItem, parent) {
+  /**
+   * @param {Object} menuItem {name: 'name of the menu item'[, click: function,] [href: 'http://...]}
+   * @param {Element} [parent] parent element where the menu item should be appended
+   * @param {Boolean} [first] insert it as a first menu item
+   */
+  addMenuItem: function(menuItem, parent, first) {
   // {name: 'block name', href: 'false, http://...', click: function() {}}
     if(!parent && !this.menu) this.addMainMenu();
     var li = HUP.El.Li();
@@ -56,7 +61,7 @@ HUPMenu.prototype = {
     if(!parent) parent = this.menu;
     HUP.El.AddClass(li, 'leaf');
     HUP.El.Add(a, li);
-    HUP.El.Add(li, parent);
+    (first && parent.firstChild) ? HUP.El.Insert(li, parent.firstChild) : HUP.El.Add(li, parent);
     return li;
   },
   removeMenuItem: function(menuItem) {
