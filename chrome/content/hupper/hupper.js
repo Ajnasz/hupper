@@ -16,9 +16,7 @@
 var HupperVars = {
   trollCommentHeaderClass: 'trollHeader',
   trollCommentClass: 'trollComment',
-  trollCommentAnswersClass: 'trollCommentAnswer',
-  hupperCommentHeaderClass: 'hupperHeader',
-  hupperCommentHeader: 'hupperComment'
+  trollCommentAnswersClass: 'trollCommentAnswer'
 };
 /**
  * Namespace, which is used to returns the preferences value
@@ -400,7 +398,6 @@ var parseBlocks = function(blocks, blockMenus) {
     blockObjetcs.push(new HUPBlock(block, sides, blockMenus));
   });
   HUPRearrangeBlocks(blockObjetcs);
-  HUP.L.log('blocks parsed');
 }
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
@@ -566,7 +563,6 @@ var addHupStyles = function(e) {
       styles += '.' + HupperVars.trollCommentHeaderClass + ' {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
       break;
   };
-  styles += '.' + HupperVars.hupperCommentHeaderClass + ' {background-color: ' + HupperPrefs.huppercolor() + ' !important;}';
   if(HupperPrefs.hilightForumLinesOnHover()) {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
@@ -581,7 +577,6 @@ var addHupStyles = function(e) {
   sti.setAttribute('media', 'all');
   sti.setAttribute('href', 'chrome://hupper/skin/hupper.css');
   HUP.El.Add(sti, head);
-  HUP.L.log('styles added');
 };
 var Stringer = {
   trim: function(str) {
@@ -742,7 +737,6 @@ HUPStatusClickHandling.prototype = {
     return currentTab;
   }
 };
-
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -759,11 +753,12 @@ var HUPPER = function(e) {
       // HUP document object
       HUP.w = ww;
       HUP.hp = new HP();
+      // Logger
+      HUP.L = new HLog();
+      HUP_postInstall();
       // Elementer
       HUP.El = new HUPElementer();
       HUP.Ev = new HUPEvents();
-      // Logger
-      HUP.L = new HLog();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
       addHupStyles();
@@ -797,7 +792,7 @@ var HUPPER = function(e) {
 //      if(HupperPrefs.hideads()) {
 //        HideHupAds();
 //      }
-  //    bindHUPKeys();
+//      bindHUPKeys();
       HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
       TIMER.stop();
       HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
