@@ -18,6 +18,9 @@
     window.addEventListener('load', StartHupperPrefernces, false);
     ]]>
   </script>
+  <stringbundlset id="stringbundleset">
+    <stringbundle id="hupper-prefs-bundles" src="chrome://hupper/locale/hupper.properties" />
+  </stringbundlset>
 
   <tabbox id="hupper-tabbox">
     <tabs>
@@ -45,7 +48,6 @@
       </tabpanel>
       <tabpanel>
         <groupbox flex="1">
-          <caption label="Hupper Preferences" />
           <!-- trollfiter section -->
           <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
           <label control="HUP-trolls" value="&Hupper.trolls;" />
@@ -61,13 +63,15 @@
           </menulist>
           <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
           <!-- trollfiter section end -->
-          <separator class="groove" />
           <!-- hupper filter section -->
+          <!--
+          <separator class="groove" />
           <checkbox id="HUP-enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
           <label control="HUP-huppers" value="&Hupper.huppers;" />
           <textbox id="HUP-huppers"  />
           <label control="HUP-hupper-color" value="&Hupper.huppercolor;" />
           <textbox id="HUP-hupper-color" />
+          -->
           <!-- hupper filter section end -->
           <separator class="groove" />
           <label control="HUP-hupper-highlightusers" value="&Hupper.highlightuser;"/>
