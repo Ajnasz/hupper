@@ -98,12 +98,11 @@ HUPNode.prototype = {
     HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
   },
   addToHide: function() {
-    var taxonomies = HUP.hp.get.hidetaxonomy();
-    var rex = new RegExp('\\b' + this.taxonomy + '\\b');
-    if(!rex.test(taxonomies)) {
-      taxonomies = (Stringer.empty(taxonomies)) ? this.taxonomy : taxonomies += ',' + this.taxonomy;
+    var taxonomies = HUP.hp.get.hidetaxonomy().split(';');
+    if(taxonomies.indexOf(this.taxonomy) == -1) {
+      taxonomies.push(this.taxonomy);
     }
-    HUP.hp.set.hidetaxonomy(taxonomies);
+    HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
   },
   addNodes: function(nodes, nodeMenu) {
     this.nodes = nodes;
@@ -148,10 +147,17 @@ HUPNodeMenus.prototype = {
     if(this.nodes[node.taxonomy]) {
       HUP.El.Remove(this.nodes[node.taxonomy]);
       delete this.nodes[node.taxonomy];
-      var taxonomies = HUP.hp.get.hidetaxonomy();
-      var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
-      taxonomies = taxonomies.replace(rex, '');
-      HUP.hp.set.hidetaxonomy(taxonomies);
+      var taxonomies = HUP.hp.get.hidetaxonomy().split(';');
+      for(var i = 0, tl = taxonomies.length; i < tl; i++) {
+        if(taxonomies[i] == node.taxonomy) {
+          taxonomies.splice(i, 1);
+          break;
+        }
+      }
+      //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
+      //taxonomies = taxonomies.replace(rex, '');
+      HUP.L.log(taxonomies.join(';'));
+      HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
       HUPHideTaxonomyNodes(node.nodes);
     }
     var n = 0;
