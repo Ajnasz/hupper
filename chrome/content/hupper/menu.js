@@ -4,6 +4,20 @@ var HUPMenu = function() {
 HUPMenu.prototype = {
   block: null,
   id: 'block-hupper-0',
+  hidden: false,
+  menuItems: 0,
+  hide: function() {
+    if(this.block) {
+      HUP.El.AddClass(this.block, 'hidden');
+      this.hidden = true;
+    }
+  },
+  show: function() {
+    if(this.block) {
+      HUP.El.RemoveClass(this.block, 'hidden');
+      this.hidden = false;
+    }
+  },
   create: function() {
     this.titleNode = HUP.El.El('h2');
 
@@ -23,6 +37,7 @@ HUPMenu.prototype = {
     HUP.El.Hide(this.block);
     var googleBlock = HUP.El.GetId('block-user-1');
     HUP.El.Insert(this.block, googleBlock);
+    this.hide();
   },
   addMainMenu: function() {
     if(this.menu) return;
@@ -62,9 +77,13 @@ HUPMenu.prototype = {
     HUP.El.AddClass(li, 'leaf');
     HUP.El.Add(a, li);
     (first && parent.firstChild) ? HUP.El.Insert(li, parent.firstChild) : HUP.El.Add(li, parent);
+    if(this.hidden) this.show();
+    this.menuItems++;
     return li;
   },
   removeMenuItem: function(menuItem) {
     HUP.El.Remove(menuItem);
+    this.menuItems--;
+    if(this.menuItems == 0) this.hide();
   }
 };
