@@ -19,7 +19,7 @@ var HUPBlock = function(block, sides, blockMenus) {
   if(properties) {
     this.side = properties.side;
     this.setIndex(properties.index);
-    properties.hidden ? this.hide() : this.show();
+    if(this.id != 'block-hupper-0'){properties.hidden ? this.hide() : this.show()};
     properties.contentHidden ? this.hideContent() : this.showContent();
   } else {
     this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
