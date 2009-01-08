@@ -27,5 +27,8 @@
       <label id="HUP-statusbar-label" value="HUP" collapsed="true" crop="end" style="width:0;margin:0" />
     </statusbarpanel>
   </statusbar>
+  <menupopup id="menu_ToolsPopup">
+    <menuitem label="Hupper" oncommand="window.openDialog('chrome://hupper/content/hupper-prefs.xul', 'Hupper', 'chrome,titlebar,toolbar,centerscreen,modal');" image="chrome://hupper/skin/hupper-small.png" class="menuitem-iconic"/>
+  </menupopup>
 </overlay>
 
