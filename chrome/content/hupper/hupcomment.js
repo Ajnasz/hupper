@@ -5,9 +5,11 @@
  * @param {Element} commentNode HTML Element
  * @param {Array} indentComments comments, which are indented
  * @param {Array} comments all comment of the page
+ * @param {GetHupComments} hupComments the general GetHupComments instance
  */
-var HUPComment = function(commentNode, indentComments, comments) {
+var HUPComment = function(commentNode, indentComments, comments, hupComments) {
   this.comment = commentNode;
+  this.hupComments = hupComments;
   this.id = this.comment.previousSibling.previousSibling.id;
   this.header = HUP.El.GetByClass(this.comment, 'submitted', 'div')[0];
   this.footer = HUP.El.GetByClass(this.comment, 'link', 'div')[0];
@@ -23,6 +25,17 @@ var HUPComment = function(commentNode, indentComments, comments) {
   this.getChildComment(); // get child comments
   this.user = !this.deletedUser ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
   this.getParent(indentComments, comments);
+  HUP.L.log('parent:', this.parent, this.parent.id);
+  if(this.parent != -1) {
+    this.getPlusOrMinus();
+    if(this.plusOne || this.minusOne) {
+      if(this.plusOne) {
+        this.parent.updatePoints(1)
+      } else {
+        this.parent.updatePoints(-1);
+      }
+    }
+  }
 };
 HUPComment.prototype = {
   /**
@@ -157,5 +170,157 @@ HUPComment.prototype = {
     if(users[this.user]) {
       this.highLightComment(users[this.user]);
     }
+  },
+  plusOne: false,
+  minusOne: false,
+  plusPoints: 0,
+  minusPoints: 0,
+  getPlusOrMinus: function() {
+    if(this.isPlusOne()) {
+      this.plusOne = true;
+    } else if(this.isMinusOne()) {
+      this.minusOne = true;
+    }
+  },
+  isPlusOne: function() {
+    var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
+    var rex = new RegExp('\\+1\\b');
+    return rex.test(firstParagraph.innerHTML);
+  },
+  isMinusOne: function() {
+    var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
+    var rex = new RegExp('-1\\b');
+    return rex.test(firstParagraph.innerHTML);
+  },
+  updatePoints: function(direction) {
+    HUP.L.log('updatepoints', this.id, direction);
+    if(direction > 0) {
+      this.plusPoints++;
+    } else if(direction < 0) {
+      this.minusPoints--;
+    }
+    var _this = this;
+    var createPoints = function() {
+      if(!_this.pointContainer) {
+        _this.pointContainer = HUP.El.Div();
+        _this.plusContainer = HUP.El.Span();
+        _this.minusContainer = HUP.El.Span();
+        _this.sumContainer = HUP.El.Span();
+        HUP.El.AddClass(_this.pointContainer, 'points');
+        HUP.El.AddClass(_this.plusContainer, 'point plus-points');
+        HUP.El.AddClass(_this.minusContainer, 'point minus-points');
+        HUP.El.AddClass(_this.sumContainer, 'point sum-points');
+        HUP.El.Add(_this.plusContainer, _this.pointContainer);
+        HUP.El.Add(_this.minusContainer, _this.pointContainer);
+        HUP.El.Add(_this.sumContainer, _this.pointContainer);
+        _this.minusContainer.setAttribute('title','minus');
+        _this.plusContainer.setAttribute('title','plus');
+        _this.sumContainer.setAttribute('title','osszesen');
+        HUP.El.Insert(_this.pointContainer, _this.cont);
+      }
+      _this.plusContainer.innerHTML = _this.plusPoints;
+      _this.minusContainer.innerHTML = _this.minusPoints;
+      _this.sumContainer.innerHTML = _this.plusPoints - _this.minusPoints;
+    }
+    HUP.L.log('minus: ', this.minusPoints, 'plus', this.plusPoints);
+    createPoints();
+  }
+};
+
+/**
+ * @constructor
+ * @class GetHupComments
+ * @description A class to handle all of the comments on the page
+ */
+var GetHupComments = function() {
+  var _this = this;
+  var getComments = function() {
+    var coms = HUP.El.GetId('comments');
+    if(!coms) {
+      return false;
+    }
+    var ds = HUP.El.GetTag('div', coms);
+    _this.comments = new Array();
+    _this.indentComments = new Array();
+    _this.newComments = new Array();
+    for(var i = 0, dsl = ds.length, comment; i < dsl; i++) {
+      if(HUP.El.HasClass(ds[i], 'comment')) {
+        comment = new HUPComment(ds[i], _this.indentComments, _this.comments, _this);
+        if(typeof _this.indentComments[comment.indent] == 'undefined') {
+          _this.indentComments[comment.indent] = new Array();
+        }
+        _this.indentComments[comment.indent].push(_this.comments.length);
+        _this.comments.push(comment);
+        if(comment.newComm) {
+          _this.newComments.push(comment);
+        }
+      }
+    }
+  };
+  var parseComments = function() {
+    var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
+    var prevnextlinks = HupperPrefs.prevnextlinks();
+    var trolls = HupperPrefs.trolls();
+    var filtertrolls = HupperPrefs.filtertrolls();
+    var huppers = HupperPrefs.huppers();
+    var filterhuppers = HupperPrefs.filterhuppers();
+    var extraCommentLinks = HupperPrefs.extraCommentLinks();
+    var insertPermalink = HupperPrefs.insertPermalink();
+    var highlightUsers = HupperPrefs.highlightusers().split(',');
+    var hh = {}, bh;
+    highlightUsers.forEach(function(hluser){
+      bh = hluser.split(':');
+      hh[bh[0]] = bh[1];
+    });
+    var builder = new NodeHeaderBuilder(), ps;
+    try {
+      _this.comments.forEach(function(C) {
+        if(filtertrolls && inArray(C.user, trolls)) {
+          C.highlightTroll();
+        }
+        if(filterhuppers && inArray(C.user, huppers)) {
+          C.highlightHupper();
+        }
+        if(extraCommentLinks) {
+          C.addExtraLinks(builder);
+        }
+        if(C.parent != -1) {
+          C.addComExtraParent(builder);
+        }
+        if(insertPermalink) {
+          HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
+        }
+        C.highlightComment(hh);
+      });
+    } catch(e) {HUP.L.log(e.message, e.lineNumber, e.fileName)}
+    if(replacenewcommenttext || prevnextlinks) {
+      var spanNode = HUP.El.Span(), tmpSpan1;
+      for(var i = 0, ncl = _this.newComments.length; i < ncl; i++) {
+        tmpSpan1 = spanNode.cloneNode(true);
+        HUP.El.AddClass(tmpSpan1, 'hnav');
+        if(prevnextlinks) {
+          (i > 0) ? HUP.El.Add(builder.buildPrevLink(_this.newComments[i - 1].id), tmpSpan1) : HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
+          (i < ncl - 1) ? HUP.El.Add(builder.buildNextLink(_this.newComments[i + 1].id), tmpSpan1) : HUP.El.Add(builder.buildLastLink(), tmpSpan1);
+          HUP.w.nextLinks.push(_this.newComments[i].id);
+        }
+        if(replacenewcommenttext) {
+          _this.newComments[i].replaceNewCommentText(builder, tmpSpan1)
+        }
+        HUP.El.Insert(tmpSpan1, _this.newComments[i].header.firstChild);
+      }
+    }
+  };
+  getComments();
+  parseComments();
+};
+GetHupComments.prototype = {
+  /**
+   * @param {Element} element A comment div
+   * @returns a HupComment object or null
+   * @type {HUPComment,NULL}
+   */
+  get: function(element) {
+    var comments = this.comments.filter(function(c){HUP.L.log(c.comment, element);return c.comment == element});
+    return (comments.length) ? comments[0] : null;
   }
 };

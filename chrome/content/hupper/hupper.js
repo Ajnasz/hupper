@@ -330,6 +330,7 @@ NodeHeaderBuilder.prototype = {
  * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments,
  * @type Array
  */
+/*
 var getComments = function() {
   var coms = HUP.El.GetId('comments');
   if(!coms) {
@@ -337,7 +338,7 @@ var getComments = function() {
   }
   var ds = HUP.El.GetTag('div', coms);
   var comments = new Array(), newComm, indentComments = new Array(), newComments = new Array();
-  for(var i = 0, dsl = ds.length; i < dsl; i++) {
+  for(var i = 0, dsl = ds.length, comment; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'comment')) {
       comment = new HUPComment(ds[i], indentComments, comments);
       if(typeof indentComments[comment.indent] == 'undefined') {
@@ -352,6 +353,7 @@ var getComments = function() {
   }
   return new Array(comments, newComments, indentComments);
 };
+*/
 /**
  * Collects the content nodes like articles or blog posts from the page
  * @var {Array} nodes contains all node objects
@@ -472,6 +474,7 @@ var inArray = function(value, array) {
  * @param {Array} newComments
  * @param {Array} indentComments
  */
+/*
 var parseComments = function(comments, newComments, indentComments) {
   var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
   var prevnextlinks = HupperPrefs.prevnextlinks();
@@ -525,6 +528,7 @@ var parseComments = function(comments, newComments, indentComments) {
     }
   }
 };
+*/
 /**
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
@@ -759,12 +763,11 @@ var HUPPER = function(e) {
       HUP.w.nextLinks = new Array();
       // if comments are available
       if(HUP.El.GetId('comments')) {
-        var c = getComments();
-        var comments = c[0];
-        var newComments = c[1];
-        var indentComments = c[2];
-        parseComments(comments, newComments, indentComments);
-        if(newComments.length && HupperPrefs.showqnavbox()) {
+        var c = new GetHupComments();
+        var comments = c.comments;
+        var newComments = c.newComments;
+        var indentComments = c.indentComments;
+        if(c.newComments.length && HupperPrefs.showqnavbox()) {
           appendNewNotifier(null, null, hupMenu);
         }
       } else {
