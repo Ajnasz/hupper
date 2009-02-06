@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='0.0.5.4a';
+  VER='0.0.5.4a'`date '+%Y%m%d%H%M%S'`;
 else
   VER=$1;
 fi
@@ -32,7 +32,7 @@ function buildXPI {
 
   cd ..;
   echo "Build package $PROJECT_NAME.xpi";
-  rm $PROJECT_NAME.xpi;
+  rm $PROJECT_NAME*.xpi;
   zip $PROJECT_NAME.xpi chrome.manifest install.rdf chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
 
   echo "Replace old XPIs with the new one";
@@ -44,10 +44,10 @@ function buildXPI {
   else
     echo "Warning: Download dir does not exists!";
   fi;
-  if [ -f $START_DIR/$PROJECT_NAME.xpi ];then
-    rm $START_DIR/$PROJECT_NAME.xpi;
-  fi;
-  cp $PROJECT_NAME.xpi $START_DIR/;
+  #if [ -f $START_DIR/$PROJECT_NAME.xpi ];then
+    rm $START_DIR/$PROJECT_NAME*.xpi;
+  #fi;
+  cp $PROJECT_NAME.xpi $START_DIR/$PROJECT_NAME$VER.xpi;
   echo "Build finished!";
 }
 function setVersion {
