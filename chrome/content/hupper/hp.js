@@ -30,6 +30,10 @@ HP.prototype = {
     huppers: function() {
       return this.M.getCharPref('extensions.hupper.huppers');
     },
+    /**
+     * @namespace HP.get
+     * @return {Boolean}
+     */
     filterhuppers: function() {
       return this.M.getBoolPref('extensions.hupper.filterhuppers');
     },
@@ -91,8 +95,9 @@ HP.prototype = {
       this.M.setCharPref('extensions.hupper.trolls', value);
     },
     /**
-    * @return {Boolean}
-    */
+     * @namespace HP.set
+     * @return {Boolean}
+     */
     filtertrolls: function(value) {
       this.M.setBoolPref('extensions.hupper.filtertrolls', value);
     },

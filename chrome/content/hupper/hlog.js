@@ -1,7 +1,8 @@
 /**
- * Mozilla logging service
- * @class HLog is a class to make the logging easier
+ * @class HLog
  * @constructor
+ * @module Hupper
+ * @description Mozilla logging service, is a class to make the logging easier
  */
 var HLog = function() {
   this.s = this.serv();

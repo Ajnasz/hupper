@@ -1,3 +1,8 @@
+/**
+ * @class HUPNode
+ * @description class to parse a node and make changes on it
+ * @param {Element} node an article node
+ */
 var HUPNode = function(node) {
   var header = HUP.El.GetFirstTag('h2', node);
   var submitData = node.childNodes[3];

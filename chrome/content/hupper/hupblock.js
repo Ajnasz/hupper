@@ -1,6 +1,7 @@
 /**
  * @class HUPBlock
  * @constructor
+ * @description Parses a block and adds buttons, hides them
  * @param {Element} block
  */
 var HUPBlock = function(block, sides, blockMenus) {

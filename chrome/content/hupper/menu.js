@@ -1,3 +1,9 @@
+/**
+ * @constructor
+ * @class HUPMenu
+ * @module Hupper
+ * @description handles the hupper block
+ */
 var HUPMenu = function() {
   this.add();
 };
@@ -59,7 +65,10 @@ HUPMenu.prototype = {
     HUP.El.Remove(menu);
   },
   /**
-   * @param {Object} menuItem {name: 'name of the menu item'[, click: function,] [href: 'http://...]}
+   * @param {Object} menuItem
+   *  name: 'name of the menu item'
+   *  click: function
+   *  href: 'http://...
    * @param {Element} [parent] parent element where the menu item should be appended
    * @param {Boolean} [first] insert it as a first menu item
    */

@@ -1,18 +1,7 @@
 /**
- * hupcomment.js
- * @fileoverview This file is part of the Hupper Firefox extension,
- * which adds some extra feature for the {@link http://hup.hu hup.hu} site
- * {@link http://ajnasz.hu/blog/20070616/hupper-extension Hupper Firefox Extension}
- *
- * Copyright (C) 2007-2008
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @license General Public Licence v2
- * for more details see the licence.txt file
- */
-
-/**
  * @constructor
  * @class HUPComment
+ * @description class to parse a comment node
  * @param {Element} commentNode HTML Element
  * @param {Array} indentComments comments, which are indented
  * @param {Array} comments all comment of the page
@@ -36,6 +25,10 @@ var HUPComment = function(commentNode, indentComments, comments) {
   this.getParent(indentComments, comments);
 };
 HUPComment.prototype = {
+  /**
+   * @returns the childcomment container of a comment or -1
+   * @type {Element,Number}
+   */
   getChildComment: function() {
     var childs = this.comment.nextSibling.nextSibling;
     if(HUP.El.HasClass(childs, 'indented')) {
@@ -55,6 +48,9 @@ HUPComment.prototype = {
     }
     this.indent = indent;
   },
+  /**
+   * checks the comment, and if it has been posted "today", than adds the "új" text to it's header
+   */
   todayComment: function() {
     var _comment = this;
     var today =  new Date();
@@ -81,6 +77,11 @@ HUPComment.prototype = {
     var parent = (this.indent > 0 && indentComments[(this.indent-1)]) ? indentComments[(this.indent - 1)][(indentComments[(this.indent - 1)].length - 1)] : false;
     this.parent = (typeof parent != 'undefined' && parent !== false) ? comments[parent] : -1;
   },
+  /**
+   * converts the post date of a comment to a javascript Date object
+   * @returns the converted Date object
+   * @type Date
+   */
   getDate: function() {
     var a = this.deletedUser ? this.header.textContent : this.header.childNodes[2].textContent;
     var outObj = {};
@@ -98,9 +99,17 @@ HUPComment.prototype = {
     });
     this.date = outObj;
   },
+  /**
+   * @returns check that the user is still a member of the site or not
+   * @type {Boolean}
+   */
   isDeletedUser: function() {
     this.deletedUser = this.header.getElementsByTagName('a').length == 0;
   },
+  /**
+   * adds the defined color to the comments header
+   * @param {String} color
+   */
   highLightComment: function(color) {
     if(/[0-9a-f#]+/i.test(color)) { // hexa
       if(!/^#/.test(color)) {
@@ -109,6 +118,9 @@ HUPComment.prototype = {
     }
     this.header.style.backgroundColor = color;
   },
+  /**
+   * highligts the header of the node if the user is a troll
+   */
   highlightTroll: function()  {
     HUP.El.AddClass(this.comment, HupperVars.trollCommentClass);
     HUP.El.AddClass(this.header, HupperVars.trollCommentHeaderClass);

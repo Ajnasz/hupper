@@ -1,5 +1,6 @@
 /**
- * Class to create and manipulate DOM elements
+ * @class HUPElementer
+ * @description Class to create and manipulate DOM elements
  * @constructor
  */
 var HUPElementer = function() {

@@ -1,22 +1,12 @@
 /**
- * transform.js
- *
- * This file is part of the Hupper Firefox extnsion,
- *  which adds some extra feature for the http://hup.hu site
- * http://ajnasz.hu/hupper
- *
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @licence General Public Licence v2
- */
-
-/**
- * Provides some visual effect
+ * @constructor
+ * @class Transform
+ * @description Creates effects
+ * @module Hupper
  * @param {Element,String} ob transformable object
  * @param {String} type type of the effect
  * @param {Object} [opts] options
  * @return Transform
- * @class Transform
- * @constructor
  */
 var Transform = function(ob, type, opts) {
   if(typeof ob == 'object') {

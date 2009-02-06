@@ -1,15 +1,4 @@
 /**
- * hupper.js
- * @fileoverview This file is part of the Hupper Firefox extension,
- * which adds some extra feature for the {@link http://hup.hu hup.hu} site
- * {@link http://ajnasz.hu/blog/20070616/hupper-extension Hupper Firefox Extension}
- *
- * Copyright (C) 2007-2008
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @license General Public Licence v2
- * for more details see the licence.txt file
- */
-/**
  * Namespace, to store the static variables
  * @final
  */
@@ -164,7 +153,8 @@ var HupperPrefs = {
 };
 /**
  * Namespace to build links, lists etc.
- * @class NodeHeaderBuilder Namespace to build links, lists etc.
+ * @class NodeHeaderBuilder
+ * @description Namespace to build links, lists etc.
  * @constructor
  */
 var NodeHeaderBuilder = function() {
@@ -587,7 +577,8 @@ var Stringer = {
   }
 };
 /**
- * @class Timer is small bencmark utility
+ * @class Timer
+ * @description is small bencmark utility
  * @constructor
  */
 var Timer = function() {
