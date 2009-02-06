@@ -107,3 +107,13 @@
 li:hover .taxonomy-button {
   display: block;
 }
+.points {
+  float:right;
+  margin:5px;
+}
+.point {
+  margin: 0 5px;
+  background-color: #d8d8c4;
+  border: 1px solid #B7B78B;
+  padding: 0 3px;
+}
