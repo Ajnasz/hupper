@@ -25,14 +25,16 @@ var HUPComment = function(commentNode, indentComments, comments, hupComments) {
   this.getChildComment(); // get child comments
   this.user = !this.deletedUser ? this.header.childNodes[1].innerHTML : this.header.textContent.replace(/[^\(]+\( ([^ ]+).*/, '$1');
   this.getParent(indentComments, comments);
-  HUP.L.log('parent:', this.parent, this.parent.id);
+  this.plusPoints = new Array();
+  this.minusPoints = new Array();
   if(this.parent != -1) {
     this.getPlusOrMinus();
+    this.parent.cont.innerHTML += this.id + ', ';
     if(this.plusOne || this.minusOne) {
       if(this.plusOne) {
-        this.parent.updatePoints(1)
+        this.parent.addPoint(1, this)
       } else {
-        this.parent.updatePoints(-1);
+        this.parent.addPoint(-1, this);
       }
     }
   }
@@ -173,8 +175,6 @@ HUPComment.prototype = {
   },
   plusOne: false,
   minusOne: false,
-  plusPoints: 0,
-  minusPoints: 0,
   getPlusOrMinus: function() {
     if(this.isPlusOne()) {
       this.plusOne = true;
@@ -192,38 +192,59 @@ HUPComment.prototype = {
     var rex = new RegExp('-1\\b');
     return rex.test(firstParagraph.innerHTML);
   },
-  updatePoints: function(direction) {
-    HUP.L.log('updatepoints', this.id, direction);
+  addPoint: function(direction, comment) {
     if(direction > 0) {
-      this.plusPoints++;
+      this.plusPoints.push(comment);
     } else if(direction < 0) {
-      this.minusPoints--;
+      this.minusPoints.push(comment);
     }
+  },
+  showPoints: function(direction, comment) {
+    if(!this.plusPoints.length && !this.minusPoints.length) return;
+    /**
+     * @param {HUPComment} comment a HUPComment object
+     */
+    var createPoint = function(comment) {
+      var point = HUP.El.Li();
+      HUP.El.AddClass(point, 'point');
+      HUP.El.Add(HUP.El.CreateLink(comment.user, '#' + comment.id), point);
+      return point;
+    };
+    this.pointContainer = HUP.El.Div();
+    this.sumContainer = HUP.El.El('h6');
+    this.sumContainer.setAttribute('title','osszesen');
+
+    HUP.El.AddClass(this.pointContainer, 'points');
+    HUP.El.AddClass(this.sumContainer, 'sum-points');
+    HUP.El.Add(this.sumContainer, this.pointContainer);
+    HUP.El.Insert(this.pointContainer, this.cont.firstChild);
     var _this = this;
-    var createPoints = function() {
-      if(!_this.pointContainer) {
-        _this.pointContainer = HUP.El.Div();
-        _this.plusContainer = HUP.El.Span();
-        _this.minusContainer = HUP.El.Span();
-        _this.sumContainer = HUP.El.Span();
-        HUP.El.AddClass(_this.pointContainer, 'points');
-        HUP.El.AddClass(_this.plusContainer, 'point plus-points');
-        HUP.El.AddClass(_this.minusContainer, 'point minus-points');
-        HUP.El.AddClass(_this.sumContainer, 'point sum-points');
-        HUP.El.Add(_this.plusContainer, _this.pointContainer);
-        HUP.El.Add(_this.minusContainer, _this.pointContainer);
-        HUP.El.Add(_this.sumContainer, _this.pointContainer);
-        _this.minusContainer.setAttribute('title','minus');
-        _this.plusContainer.setAttribute('title','plus');
-        _this.sumContainer.setAttribute('title','osszesen');
-        HUP.El.Insert(_this.pointContainer, _this.cont);
-      }
-      _this.plusContainer.innerHTML = _this.plusPoints;
-      _this.minusContainer.innerHTML = _this.minusPoints;
-      _this.sumContainer.innerHTML = _this.plusPoints - _this.minusPoints;
+    if(this.plusPoints.length) {
+      this.plusContainer = HUP.El.Ul();
+      var type = HUP.El.Li();
+      HUP.El.AddClass(type, 'type');
+      HUP.El.Add(HUP.El.Txt('plus'), type);
+      HUP.El.Add(type, this.plusContainer);
+      this.plusContainer.setAttribute('title','plus');
+
+      this.plusPoints.forEach(function(comment) {
+        HUP.El.Add(createPoint(comment), _this.plusContainer);
+      })
+      HUP.El.Add(this.plusContainer, this.pointContainer);
     }
-    HUP.L.log('minus: ', this.minusPoints, 'plus', this.plusPoints);
-    createPoints();
+    if(this.minusPoints.length) {
+      this.minusContainer = HUP.El.Ul();
+      this.minusContainer.setAttribute('title','minus');
+      var type = HUP.El.Li();
+      HUP.El.AddClass(type, 'type');
+      HUP.El.Add(HUP.El.Txt('minus'), type);
+      HUP.El.Add(type, this.minusContainer);
+      this.minusPoints.forEach(function(comment){
+        HUP.El.Add(createPoint(comment), _this.minusContainer);
+      })
+      HUP.El.Add(this.minusContainer, this.pointContainer);
+    }
+    this.sumContainer.innerHTML = this.plusPoints.length - this.minusPoints.length + ' points';
   }
 };
 
@@ -233,48 +254,59 @@ HUPComment.prototype = {
  * @description A class to handle all of the comments on the page
  */
 var GetHupComments = function() {
-  var _this = this;
-  var getComments = function() {
+  this.getComments();
+  this.parseComments();
+};
+GetHupComments.prototype = {
+  /**
+   * @param {Element} element A comment div
+   * @returns a HUPComment object or null
+   * @type {HUPComment,NULL}
+   */
+  get: function(element) {
+    var comments = this.comments.filter(function(c){return c.comment == element});
+    return (comments.length) ? comments[0] : null;
+  },
+  getComments: function() {
     var coms = HUP.El.GetId('comments');
     if(!coms) {
       return false;
     }
-    var ds = HUP.El.GetTag('div', coms);
-    _this.comments = new Array();
-    _this.indentComments = new Array();
-    _this.newComments = new Array();
-    for(var i = 0, dsl = ds.length, comment; i < dsl; i++) {
-      if(HUP.El.HasClass(ds[i], 'comment')) {
-        comment = new HUPComment(ds[i], _this.indentComments, _this.comments, _this);
-        if(typeof _this.indentComments[comment.indent] == 'undefined') {
-          _this.indentComments[comment.indent] = new Array();
-        }
-        _this.indentComments[comment.indent].push(_this.comments.length);
-        _this.comments.push(comment);
-        if(comment.newComm) {
-          _this.newComments.push(comment);
-        }
+    var ds = HUP.El.GetByClass(coms, 'comment', 'div');
+    this.comments = new Array();
+    this.indentComments = new Array();
+    this.newComments = new Array();
+    var _this = this;
+    ds.forEach(function(c) {
+      var comment = new HUPComment(c, _this.indentComments, _this.comments, _this);
+      if(typeof _this.indentComments[comment.indent] == 'undefined') {
+        _this.indentComments[comment.indent] = new Array();
       }
-    }
-  };
-  var parseComments = function() {
-    var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
-    var prevnextlinks = HupperPrefs.prevnextlinks();
-    var trolls = HupperPrefs.trolls();
-    var filtertrolls = HupperPrefs.filtertrolls();
-    var huppers = HupperPrefs.huppers();
-    var filterhuppers = HupperPrefs.filterhuppers();
-    var extraCommentLinks = HupperPrefs.extraCommentLinks();
-    var insertPermalink = HupperPrefs.insertPermalink();
-    var highlightUsers = HupperPrefs.highlightusers().split(',');
-    var hh = {}, bh;
-    highlightUsers.forEach(function(hluser){
+      _this.indentComments[comment.indent].push(_this.comments.length);
+      _this.comments.push(comment);
+      if(comment.newComm) {
+        _this.newComments.push(comment);
+      }
+    });
+  },
+  parseComments: function() {
+    var replacenewcommenttext = HupperPrefs.replacenewcommenttext(),
+    prevnextlinks = HupperPrefs.prevnextlinks(),
+    trolls = HupperPrefs.trolls(),
+    filtertrolls = HupperPrefs.filtertrolls(),
+    huppers = HupperPrefs.huppers(),
+    filterhuppers = HupperPrefs.filterhuppers(),
+    extraCommentLinks = HupperPrefs.extraCommentLinks(),
+    insertPermalink = HupperPrefs.insertPermalink(),
+    highlightUsers = HupperPrefs.highlightusers().split(','),
+    hh = {}, bh;
+    highlightUsers.forEach(function(hluser) {
       bh = hluser.split(':');
       hh[bh[0]] = bh[1];
     });
     var builder = new NodeHeaderBuilder(), ps;
     try {
-      _this.comments.forEach(function(C) {
+      this.comments.forEach(function(C) {
         if(filtertrolls && inArray(C.user, trolls)) {
           C.highlightTroll();
         }
@@ -291,36 +323,24 @@ var GetHupComments = function() {
           HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
         }
         C.highlightComment(hh);
+        C.showPoints();
       });
-    } catch(e) {HUP.L.log(e.message, e.lineNumber, e.fileName)}
+    } catch(e) {HUP.L.log(e.message, e.lineNumber, e.fileName);}
     if(replacenewcommenttext || prevnextlinks) {
       var spanNode = HUP.El.Span(), tmpSpan1;
-      for(var i = 0, ncl = _this.newComments.length; i < ncl; i++) {
+      for(var i = 0, ncl = this.newComments.length; i < ncl; i++) {
         tmpSpan1 = spanNode.cloneNode(true);
         HUP.El.AddClass(tmpSpan1, 'hnav');
         if(prevnextlinks) {
-          (i > 0) ? HUP.El.Add(builder.buildPrevLink(_this.newComments[i - 1].id), tmpSpan1) : HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
-          (i < ncl - 1) ? HUP.El.Add(builder.buildNextLink(_this.newComments[i + 1].id), tmpSpan1) : HUP.El.Add(builder.buildLastLink(), tmpSpan1);
-          HUP.w.nextLinks.push(_this.newComments[i].id);
+          (i > 0) ? HUP.El.Add(builder.buildPrevLink(this.newComments[i - 1].id), tmpSpan1) : HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
+          (i < ncl - 1) ? HUP.El.Add(builder.buildNextLink(this.newComments[i + 1].id), tmpSpan1) : HUP.El.Add(builder.buildLastLink(), tmpSpan1);
+          HUP.w.nextLinks.push(this.newComments[i].id);
         }
         if(replacenewcommenttext) {
-          _this.newComments[i].replaceNewCommentText(builder, tmpSpan1)
+          this.newComments[i].replaceNewCommentText(builder, tmpSpan1)
         }
-        HUP.El.Insert(tmpSpan1, _this.newComments[i].header.firstChild);
+        HUP.El.Insert(tmpSpan1, this.newComments[i].header.firstChild);
       }
     }
-  };
-  getComments();
-  parseComments();
-};
-GetHupComments.prototype = {
-  /**
-   * @param {Element} element A comment div
-   * @returns a HupComment object or null
-   * @type {HUPComment,NULL}
-   */
-  get: function(element) {
-    var comments = this.comments.filter(function(c){HUP.L.log(c.comment, element);return c.comment == element});
-    return (comments.length) ? comments[0] : null;
   }
 };
