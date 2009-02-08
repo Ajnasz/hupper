@@ -324,37 +324,6 @@ NodeHeaderBuilder.prototype = {
   }
 };
 /**
- * Collects the comment nodes and filter them into another 2 array too by their
- * roperties: comments, newComments, indentComments the indenComments just contains
- * an index which specify the comment index in the comments array
- * @return Array with the comments and new comments: 0 => comments object, 1 => only new comments,
- * @type Array
- */
-/*
-var getComments = function() {
-  var coms = HUP.El.GetId('comments');
-  if(!coms) {
-    return false;
-  }
-  var ds = HUP.El.GetTag('div', coms);
-  var comments = new Array(), newComm, indentComments = new Array(), newComments = new Array();
-  for(var i = 0, dsl = ds.length, comment; i < dsl; i++) {
-    if(HUP.El.HasClass(ds[i], 'comment')) {
-      comment = new HUPComment(ds[i], indentComments, comments);
-      if(typeof indentComments[comment.indent] == 'undefined') {
-        indentComments[comment.indent] = new Array();
-      }
-      indentComments[comment.indent].push(comments.length);
-      comments.push(comment);
-      if(comment.newComm) {
-        newComments.push(comment);
-      }
-    }
-  }
-  return new Array(comments, newComments, indentComments);
-};
-*/
-/**
  * Collects the content nodes like articles or blog posts from the page
  * @var {Array} nodes contains all node objects
  * @var {Array} newnodes contains only the new node objects
@@ -468,67 +437,6 @@ var inArray = function(value, array) {
   }
   return false;
 };
-/**
- * Parses all comment on the page and add class names, replaces the 'új' text, etc.
- * @param {Array} comments
- * @param {Array} newComments
- * @param {Array} indentComments
- */
-/*
-var parseComments = function(comments, newComments, indentComments) {
-  var replacenewcommenttext = HupperPrefs.replacenewcommenttext();
-  var prevnextlinks = HupperPrefs.prevnextlinks();
-  var trolls = HupperPrefs.trolls();
-  var filtertrolls = HupperPrefs.filtertrolls();
-  var huppers = HupperPrefs.huppers();
-  var filterhuppers = HupperPrefs.filterhuppers();
-  var extraCommentLinks = HupperPrefs.extraCommentLinks();
-  var insertPermalink = HupperPrefs.insertPermalink();
-  var highlightUsers = HupperPrefs.highlightusers().split(',');
-  var hh = {}, bh;
-  highlightUsers.forEach(function(hluser){
-    bh = hluser.split(':');
-    hh[bh[0]] = bh[1];
-  });
-  var builder = new NodeHeaderBuilder(), ps;
-  try {
-    comments.forEach(function(C) {
-      if(filtertrolls && inArray(C.user, trolls)) {
-        C.highlightTroll();
-      }
-      if(filterhuppers && inArray(C.user, huppers)) {
-        C.highlightHupper();
-      }
-      if(extraCommentLinks) {
-        C.addExtraLinks(builder);
-      }
-      if(C.parent != -1) {
-        C.addComExtraParent(builder);
-      }
-      if(insertPermalink) {
-        HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
-      }
-      C.highlightComment(hh);
-    });
-  } catch(e) {HUP.L.log(e.message, e.lineNumber, e.fileName)}
-  if(replacenewcommenttext || prevnextlinks) {
-    var spanNode = HUP.El.Span(), tmpSpan1;
-    for(var i = 0, ncl = newComments.length; i < ncl; i++) {
-      tmpSpan1 = spanNode.cloneNode(true);
-      HUP.El.AddClass(tmpSpan1, 'hnav');
-      if(prevnextlinks) {
-        (i > 0) ? HUP.El.Add(builder.buildPrevLink(newComments[i - 1].id), tmpSpan1) : HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
-        (i < ncl - 1) ? HUP.El.Add(builder.buildNextLink(newComments[i + 1].id), tmpSpan1) : HUP.El.Add(builder.buildLastLink(), tmpSpan1);
-        HUP.w.nextLinks.push(newComments[i].id);
-      }
-      if(replacenewcommenttext) {
-        newComments[i].replaceNewCommentText(builder, tmpSpan1)
-      }
-      HUP.El.Insert(tmpSpan1, newComments[i].header.firstChild);
-    }
-  }
-};
-*/
 /**
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
@@ -799,6 +707,7 @@ HUPPER.init = function() {
   var appcontent = document.getElementById("appcontent");   // browser
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
+    appcontent.removeEventListener("unload", HUPPER, true);
   }
   var showInStatusbar = HupperPrefs.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
