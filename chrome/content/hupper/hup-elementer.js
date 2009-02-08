@@ -127,8 +127,8 @@ HUPElementer.prototype = {
     * @param {Element} parent
     */
   Remove: function(elem, parent) {
-    if(!elem || (!elem.parentNode && !parent)) return;
-    (typeof parent == 'object') ? parent.removeChild(elem) : elem.parentNode.removeChild(elem);
+    if(!elem || !elem.parentNode) return;
+    elem.parentNode.removeChild(elem);
   },
   /**
   * Removes all childnode of the element
@@ -136,7 +136,7 @@ HUPElementer.prototype = {
   */
   RemoveAll: function(element) {
     while(element.firstChild) {
-      this.Remove(element.firstChild, element);
+      this.Remove(element.firstChild);
     }
   },
   /**
