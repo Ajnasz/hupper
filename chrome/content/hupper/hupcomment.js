@@ -214,7 +214,15 @@ HUPComment.prototype = {
     this.sumContainer = HUP.El.El('h6');
     this.sumContainer.setAttribute('title','osszesen');
     var togglePoints = function(event) {
-      (HUP.El.HasClass(this.parentNode, 'show')) ? HUP.El.RemoveClass(this.parentNode, 'show') : HUP.El.AddClass(this.parentNode, 'show');
+      if(HUP.El.HasClass(this.parentNode, 'show')) {
+        var _this = this;
+        new Transform(HUP.El.GetByClass(this.parentNode, 'point-details')[0], 'SlideUp', {onEnd: function() {
+          HUP.El.RemoveClass(_this.parentNode, 'show');
+        }});
+      } else {
+        HUP.El.AddClass(this.parentNode, 'show');
+        new Transform(HUP.El.GetByClass(this.parentNode, 'point-details')[0], 'SlideDown');
+      }
     }
     this.sumContainer.addEventListener('click', togglePoints, true);
     
