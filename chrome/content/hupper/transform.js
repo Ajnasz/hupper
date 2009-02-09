@@ -22,6 +22,7 @@ var Transform = function(ob, type, opts) {
   this.type = type;
   this.speed = opts.speed || false;
   this.dur = opts.dur || 10;
+  this.onEnd = opts.onEnd || function() {};
   this.ob.style.display = '';
   this.start(this.type);
   return this;
@@ -81,6 +82,10 @@ Transform.prototype = {
     if(THIS.i < THIS.dur) {
       setTimeout(THIS.FadeIn, THIS.dur/THIS.speed, THIS);
       THIS.i++;
+    } else {
+      if(typeof THIS.onEnd == 'function') {
+        THIS.onEnd();
+      }
     }
   },
   /**
@@ -96,6 +101,9 @@ Transform.prototype = {
     }
     if(THIS.i == 0) {
       THIS.ob.style.display = 'none';
+      if(typeof THIS.onEnd == 'function') {
+        THIS.onEnd();
+      }
     }
   },
   /**
@@ -111,6 +119,9 @@ Transform.prototype = {
       THIS.i++;
     } else {
       THIS.ob.style.display = 'none';
+      if(typeof THIS.onEnd == 'function') {
+        THIS.onEnd();
+      }
     }
   },
   /**
@@ -127,6 +138,9 @@ Transform.prototype = {
       THIS.i--;
     } else {
       THIS.ob.style.height = '';
+      if(typeof THIS.onEnd == 'function') {
+        THIS.onEnd();
+      }
     }
   }
 };
