@@ -213,10 +213,18 @@ HUPComment.prototype = {
     this.pointContainer = HUP.El.Div();
     this.sumContainer = HUP.El.El('h6');
     this.sumContainer.setAttribute('title','osszesen');
+    var togglePoints = function(event) {
+      (HUP.El.HasClass(this.parentNode, 'show')) ? HUP.El.RemoveClass(this.parentNode, 'show') : HUP.El.AddClass(this.parentNode, 'show');
+    }
+    this.sumContainer.addEventListener('click', togglePoints, true);
+    
+    this.pointDetails  = HUP.El.Div();
+    HUP.El.AddClass(this.pointDetails, 'point-details');
 
     HUP.El.AddClass(this.pointContainer, 'points');
     HUP.El.AddClass(this.sumContainer, 'sum-points');
     HUP.El.Add(this.sumContainer, this.pointContainer);
+    HUP.El.Add(this.pointDetails, this.pointContainer);
     HUP.El.Insert(this.pointContainer, this.cont.firstChild);
     var _this = this;
     if(this.plusPoints.length) {
@@ -230,7 +238,7 @@ HUPComment.prototype = {
       this.plusPoints.forEach(function(comment) {
         HUP.El.Add(createPoint(comment), _this.plusContainer);
       })
-      HUP.El.Add(this.plusContainer, this.pointContainer);
+      HUP.El.Add(this.plusContainer, this.pointDetails);
     }
     if(this.minusPoints.length) {
       this.minusContainer = HUP.El.Ul();
@@ -242,7 +250,7 @@ HUPComment.prototype = {
       this.minusPoints.forEach(function(comment){
         HUP.El.Add(createPoint(comment), _this.minusContainer);
       })
-      HUP.El.Add(this.minusContainer, this.pointContainer);
+      HUP.El.Add(this.minusContainer, this.pointDetails);
     }
     this.sumContainer.innerHTML = this.plusPoints.length - this.minusPoints.length + ' points';
   }
