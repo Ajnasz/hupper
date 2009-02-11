@@ -707,7 +707,6 @@ HUPPER.init = function() {
   var appcontent = document.getElementById("appcontent");   // browser
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
-    appcontent.removeEventListener("unload", HUPPER, true);
   }
   var showInStatusbar = HupperPrefs.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
@@ -717,3 +716,4 @@ HUPPER.init = function() {
   }
 };
 window.addEventListener('load', function(){ HUPPER.init(); }, false);
+window.removeEventListener('unload', function(){ HUPPER.init(); }, false);
