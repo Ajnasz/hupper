@@ -21,7 +21,7 @@ var Transform = function(ob, type, opts) {
   }
   this.type = type;
   this.speed = opts.speed || false;
-  this.dur = opts.dur || 10;
+  this.frames = opts.frames || 10;
   this.onEnd = opts.onEnd || function() {};
   this.ob.style.display = '';
   this.start(this.type);
@@ -74,72 +74,72 @@ Transform.prototype = {
   /**
    * Fade in the object
    * @method FadeIn
-   * @param {Transform} THIS
    */
-  FadeIn: function(THIS) {
-    THIS.ob.style.height = '';
-    THIS.ob.style.opacity = 0.1*THIS.i;
-    if(THIS.i < THIS.dur) {
-      setTimeout(THIS.FadeIn, THIS.dur/THIS.speed, THIS);
-      THIS.i++;
+  FadeIn: function() {
+    this.ob.style.height = '';
+    this.ob.style.opacity = 0.1*THIS.i;
+    if(this.i < this.frames) {
+      var _this = this;
+      setTimeout(function(){_this.FadeIn()}, this.frames/this.speed);
+      this.i++;
     } else {
-      if(typeof THIS.onEnd == 'function') {
-        THIS.onEnd();
+      if(typeof this.onEnd == 'function') {
+        this.onEnd();
       }
     }
   },
   /**
    * Fade out the object
    * @method FadeOut
-   * @param {Transform} THIS
    */
-  FadeOut: function(THIS) {
-    THIS.ob.style.opacity = 0.1*THIS.i;
-    if(THIS.i > 0) {
-      setTimeout(THIS.FadeOut, THIS.dur/THIS.speed, THIS);
-      THIS.i--;
+  FadeOut: function() {
+    this.ob.style.opacity = 0.1*this.i;
+    if(this.i > 0) {
+      var _this = this;
+      setTimeout(function() {_this.FadeOut()}, this.frames/this.speed);
+      this.i--;
     }
-    if(THIS.i == 0) {
-      THIS.ob.style.display = 'none';
-      if(typeof THIS.onEnd == 'function') {
-        THIS.onEnd();
+    if(this.i == 0) {
+      this.ob.style.display = 'none';
+      if(typeof this.onEnd == 'function') {
+        this.onEnd();
       }
     }
   },
   /**
    * Slide up the object
    * @method SlideUp
-   * @param {Transform} THIS
    */
-  SlideUp: function(THIS) {
-    var s = THIS.obHeight / THIS.dur;
-    THIS.ob.style.height = (THIS.obHeight-(s * THIS.i)) + 'px';
-    if(THIS.i < THIS.dur) {
-      setTimeout(THIS.SlideUp, THIS.dur/THIS.speed, THIS);
-      THIS.i++;
+  SlideUp: function() {
+    var s = this.obHeight / this.frames;
+    this.ob.style.height = (this.obHeight-(s * this.i)) + 'px';
+    if(this.i < this.frames) {
+      var _this = this;
+      setTimeout(function() {_this.SlideUp()}, this.frames/this.speed);
+      this.i++;
     } else {
-      THIS.ob.style.display = 'none';
-      if(typeof THIS.onEnd == 'function') {
-        THIS.onEnd();
+      this.ob.style.display = 'none';
+      if(typeof this.onEnd == 'function') {
+        this.onEnd();
       }
     }
   },
   /**
    * Slide down the object
    * @method SlideDown
-   * @param {Transform} THIS
    */
-  SlideDown: function(THIS) {
-    var s = THIS.obHeight / THIS.dur;
-    THIS.ob.style.display = '';
-    THIS.ob.style.height = (THIS.obHeight-(s * THIS.i)) + 'px';
-    if(THIS.i > 0) {
-      setTimeout(THIS.SlideDown, THIS.dur/THIS.speed, THIS);
-      THIS.i--;
+  SlideDown: function() {
+    var s = this.obHeight / this.frames;
+    this.ob.style.display = '';
+    this.ob.style.height = (this.obHeight-(s * this.i)) + 'px';
+    if(this.i > 0) {
+      var _this = this;
+      setTimeout(function(){_this.SlideDown()}, this.frames/this.speed);
+      this.i--;
     } else {
-      THIS.ob.style.height = '';
-      if(typeof THIS.onEnd == 'function') {
-        THIS.onEnd();
+      this.ob.style.height = '';
+      if(typeof this.onEnd == 'function') {
+        this.onEnd();
       }
     }
   }
