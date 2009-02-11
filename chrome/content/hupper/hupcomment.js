@@ -184,12 +184,12 @@ HUPComment.prototype = {
   },
   isPlusOne: function() {
     var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-    var rex = new RegExp('\\+1\\b');
+    var rex = new RegExp('(?:^|\\s)\\+1(?:$|\\s)');
     return rex.test(firstParagraph.innerHTML);
   },
   isMinusOne: function() {
     var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-    var rex = new RegExp('-1\\b');
+    var rex = new RegExp('(?:^|\\s)-1(?:$|\\s)');
     return rex.test(firstParagraph.innerHTML);
   },
   addPoint: function(direction, comment) {
@@ -225,7 +225,7 @@ HUPComment.prototype = {
       }
     }
     this.sumContainer.addEventListener('click', togglePoints, true);
-    
+
     this.pointDetails  = HUP.El.Div();
     HUP.El.AddClass(this.pointDetails, 'point-details');
 
