@@ -108,13 +108,16 @@ li:hover .taxonomy-button {
   display: block;
 }
 .points {
+  -moz-box-shadow: #888 -2px 0px 5px !important;
+  border: 1px solid #B7B78B;
   float:right;
-  margin: 0;
+  margin-bottom: 10px !important;
+  margin: 5px;
   padding:0;
 }
 .points h6 {
   background-color:#D8D8C4;
-  border: 1px solid #B7B78B;
+  border-bottom: 1px solid #B7B78B;
   cursor: pointer;
   margin: 0;
   padding:0 5px;
@@ -122,13 +125,9 @@ li:hover .taxonomy-button {
 }
 .points .point-details {
   background-color: #F6F6EB;
-  border-left: 1px solid #B7B78B;
-  border-right: 1px solid #B7B78B;
-  border-bottom: 1px solid #B7B78B;
   display: none;
   margin:0;
   padding:0 5px 5px;
-  position: absolute;
 }
 .points ul {
   margin:0;
