@@ -76,13 +76,6 @@ var checkHLUsers = function() {
     hlUsersObj[hlUser[0]] = hlUsers[1];
   }
   var used = new Array();
-  /*
-  for(var i = 0, hl = huppers.length; i < hl; i++) {
-    if(hlUsersObj[huppers[i]]) {
-      used.push(huppers[i]);
-    }
-  }
-  */
   for(var i = 0, tl= trolls.length; i < tl; i++) {
     if(hlUsersObj[trolls[i]]) {
       used.push(trolls[i]);

@@ -1,157 +1,4 @@
 /**
- * Namespace, to store the static variables
- * @final
- */
-var HupperVars = {
-  trollCommentHeaderClass: 'trollHeader',
-  trollCommentClass: 'trollComment',
-  trollCommentAnswersClass: 'trollCommentAnswer'
-};
-/**
- * Namespace, which is used to returns the preferences value
- */
-var HupperPrefs = {
-  /**
-   * Prefernce mozilla service
-   * pref types: BoolPref, CharPref, IntPref
-   * {@link http://developer.mozilla.org/en/docs/Code_snippets:Preferences developer.mozilla.org}
-   */
-  prefManager: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch),
-  /**
-   * @return The returned array contains the names of the trolls
-   * @type Array
-   */
-  trolls: function() {
-    var trolls = this.prefManager.getCharPref('extensions.hupper.trolls');
-    return trolls.split(',');
-  },
-  /**
-   * @return Hexa code color
-   * @type String
-   */
-  trollcolor: function() {
-    return this.prefManager.getCharPref('extensions.hupper.trollcolor');
-  },
-  /**
-   * @type {Boolean}
-   */
-  filtertrolls: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.filtertrolls');
-  },
-  /**
-   * @return hide or hilight the trolls
-   * @type String
-   */
-  trollfiltermethod: function() {
-    // hide, hilight
-    return this.prefManager.getCharPref('extensions.hupper.trollfiltermethod');
-  },
-  /**
-   * @return also hide the answers of a troll comment
-   * @type String
-   */
-  hidetrollanswers: function() {
-    // hide, hilight
-    return this.prefManager.getBoolPref('extensions.hupper.hidetrollanswers');
-  },
-  /**
-   * @return The returned array contains the names of the huppers
-   * @type Array
-   */
-  huppers: function() {
-    var huppers = this.prefManager.getCharPref('extensions.hupper.huppers');
-    return huppers.split(',');
-  },
-  /**
-   * @return Hexa code color
-   * @type String
-   */
-  huppercolor: function() {
-    return this.prefManager.getCharPref('extensions.hupper.huppercolor');
-  },
-  /**
-   * @type Boolean
-   */
-  filterhuppers: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.filterhuppers');
-  },
-  /**
-   * @type Boolean
-   */
-  replacenewcommenttext: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.replacenewcommenttext');
-  },
-  /**
-   * @type String
-   */
-  newcommenttext: function() {
-    return this.prefManager.getCharPref('extensions.hupper.newcommenttext');
-  },
-  /**
-   * @type Boolean
-   */
-  prevnextlinks: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.prevnextlinks');
-  },
-  /**
-   * @type String
-   */
-  tags: function() {
-    return this.prefManager.getCharPref('extensions.hupper.tags');
-  },
-  /**
-   * @type Boolean
-   */
-  extraCommentLinks: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.extracommentlinks');
-  },
-  /**
-   * @type Boolean
-   */
-  hilightForumLinesOnHover: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.hilightforumlinesonhover');
-  },
-  /**
-   * @type Boolean
-   */
-  insertPermalink: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.insertpermalink');
-  },
-  /**
-   * @type Boolean
-   */
-  insertnewtexttonode: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.insertnewtexttonode');
-  },
-  /**
-   * @type Boolean
-   */
-  fadeparentcomment: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.fadeparentcomment');
-  },
-  /**
-   * @type Boolean
-   */
-  showqnavbox: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.showqnavbox');
-  },
-  hideads: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.hideads');
-  },
-  highlightusers: function() {
-    return this.prefManager.getCharPref('extensions.hupper.highlightusers');
-  },
-  hidetaxonomy: function() {
-    return this.prefManager.getCharPref('extensions.hupper.hidetaxonomy');
-  },
-  hidetaxonomy: function() {
-    return this.prefManager.getCharPref('extensions.hupper.hidetaxonomy');
-  },
-  showinstatusbar: function() {
-    return this.prefManager.getBoolPref('extensions.hupper.showinstatusbar');
-  }
-};
-/**
  * Namespace to build links, lists etc.
  * @class NodeHeaderBuilder
  * @description Namespace to build links, lists etc.
@@ -190,7 +37,7 @@ var NodeHeaderBuilder = function() {
   // Title text nodes
   this.fit = HUP.El.Txt(this.firstLinkText);
   this.lat = HUP.El.Txt(this.lastLinkText);
-  this.newCt = HUP.El.Txt(HupperPrefs.newcommenttext());
+  this.newCt = HUP.El.Txt(HUP.hp.get.newcommenttext());
 
   // Mark as read node
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
@@ -302,7 +149,7 @@ NodeHeaderBuilder.prototype = {
     var tmpList = HUP.El.Li();
     var link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
     // if fading enabled, add an event listener, which will fades the parent node
-    if(HupperPrefs.fadeparentcomment()) {
+    if(HUP.hp.get.fadeparentcomment()) {
       link.addEventListener('click', function(e) {
         new Transform(e.target.n.comment, 'FadeIn');
       }, false);
@@ -453,19 +300,19 @@ var appendNewNotifier = function(link, mark, hupMenu) {
  */
 var addHupStyles = function(e) {
   var styles = '';
-  switch(HupperPrefs.trollfiltermethod()) {
+  switch(HUP.hp.get.trollfiltermethod()) {
     case 'hide':
-      styles += '.' + HupperVars.trollCommentClass + ' {display:none !important;}';
-      if(HupperPrefs.hidetrollanswers()) {
-        styles += '.' + HupperVars.trollCommentAnswersClass + ' {display:none !important;}';
+      styles += '.' + HUP.hp.get.trollCommentClass + ' {display:none !important;}';
+      if(HUP.hp.get.hidetrollanswers()) {
+        styles += '.' + HUP.hp.get.trollCommentAnswersClass + ' {display:none !important;}';
       }
       break;
     case 'hilight':
     default:
-      styles += '.' + HupperVars.trollCommentHeaderClass + ' {background-color:' + HupperPrefs.trollcolor() + ' !important;}';
+      styles += '.' + HUP.hp.get.trollCommentHeaderClass + ' {background-color:' + HUP.hp.get.trollcolor() + ' !important;}';
       break;
   };
-  if(HupperPrefs.hilightForumLinesOnHover()) {
+  if(HUP.hp.get.hilightforumlinesonhover()) {
     styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
   }
   var head = HUP.El.GetFirstTag('head');
@@ -675,14 +522,14 @@ var HUPPER = function(e) {
         var comments = c.comments;
         var newComments = c.newComments;
         var indentComments = c.indentComments;
-        if(c.newComments.length && HupperPrefs.showqnavbox()) {
+        if(c.newComments.length && HUP.hp.get.showqnavbox()) {
           appendNewNotifier(null, null, hupMenu);
         }
       } else {
-        if(HupperPrefs.insertnewtexttonode()) {
+        if(HUP.hp.get.insertnewtexttonode()) {
           var nodes = getNodes();
           parseNodes(nodes[0], nodes[1], new HUPNodeMenus(hupMenu));
-          if(nodes[1].length > 0 && HupperPrefs.showqnavbox()) {
+          if(nodes[1].length > 0 && HUP.hp.get.showqnavbox()) {
             appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
           }
         }
@@ -708,7 +555,7 @@ HUPPER.init = function() {
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
   }
-  var showInStatusbar = HupperPrefs.showinstatusbar();
+  var showInStatusbar = new HP().get.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
   statusbar.hidden = !showInStatusbar;
   if(showInStatusbar) {

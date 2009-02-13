@@ -85,9 +85,18 @@ HP.prototype = {
     blocks: function() {
       return this.M.getCharPref('extensions.hupper.blocks');
     },
+    /**
+    * @type Boolean
+    */
+    prevnextlinks: function() {
+      return this.M.getBoolPref('extensions.hupper.prevnextlinks');
+    },
     parseblocks: function() {
       return this.M.getBoolPref('extensions.hupper.parseblocks');
-    }
+    },
+    trollCommentHeaderClass: 'trollHeader',
+    trollCommentClass: 'trollComment',
+    trollCommentAnswersClass: 'trollCommentAnswer'
   },
   set: {
     M: this.M,

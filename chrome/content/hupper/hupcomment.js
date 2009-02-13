@@ -137,10 +137,10 @@ HUPComment.prototype = {
    * highligts the header of the node if the user is a troll
    */
   highlightTroll: function()  {
-    HUP.El.AddClass(this.comment, HupperVars.trollCommentClass);
-    HUP.El.AddClass(this.header, HupperVars.trollCommentHeaderClass);
+    HUP.El.AddClass(this.comment, HUP.hp.get.trollCommentClass);
+    HUP.El.AddClass(this.header, HUP.hp.get.trollCommentHeaderClass);
     if(this.childs != -1) {
-      HUP.El.AddClass(this.childs, HupperVars.trollCommentAnswersClass);
+      HUP.El.AddClass(this.childs, HUP.hp.get.trollCommentAnswersClass);
     }
   },
   /**
@@ -306,15 +306,15 @@ GetHupComments.prototype = {
     });
   },
   parseComments: function() {
-    var replacenewcommenttext = HupperPrefs.replacenewcommenttext(),
-    prevnextlinks = HupperPrefs.prevnextlinks(),
-    trolls = HupperPrefs.trolls(),
-    filtertrolls = HupperPrefs.filtertrolls(),
-    huppers = HupperPrefs.huppers(),
-    filterhuppers = HupperPrefs.filterhuppers(),
-    extraCommentLinks = HupperPrefs.extraCommentLinks(),
-    insertPermalink = HupperPrefs.insertPermalink(),
-    highlightUsers = HupperPrefs.highlightusers().split(','),
+    var replacenewcommenttext = HUP.hp.get.replacenewcommenttext(),
+    prevnextlinks = HUP.hp.get.prevnextlinks(),
+    trolls = HUP.hp.get.trolls(),
+    filtertrolls = HUP.hp.get.filtertrolls(),
+    huppers = HUP.hp.get.huppers(),
+    filterhuppers = HUP.hp.get.filterhuppers(),
+    extraCommentLinks = HUP.hp.get.extracommentlinks(),
+    insertPermalink = HUP.hp.get.insertpermalink(),
+    highlightUsers = HUP.hp.get.highlightusers().split(','),
     hh = {}, bh;
     highlightUsers.forEach(function(hluser) {
       bh = hluser.split(':');
