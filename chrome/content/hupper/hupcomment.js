@@ -29,7 +29,7 @@ var HUPComment = function(commentNode, indentComments, comments, hupComments) {
   this.minusPoints = new Array();
   if(this.parent != -1) {
     this.getPlusOrMinus();
-    this.parent.cont.innerHTML += this.id + ', ';
+    this.parent.cont.innerHTML += '<a href="#'+this.id+'">' + this.id + '</a>, ';
     if(this.plusOne || this.minusOne) {
       if(this.plusOne) {
         this.parent.addPoint(1, this)
@@ -184,12 +184,12 @@ HUPComment.prototype = {
   },
   isPlusOne: function() {
     var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-    var rex = new RegExp('(?:^|\\s)\\+1(?:$|\\s)');
+    var rex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\.)');
     return rex.test(firstParagraph.innerHTML);
   },
   isMinusOne: function() {
     var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-    var rex = new RegExp('(?:^|\\s)-1(?:$|\\s)');
+    var rex = new RegExp('(?:^|\\s)-1(?:$|\\s|\.)');
     return rex.test(firstParagraph.innerHTML);
   },
   addPoint: function(direction, comment) {
@@ -213,6 +213,9 @@ HUPComment.prototype = {
     this.pointContainer = HUP.El.Div();
     this.sumContainer = HUP.El.El('h6');
     this.sumContainer.setAttribute('title','osszesen');
+    /**
+     * show/hide the point details of the comment
+     */
     var togglePoints = function(event) {
       if(HUP.El.HasClass(this.parentNode, 'show')) {
         var _this = this;
