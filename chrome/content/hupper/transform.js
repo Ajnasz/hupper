@@ -6,7 +6,6 @@
  * @param {Element,String} ob transformable object
  * @param {String} type type of the effect
  * @param {Object} [opts] options
- * @return Transform
  */
 var Transform = function(ob, type, opts) {
   if(typeof ob == 'object') {
@@ -25,12 +24,7 @@ var Transform = function(ob, type, opts) {
   this.onEnd = opts.onEnd || function() {};
   this.ob.style.display = '';
   this.start(this.type);
-  return this;
 };
-/**
- * make the transformation
- * @param {Object} THIS reference to the Transform.prototype object
- */
 Transform.prototype = {
   /**
    * Starts the transformation
@@ -77,7 +71,7 @@ Transform.prototype = {
    */
   FadeIn: function() {
     this.ob.style.height = '';
-    this.ob.style.opacity = 0.1*THIS.i;
+    this.ob.style.opacity = 0.1*this.i;
     if(this.i < this.frames) {
       var _this = this;
       setTimeout(function(){_this.FadeIn()}, this.frames/this.speed);
