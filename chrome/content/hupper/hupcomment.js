@@ -314,7 +314,6 @@ GetHupComments.prototype = {
     trolls = HUP.hp.get.trolls(),
     filtertrolls = HUP.hp.get.filtertrolls(),
     huppers = HUP.hp.get.huppers(),
-    filterhuppers = HUP.hp.get.filterhuppers(),
     extraCommentLinks = HUP.hp.get.extracommentlinks(),
     insertPermalink = HUP.hp.get.insertpermalink(),
     highlightUsers = HUP.hp.get.highlightusers().split(','),
@@ -326,11 +325,8 @@ GetHupComments.prototype = {
     var builder = new NodeHeaderBuilder(), ps;
     try {
       this.comments.forEach(function(C) {
-        if(filtertrolls && inArray(C.user, trolls)) {
+        if(filtertrolls && inArray(C.user, trolls.split(','))) {
           C.highlightTroll();
-        }
-        if(filterhuppers && inArray(C.user, huppers)) {
-          C.highlightHupper();
         }
         if(extraCommentLinks) {
           C.addExtraLinks(builder);
