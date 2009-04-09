@@ -13,6 +13,7 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript">
     <![CDATA[
     window.addEventListener('load', StartHupperPrefernces, false);
@@ -44,6 +45,7 @@
           <textbox id="HUP-hide-taxonomy" />
           <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
           <checkbox id="HUP-parseblocks" label="&Hupper.parseblocks;" />
+          <button label="&Hupper.resetblocks;" oncommand="HUP_resetBlocks();" />
         </groupbox>
       </tabpanel>
       <tabpanel>
@@ -62,17 +64,6 @@
             </menupopup>
           </menulist>
           <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
-          <!-- trollfiter section end -->
-          <!-- hupper filter section -->
-          <!--
-          <separator class="groove" />
-          <checkbox id="HUP-enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
-          <label control="HUP-huppers" value="&Hupper.huppers;" />
-          <textbox id="HUP-huppers"  />
-          <label control="HUP-hupper-color" value="&Hupper.huppercolor;" />
-          <textbox id="HUP-hupper-color" />
-          -->
-          <!-- hupper filter section end -->
           <separator class="groove" />
           <label control="HUP-hupper-highlightusers" value="&Hupper.highlightuser;"/>
           <textbox id="HUP-hupper-highlightusers" />
