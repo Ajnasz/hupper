@@ -92,14 +92,23 @@ var checkHLUsers = function() {
  */
 var HUP_mapWindows = function(onMap) {
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-  var enumerator = wm.getEnumerator('navigator:browser'), win, grid, tt;
+  var enumerator = wm.getEnumerator('navigator:browser'), win;
   while(enumerator.hasMoreElements()) {
     win = enumerator.getNext();
     if(typeof win != 'undefined' && typeof onMap == 'function') {
       onMap(win);
+      HUP.L.log(win.document, HUP.w, win.console, win.document == HUP.w);
     }
   }
 };
+var HUP_resetBlocks = function() {
+  HUP_mapWindows(function(win){
+    var a = win.getBrowser();
+    for(var i in a.childNodes) {
+      HUP.L.log(a.childNodes[i], a.childNodes[i].nodeName);
+    }
+  });
+}
 var StartHupperPrefernces = function() {
   HUP = {};
   HUP.L = new HLog();
