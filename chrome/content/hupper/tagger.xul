@@ -5,7 +5,7 @@
 <dialog
   id="hupper-tagger"
   title="add tag"
-  ondialogaccept="savePreferences();"
+  ondialogaccept="Hupper.savePreferences();"
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <label control="hupper-text-box" value="Tags" />

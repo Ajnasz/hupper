@@ -2,7 +2,7 @@
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @licence General Public Licence v2
  */
-setPrefWinVals = function() {
+Hupper.setPrefWinVals = function() {
   document.getElementById('HUP-enable-trollfilter').checked = HUP.hp.get.filtertrolls();
   document.getElementById('HUP-trolls').value = HUP.hp.get.trolls();
   document.getElementById('HUP-troll-color').value = HUP.hp.get.trollcolor();
@@ -26,8 +26,8 @@ setPrefWinVals = function() {
   //document.getElementById('HUP-hupper-password').value = new _HUPPasswordManager().getPassword();
   //document.getElementById('HUP-hupper-username').value = HUP.hp.get.username();
 };
-savePreferences = function() {
-  if(!checkHLUsers()) {return false;}
+Hupper.savePreferences = function() {
+  if(!Hupper.checkHLUsers()) {return false;}
   HUP.hp.set.filtertrolls(document.getElementById('HUP-enable-trollfilter').checked);
   HUP.hp.set.trolls(document.getElementById('HUP-trolls').value);
   HUP.hp.set.trollcolor(document.getElementById('HUP-troll-color').value);
@@ -51,22 +51,22 @@ savePreferences = function() {
   //HUP.hp.set.username(document.getElementById('HUP-hupper-username').value);
   //new _HUPPasswordManager().addPassword(document.getElementById('HUP-hupper-password').value);
   var hideIcon = !HUP.hp.get.showinstatusbar();
-  HUP_mapWindows(function(win) {
+  Hupper.mapWindows(function(win) {
     win.document.getElementById('HUP-statusbar').hidden = hideIcon;
   })
   return true;
 };
-var disableFields = function() {
-  document.getElementById('HUP-trollfilter-method').addEventListener('command', onChangeFilterMethod, false);
+Hupper.disableFields = function() {
+  document.getElementById('HUP-trollfilter-method').addEventListener('command', Hupper.onChangeFilterMethod, false);
 };
-var onChangeFilterMethod = function() {
+Hupper.onChangeFilterMethod = function() {
   if(document.getElementById('HUP-trollfilter-method').value == 'hide') {
     document.getElementById('HUP-hide-troll-answers').disabled = false;
   } else {
     document.getElementById('HUP-hide-troll-answers').disabled = true;
   }
 };
-var checkHLUsers = function() {
+Hupper.checkHLUsers = function() {
   var hlUsers = document.getElementById('HUP-hupper-highlightusers').value.split(',');
   var trolls = document.getElementById('HUP-trolls').value.split(',');
   // var huppers = document.getElementById('HUP-huppers').value.split(',');
@@ -90,7 +90,7 @@ var checkHLUsers = function() {
  * Run the given parameter for every window
  * @param {Function} onMap A function which should run for every opened window
  */
-var HUP_mapWindows = function(onMap) {
+Hupper.mapWindows = function(onMap) {
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
   var enumerator = wm.getEnumerator('navigator:browser'), win;
   while(enumerator.hasMoreElements()) {
@@ -101,20 +101,20 @@ var HUP_mapWindows = function(onMap) {
     }
   }
 };
-var HUP_resetBlocks = function() {
-  HUP_mapWindows(function(win){
+Hupper.resetBlocks = function() {
+  Hupper.mapWindows(function(win){
     var a = win.getBrowser();
     for(var i in a.childNodes) {
       HUP.L.log(a.childNodes[i], a.childNodes[i].nodeName);
     }
   });
-}
-var StartHupperPrefernces = function() {
+};
+Hupper.StartHupperPrefernces = function() {
   HUP = {};
-  HUP.L = new HLog();
+  HUP.L = new Hupper.Log();
   HUP.hp = new HP();
   HUP.Bundles = document.getElementById('hupper-prefs-bundles');
-  disableFields();
-  setPrefWinVals();
-  onChangeFilterMethod();
+  Hupper.disableFields();
+  Hupper.setPrefWinVals();
+  Hupper.onChangeFilterMethod();
 };

@@ -1,13 +1,14 @@
 /**
  * @constructor
- * @class HUPMenu
+ * @class Menu
+ * @namespace Hupper
  * @module Hupper
  * @description handles the hupper block
  */
-var HUPMenu = function() {
+var Hupper.Menu = function() {
   this.add();
 };
-HUPMenu.prototype = {
+Hupper.Menu.prototype = {
   block: null,
   id: 'block-hupper-0',
   hidden: false,

@@ -1,13 +1,14 @@
 /**
  * @constructor
- * @class HUPComment
+ * @class Comment
+ * @namespace Hupper
  * @description class to parse a comment node
  * @param {Element} commentNode HTML Element
  * @param {Array} indentComments comments, which are indented
  * @param {Array} comments all comment of the page
- * @param {GetHupComments} hupComments the general GetHupComments instance
+ * @param {Hupper.GetComments} hupComments the general GetHupComments instance
  */
-var HUPComment = function(commentNode, indentComments, comments, hupComments) {
+Hupper.Comment = function(commentNode, indentComments, comments, hupComments) {
   this.comment = commentNode;
   this.hupComments = hupComments;
   this.id = this.comment.previousSibling.previousSibling.id;
@@ -39,7 +40,7 @@ var HUPComment = function(commentNode, indentComments, comments, hupComments) {
     }
   }
 };
-HUPComment.prototype = {
+Hupper.Comment.prototype = {
   /**
    * @returns the childcomment container of a comment or -1
    * @type {Element,Number}
@@ -144,7 +145,7 @@ HUPComment.prototype = {
     }
   },
   /**
-   * @param {NodeHeaderBuilder} builder
+   * @param {Hupper.NodeHeaderBuilder} builder
    */
   addExtraLinks: function(builder) {
     HUP.El.Add(builder.buildComExtraTop(), this.footerLinks);
@@ -152,7 +153,7 @@ HUPComment.prototype = {
   },
   /**
   * replace the 'uj' text in the header of newly posted comments
-   * @param {NodeHeaderBuilder} builder
+   * @param {Hupper.NodeHeaderBuilder} builder
    * @param {Element} tmpSpan1
   */
   replaceNewCommentText: function(builder, tmpSpan1) {
@@ -160,7 +161,7 @@ HUPComment.prototype = {
     HUP.El.Add(builder.buildNewText(), tmpSpan1);
   },
   /**
-   * @param {NodeHeaderBuilder} builder
+   * @param {Hupper.NodeHeaderBuilder} builder
    */
   addComExtraParent: function(builder) {
     HUP.El.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
@@ -202,7 +203,7 @@ HUPComment.prototype = {
   showPoints: function(direction, comment) {
     if(!this.plusPoints.length && !this.minusPoints.length) return;
     /**
-     * @param {HUPComment} comment a HUPComment object
+     * @param {Hupper.Comment} comment a HUPComment object
      */
     var createPoint = function(comment) {
       var point = HUP.El.Li();
@@ -266,21 +267,21 @@ HUPComment.prototype = {
     this.sumContainer.innerHTML = this.plusPoints.length - this.minusPoints.length + ' points';
   }
 };
-
 /**
  * @constructor
- * @class GetHupComments
+ * @class GetComments
+ * @namespace Hupper
  * @description A class to handle all of the comments on the page
  */
-var GetHupComments = function() {
+Hupper.GetComments = function() {
   this.getComments();
   this.parseComments();
 };
-GetHupComments.prototype = {
+Hupper.GetComments.prototype = {
   /**
    * @param {Element} element A comment div
-   * @returns a HUPComment object or null
-   * @type {HUPComment,NULL}
+   * @returns a Hupper.Comment object or null
+   * @type {Hupper.Comment,NULL}
    */
   get: function(element) {
     var comments = this.comments.filter(function(c){return c.comment == element});
@@ -297,7 +298,7 @@ GetHupComments.prototype = {
     this.newComments = new Array();
     var _this = this;
     ds.forEach(function(c) {
-      var comment = new HUPComment(c, _this.indentComments, _this.comments, _this);
+      var comment = new Hupper.Comment(c, _this.indentComments, _this.comments, _this);
       if(typeof _this.indentComments[comment.indent] == 'undefined') {
         _this.indentComments[comment.indent] = new Array();
       }
@@ -322,10 +323,10 @@ GetHupComments.prototype = {
       bh = hluser.split(':');
       hh[bh[0]] = bh[1];
     });
-    var builder = new NodeHeaderBuilder(), ps;
+    var builder = new Hupper.NodeHeaderBuilder(), ps;
     try {
       this.comments.forEach(function(C) {
-        if(filtertrolls && inArray(C.user, trolls.split(','))) {
+        if(filtertrolls && Hupper.inArray(C.user, trolls.split(','))) {
           C.highlightTroll();
         }
         if(extraCommentLinks) {

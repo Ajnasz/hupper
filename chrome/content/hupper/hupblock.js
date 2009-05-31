@@ -1,10 +1,11 @@
 /**
- * @class HUPBlock
+ * @class Block
+ * @namespace Hupper
  * @constructor
  * @description Parses a block and adds buttons, hides them
  * @param {Element} block
  */
-var HUPBlock = function(block, sides, blockMenus) {
+Hupper.Block = function(block, sides, blockMenus) {
   if(!block) return;
   this.block = block;
   this.id = this.block.getAttribute('id');
@@ -16,7 +17,7 @@ var HUPBlock = function(block, sides, blockMenus) {
   this.makeTitle();
   if(this.id != 'block-hupper-0') this.addButtons(); // exception for hup block
   this.addMoveButtons();
-  var properties = HUPBlocksProperties.getBlock(this.id);
+  var properties = Hupper.BlocksProperties.getBlock(this.id);
   if(properties) {
     this.side = properties.side;
     this.setIndex(properties.index);
@@ -29,7 +30,7 @@ var HUPBlock = function(block, sides, blockMenus) {
     sides[this.side]++;
   }
 };
-HUPBlock.prototype = {
+Hupper.Block.prototype = {
   hidden: false,
   contentHidden: false,
   blocks: new Array(),
@@ -100,7 +101,7 @@ HUPBlock.prototype = {
     var thisIndex = this.index;
     this.blocks[this.blocks.indexOf(block)].index = thisIndex;
     this.index = newIndex;
-    HUPRearrangeBlocks(this.blocks);
+    Hupper.RearrangeBlocks(this.blocks);
     this.saveProperties();
   },
   moveDown: function() {
@@ -112,7 +113,7 @@ HUPBlock.prototype = {
     var newIndex = block.index;
     this.blocks[this.blocks.indexOf(block)].index = thisIndex;
     this.index = newIndex;
-    HUPRearrangeBlocks(this.blocks);
+    Hupper.RearrangeBlocks(this.blocks);
     this.saveProperties();
   },
   getDownBlock: function(refBlock) {
@@ -138,14 +139,14 @@ HUPBlock.prototype = {
     this.side = 'right';
     this.index = -1;
     this.saveProperties();
-    HUPRearrangeBlocks(this.blocks);
+    Hupper.RearrangeBlocks(this.blocks);
   },
   moveLeft: function() {
     if(this.side == 'left') return;
     this.side = 'left';
     this.index = -1;
     this.saveProperties();
-    HUPRearrangeBlocks(this.blocks);
+    Hupper.RearrangeBlocks(this.blocks);
   },
   setIndex: function(index, save) {
     this.index = index;
@@ -202,10 +203,10 @@ HUPBlock.prototype = {
       index: this.index,
       side: this.side
     };
-    HUPBlocksProperties.setBlock(this.id, props);
+    Hupper.BlocksProperties.setBlock(this.id, props);
   }
 };
-HUPBlocksProperties = {
+Hupper.BlocksProperties = {
   set: function(blocks) {
     HUP.hp.set.blocks(HUPJson.encode(blocks));
   },
@@ -221,11 +222,17 @@ HUPBlocksProperties = {
     return this.get()[block];
   }
 };
-HUPBlockMenus = function(hupMenu) {
+/**
+ * @class BlockMenus
+ * @namespace Hupper
+ * @constructor
+ * @param {Hupper.Menu} hupMenu
+ */
+Hupper.BlockMenus = function(hupMenu) {
   this.blocks = new Object();
   this.hupMenu = hupMenu;
 };
-HUPBlockMenus.prototype = {
+Hupper.BlockMenus.prototype = {
   addMenu: function() {
     if(this.menu) return;
     this.menuitem = this.hupMenu.addMenuItem({name:  HUP.Bundles.getString('restoreBlocks'), click: function() {
@@ -262,7 +269,12 @@ HUPBlockMenus.prototype = {
     if(n == 0) this.removeMenu();
   }
 };
-HUPRearrangeBlocks = function(blocks) {
+/**
+ * @method RearrangeBlocks
+ * @namespace Hupper
+ */
+Hupper.RearrangeBlocks = function(blocks) {
+  blocks = blocks || HUP.w.blockObjects;
   blocks.sort(function(a, b) {
     if((a.side == b.side && a.index < b.index) || (a.side == 'left' && b.side == 'right') || !a.titleNode) return -1;
     if((a.side == b.side && a.index > b.index) || (a.side == 'right' && b.side == 'left')) return 1;

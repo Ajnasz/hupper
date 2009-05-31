@@ -1,9 +1,10 @@
 /**
- * @class HUPElementer
+ * @class Elementer
+ * @namespace Hupper
  * @description Class to create and manipulate DOM elements
  * @constructor
  */
-var HUPElementer = function() {
+Hupper.Elementer = function() {
   this.doc = HUP.w;
   this.li = this.doc.createElement('li');
   this.ul = this.doc.createElement('ul');
@@ -14,7 +15,7 @@ var HUPElementer = function() {
   this.button = this.doc.createElement('button');
   this.GetBody();
 };
-HUPElementer.prototype = {
+Hupper.Elementer.prototype = {
   /**
    * Creates an 'li' element
    * @return Li element
@@ -210,7 +211,7 @@ HUPElementer.prototype = {
   AddClass: function(el, c) {
     if(!el || !c || this.HasClass(el, c)) return false;
     var curClass = el.getAttribute('class');
-    (curClass === null || Stringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
+    (curClass === null || Hupper.Stringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
   /**
   * Removes the specified class from the element

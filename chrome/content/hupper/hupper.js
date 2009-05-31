@@ -1,10 +1,11 @@
 /**
  * Namespace to build links, lists etc.
  * @class NodeHeaderBuilder
+ * @namespace Hupper
  * @description Namespace to build links, lists etc.
  * @constructor
  */
-var NodeHeaderBuilder = function() {
+Hupper.NodeHeaderBuilder = function() {
   /**
    * @final
    */
@@ -43,7 +44,7 @@ var NodeHeaderBuilder = function() {
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
   HUP.El.AddClass(this.markR, 'mark');
 };
-NodeHeaderBuilder.prototype = {
+Hupper.NodeHeaderBuilder.prototype = {
   /**
     * Builds a link which points to the specified path with the next link str
     * @param {String} path Path for the next node
@@ -93,7 +94,7 @@ NodeHeaderBuilder.prototype = {
     var mr = this.markR.cloneNode(true);
     mr.setAttribute('path', path);
     mr.setAttribute('id', 'marker-' + i);
-    mr.addEventListener('click', markNodeAsRead, true);
+    mr.addEventListener('click', Hupper.markNodeAsRead, true);
     return mr;
   },
   /**
@@ -146,8 +147,8 @@ NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildComExtraParent: function(parent) {
-    var tmpList = HUP.El.Li();
-    var link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
+    var tmpList = HUP.El.Li(),
+    link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
     // if fading enabled, add an event listener, which will fades the parent node
     if(HUP.hp.get.fadeparentcomment()) {
       link.addEventListener('click', function(e) {
@@ -184,36 +185,36 @@ NodeHeaderBuilder.prototype = {
  * @return An arry with all nodes and only new nodes 0 => all node, 1 => only new nodes
  * @type Array
  */
-var getNodes = function() {
+Hupper.getNodes = function() {
   var c = HUP.El.GetId('content-both');
   var ds = HUP.El.GetTag('div', c);
   var nodes = new Array(), newnodes = new Array();
   for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(HUP.El.HasClass(ds[i], 'node')) {
-      node = new HUPNode(ds[i]);
+      node = new Hupper.Node(ds[i]);
       node.newc && !node.hidden ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
   }
   return new Array(nodes, newnodes);
 };
-var getBlocks = function() {
+Hupper.getBlocks = function() {
   return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
-var parseBlocks = function(blocks, blockMenus) {
-  var blockObjetcs =  new Array();
+Hupper.parseBlocks = function(blocks, blockMenus) {
+  HUP.w.blockObjects =  new Array();
   var sides = {right: 0, left: 0};
   blocks.forEach(function(block) {
-    blockObjetcs.push(new HUPBlock(block, sides, blockMenus));
+    HUP.w.blockObjects.push(new Hupper.Block(block, sides, blockMenus));
   });
-  HUPRearrangeBlocks(blockObjetcs);
+  Hupper.RearrangeBlocks(HUP.w.blockObjects);
 }
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
  * @param {Array} nodes
  * @param {Array} newNodes
  */
-var parseNodes = function(nodes, newNodes, nodeMenu) {
-  var spa = HUP.El.Span(), sp, builder = new NodeHeaderBuilder(), mread, next, prev;
+Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
+  var spa = HUP.El.Span(), sp, builder = new Hupper.NodeHeaderBuilder(), mread, next, prev;
   for(var i = 0, nl = nodes.length, node; i < nl; i++) {
     node = nodes[i];
     if(node.newc) {
@@ -234,7 +235,7 @@ var parseNodes = function(nodes, newNodes, nodeMenu) {
  * @requires HupAjax
  * @see HupAjax
  */
-var markNodeAsRead = function(e) {
+Hupper.markNodeAsRead = function(e) {
   new HupAjax( {
     method: 'get',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
@@ -260,7 +261,7 @@ var markNodeAsRead = function(e) {
  * Marks as read all nodes, which have unread items
  * @param {Event} e event object
  */
-var markAllNodeAsRead = function(e) {
+Hupper.markAllNodeAsRead = function(e) {
   var n = HUP.markReadNodes;
   var d = document || HUP.w;
   for(var i = 0, nl = n.length; i < nl; i++) {
@@ -274,7 +275,7 @@ var markAllNodeAsRead = function(e) {
  * @param {String,Number,Array,Object} value
  * @type {Boolean}
  */
-var inArray = function(value, array) {
+Hupper.inArray = function(value, array) {
   var i = array.length - 1;
   while(array[i]) {
     if(array[i] === value) {
@@ -288,17 +289,17 @@ var inArray = function(value, array) {
  * Appends a new link to the top of the page, if there is new comment
  * @param {String} [link]
  */
-var appendNewNotifier = function(link, mark, hupMenu) {
+Hupper.appendNewNotifier = function(link, mark, hupMenu) {
   hupMenu.addMenuItem({name: HUP.Bundles.getString('firstNew'), href: link || '#new'})
   if(mark) {
-    hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: markAllNodeAsRead})
+    hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
 /**
  * Adds my own styles to the hup.hu header
  * @param {Event} e event object
  */
-var addHupStyles = function(e) {
+Hupper.addHupStyles = function(e) {
   var styles = '';
   switch(HUP.hp.get.trollfiltermethod()) {
     case 'hide':
@@ -327,7 +328,7 @@ var addHupStyles = function(e) {
   sti.setAttribute('href', 'chrome://hupper/skin/hupper.css');
   HUP.El.Add(sti, head);
 };
-var Stringer = {
+Hupper.Stringer = {
   trim: function(str) {
     return str.replace(/^\s+|\s+$/g, '');
   },
@@ -337,13 +338,14 @@ var Stringer = {
 };
 /**
  * @class Timer
+ * @namespace Hupper
  * @description is small bencmark utility
  * @constructor
  */
-var Timer = function() {
+Hupper.Timer = function() {
   this.start();
 };
-Timer.prototype = {
+Hupper.Timer.prototype = {
   /**
    * Start the timer
    */
@@ -365,11 +367,11 @@ Timer.prototype = {
     return this.endTime.getTime() - this.startTime.getTime();
   }
 };
-var HUPJump = function(win, nextLinks) {
+Hupper.Jump = function(win, nextLinks) {
   this.window = win;
   this.nextLinks = nextLinks;
 }
-HUPJump.prototype = {
+Hupper.Jump.prototype = {
   next: function() {
     if(/^#/.test(HUP.w.location.hash)) {
       var curIndex = this.nextLinks.indexOf(this.window.location.hash.replace(/^#/, ''));
@@ -395,7 +397,7 @@ HUPJump.prototype = {
     }
   }
 };
-var HideHupAds = function() {
+Hupper.HideHupAds = function() {
   var ids = new Array();
   ids.push(HUP.El.GetId('block-block-18'));
   ids.forEach(function(ad) {
@@ -407,12 +409,12 @@ var HideHupAds = function() {
 /**
  * @param {Element} ob
  */
-var HUPStatusClickHandling = function(ob) {
+Hupper.StatusClickHandling = function(ob) {
   this.ob = ob;
   if(!this.ob) { return; }
   this.observe();
 };
-HUPStatusClickHandling.prototype = {
+Hupper.StatusClickHandling.prototype = {
   st: null,
   ob: null,
   /**
@@ -491,58 +493,64 @@ HUPStatusClickHandling.prototype = {
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
  */
-var HUPPER = function(e) {
+Hupper.start = function(e) {
   try {
     var ww = e.originalTarget;
     if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/localhost\/hupper\/hg/.test(ww.location.href)) {
-      var TIMER = new Timer();
+      var TIMER = new Hupper.Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
       */
       HUP = {};
+      var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);  
+      var newWindow = wm.getMostRecentWindow("navigator:browser");  
+      var b = newWindow.getBrowser();
       // HUP document object
       HUP.w = ww;
       HUP.hp = new HP();
       // Logger
-      HUP.L = new HLog();
-      HUP_postInstall();
+      HUP.L = new Hupper.Log();
+      for(var i in HUP.w.childNodes) {
+        HUP.L.log(HUP.w.childNodes[i]);
+      }
+      Hupper.postInstall();
       // Elementer
-      HUP.El = new HUPElementer();
+      HUP.El = new Hupper.Elementer();
       HUP.Ev = new HUPEvents();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
-      addHupStyles();
-      var hupMenu = new HUPMenu();
+      Hupper.addHupStyles();
+      var hupMenu = new Hupper.Menu();
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
       // if comments are available
       if(HUP.El.GetId('comments')) {
-        var c = new GetHupComments();
+        var c = new Hupper.GetComments();
         var comments = c.comments;
         var newComments = c.newComments;
         var indentComments = c.indentComments;
         if(c.newComments.length && HUP.hp.get.showqnavbox()) {
-          appendNewNotifier(null, null, hupMenu);
+          Hupper.appendNewNotifier(null, null, hupMenu);
         }
       } else {
         if(HUP.hp.get.insertnewtexttonode()) {
-          var nodes = getNodes();
-          parseNodes(nodes[0], nodes[1], new HUPNodeMenus(hupMenu));
+          var nodes = Hupper.getNodes();
+          Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
           if(nodes[1].length > 0 && HUP.hp.get.showqnavbox()) {
-            appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
+            Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
           }
         }
       }
       if(HUP.hp.get.parseblocks()) {
-        var blocks = getBlocks();
-        parseBlocks(blocks, new HUPBlockMenus(hupMenu), hupMenu);
+        var blocks = Hupper.getBlocks();
+        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(hupMenu), hupMenu);
       }
      //  if(HupperPrefs.hideads()) {
-     //    HideHupAds();
+     //    Hupper.HideHupAds();
      //  }
      //  bindHUPKeys();
-      HUP.w.Jumps = new HUPJump(HUP.w, HUP.w.nextLinks);
+      HUP.w.Jumps = new Hupper.Jump(HUP.w, HUP.w.nextLinks);
       TIMER.stop();
       HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
     }
@@ -550,17 +558,17 @@ var HUPPER = function(e) {
     Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber, + ', ' + e.fileName);
   }
 };
-HUPPER.init = function() {
+Hupper.init = function() {
   var appcontent = document.getElementById("appcontent");   // browser
   if(appcontent) {
-    appcontent.addEventListener("DOMContentLoaded", HUPPER, true);
+    appcontent.addEventListener("DOMContentLoaded", Hupper.start, true);
   }
   var showInStatusbar = new HP().get.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
   statusbar.hidden = !showInStatusbar;
   if(showInStatusbar) {
-    new HUPStatusClickHandling(statusbar);
+    new Hupper.StatusClickHandling(statusbar);
   }
 };
-window.addEventListener('load', function(){ HUPPER.init(); }, false);
-window.removeEventListener('unload', function(){ HUPPER.init(); }, false);
+window.addEventListener('load', function(){ Hupper.init(); }, false);
+window.removeEventListener('unload', function(){ Hupper.init(); }, false);

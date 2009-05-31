@@ -1,8 +1,10 @@
 /**
  * If some data format has been changed, the postinstall
  * will convert the datas to the newer format
+ * @method postInstall
+ * @namespace Hupper
  */
-var HUP_postInstall = function() {
+Hupper.postInstall = function() {
 
   const HUPPER_VERSION = '###VERSION###';
 

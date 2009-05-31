@@ -5,7 +5,7 @@
 <dialog
   id="hupper-prefs"
   title="Hupper Preferences"
-  ondialogaccept="return savePreferences();"
+  ondialogaccept="return Hupper.savePreferences();"
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js" />
@@ -16,7 +16,7 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript">
     <![CDATA[
-    window.addEventListener('load', StartHupperPrefernces, false);
+    window.addEventListener('load', Hupper.StartHupperPrefernces, false);
     ]]>
   </script>
   <stringbundlset id="stringbundleset">
@@ -45,7 +45,7 @@
           <textbox id="HUP-hide-taxonomy" />
           <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
           <checkbox id="HUP-parseblocks" label="&Hupper.parseblocks;" />
-          <button label="&Hupper.resetblocks;" oncommand="HUP_resetBlocks();" />
+          <button label="&Hupper.resetblocks;" oncommand="Hupper.resetBlocks();" />
         </groupbox>
       </tabpanel>
       <tabpanel>
