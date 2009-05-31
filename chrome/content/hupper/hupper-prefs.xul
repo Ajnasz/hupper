@@ -8,6 +8,7 @@
   ondialogaccept="return Hupper.savePreferences();"
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://hupper/content/namespace.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
