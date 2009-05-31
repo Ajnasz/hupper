@@ -5,7 +5,7 @@
  * @module Hupper
  * @description handles the hupper block
  */
-var Hupper.Menu = function() {
+Hupper.Menu = function() {
   this.add();
 };
 Hupper.Menu.prototype = {
