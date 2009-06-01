@@ -41,22 +41,21 @@ Hupper.postInstall = function() {
 
 
 
-  var oldVer = 0, oldVerValue = 0; // previous version
+  var oldVerValue = 0; // previous version
   try {
-    oldVerValue = HUP.hp.M.getCharPref('extensions.hupper.version');
-    oldVer = parseVersion(oldVerValue);
+    oldVerValue = parseVersion(HUP.hp.M.getCharPref('extensions.hupper.version'));
   } catch(e){HUP.L.log(e.message);}
 
   var version = parseVersion(HUPPER_VERSION); // current version eg.: 0.0053
-  if(!oldVer || oldVerValue != HUPPER_VERSION) {
+  if(!oldVerValue || oldVerValue < HUPPER_VERSION) {
 
     // after the v0.0.5.3 the huppers were removed
-    if(oldVer < 0.0053) {
+    if(oldVerValue < 0.0053) {
       try {
         convertColors();
       } catch(e) { HUP.L.log(e.message, e.fileName, e.lineNumber)}
     }
-    HUP.L.log('postinstall');
+    HUP.L.log('postinstall', version, oldVerValue);
     HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
   }
 };
