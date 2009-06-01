@@ -511,7 +511,7 @@ Hupper.start = function(e) {
       // Logger
       HUP.L = new Hupper.Log();
       for(var i in HUP.w.childNodes) {
-        HUP.L.log(HUP.w.childNodes[i]);
+        HUP.L.log('window childnode ', i, ' ', HUP.w.childNodes[i]);
       }
       Hupper.postInstall();
       // Elementer
