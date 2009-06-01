@@ -119,6 +119,10 @@ Hupper.Elementer.prototype = {
     * @type Element
     */
   Insert: function(elem, before) {
+    if(!before || !elem) {
+      Hupper.Log('huha', elem);
+      return;
+    }
     before.parentNode.insertBefore(elem, before);
     return elem;
   },
@@ -136,7 +140,7 @@ Hupper.Elementer.prototype = {
   * @param {Element} element
   */
   RemoveAll: function(element) {
-    while(element.firstChild) {
+    while(element && element.firstChild) {
       this.Remove(element.firstChild);
     }
   },
