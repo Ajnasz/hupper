@@ -14,7 +14,16 @@
         <em:maxVersion>3.5.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-
+    <!-- SeaMonkey -->
+    <!--
+    <em:targetApplication>
+        <Description>
+        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>2.0a1</em:maxVersion>
+        </Description>
+    </em:targetApplication>
+    -->
     <em:file>
       <Description about="urn:mozilla:extension:file:hupper.jar">
         <em:package>content/hupper/</em:package>
