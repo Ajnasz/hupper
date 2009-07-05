@@ -97,15 +97,15 @@ Hupper.mapWindows = function(onMap) {
     win = enumerator.getNext();
     if(typeof win != 'undefined' && typeof onMap == 'function') {
       onMap(win);
-      HUP.L.log(win.document, HUP.w, win.console, win.document == HUP.w);
     }
   }
 };
 Hupper.resetBlocks = function() {
   Hupper.mapWindows(function(win){
-    var a = win.getBrowser();
-    for(var i in a.childNodes) {
-      HUP.L.log(a.childNodes[i], a.childNodes[i].nodeName);
+    if(win.HUP.hp.get.parseblocks()) {
+      if(confirm('Are you sure you want to delete all of your block settings?\nReload the HUP to apply the settings.')) {
+        win.Hupper.BlocksProperties.set({});
+      } 
     }
   });
 };
