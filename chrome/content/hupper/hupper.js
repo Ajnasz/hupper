@@ -207,7 +207,7 @@ Hupper.parseBlocks = function(blocks, blockMenus) {
     HUP.w.blockObjects.push(new Hupper.Block(block, sides, blockMenus));
   });
   Hupper.RearrangeBlocks(HUP.w.blockObjects);
-}
+};
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
  * @param {Array} nodes
@@ -370,7 +370,7 @@ Hupper.Timer.prototype = {
 Hupper.Jump = function(win, nextLinks) {
   this.window = win;
   this.nextLinks = nextLinks;
-}
+};
 Hupper.Jump.prototype = {
   next: function() {
     if(/^#/.test(HUP.w.location.hash)) {
@@ -493,7 +493,7 @@ Hupper.StatusClickHandling.prototype = {
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
  */
-Hupper.start = function(e) {
+Hupper.start = function(e,winLoadEvent) {
   try {
     var ww = e.originalTarget;
     if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/localhost\/hupper\/hg/.test(ww.location.href)) {
@@ -510,9 +510,6 @@ Hupper.start = function(e) {
       HUP.hp = new HP();
       // Logger
       HUP.L = new Hupper.Log();
-      for(var i in HUP.w.childNodes) {
-        HUP.L.log('window childnode ', i, ' ', HUP.w.childNodes[i]);
-      }
       Hupper.postInstall();
       // Elementer
       HUP.El = new Hupper.Elementer();
@@ -520,7 +517,7 @@ Hupper.start = function(e) {
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
       Hupper.addHupStyles();
-      var hupMenu = new Hupper.Menu();
+      HUP.hupMenu = new Hupper.Menu();
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
@@ -531,20 +528,20 @@ Hupper.start = function(e) {
         var newComments = c.newComments;
         var indentComments = c.indentComments;
         if(c.newComments.length && HUP.hp.get.showqnavbox()) {
-          Hupper.appendNewNotifier(null, null, hupMenu);
+          Hupper.appendNewNotifier(null, null, HUP.hupMenu);
         }
       } else {
         if(HUP.hp.get.insertnewtexttonode()) {
           var nodes = Hupper.getNodes();
-          Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
+          Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(HUP.hupMenu));
           if(nodes[1].length > 0 && HUP.hp.get.showqnavbox()) {
-            Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
+            Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, HUP.hupMenu);
           }
         }
       }
       if(HUP.hp.get.parseblocks()) {
         var blocks = Hupper.getBlocks();
-        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(hupMenu), hupMenu);
+        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(HUP.hupMenu), HUP.hupMenu);
       }
      //  if(HupperPrefs.hideads()) {
      //    Hupper.HideHupAds();
@@ -558,10 +555,12 @@ Hupper.start = function(e) {
     Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber, + ', ' + e.fileName);
   }
 };
-Hupper.init = function() {
+Hupper.init = function(winLoadEvent) {
   var appcontent = document.getElementById("appcontent");   // browser
   if(appcontent) {
-    appcontent.addEventListener("DOMContentLoaded", Hupper.start, true);
+    appcontent.addEventListener("DOMContentLoaded", function (DOMLoadEvent) {
+      Hupper.start(DOMLoadEvent, winLoadEvent)
+    }, true);
   }
   var showInStatusbar = new HP().get.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
@@ -570,5 +569,5 @@ Hupper.init = function() {
     new Hupper.StatusClickHandling(statusbar);
   }
 };
-window.addEventListener('load', function(){ Hupper.init(); }, false);
+window.addEventListener('load', function(e){ Hupper.init(e); }, false);
 window.removeEventListener('unload', function(){ Hupper.init(); }, false);
