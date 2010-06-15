@@ -10,7 +10,7 @@
 .hnav * { margin-left: 2px; margin-right: 2px; }
 .submitted { padding: 2px !important; }
 .mark { cursor: pointer; color: #000; }
-.hidden {display: none;}
+.hup-hidden {display: none;}
 .block h2 {
   position: relative;
 }
