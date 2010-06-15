@@ -27,6 +27,25 @@ Hupper.postInstall = function() {
       HUP.hp.set.huppers('');
     }
   };
+  var convertBlockSettings = function() {
+    var blocks = HUPJson.decode(HUP.hp.get.blocks());
+    var output = {left: [], right: []}
+
+    if(!blocks['block-blog-0']) {
+      for(var block in blocks) {
+        block.left ? output.left.push(block) : block.right.push(block);
+      }
+      output.left.sort(function(a,b) {
+        return a.index > b.index;
+      });
+      output.right.sort(function(a,b) {
+        return a.index > b.index;
+      });
+    } else if(blocks['left'] || blocks['right']) {
+      output = blocks;
+    }
+    HUP.hp.set.blocks(HUPJson.encode(output));
+  };
 
   /**
    * creates a float number from the ver param, which will
@@ -54,6 +73,8 @@ Hupper.postInstall = function() {
       try {
         convertColors();
       } catch(e) { HUP.L.log(e.message, e.fileName, e.lineNumber)}
+    } else if(oldVerValue < 0.0054) {
+      convertBlockSettings();
     }
     HUP.L.log('postinstall', version, oldVerValue);
     HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
