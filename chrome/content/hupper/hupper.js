@@ -201,10 +201,11 @@ Hupper.getBlocks = function() {
   return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
 Hupper.parseBlocks = function(blocks, blockMenus) {
-  HUP.w.blockObjects =  new Array();
-  var sides = {right: 0, left: 0};
+  Hupper.w.blockSides = {right: [], left: []};
+ //  HUP.L.log(Hupper.BlocksProperties.get().toSource());
+  HUP.w.blockObjects = [];
   blocks.forEach(function(block) {
-    HUP.w.blockObjects.push(new Hupper.Block(block, sides, blockMenus));
+    HUP.w.blockObjects.push(new Hupper.Block(block, blockMenus));
   });
   Hupper.RearrangeBlocks(HUP.w.blockObjects);
 };
@@ -402,7 +403,7 @@ Hupper.HideHupAds = function() {
   ids.push(HUP.El.GetId('block-block-18'));
   ids.forEach(function(ad) {
     if(ad) {
-      HUP.El.AddClass(ad, 'hidden');
+      HUP.El.AddClass(ad, 'hup-hidden');
     }
   });
 };
@@ -457,7 +458,7 @@ Hupper.StatusClickHandling.prototype = {
   getOpenedHUP: function() {
     var brl = gBrowser.browsers.length;
     var outObj = {hupTab: false, blankPage: false};
-    var r = new RegExp('^https?://(?:www\.)?hup.hu');
+    var r = new RegExp('^https?://(?:www\.)?(?:hup.hu)');
     for(var i = 0 ; i < brl; i++) {
       if(r.test(gBrowser.getBrowserAtIndex(i).currentURI.spec)) {
         outObj.hupTab = i;
@@ -496,7 +497,7 @@ Hupper.StatusClickHandling.prototype = {
 Hupper.start = function(e,winLoadEvent) {
   try {
     var ww = e.originalTarget;
-    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/localhost\/hupper\/hg/.test(ww.location.href)) {
+    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/hupper\/.+\.html$/.test(ww.location.href)) {
       var TIMER = new Hupper.Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
