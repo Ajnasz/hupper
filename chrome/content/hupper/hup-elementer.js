@@ -336,10 +336,10 @@ Hupper.Elementer.prototype = {
     return l;
   },
   Hide: function(el) {
-    this.AddClass(el, 'hidden');
+    this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
-    this.RemoveClass(el, 'hidden');
+    this.RemoveClass(el, 'hup-hidden');
   }
 };
 

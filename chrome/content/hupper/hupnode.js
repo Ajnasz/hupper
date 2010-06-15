@@ -40,14 +40,14 @@ Hupper.Node.prototype = {
   next: false,
   previous: false,
   hide: function() {
-    HUP.El.AddClass(this.element, 'hidden');
+    HUP.El.AddClass(this.element, 'hup-hidden');
     this.hidden = true;
     if(this.nodeMenu) {
       this.nodeMenu.addNodeToMenu(this);
     }
   },
   show: function() {
-    HUP.El.RemoveClass(this.element, 'hidden');
+    HUP.El.RemoveClass(this.element, 'hup-hidden');
     this.hidden = false;
     if(this.nodeMenu) {
       this.nodeMenu.removeNodeFromMenu(this);

@@ -15,13 +15,13 @@ Hupper.Menu.prototype = {
   menuItems: 0,
   hide: function() {
     if(this.block) {
-      HUP.El.AddClass(this.block, 'hidden');
+      HUP.El.AddClass(this.block, 'hup-hidden');
       this.hidden = true;
     }
   },
   show: function() {
     if(this.block) {
-      HUP.El.RemoveClass(this.block, 'hidden');
+      HUP.El.RemoveClass(this.block, 'hup-hidden');
       this.hidden = false;
     }
   },
