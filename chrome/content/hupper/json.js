@@ -2,7 +2,7 @@ HUPJson = {
   decode: function(text) {
     try {
       JSON = Components.classes["@mozilla.org/dom/json;1"].createInstance(Components.interfaces.nsIJSON);
-      return nativeJSON.decode(text);
+      return JSON.decode(text);
     } catch(e) {
       return eval(text);
     }
