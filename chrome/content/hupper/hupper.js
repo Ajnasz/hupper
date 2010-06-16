@@ -204,9 +204,9 @@ Hupper.parseBlocks = function(blocks, blockMenus) {
   HUP.w.blockObjects =  new Array();
   var sides = {right: 0, left: 0};
   blocks.forEach(function(block) {
-    HUP.w.blockObjects.push(new Hupper.Block(block, sides, blockMenus));
+    Hupper.Blocks.registerBlock(new Hupper.Block(block, sides, blockMenus));
   });
-  Hupper.RearrangeBlocks(HUP.w.blockObjects);
+  Hupper.Blocks.UI.rearrangeBlocks(HUP.w.blockObjects);
 }
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
@@ -496,7 +496,7 @@ Hupper.StatusClickHandling.prototype = {
 Hupper.start = function(e) {
   try {
     var ww = e.originalTarget;
-    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^http:\/\/localhost\/hupper\/hg/.test(ww.location.href)) {
+    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^(http:\/\/localhost\/hupper\/hg|http:\/\/hupper\/.+\.html$)/.test(ww.location.href) || ww.location.hostname == '82.150.62.58') {
       var TIMER = new Hupper.Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
