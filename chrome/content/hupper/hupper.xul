@@ -13,6 +13,7 @@
   <script type="application/x-javascript" src="chrome://hupper/content/menu.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupnode.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupblocks.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js"></script>
