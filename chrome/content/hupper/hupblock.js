@@ -5,8 +5,7 @@
  * @description Parses a block and adds buttons, hides them
  * @param {Element} block
  */
-Hupper.Block = function(block, blockMenus) {
-  block = HUP.El.GetId(block.id);
+Hupper.Block = function(block, sides, blockMenus) {
   if(!block) return;
   this.block = block;
   this.id = this.block.getAttribute('id');
@@ -18,30 +17,25 @@ Hupper.Block = function(block, blockMenus) {
   this.makeTitle();
   if(this.id != 'block-hupper-0') this.addButtons(); // exception for hup block
   this.addMoveButtons();
-  var properties = Hupper.BlocksProperties.getBlock({id: this.id});
+  var properties = null;//Hupper.BlocksProperties.getBlock(this.id);
   if(properties) {
-    this.setSide(properties.side);
-    this.setIndex(properties.index);
+    this.side = properties.side;
     if(this.id != 'block-hupper-0'){properties.hidden ? this.hide() : this.show()};
     properties.contentHidden ? this.hideContent() : this.showContent();
   } else {
-    this.setSide();
     this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
-    this.setIndex(Hupper.w.blockSides[this.side].length);
+    this.saveProperties();
   }
-  this.saveProperties();
 };
 Hupper.Block.prototype = {
   hidden: false,
   contentHidden: false,
+  blocks: new Array(),
   hide: function() {
     HUP.El.Hide(this.block);
     this.hidden = true;
     this.blockMenus.addBlockToMenu(this);
     this.saveProperties();
-  },
-  setSide: function(side) {
-    this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
   },
   show: function() {
     HUP.El.Show(this.block);
@@ -96,27 +90,13 @@ Hupper.Block.prototype = {
     }
   },
   moveUp: function() {
-    var block = this.getUpBlock();
-    while(!block.titleNode || block.hidden) {
-      block = this.getUpBlock(block);
-    }
-    var newIndex = block.index;
-    var thisIndex = this.index;
-    this.blocks[this.blocks.indexOf(block)].index = thisIndex;
-    this.index = newIndex;
-    Hupper.RearrangeBlocks(this.blocks);
+    Hupper.Blocks.blockToUp(this.id);
+    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
     this.saveProperties();
   },
   moveDown: function() {
-    var block = this.getDownBlock();
-    while(!block.titleNode || block.hidden) {
-      block = this.getDownBlock(block);
-    }
-    var thisIndex = this.index;
-    var newIndex = block.index;
-    this.blocks[this.blocks.indexOf(block)].index = thisIndex;
-    this.index = newIndex;
-    Hupper.RearrangeBlocks(this.blocks);
+    Hupper.Blocks.blockToDown(this.id);
+    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
     this.saveProperties();
   },
   getDownBlock: function(refBlock) {
@@ -138,28 +118,12 @@ Hupper.Block.prototype = {
     return this.blocks[newIndex];
   },
   moveRight: function() {
-    if(this.side == 'right') return;
-    this.side = 'right';
-    this.setIndex(-1);
-    this.saveProperties();
-    Hupper.RearrangeBlocks(this.blocks);
+    Hupper.Blocks.blockToRight(this.id);
+    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
   },
   moveLeft: function() {
-    if(this.side == 'left') return;
-    this.side = 'left';
-    this.setIndex(-1);
-    this.saveProperties();
-    Hupper.RearrangeBlocks(this.blocks);
-  },
-  setIndex: function(index) {
-    if(Hupper.w.blockSides[this.side].indexOf(index) != -1) {
-      this.setIndex(index+1);
-      return;
-    }
-    HUP.L.log('set index: ' + index, ' side: ' + this.side);
-    this.index = index;
-    Hupper.w.blockSides[this.side].push(this.index);
-    // this.saveProperties();
+    Hupper.Blocks.blockToLeft(this.id);
+    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
   },
   addButtons: function() {
     if(!this.titleNode) return;
@@ -209,30 +173,12 @@ Hupper.Block.prototype = {
     var props = {
       hidden: this.hidden,
       contentHidden: this.contentHidden,
-      index: this.index,
       side: this.side
     };
-    Hupper.BlocksProperties.setBlock(this.id, props);
-  },
-  toString: function() {
-    var output = [
-      'id = ' + this.id,
-      'index = ' + this.index,
-      'side = ' + this.side,
-    ];
-    return "HUP Block: " + output.join(', ');
+    // Hupper.BlocksProperties.setBlock(this.id, props);
   }
 };
-Hupper.Blocks = {
-  moveBlockTop: function(block) {
-  },
-  moveBlockDown: function(block) {
-  },
-  moveBlockRight: function(block) {
-  },
-  moveBlockLeft: function(block) {
-  },
-};
+
 Hupper.BlocksProperties = {
   set: function(blocks) {
     HUP.hp.set.blocks(HUPJson.encode(blocks));
@@ -246,20 +192,7 @@ Hupper.BlocksProperties = {
     this.set(blocks);
   },
   getBlock: function(block) {
-    var blocks = this.get(),
-        output;
-    for(var bl in blocks) {
-      _block = blocks[bl];
-      if(
-        (block.id && block.id == _block.id)
-        ||
-        (block.index && block.side && block.index == _block.index && block.side == _block.side)
-        ) {
-          output = _block;
-          break;
-        }
-    }
-    return output;
+    return this.get()[block];
   }
 };
 /**
@@ -307,43 +240,5 @@ Hupper.BlockMenus.prototype = {
     var n = 0;
     for(var i in this.blocks) {n++;}
     if(n == 0) this.removeMenu();
-  }
-};
-/**
- * @method RearrangeBlocks
- * @namespace Hupper
- */
-Hupper.RearrangeBlocks = function(blocks) {
-  try {
-    blocks = blocks || HUP.w.blockObjects;
-    var leftBlocks = blocks.filter(function(block) {
-      return block.side == 'left';
-    });
-    var rightBlocks = blocks.filter(function(block){
-      return block.side == 'right';
-    });
-    leftBlocks.sort(function(a,b) {
-      return a.index > b.index;
-    });
-    rightBlocks.sort(function(a,b) {
-      return a.index > b.index;
-    })
-    for(var i = 0, ll = leftBlocks.length; i < ll; i++) {
-      leftBlocks[i].setIndex(i);
-    }
-    for(var i = 0, ll = rightBlocks.length; i < ll; i++) {
-      rightBlocks[i].setIndex(i);
-    }
-    var left = HUP.El.GetId('sidebar-left');
-    var right = HUP.El.GetId('sidebar-right');
-    blocks = leftBlocks.concat(rightBlocks);
-    HUP.El.RemoveAll(left);
-    HUP.El.RemoveAll(right);
-    blocks.forEach(function(block, index){
-      (block.side == 'left') ? HUP.El.Add(block.block, left) : HUP.El.Add(block.block, right);
-      block.blocks = blocks;
-    });
-  } catch(e) {
-    HUP.L.log(e.message);
   }
 };
