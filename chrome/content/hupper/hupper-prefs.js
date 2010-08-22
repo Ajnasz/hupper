@@ -104,7 +104,7 @@ Hupper.resetBlocks = function() {
   Hupper.mapWindows(function(win){
     if(win.HUP.hp.get.parseblocks()) {
       if(confirm('Are you sure you want to delete all of your block settings?\nReload the HUP to apply the settings.')) {
-        win.Hupper.BlocksProperties.set({});
+        HUP.L.log('hEY< ITS NOT WORKING yET');
       } 
     }
   });
