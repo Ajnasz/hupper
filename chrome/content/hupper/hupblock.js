@@ -3,61 +3,89 @@
  * @namespace Hupper
  * @constructor
  * @description Parses a block and adds buttons, hides them
- * @param {Element} block
+ * @param {Object} cfg Configuration object, possible properties are:
+ *  id: {String}, the id of the block,
+ *  block: {HTMLElement} the block element
+ *  blockMenus: {Hupper.BlockMenus} a blockmenus instance
+ *  blocks: {Hupper.Blocks} a Blocks instance
+ *  hidden: {Boolean} set to true if the element has to be hidden by default
+ *  contentHidden: {Boolean} set to true if the element's content has to be hidden by default
+ *  side: {String} left or right, use to set the side of the block
  */
-Hupper.Block = function(block, sides, blockMenus) {
-  if(!block) return;
-  this.block = block;
-  this.id = this.block.getAttribute('id');
-  this.blockMenus = blockMenus;
+Hupper.Block = function(cfg) {
+  // if(!block) return;
+  if(typeof cfg != 'object') {
+    throw new Error('Config not defined');
+  }
+  if(cfg.block && cfg.block.nodeType == 1 && typeof cfg.id == 'string') {
+    throw new Error('both block and id defined in config, which one should I use?');
+  }
+  if((!cfg.block || cfg.block.nodeType != 1) && typeof cfg.id != 'string') {
+    throw new Error('both block and id are invalid');
+  }
+  var blockElement, blockID;
+  if(cfg.block && cfg.block.nodeType == 1) {
+    blockElement = cfg.block;
+    blockID = blockElement.getAttribute('id');
+  } else {
+    blockID = cfg.id;
+    blockElement = HUP.El.GetId(blockID);
+  }
+  this.block = blockElement;
+  this.blocks = cfg.blocks;
+  this.id = blockID;
+  this.blockMenus = cfg.blockMenus;
   this.titleNode = HUP.El.GetFirstTag('h2', this.block);
   var contents = HUP.El.GetByClass(this.block, 'content', 'div');
   this.contentNode = contents.length ? contents[0] : null;
-  if(this.titleNode) this.title = this.titleNode.innerHTML;
-  this.makeTitle();
-  if(this.id != 'block-hupper-0') this.addButtons(); // exception for hup block
-  this.addMoveButtons();
-  var properties = null;//Hupper.BlocksProperties.getBlock(this.id);
-  if(properties) {
-    this.side = properties.side;
-    if(this.id != 'block-hupper-0'){properties.hidden ? this.hide() : this.show()};
-    properties.contentHidden ? this.hideContent() : this.showContent();
-  } else {
-    this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
-    this.saveProperties();
+  if(this.titleNode) {
+    this.title = this.titleNode.innerHTML;
   }
+  this.makeTitle();
+  this.addMoveButtons();
+  if(this.id != 'block-hupper-0') { // exception for hup block
+    this.addButtons();
+  }
+  this.setSide(cfg.side);
+  cfg.hidden ? this.hide() : this.show();
+  cfg.contentHidden ? this.hideContent() : this.showContent();
+  // Hupper.Blocks.save();
 };
 Hupper.Block.prototype = {
   hidden: false,
   contentHidden: false,
   blocks: new Array(),
   hide: function() {
+    if(this.hidden) return;
+    HUP.L.log('call hide');
     HUP.El.Hide(this.block);
     this.hidden = true;
     this.blockMenus.addBlockToMenu(this);
-    this.saveProperties();
+    this.blocks.save();
   },
   show: function() {
+    if(!this.hidden) return;
+    HUP.L.log('call show');
     HUP.El.Show(this.block);
     this.hidden = false;
     this.blockMenus.removeBlockFromMenu(this);
-    this.saveProperties();
+    this.blocks.save();
   },
-  hideContent: function() {
-    if(!this.contentNode) return;
+  hideContent: function(force) {
+    if(!this.contentNode || (this.contentHidden && !force)) return;
     HUP.El.Hide(this.contentNode);
     HUP.El.Hide(this.hideButton);
     HUP.El.Show(this.showButton);
     this.contentHidden = true;
-    this.saveProperties();
+    this.blocks.save();
   },
-  showContent: function() {
-    if(!this.contentNode) return;
+  showContent: function(force) {
+    if(!this.contentNode || (!this.contentHidden && !force)) return;
     HUP.El.Show(this.contentNode);
     HUP.El.Show(this.hideButton);
     HUP.El.Hide(this.showButton);
     this.contentHidden = false;
-    this.saveProperties();
+    this.blocks.save();
   },
   makeTitle: function() {
     var boxes = {
@@ -90,14 +118,14 @@ Hupper.Block.prototype = {
     }
   },
   moveUp: function() {
-    Hupper.Blocks.blockToUp(this.id);
-    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
-    this.saveProperties();
+    this.blocks.blockToUp(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   moveDown: function() {
-    Hupper.Blocks.blockToDown(this.id);
-    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
-    this.saveProperties();
+    this.blocks.blockToDown(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   getDownBlock: function(refBlock) {
     if(!refBlock) refBlock = this;
@@ -118,32 +146,36 @@ Hupper.Block.prototype = {
     return this.blocks[newIndex];
   },
   moveRight: function() {
-    Hupper.Blocks.blockToRight(this.id);
-    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.blockToRight(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
   },
   moveLeft: function() {
-    Hupper.Blocks.blockToLeft(this.id);
-    Hupper.Blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.blockToLeft(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
   },
   addButtons: function() {
-    if(!this.titleNode) return;
-    var _this = this;
-    this.delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button');
-    this.hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button');
-    this.showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
-    HUP.El.Hide(this.showButton);
-    HUP.Ev.addEvent(this.delButton, 'click', function() {
-      _this.hide();
+    if(!this.titleNode) {return;}
+    var block = this, titleNode = this.titleNode,
+        delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+    HUP.Ev.addEvent(delButton, 'click', function() {
+      block.hide();
     });
-    HUP.Ev.addEvent(this.hideButton, 'click', function() {
-      _this.hideContent();
+    HUP.Ev.addEvent(hideButton, 'click', function() {
+      block.hideContent();
     });
-    HUP.Ev.addEvent(this.showButton, 'click', function() {
-      _this.showContent();
+    HUP.Ev.addEvent(showButton, 'click', function() {
+      block.showContent();
     });
-    HUP.El.Insert(this.showButton, this.titleNode.firstChild);
-    HUP.El.Insert(this.hideButton, this.titleNode.firstChild);
-    HUP.El.Insert(this.delButton, this.titleNode.firstChild);
+    // HUP.L.log('add buttons = ' + this.id, delButton, hideButton, showButton);
+    HUP.El.Hide(showButton);
+    HUP.El.Insert(showButton, titleNode.firstChild);
+    HUP.El.Insert(hideButton, titleNode.firstChild);
+    HUP.El.Insert(delButton, titleNode.firstChild);
+    this.delButton = delButton;
+    this.hideButton = hideButton;
+    this.showButton = showButton;
   },
   addMoveButtons: function() {
     if(!this.titleNode) return;
@@ -169,32 +201,26 @@ Hupper.Block.prototype = {
     HUP.El.Insert(this.leftButton, this.titleNode.firstChild);
     HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
   },
-  saveProperties: function() {
-    var props = {
-      hidden: this.hidden,
-      contentHidden: this.contentHidden,
-      side: this.side
-    };
-    // Hupper.BlocksProperties.setBlock(this.id, props);
-  }
+  setSide: function(side) {
+    this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+  },
+  updateUI: function() {
+    if(this.hidden) {
+      this.hide(true);
+    } else {
+      this.show(true);
+    }
+    if(this.contentHidden) {
+      this.hideContent(true);
+    } else {
+      this.showContent(true);
+    }
+  },
+  toString: function() {
+    return 'Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') + ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' + (this.contentHidden ? 'true' : 'false');
+  },
 };
 
-Hupper.BlocksProperties = {
-  set: function(blocks) {
-    HUP.hp.set.blocks(HUPJson.encode(blocks));
-  },
-  get: function() {
-    return HUPJson.decode(HUP.hp.get.blocks());
-  },
-  setBlock: function(block, props) {
-    var blocks = this.get();
-    blocks[block] = props;
-    this.set(blocks);
-  },
-  getBlock: function(block) {
-    return this.get()[block];
-  }
-};
 /**
  * @class BlockMenus
  * @namespace Hupper

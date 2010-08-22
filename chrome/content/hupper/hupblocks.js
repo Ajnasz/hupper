@@ -1,5 +1,5 @@
 (function() {
-  var Blocks = (function() {
+  var Blocks = function() {
     var blocks = {left: [], right:[]};
     return {
       blockToLeft: function(sBlockID) {
@@ -8,7 +8,7 @@
         if(block) {
           blockIndex = blocks.right.indexOf(block);
           blocks.right.splice(blockIndex, 1);
-          block.side = 'left';
+          block.setSide('left');
           blocks.left.push(block);
           return true;
         }
@@ -20,7 +20,7 @@
         if(block) {
           blockIndex = blocks.left.indexOf(block);
           blocks.left.splice(blockIndex, 1);
-          block.side = 'right';
+          block.setSide('right');
           blocks.right.push(block);
           return true;
         }
@@ -30,16 +30,16 @@
         var block, blocksOfBlockSide, blockIndex, blockAbove, blockAboveIndex;
         block = this.getBlock(sBlockID);
         if(block) {
-          blocksOfBlockSide = blocks[block.side];
-          blockIndex = blocksOfBlockSide.indexOf(block);
+          // blocksOfBlockSide = blocks[block.side];
+          blockIndex = blocks[block.side].indexOf(block);
           if(blockIndex > 0) {
             blockAboveIndex = blockIndex;
             do {
               blockAboveIndex = blockAboveIndex - 1;
-            } while(blocksOfBlockSide[blockAboveIndex].hidden && blockAboveIndex - 1 > 0);
-            blockAbove = blocksOfBlockSide[blockAboveIndex];
-            blocksOfBlockSide[blockAboveIndex] = block;
-            blocksOfBlockSide[blockIndex] = blockAbove;
+            } while(blocks[block.side][blockAboveIndex].hidden && blockAboveIndex - 1 > 0);
+            blockAbove = blocks[block.side][blockAboveIndex];
+            blocks[block.side][blockAboveIndex] = block;
+            blocks[block.side][blockIndex] = blockAbove;
             return true;
           }
         }
@@ -49,17 +49,17 @@
         var block, blocksOfBlockSide, blockIndex, blockBelow, blockBelowIndex, blocksLength;
         block = this.getBlock(sBlockID);
         if(block) {
-          blocksOfBlockSide = blocks[block.side];
-          blocksLength = blocksOfBlockSide.length;
-          blockIndex = blocksOfBlockSide.indexOf(block);
+          // blocksOfBlockSide = blocks[block.side];
+          blocksLength = blocks[block.side].length;
+          blockIndex = blocks[block.side].indexOf(block);
           if(blockIndex < blocksLength && blockIndex != -1) {
             blockBelowIndex = blockIndex;
             do {
               blockBelowIndex = blockBelowIndex + 1;
-            } while(blocksOfBlockSide[blockBelowIndex].hidden && blockBelowIndex + 1 < blocksLength - 1);
-            blockBelow = blocksOfBlockSide[blockBelowIndex];
-            blocksOfBlockSide[blockBelowIndex] = block;
-            blocksOfBlockSide[blockIndex] = blockBelow;
+            } while(blocks[block.side][blockBelowIndex].hidden && blockBelowIndex + 1 < blocksLength - 1);
+            blockBelow = blocks[block.side][blockBelowIndex];
+            blocks[block.side][blockBelowIndex] = block;
+            blocks[block.side][blockIndex] = blockBelow;
             return true;
           }
         }
@@ -71,7 +71,9 @@
       */
       registerBlock: function(oBlock) {
         var id, blockExists, side;
-
+        if(typeof(oBlock) != 'object') {
+          throw new Error('can not register block, oBlock type is ' + typeof(oBlock));
+        }
         id = oBlock.id;
         side = oBlock.side;
         blockExists = blocks.left.some(function(block) {
@@ -81,9 +83,8 @@
         });
         if(!blockExists) {
           blocks[side].push(oBlock);
-          return true;
         }
-        return false;
+        return blockExists;
       },
       getBlocks: function() {
         return blocks;
@@ -104,28 +105,55 @@
                   })[0];
         }
         return output;
-      }
+      },
+      save: function() {
+        var json = {left: [], right: []};
+        blocks.left.forEach(function(block) {
+          json.left.push({
+            id: block.id,
+            hidden: block.hidden,
+            contentHidden: block.contentHidden,
+          });
+        });
+        blocks.right.forEach(function(block) {
+          json.right.push({
+            id: block.id,
+            hidden: block.hidden,
+            contentHidden: block.contentHidden,
+          });
+        });
+        HUP.hp.set.blocks(HUPJson.encode(json));
+      },
     };
-  })();
-  Blocks.UI = (function() {
+  };
+  Blocks.UI = function(elementer, hupperBlocks) {
+    var timeout;
+    elementer = elementer || HUP.El;
     return {
       rearrangeBlocks: function() {
-        var left = HUP.El.GetId('sidebar-left');
-        var right = HUP.El.GetId('sidebar-right');
-        var blocks = Blocks.getBlocks();
-        if(blocks.left.length && blocks.right.length) {
-          HUP.El.RemoveAll(left);
-          HUP.El.RemoveAll(right);
-          blocks.left.forEach(function(block) {
-            HUP.El.Add(block.block, left);
-          });
-          blocks.right.forEach(function(block) {
-            HUP.El.Add(block.block, right);
-          });
+        if(timeout) {
+          clearTimeout(timeout);
         }
+        timeout = setTimeout(function() {
+          var left = elementer.GetId('sidebar-left');
+          var right = elementer.GetId('sidebar-right');
+          var blocks = hupperBlocks.getBlocks();
+          if(blocks.left.length && blocks.right.length) {
+            elementer.RemoveAll(left);
+            elementer.RemoveAll(right);
+            blocks.left.forEach(function(block) {
+              elementer.Add(block.block, left);
+            });
+            blocks.right.forEach(function(block) {
+              elementer.Add(block.block, right);
+            });
+          } else {
+            HUP.L.log('no blocks are defined');
+          }
+        }, 10);
       }
     }
-  })();
+  };
   // exports.Blocks = Blocks;
   Hupper.Blocks = Blocks;
 })();

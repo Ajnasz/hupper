@@ -200,14 +200,104 @@ Hupper.getNodes = function() {
 Hupper.getBlocks = function() {
   return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
-Hupper.parseBlocks = function(blocks, blockMenus) {
-  HUP.w.blockObjects =  [];
-  var sides = {right: 0, left: 0};
-  blocks.forEach(function(block) {
-    Hupper.Blocks.registerBlock(new Hupper.Block(block, sides, blockMenus));
+Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
+  var hupperBlocks = Hupper.Blocks(),
+      processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
+
+  hupperBlocks.UI = Hupper.Blocks.UI(elementer, hupperBlocks);
+  var blocksFromConfig = HUPJson.decode(HUP.hp.get.blocks());
+  if(blocksFromConfig.left || blocksFromConfig.right) {
+    leftBlocksFromConf = blocksFromConfig.left;
+    rightBlocksFromConf = blocksFromConfig.right;
+    processedBlocks = blockElements.map(function(blockElement) {
+      var elementID = blockElement.id,
+          matchedBlock, cfg;
+
+      leftBlocksFromConf.some(function(leftBlock) {
+        if(leftBlock.id == elementID) {
+          matchedBlock = leftBlock;
+          matchedBlock.side = 'left';
+          return true;
+        }
+        return false;
+      });
+
+      if(!matchedBlock) {
+        rightBlocksFromConf.some(function(rightBlock) {
+          if(rightBlock.id == elementID) {
+            matchedBlock = rightBlock;
+
+            matchedBlock.side = 'right';
+            return true;
+          }
+          return false;
+        });
+      }
+
+      if(matchedBlock) {
+        cfg = {
+          block: blockElement,
+          left: matchedBlock.left,
+          right:matchedBlock.right,
+          side: matchedBlock.side,
+          blockMenus: blockMenus,
+          blocks: hupperBlocks,
+          hidden: matchedBlock.hidden,
+          contentHidden: matchedBlock.contentHidden,
+        };
+      } else {
+        cfg = {
+          block: blockElement,
+          blockMenus: blockMenus,
+          blocks: hupperBlocks,
+        };
+      }
+
+      return new Hupper.Block(cfg);
+    });
+
+
+    leftBlocksFromConf.forEach(function(block) {
+      for(var i = 0, bl, pbl; i < processedBlocks.length; i++) {
+        bl = processedBlocks[i];
+        if(bl.id == block.id) {
+          pbl = processedBlocks.splice(i, 1);
+          if(pbl) {
+            hupperBlocks.registerBlock(bl);
+          }
+          break;
+        }
+      }
+    });
+    rightBlocksFromConf.forEach(function(block) {
+      for(var i = 0, bl; i < processedBlocks.length; i++) {
+        bl = processedBlocks[i];
+        if(bl.id == block.id) {
+          pbl = processedBlocks.splice(i, 1);
+          if(pbl) {
+            hupperBlocks.registerBlock(bl);
+          }
+          break;
+        }
+      }
+    });
+  } else {
+    processedBlocks = blockElements.map(function(blockElement) {
+      return new Hupper.Block({
+        block: blockElement,
+        blockMenus: blockMenus,
+        blocks: hupperBlocks,
+      });
+    });
+  }
+  processedBlocks.forEach(function(block) {
+    HUP.L.log('register processed block' + block.id);
+    hupperBlocks.registerBlock(block);
   });
-  Hupper.Blocks.UI.rearrangeBlocks(HUP.w.blockObjects);
-}
+  hupperBlocks.save();
+  hupperBlocks.UI.rearrangeBlocks();
+  hupperBlocks.save();
+};
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
  * @param {Array} nodes
@@ -496,7 +586,11 @@ Hupper.StatusClickHandling.prototype = {
 Hupper.start = function(e) {
   try {
     var ww = e.originalTarget;
-    if(/^https?:\/\/(?:www\.)?hup\.hu/.test(ww.location.href) || /^(http:\/\/localhost\/hupper\/hg|http:\/\/hupper\/.+\.html$)/.test(ww.location.href) || ww.location.hostname == '82.150.62.58') {
+    var logger = new Hupper.Log();
+    logger.log(ww.location.hostname);
+    if(ww && ww.location && typeof ww.location.hostname == 'string'
+        && (ww.location.hostname == 'hup.hu' || ww.location.hostname == 'www.hup.hu' ||
+        /http:\/\/(localhost\/hupper\/hg|hupper)\/.+\.html/.test(ww.location.href))) {
       var TIMER = new Hupper.Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
@@ -510,12 +604,10 @@ Hupper.start = function(e) {
       HUP.hp = new HP();
       // Logger
       HUP.L = new Hupper.Log();
-      for(var i in HUP.w.childNodes) {
-        HUP.L.log('window childnode ', i, ' ', HUP.w.childNodes[i]);
-      }
       Hupper.postInstall();
       // Elementer
-      HUP.El = new Hupper.Elementer();
+      var elementer = new Hupper.Elementer(ww);;
+      HUP.El = elementer;
       HUP.Ev = new HUPEvents();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
@@ -544,7 +636,7 @@ Hupper.start = function(e) {
       }
       if(HUP.hp.get.parseblocks()) {
         var blocks = Hupper.getBlocks();
-        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(hupMenu), hupMenu);
+        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(hupMenu), elementer);
       }
      //  if(HupperPrefs.hideads()) {
      //    Hupper.HideHupAds();
@@ -555,7 +647,7 @@ Hupper.start = function(e) {
       HUP.L.log('initialized', 'Run time: ' + TIMER.finish() + 'ms');
     }
   } catch(e) {
-    Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber, + ', ' + e.fileName);
+    Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService).logStringMessage('HUPPER: ' + e.message + ', ' + e.lineNumber, + ', ' + e.fileName, + ', ' + e.toString());
   }
 };
 Hupper.init = function() {
