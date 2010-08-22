@@ -4,8 +4,8 @@
  * @description Class to create and manipulate DOM elements
  * @constructor
  */
-Hupper.Elementer = function() {
-  this.doc = HUP.w;
+Hupper.Elementer = function(doc) {
+  this.doc = doc || HUP.w;
   this.li = this.doc.createElement('li');
   this.ul = this.doc.createElement('ul');
   this.div = this.doc.createElement('div');
@@ -195,17 +195,18 @@ Hupper.Elementer.prototype = {
     * @type Element
     */
   GetId: function(id, parent) {
-    if(!this.elements) {
-      this.elements = new Object();
-    }
-    if(!this.elements[id]) {
+    // if(!this.elements) {
+    //   this.elements = new Object();
+    // }
+    var output;
+    // if(!this.elements[id]) {
       if(typeof parent == 'object') {
-        this.elements[id] = parent.getElementById(id);
+        output = parent.getElementById(id);
       } else {
-        this.elements[id] = this.doc.getElementById(id);
+        output = this.doc.getElementById(id);
       }
-    }
-    return this.elements[id];
+    // }
+    return output;
   },
   /**
   * Adds the specified class to the element
@@ -336,9 +337,15 @@ Hupper.Elementer.prototype = {
     return l;
   },
   Hide: function(el) {
+    if(typeof el == 'object' && el.nodeName != 'BUTTON') {
+      HUP.L.log('HIDE', el);
+    }
     this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
+    if(el == 'object' && el.nodeName != 'BUTTON') {
+      HUP.L.log('SHOW', el);
+    }
     this.RemoveClass(el, 'hup-hidden');
   }
 };
