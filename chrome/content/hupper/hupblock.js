@@ -31,15 +31,22 @@ Hupper.Block = function(cfg) {
     blockID = cfg.id;
     blockElement = HUP.El.GetId(blockID);
   }
+  if(blockElement) {
+    if(blockID != blockElement.getAttribute('id')) {
+      throw new Error('blockID is not the same as the block elements id!');
+    }
+  }
   this.block = blockElement;
   this.blocks = cfg.blocks;
   this.id = blockID;
   this.blockMenus = cfg.blockMenus;
-  this.titleNode = HUP.El.GetFirstTag('h2', this.block);
   var contents = HUP.El.GetByClass(this.block, 'content', 'div');
   this.contentNode = contents.length ? contents[0] : null;
-  if(this.titleNode) {
-    this.title = this.titleNode.innerHTML;
+  if(this.block) {
+    this.titleNode = HUP.El.GetFirstTag('h2', this.block);
+    if(this.titleNode) {
+      this.title = this.titleNode.innerHTML;
+    }
   }
   this.makeTitle();
   this.addMoveButtons();
@@ -88,6 +95,7 @@ Hupper.Block.prototype = {
     this.blocks.save();
   },
   makeTitle: function() {
+    if(!this.block) return;
     var boxes = {
         'block-aggregator-feed-13': 'http://distrowatch.com',
         'block-aggregator-feed-19': 'http://www.freebsd.org',
@@ -114,6 +122,7 @@ Hupper.Block.prototype = {
 
     };
     if(boxes[this.id] && this.title && this.titleNode) {
+      HUP.L.log('set title: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
       HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
     }
   },
@@ -148,10 +157,12 @@ Hupper.Block.prototype = {
   moveRight: function() {
     this.blocks.blockToRight(this.id);
     this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   moveLeft: function() {
     this.blocks.blockToLeft(this.id);
     this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   addButtons: function() {
     if(!this.titleNode) {return;}
@@ -202,7 +213,14 @@ Hupper.Block.prototype = {
     HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
   },
   setSide: function(side) {
-    this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+    HUP.L.log(this.id, side);
+    if(this.block) {
+      this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+    } else if(side) {
+      this.side = side;
+    } else {
+      throw new Error('Can not set the side of block ' + this.id);
+    }
   },
   updateUI: function() {
     if(this.hidden) {
@@ -217,7 +235,7 @@ Hupper.Block.prototype = {
     }
   },
   toString: function() {
-    return 'Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') + ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' + (this.contentHidden ? 'true' : 'false');
+    return 'Hupper.Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') + ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' + (this.contentHidden ? 'true' : 'false');
   },
 };
 
@@ -252,7 +270,7 @@ Hupper.BlockMenus.prototype = {
     }
   },
   addBlockToMenu: function(block) {
-    if(!this.blocks[block.id]) {
+    if(!this.blocks[block.id] && block.block) {
       if(!this.menu) this.addMenu();
       var _this = this;
       this.blocks[block.id] = this.hupMenu.addMenuItem({name: block.title, click: function() {block.show()}}, _this.menu);
