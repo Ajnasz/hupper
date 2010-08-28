@@ -36,12 +36,12 @@ Transform.prototype = {
       case 'FadeIn':
         this.i = 0;
         this.speed = this.speed || 0.1;
-        this.FadeIn(this);
+        this.FadeIn();
         break;
       case 'FadeOut':
         this.i = 10;
         this.speed = this.speed || 0.1;
-        this.FadeOut(this);
+        this.FadeOut();
         break;
       case 'SlideUp':
         this.i = 0;
@@ -51,7 +51,7 @@ Transform.prototype = {
         this.ob.style.display = '';
 
         this.obHeight = this.ob.offsetHeight;
-        this.SlideUp(this);
+        this.SlideUp();
         break;
       case 'SlideDown':
         this.i = 10;
@@ -61,7 +61,7 @@ Transform.prototype = {
         this.ob.style.display = '';
         this.obHeight = this.ob.offsetHeight;
         this.ob.style.height = 0;
-        this.SlideDown(this);
+        this.SlideDown();
         break;
     }
   },
