@@ -25,3 +25,4 @@
 <!ENTITY Hupper.hidetaxonomy "Elrejtendo cikk tipusok">
 <!ENTITY Hupper.showinstatusbar "Ikon mutatása az állapotsorban">
 <!ENTITY Hupper.parseblocks "Blokkok feldologozása">
+<!ENTITY Hupper.resetblocks "Blokkok visszaállítása">
