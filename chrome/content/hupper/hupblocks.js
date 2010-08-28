@@ -70,21 +70,22 @@
       * @param {Hupper.Block} oBlock
       */
       registerBlock: function(oBlock) {
-        var id, blockExists, side;
-        if(typeof(oBlock) != 'object') {
+        if(!(oBlock instanceof Hupper.Block)) {
           throw new Error('can not register block, oBlock type is ' + typeof(oBlock));
         }
+
+        var id, blockExists, side;
         id = oBlock.id;
         side = oBlock.side;
-        blockExists = blocks.left.some(function(block) {
-          return block.id == id;
+        blockExists = (blocks.left.some(function(block) {
+          return block.id === id;
         }) || blocks.right.some(function(block) {
-          return block.id == id;
-        });
+          return block.id === id;
+        }));
         if(!blockExists) {
           blocks[side].push(oBlock);
         }
-        return blockExists;
+        return !blockExists;
       },
       getBlocks: function() {
         return blocks;
