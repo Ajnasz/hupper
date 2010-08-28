@@ -201,7 +201,7 @@ Hupper.getBlocks = function() {
   return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
 Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
-  var hupperBlocks = Hupper.Blocks(),
+  var hupperBlocks = new Hupper.Blocks(),
       processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
 
   hupperBlocks.UI = Hupper.Blocks.UI(elementer, hupperBlocks);
@@ -209,78 +209,63 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
   if(blocksFromConfig.left || blocksFromConfig.right) {
     leftBlocksFromConf = blocksFromConfig.left;
     rightBlocksFromConf = blocksFromConfig.right;
-    processedBlocks = blockElements.map(function(blockElement) {
-      var elementID = blockElement.id,
-          matchedBlock, cfg;
 
-      leftBlocksFromConf.some(function(leftBlock) {
-        if(leftBlock.id == elementID) {
-          matchedBlock = leftBlock;
-          matchedBlock.side = 'left';
-          return true;
+    var processedBlocks = leftBlocksFromConf.map(function(leftBlock) {
+      var matched = false,
+          blockElement,
+          bl = blockElements.length;
+
+      while(bl--) {
+        blockElement = blockElements[bl];
+        if(blockElement.id == leftBlock.id) {
+          blockElements.splice(bl, 1);
+          break;
         }
-        return false;
+      }
+
+      return new Hupper.Block({
+        id: leftBlock.id,
+        blockMenus: blockMenus,
+        blocks: hupperBlocks,
+        side: 'left',
+        hidden: leftBlock.hidden,
+        contentHidden: leftBlock.contentHidden,
       });
+    }).concat(
+      rightBlocksFromConf.map(function(rightBlock) {
+        var blockElement,
+            bl = blockElements.length;
 
-      if(!matchedBlock) {
-        rightBlocksFromConf.some(function(rightBlock) {
-          if(rightBlock.id == elementID) {
-            matchedBlock = rightBlock;
-
-            matchedBlock.side = 'right';
-            return true;
+        while(bl--) {
+          blockElement = blockElements[bl];
+          if(blockElement.id == rightBlock.id) {
+            blockElements.splice(bl, 1);
+            break;
           }
-          return false;
+        }
+
+        if(rightBlock.id == 'block-block-22') {
+          HUP.L.log(rightBlock.toSource());
+        }
+        return new Hupper.Block({
+          id: rightBlock.id,
+          blockMenus: blockMenus,
+          blocks: hupperBlocks,
+          side: 'right',
+          hidden: rightBlock.hidden,
+          contentHidden: rightBlock.contentHidden,
         });
-      }
-
-      if(matchedBlock) {
-        cfg = {
-          block: blockElement,
-          left: matchedBlock.left,
-          right:matchedBlock.right,
-          side: matchedBlock.side,
-          blockMenus: blockMenus,
-          blocks: hupperBlocks,
-          hidden: matchedBlock.hidden,
-          contentHidden: matchedBlock.contentHidden,
-        };
-      } else {
-        cfg = {
+      })
+    ).concat(
+      blockElements.map(function(blockElement) {
+        return new Hupper.Block({
           block: blockElement,
           blockMenus: blockMenus,
           blocks: hupperBlocks,
-        };
-      }
+        });
+      })
+    );
 
-      return new Hupper.Block(cfg);
-    });
-
-
-    leftBlocksFromConf.forEach(function(block) {
-      for(var i = 0, bl, pbl; i < processedBlocks.length; i++) {
-        bl = processedBlocks[i];
-        if(bl.id == block.id) {
-          pbl = processedBlocks.splice(i, 1);
-          if(pbl) {
-            hupperBlocks.registerBlock(bl);
-          }
-          break;
-        }
-      }
-    });
-    rightBlocksFromConf.forEach(function(block) {
-      for(var i = 0, bl; i < processedBlocks.length; i++) {
-        bl = processedBlocks[i];
-        if(bl.id == block.id) {
-          pbl = processedBlocks.splice(i, 1);
-          if(pbl) {
-            hupperBlocks.registerBlock(bl);
-          }
-          break;
-        }
-      }
-    });
   } else {
     processedBlocks = blockElements.map(function(blockElement) {
       return new Hupper.Block({
@@ -290,9 +275,8 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
       });
     });
   }
-  processedBlocks.forEach(function(block) {
-    HUP.L.log('register processed block' + block.id);
-    hupperBlocks.registerBlock(block);
+  processedBlocks.forEach(function(block, a, b) {
+     hupperBlocks.registerBlock(block);
   });
   hupperBlocks.save();
   hupperBlocks.UI.rearrangeBlocks();
