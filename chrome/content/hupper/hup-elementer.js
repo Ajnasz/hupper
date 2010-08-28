@@ -200,9 +200,9 @@ Hupper.Elementer.prototype = {
     // }
     var output;
     // if(!this.elements[id]) {
-      if(typeof parent == 'object') {
+      if(typeof parent == 'object' && parent.nodeType === 1) {
         output = parent.getElementById(id);
-      } else {
+      } else if(typeof(parent) == 'undefined') {
         output = this.doc.getElementById(id);
       }
     // }
@@ -337,13 +337,13 @@ Hupper.Elementer.prototype = {
     return l;
   },
   Hide: function(el) {
-    if(typeof el == 'object' && el.nodeName != 'BUTTON') {
+    if(el && typeof el == 'object' && el.nodeName != 'BUTTON') {
       HUP.L.log('HIDE', el);
     }
     this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
-    if(el == 'object' && el.nodeName != 'BUTTON') {
+    if(el && el == 'object' && el.nodeName != 'BUTTON') {
       HUP.L.log('SHOW', el);
     }
     this.RemoveClass(el, 'hup-hidden');
