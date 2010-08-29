@@ -563,6 +563,12 @@ Hupper.StatusClickHandling.prototype = {
     return currentTab;
   }
 };
+Hupper.setBlocks = function() {
+  if(HUP.hp.get.parseblocks()) {
+    var blocks = Hupper.getBlocks();
+    Hupper.parseBlocks(blocks, HUP.BlockMenus, HUP.El);
+  }
+};
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -597,6 +603,7 @@ Hupper.start = function(e) {
       HUP.Bundles = document.getElementById('hupper-bundles');
       Hupper.addHupStyles();
       var hupMenu = new Hupper.Menu();
+      HUP.BlockMenus = new Hupper.BlockMenus(hupMenu);
       // Stores the mark as read nodes
       HUP.markReadNodes = new Array();
       HUP.w.nextLinks = new Array();
@@ -618,10 +625,7 @@ Hupper.start = function(e) {
           }
         }
       }
-      if(HUP.hp.get.parseblocks()) {
-        var blocks = Hupper.getBlocks();
-        Hupper.parseBlocks(blocks, new Hupper.BlockMenus(hupMenu), elementer);
-      }
+      Hupper.setBlocks();
      //  if(HupperPrefs.hideads()) {
      //    Hupper.HideHupAds();
      //  }
