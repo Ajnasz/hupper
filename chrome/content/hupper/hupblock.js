@@ -80,7 +80,8 @@ Hupper.Block.prototype = {
   },
   hideContent: function(force) {
     if(!this.contentNode || (this.contentHidden && !force)) return;
-    HUP.El.Hide(this.contentNode);
+    // HUP.El.Hide(this.contentNode);
+    HUP.El.AddClass(this.block, 'content-hidden');
     HUP.El.Hide(this.hideButton);
     HUP.El.Show(this.showButton);
     this.contentHidden = true;
@@ -88,7 +89,8 @@ Hupper.Block.prototype = {
   },
   showContent: function(force) {
     if(!this.contentNode || (!this.contentHidden && !force)) return;
-    HUP.El.Show(this.contentNode);
+    // HUP.El.Show(this.contentNode);
+    HUP.El.RemoveClass(this.block, 'content-hidden');
     HUP.El.Show(this.hideButton);
     HUP.El.Hide(this.showButton);
     this.contentHidden = false;
