@@ -101,13 +101,10 @@ Hupper.mapWindows = function(onMap) {
   }
 };
 Hupper.resetBlocks = function() {
-  Hupper.mapWindows(function(win){
-    if(win.HUP.hp.get.parseblocks()) {
-      if(confirm('Are you sure you want to delete all of your block settings?\nReload the HUP to apply the settings.')) {
-        HUP.L.log('hEY< ITS NOT WORKING yET');
-      } 
-    }
-  });
+  if(confirm(HUP.Bundles.getString('confirmBlockReset'))) {
+    HUP.hp.set.blocks('({})');
+    alert(HUP.Bundles.getString('reloadHUPPlease'));
+  }
 };
 Hupper.StartHupperPrefernces = function() {
   HUP = {};
