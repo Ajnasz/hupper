@@ -33,3 +33,7 @@ pref("extensions.hupper.showinstatusbar", true);
 
 pref("extensions.hupper.blocks", '({})');
 pref("extensions.hupper.parseblocks", true);
+
+pref("extensions.hupper.style_indent", true);
+pref("extensions.hupper.style_accessibility", true);
+pref("extensions.hupper.style_wider_sidebar", 0);

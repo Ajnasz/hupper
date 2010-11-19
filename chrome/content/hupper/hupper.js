@@ -374,7 +374,7 @@ Hupper.appendNewNotifier = function(link, mark, hupMenu) {
  * @param {Event} e event object
  */
 Hupper.addHupStyles = function(e) {
-  var styles = '';
+  var styles = '/* headers-answers-trolls */ @-moz-document url-prefix(http://hup.hu) {';
   switch(HUP.hp.get.trollfiltermethod()) {
     case 'hide':
       styles += '.' + HUP.hp.get.trollCommentClass + ' {display:none !important;}';
@@ -388,12 +388,22 @@ Hupper.addHupStyles = function(e) {
       break;
   };
   if(HUP.hp.get.hilightforumlinesonhover()) {
-    styles += 'tr.odd:hover td, tr.even:hover {background-color: #D8D8C4;}';
+    styles += 'tr.odd:hover td, tr.even:hover td {background-color: #D8D8C4;}';
   }
+  styles += '}';
+
+
+  Components.utils.import('resource://huppermodules/styleLoader.jsm');
+  var styleLoader = new StyleLoader()
+  styleLoader.load(styles);
+  styleLoader.load('chrome://hupper/skin/hupper.css');
+ 
+/*
   var head = HUP.El.GetFirstTag('head');
   var st = HUP.El.El('style');
   HUP.El.Add(HUP.El.Txt(styles), st);
   HUP.El.Add(st, head);
+  var 
 
   var sti = HUP.El.El('link');
   st.setAttribute('type', 'text/css');
@@ -401,6 +411,7 @@ Hupper.addHupStyles = function(e) {
   sti.setAttribute('media', 'all');
   sti.setAttribute('href', 'chrome://hupper/skin/hupper.css');
   HUP.El.Add(sti, head);
+*/
 };
 Hupper.Stringer = {
   trim: function(str) {
@@ -569,6 +580,38 @@ Hupper.setBlocks = function() {
     Hupper.parseBlocks(blocks, HUP.BlockMenus, HUP.El);
   }
 };
+
+Hupper.initStyles = function() {
+
+  var widthStyle = function(width) {
+    return '' + 
+      '@-moz-document url-prefix(http://hup.hu) {' +
+        '#sidebar-left, #sidebar-right {' +
+          'width:' + width + 'px !important;' +
+      '}' +
+    '}';
+  };
+
+  HUP.L.log('init styles');
+  Components.utils.import('resource://huppermodules/styleLoader.jsm');
+  var styleLoader = new StyleLoader();
+  // styleLoader.load('@-moz-document url-prefix(http://hup.hu) { #all {font-size:20px !important;} }');
+  if(HUP.hp.get.styleIndent()) {
+    styleLoader.load('chrome://hupper/skin/indentstyles.css');
+  }
+  if(HUP.hp.get.styleAccessibility()) {
+    styleLoader.load('chrome://hupper/skin/accesibilitystyles.css');
+  }
+  if(HUP.hp.get.styleWiderSidebar() > 0) {
+    if(Hupper.currentWidth) {
+      styleLoader.unLoad(widthStyle(Hupper.currentWidth));
+    }
+    styleLoader.load(widthStyle(HUP.hp.get.styleWiderSidebar()));
+    Hupper.currentWidth = HUP.hp.get.styleWiderSidebar();
+  }
+
+  HUP.L.log('init styles finished');
+};
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -626,6 +669,7 @@ Hupper.start = function(e) {
         }
       }
       Hupper.setBlocks();
+      Hupper.initStyles();
      //  if(HupperPrefs.hideads()) {
      //    Hupper.HideHupAds();
      //  }

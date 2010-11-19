@@ -94,6 +94,15 @@ HP.prototype = {
     parseblocks: function() {
       return this.M.getBoolPref('extensions.hupper.parseblocks');
     },
+    styleIndent: function() {
+      return this.M.getBoolPref('extensions.hupper.style_indent');
+    },
+    styleAccessibility: function() {
+      return this.M.getBoolPref('extensions.hupper.style_accessibility');
+    },
+    styleWiderSidebar: function() {
+      return this.M.getIntPref('extensions.hupper.style_wider_sidebar');
+    },
     trollCommentHeaderClass: 'trollHeader',
     trollCommentClass: 'trollComment',
     trollCommentAnswersClass: 'trollCommentAnswer'
@@ -173,6 +182,15 @@ HP.prototype = {
     },
     parseblocks: function(value) {
       return this.M.setBoolPref('extensions.hupper.parseblocks', value);
-    }
+    },
+    styleIndent: function(value) {
+      return this.M.setBoolPref('extensions.hupper.style_indent', value);
+    },
+    styleAccessibility: function() {
+      return this.M.setBoolPref('extensions.hupper.style_accessibility', value);
+    },
+    styleWiderSidebar: function() {
+      return this.M.setIntPref('extensions.hupper.style_wider_sidebar', value);
+    },
   }
 };
