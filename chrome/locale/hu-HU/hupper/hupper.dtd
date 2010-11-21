@@ -20,9 +20,15 @@
 <!ENTITY Hupper.tabgeneral "Általános">
 <!ENTITY Hupper.tabcomment "Hozzászólás színezés">
 <!ENTITY Hupper.tabaccount "Felhasználói információk">
+<!ENTITY Hupper.tabsyles "Stílusok">
 <!ENTITY Hupper.username "Felhasználói név:">
 <!ENTITY Hupper.password "Jelszó:">
 <!ENTITY Hupper.hidetaxonomy "Elrejtendo cikk tipusok">
 <!ENTITY Hupper.showinstatusbar "Ikon mutatása az állapotsorban">
 <!ENTITY Hupper.parseblocks "Blokkok feldologozása">
 <!ENTITY Hupper.resetblocks "Blokkok visszaállítása">
+
+<!ENTITY Hupper.style.indent "Vonal mutatása a szülő hozzászóláshoz">
+<!ENTITY Hupper.style.accessibility "Jobb használhatóságot lehetővé tévő stílusok betöltése">
+<!ENTITY Hupper.style.sidebarwidth "Oldallsávok szélessége">
+

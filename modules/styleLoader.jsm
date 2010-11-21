@@ -1,5 +1,5 @@
 var StyleLoader = function() {
-  var sss, ios, getURI;
+  var sss, ios, getURI, loadedStyles = [];
 
 
   sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
@@ -24,13 +24,23 @@ var StyleLoader = function() {
       var uri = getURI(styleURI);
       if(!sss.sheetRegistered(uri, sss.AGENT_SHEET)) {
         sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
+        loadedStyles.push(styleURI);
       }
     },
     unLoad: function(styleURI) {
       var uri = getURI(styleURI);
       if(sss.sheetRegistered(uri, sss.AGENT_SHEET)) {
         sss.unregisterSheet(uri, sss.AGENT_SHEET);
+        for (var i = 0; i < loadedStyles.length; i++) {
+          if(loadedStyles[i] === styleURI) {
+            loadedStyles.slice(i, 1);
+            break;
+          }
+        }
       }
+    },
+    getLoadedStyles: function() {
+      return loadedStyles;
     },
   };
 };

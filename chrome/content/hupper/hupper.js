@@ -244,9 +244,6 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
           }
         }
 
-        if(rightBlock.id == 'block-block-22') {
-          HUP.L.log(rightBlock.toSource());
-        }
         return new Hupper.Block({
           id: rightBlock.id,
           blockMenus: blockMenus,
@@ -581,37 +578,6 @@ Hupper.setBlocks = function() {
   }
 };
 
-Hupper.initStyles = function() {
-
-  var widthStyle = function(width) {
-    return '' + 
-      '@-moz-document url-prefix(http://hup.hu) {' +
-        '#sidebar-left, #sidebar-right {' +
-          'width:' + width + 'px !important;' +
-      '}' +
-    '}';
-  };
-
-  HUP.L.log('init styles');
-  Components.utils.import('resource://huppermodules/styleLoader.jsm');
-  var styleLoader = new StyleLoader();
-  // styleLoader.load('@-moz-document url-prefix(http://hup.hu) { #all {font-size:20px !important;} }');
-  if(HUP.hp.get.styleIndent()) {
-    styleLoader.load('chrome://hupper/skin/indentstyles.css');
-  }
-  if(HUP.hp.get.styleAccessibility()) {
-    styleLoader.load('chrome://hupper/skin/accesibilitystyles.css');
-  }
-  if(HUP.hp.get.styleWiderSidebar() > 0) {
-    if(Hupper.currentWidth) {
-      styleLoader.unLoad(widthStyle(Hupper.currentWidth));
-    }
-    styleLoader.load(widthStyle(HUP.hp.get.styleWiderSidebar()));
-    Hupper.currentWidth = HUP.hp.get.styleWiderSidebar();
-  }
-
-  HUP.L.log('init styles finished');
-};
 /**
  * Initialization function, runs when the page is loaded
  * @param {Event} e window load event object
@@ -620,7 +586,7 @@ Hupper.start = function(e) {
   try {
     var ww = e.originalTarget;
     var logger = new Hupper.Log();
-    logger.log(ww.location.hostname);
+    // logger.log(ww.location.hostname);
     if(ww && ww.location && typeof ww.location.hostname == 'string'
         && (ww.location.hostname == 'hup.hu' || ww.location.hostname == 'www.hup.hu' ||
         /http:\/\/(localhost\/hupper\/hg|hupper)\/.+\.html/.test(ww.location.href))) {
@@ -669,7 +635,7 @@ Hupper.start = function(e) {
         }
       }
       Hupper.setBlocks();
-      Hupper.initStyles();
+      Hupper.styles();
      //  if(HupperPrefs.hideads()) {
      //    Hupper.HideHupAds();
      //  }

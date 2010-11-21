@@ -23,6 +23,11 @@ Hupper.setPrefWinVals = function() {
   document.getElementById('HUP-hide-taxonomy').value = HUP.hp.get.hidetaxonomy();
   document.getElementById('HUP-show-in-statusbar').checked = HUP.hp.get.showinstatusbar();
   document.getElementById('HUP-parseblocks').checked = HUP.hp.get.parseblocks();
+
+  document.getElementById('HUP-style-indent').checked = HUP.hp.get.styleIndent();
+  document.getElementById('HUP-style-accessibility').checked = HUP.hp.get.styleAccessibility();
+  document.getElementById('HUP-style-sidebar-width').value = HUP.hp.get.styleWiderSidebar();
+
   //document.getElementById('HUP-hupper-password').value = new _HUPPasswordManager().getPassword();
   //document.getElementById('HUP-hupper-username').value = HUP.hp.get.username();
 };
@@ -48,12 +53,19 @@ Hupper.savePreferences = function() {
   HUP.hp.set.hidetaxonomy(document.getElementById('HUP-hide-taxonomy').value);
   HUP.hp.set.showinstatusbar(document.getElementById('HUP-show-in-statusbar').checked);
   HUP.hp.set.parseblocks(document.getElementById('HUP-parseblocks').checked);
+
+  HUP.hp.set.styleIndent(document.getElementById('HUP-style-indent').checked);
+  HUP.hp.set.styleAccessibility(document.getElementById('HUP-style-accessibility').checked);
+  HUP.hp.set.styleWiderSidebar(document.getElementById('HUP-style-sidebar-width').value);
+
+
   //HUP.hp.set.username(document.getElementById('HUP-hupper-username').value);
   //new _HUPPasswordManager().addPassword(document.getElementById('HUP-hupper-password').value);
   var hideIcon = !HUP.hp.get.showinstatusbar();
   Hupper.mapWindows(function(win) {
     win.document.getElementById('HUP-statusbar').hidden = hideIcon;
   })
+  Hupper.styles();
   return true;
 };
 Hupper.disableFields = function() {

@@ -338,13 +338,13 @@ Hupper.Elementer.prototype = {
   },
   Hide: function(el) {
     if(el && typeof el == 'object' && el.nodeName != 'BUTTON') {
-      HUP.L.log('HIDE', el);
+      // HUP.L.log('HIDE', el);
     }
     this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
     if(el && el == 'object' && el.nodeName != 'BUTTON') {
-      HUP.L.log('SHOW', el);
+      // HUP.L.log('SHOW', el);
     }
     this.RemoveClass(el, 'hup-hidden');
   }

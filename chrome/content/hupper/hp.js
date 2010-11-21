@@ -186,10 +186,10 @@ HP.prototype = {
     styleIndent: function(value) {
       return this.M.setBoolPref('extensions.hupper.style_indent', value);
     },
-    styleAccessibility: function() {
+    styleAccessibility: function(value) {
       return this.M.setBoolPref('extensions.hupper.style_accessibility', value);
     },
-    styleWiderSidebar: function() {
+    styleWiderSidebar: function(value) {
       return this.M.setIntPref('extensions.hupper.style_wider_sidebar', value);
     },
   }

@@ -9,6 +9,7 @@
   buttons="accept,cancel"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://hupper/content/namespace.js" />
+  <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
@@ -27,7 +28,8 @@
   <tabbox id="hupper-tabbox">
     <tabs>
       <tab label="&Hupper.tabgeneral;" />
-       <tab label="&Hupper.tabcomment;" />
+      <tab label="&Hupper.tabcomment;" />
+      <tab label="&Hupper.tabsyles;" />
        <!--       <tab label="&Hupper.tabaccount;" /> -->
     </tabs>
     <tabpanels>
@@ -70,12 +72,20 @@
           <textbox id="HUP-hupper-highlightusers" />
         </groupbox>
       </tabpanel>
+      <tabpanel>
+        <groupbox>
+          <checkbox id="HUP-style-indent" label="&Hupper.style.indent;" />
+          <checkbox id="HUP-style-accessibility" label="&Hupper.style.accessibility;" />
+          <label control="HUP-style-sidebar-width" value="&Hupper.style.sidebarwidth;"/>
+          <textbox id="HUP-style-sidebar-width" />
+        </groupbox>
+      </tabpanel>
       <!--
       <tabpanel>
         <groupbox>
-          <label contrl="HUP-hupper-username" value="&Hupper.username;"/>
+          <label control="HUP-hupper-username" value="&Hupper.username;"/>
           <textbox id="HUP-hupper-username"/>
-          <label contrl="HUP-hupper-password" value="&Hupper.password;"/>
+          <label control="HUP-hupper-password" value="&Hupper.password;"/>
           <textbox id="HUP-hupper-password" type="password"/>
         </groupbox>
       </tabpanel>
