@@ -366,50 +366,6 @@ Hupper.appendNewNotifier = function(link, mark, hupMenu) {
     hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
-/**
- * Adds my own styles to the hup.hu header
- * @param {Event} e event object
- */
-Hupper.addHupStyles = function(e) {
-  var styles = '/* headers-answers-trolls */ @-moz-document url-prefix(http://hup.hu) {';
-  switch(HUP.hp.get.trollfiltermethod()) {
-    case 'hide':
-      styles += '.' + HUP.hp.get.trollCommentClass + ' {display:none !important;}';
-      if(HUP.hp.get.hidetrollanswers()) {
-        styles += '.' + HUP.hp.get.trollCommentAnswersClass + ' {display:none !important;}';
-      }
-      break;
-    case 'hilight':
-    default:
-      styles += '.' + HUP.hp.get.trollCommentHeaderClass + ' {background-color:' + HUP.hp.get.trollcolor() + ' !important;}';
-      break;
-  };
-  if(HUP.hp.get.hilightforumlinesonhover()) {
-    styles += 'tr.odd:hover td, tr.even:hover td {background-color: #D8D8C4;}';
-  }
-  styles += '}';
-
-
-  Components.utils.import('resource://huppermodules/styleLoader.jsm');
-  var styleLoader = new StyleLoader()
-  styleLoader.load(styles);
-  styleLoader.load('chrome://hupper/skin/hupper.css');
- 
-/*
-  var head = HUP.El.GetFirstTag('head');
-  var st = HUP.El.El('style');
-  HUP.El.Add(HUP.El.Txt(styles), st);
-  HUP.El.Add(st, head);
-  var 
-
-  var sti = HUP.El.El('link');
-  st.setAttribute('type', 'text/css');
-  sti.setAttribute('rel', 'stylesheet');
-  sti.setAttribute('media', 'all');
-  sti.setAttribute('href', 'chrome://hupper/skin/hupper.css');
-  HUP.El.Add(sti, head);
-*/
-};
 Hupper.Stringer = {
   trim: function(str) {
     return str.replace(/^\s+|\s+$/g, '');
@@ -610,12 +566,12 @@ Hupper.start = function(e) {
       HUP.Ev = new HUPEvents();
       // Lang stuffs
       HUP.Bundles = document.getElementById('hupper-bundles');
-      Hupper.addHupStyles();
+      // Hupper.addHupStyles();
       var hupMenu = new Hupper.Menu();
       HUP.BlockMenus = new Hupper.BlockMenus(hupMenu);
       // Stores the mark as read nodes
-      HUP.markReadNodes = new Array();
-      HUP.w.nextLinks = new Array();
+      HUP.markReadNodes = [];
+      HUP.w.nextLinks = [];
       // if comments are available
       if(HUP.El.GetId('comments')) {
         var c = new Hupper.GetComments();
