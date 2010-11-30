@@ -1,8 +1,8 @@
 Hupper.styles = function() {
 
   HUP.L.log('init styles');
-  if(!Hupper.styleLoader) {
-    Components.utils.import('resource://huppermodules/styleLoader.jsm');
+  Components.utils.import('resource://huppermodules/styleLoader.jsm');
+  if(!(Hupper.styleLoader instanceof StyleLoader)) {
     var styleLoader = new StyleLoader();
     Hupper.styleLoader = styleLoader;
   }

@@ -17,12 +17,15 @@ var Storage = function() {
 Storage.prototype = {
   addStyle_: function(styleURI, isActive, onSuccess, onError) {
       var q = 'INSERT INTO styles (styleURI,isActive) VALUES (:styleURI, :isActive)';
-      this.db.query(q, {styleURI: styleURI, isActive: isActive ? 1 : 0}, onSuccess, onError);
+      this.db.query(q, {styleURI: styleURI, isActive: isActive ? 1 : 0}, {
+        onFinish: onFinish,
+        onError: onError
+      });
   },
-  addStyle: function(styleURI, isActive, onSuccess, onError) {
+  addStyle: function(styleURI, isActive, onFinish, onError) {
     this.styleAdded(styleURI, bind(function(added) {
       if(!added) {
-        this.addStyle_(styleURI, isActive, onSuccess, onError);
+        this.addStyle_(styleURI, isActive, onFinish, onError);
       }
     }, this));
   },
@@ -37,9 +40,12 @@ Storage.prototype = {
     logger.logStringMessage('hupper style active: '  + styleActive);
     onSuccess(styleActive);
   },
-  styleIsActive: function(styleURI, onSuccess, onError) {
+  styleIsActive: function(styleURI, onFinish, onError) {
     var q = 'SELECT isActive AS active FROM styles WHERE styleURI=:styleURI';
-    this.db.query(q, {styleURI: styleURI}, onSuccess, onError);
+    this.db.query(q, {styleURI: styleURI}, {
+      onFinish: onFinish,
+      onError: onError
+    });
   },
   styleAdded_: function(aResultSet, onSuccess) {
     var styleAdded = false;
@@ -50,16 +56,19 @@ Storage.prototype = {
     logger.logStringMessage('style added: ' + styleAdded);
     onSuccess(styleAdded);
   },
-  styleAdded: function(styleURI, onSuccess, onError) {
+  styleAdded: function(styleURI, onFinish, onError) {
     var q = 'SELECT count(*) AS count FROM styles WHERE styleURI=:styleURI';
     var _this = this;
-    this.db.query(q, {styleURI: styleURI}, function(aResultSet) {
-      _this.styleAdded_(aResultSet, onSuccess);
-    }, onError);
+    this.db.query(q, {styleURI: styleURI}, {
+      onFinish: function(aResultSet) {
+        _this.styleAdded_(aResultSet, onSuccess);
+      },
+      onError: onError
+    });
   },
-  activateStyle_: function(styleURI, onSuccess) {
+  activateStyle_: function(styleURI, onFinish) {
     var q = 'UPDATE styles SET isActive=1 WHERE styleURI=:styleURI';
-    this.db.query(q, {styleURI: styleURI}, onSuccess);
+    this.db.query(q, {styleURI: styleURI}, {onFinish: onFinish});
   },
   activateStyle: function(styleURI, onSuccess) {
     this.styleAdded(styleURI, bind(function(added) {
@@ -70,10 +79,13 @@ Storage.prototype = {
       }
     }, this));
   },
-  deactivateStyle_: function(styleURI, onSuccess) {
+  deactivateStyle_: function(styleURI, onFinish) {
     var q = 'UPDATE styles SET isActive=0 WHERE styleURI=:styleURI';
-    this.db.query(q, {styleURI: styleURI}, onSuccess, function() {
-      logger.logStringMessage('deactivate failed');
+    this.db.query(q, {styleURI: styleURI}, {
+      onFinish: onFinish,
+      onSuccess: function() {
+        logger.logStringMessage('deactivate failed');
+      }
     });
   },
   deactiveateStyle: function(styleURI, onSuccess) {
@@ -91,12 +103,22 @@ Storage.prototype = {
   },
   getStyles: function(onSuccess) {
     var q = 'SELECT * FROM styles';
-    this.db.query(q, {}, function(aResultSet) {
-      var styles = [];
-      for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-        styles.push(row.getResultByName("styleURI"));
+
+    logger.logStringMessage('start get styles');
+    this.db.query(q, {}, {
+      onFinish: function(aResultSet) {
+        logger.logStringMessage('get styles');
+        var styles = [];
+        if(aResultSet) {
+          for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+            styles.push(row.getResultByName("styleURI"));
+          }
+        }
+        onSuccess(styles);
+      },
+      onError: function () {
+        logger.logStringMessage('get styles error');
       }
-      onSuccess(styles);
     });
   },
 };
@@ -145,21 +167,26 @@ var StyleLoader = function() {
     },
     unloadAll: function(callback) {
       var _this = this;
+      logger.logStringMessage('call unload all');
       callback = typeof callback === 'function' ? callback : function() {};
       storage.getStyles(function(styles) {
         var unloadedStyles = 0;
         var onUnload = function() {
           unloadedStyles += 1;
           logger.logStringMessage('hupper unload: ' + unloadedStyles + ' !! ' + styles.length);
-          if(unloadedStyles == styles.length) {
+          if(unloadedStyles >= styles.length) {
             logger.logStringMessage('styles: ' + styles.toSource());
             callback();
           }
         };
-        styles.forEach(function(style) {
-          logger.logStringMessage('try to unload');
-          _this.unLoad(style, onUnload);
-        });
+        if(styles.length) {
+          styles.forEach(function(style) {
+            logger.logStringMessage('try to unload');
+            _this.unLoad(style, onUnload);
+          });
+        } else {
+          callback();
+        }
       });
     },
   };

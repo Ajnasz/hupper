@@ -29,24 +29,30 @@ HupDB.prototype = {
     this.dbConnection = dbConnection;
   },
 
-  query: function(query, params, onSuccess, onError) {
+  query: function(query, params, callbacks) {
     this.connect();
 
     var statement = this.dbConnection.createStatement(query);
+    callbacks = typeof callbacks === 'object' && callbacks !== null ? callbacks : {};
 
-    onSuccess = typeof onSuccess === 'function' ? onSuccess : function() {};
-    onError = typeof onError === 'function' ? onError : function() {};
-    params = typeof params === 'object' && params ? params : {};
+    onFinish = typeof callbacks.onFinish === 'function' ? callbacks.onFinish : function() {};
+    onResult = typeof callbacks.onResult === 'function' ? callbacks.onResult : function() {};
+    onError = typeof callbacks.onError === 'function' ? callbacks.onError : function() {};
+    params = typeof params === 'object' && params !== null ? params : {};
+
     for(var name in params) {
       if(params.hasOwnProperty(name)) {
         statement.params[name] = params[name];
       }
     }
     statement.executeAsync({
-      handleResult: onSuccess,
+      handleResult: onResult,
       handleError: onError,
       handleCompletion: function(aReason) {
         if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
+          onError();
+        } else {
+          onFinish();
         }
       },
     });
