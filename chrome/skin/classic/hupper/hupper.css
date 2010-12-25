@@ -1,7 +1,7 @@
 @namespace url(http://www.w3.org/1999/xhtml);
 
 
-@-moz-document url-prefix(http://hup.hu) {
+@-moz-document url-prefix(http://hup.hu),url-prefix(http://hupperl) {
   #filteredhuppers, #filteredtrolls {display: block !important;}
   #tags {background-color:#F6F6EB !important; }
   #tags h4 {margin: 0 !important;padding: 0 !important; }

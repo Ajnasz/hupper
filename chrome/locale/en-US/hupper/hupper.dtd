@@ -31,4 +31,5 @@
 <!ENTITY Hupper.style.indent "Show line guide to the parent comment">
 <!ENTITY Hupper.style.accessibility "Load accessibility styles">
 <!ENTITY Hupper.style.sidebarwidth "Width of sidebars">
+<!ENTITY Hupper.style.minfontsize "Minimum font size">
 

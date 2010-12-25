@@ -31,4 +31,5 @@
 <!ENTITY Hupper.style.indent "Vonal mutatása a szülő hozzászóláshoz">
 <!ENTITY Hupper.style.accessibility "Jobb használhatóságot lehetővé tévő stílusok betöltése">
 <!ENTITY Hupper.style.sidebarwidth "Oldallsávok szélessége">
+<!ENTITY Hupper.style.minfontsize "Minimum betűméret">
 

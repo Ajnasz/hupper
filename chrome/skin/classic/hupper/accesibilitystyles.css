@@ -2,6 +2,7 @@
 
 
 @-moz-document url-prefix(http://hup.hu) {
+  /*
   body,
   #all,
   #top-nav,
@@ -11,6 +12,7 @@
   .node .links {
     font-size: 12px !important;
   }
+  */
   .main-content a:link,
   .main-content a:visited { 
     border-bottom: 1px dotted #999 !important;
