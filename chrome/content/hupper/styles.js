@@ -6,10 +6,9 @@ Hupper.styles = function() {
     var styleLoader = new StyleLoader();
     Hupper.styleLoader = styleLoader;
   }
-  var loadStyles = function(HUP, Hupper) {
-    return function() {
+      var stylesToLoad = [];
 
-      var styles = '/* headers-answers-trolls */ @-moz-document url-prefix(http://hup.hu) {';
+      var styles = '/* headers-answers-trolls */ @-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) {';
       switch(HUP.hp.get.trollfiltermethod()) {
         case 'hide':
           styles += '.' + HUP.hp.get.trollCommentClass + ' {display:none !important;}';
@@ -28,32 +27,49 @@ Hupper.styles = function() {
       styles += '}';
       var indentStyle = 'chrome://hupper/skin/indentstyles.css',
           accesibilityStyle = 'chrome://hupper/skin/accesibilitystyles.css';
-      var marker = '/* hupper width */';
       var widthStyle = function(width) {
         return '' +
-          marker + '@-moz-document url-prefix(http://hup.hu) {' +
+          '/* hupper width */@-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
             '.sidebar {' +
               'width:' + width + 'px !important;' +
           '}' +
         '}';
-      }
+      };
+      var minFontsizeStyle = function(fontsize) {
+        return '' +
+          '/* min font size */@-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
+
+            'body,#all,#top-nav,#top-nav a,.sidebar .block .content,#footer,.node .links {' +
+              'font-size:' + fontsize + 'px !important;' +
+          '}' +
+        '}';
+      };
 
 
-      // styleLoader.load('@-moz-document url-prefix(http://hup.hu) { #all {font-size:20px !important;} }');
+      // styleLoader.load('@-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) { #all {font-size:20px !important;} }');
+      stylesToLoad.push(styles);
       if(HUP.hp.get.styleIndent()) {
-        Hupper.styleLoader.load(indentStyle);
+        stylesToLoad.push(indentStyle);
       }
       if(HUP.hp.get.styleAccessibility()) {
-        Hupper.styleLoader.load(accesibilityStyle);
+        stylesToLoad.push(accesibilityStyle);
       }
       var width = HUP.hp.get.styleWiderSidebar();
       if(width > 0) {
-        Hupper.styleLoader.load(widthStyle(width));
+        stylesToLoad.push(widthStyle(width));
       }
+      var minFontsize = HUP.hp.get.styleMinFontsize();
+      if (minFontsize > 0) {
+        stylesToLoad.push(minFontsizeStyle(minFontsize));
+      }
+      stylesToLoad.push('chrome://hupper/skin/hupper.css');
 
       HUP.L.log('init styles finished');
-      Hupper.styleLoader.load(styles);
-      Hupper.styleLoader.load('chrome://hupper/skin/hupper.css');
-  }}(HUP, Hupper);
-  Hupper.styleLoader.unloadAll(loadStyles);
+
+  var styleLoader = Hupper.styleLoader;
+  styleLoader.unloadAll(function() {
+    stylesToLoad.forEach(function(s) {
+      styleLoader.load(s);
+    });
+  }, stylesToLoad);
 };

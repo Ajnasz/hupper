@@ -5,8 +5,10 @@ var bind = function(fn, context) {
   for (var i = 2; i < arguments.length; i++) {
     args.push(arguments[i]);
   }
-  logger.logStringMessage(args.toSource());
   return function() {
+    for (var i = 0; i < arguments.length; i++) {
+      args.unshift(arguments[i]);
+    }
     fn.apply(context, args);
   };
 };
@@ -15,7 +17,7 @@ var Storage = function() {
   this.db = new HupDB();
 };
 Storage.prototype = {
-  addStyle_: function(styleURI, isActive, onSuccess, onError) {
+  addStyle_: function(styleURI, isActive, onFinish, onError) {
       var q = 'INSERT INTO styles (styleURI,isActive) VALUES (:styleURI, :isActive)';
       this.db.query(q, {styleURI: styleURI, isActive: isActive ? 1 : 0}, {
         onFinish: onFinish,
@@ -24,6 +26,8 @@ Storage.prototype = {
   },
   addStyle: function(styleURI, isActive, onFinish, onError) {
     this.styleAdded(styleURI, bind(function(added) {
+      logger.logStringMessage('style is added: ' + added);
+      logger.logStringMessage(styleURI);
       if(!added) {
         this.addStyle_(styleURI, isActive, onFinish, onError);
       }
@@ -49,19 +53,22 @@ Storage.prototype = {
   },
   styleAdded_: function(aResultSet, onSuccess) {
     var styleAdded = false;
-    for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-      let value = row.getResultByName("count");
-      styleAdded = value > 0;
+    if(aResultSet) {
+      for (var row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+        var value = row.getResultByName("count");
+        styleAdded = value > 0;
+      }
     }
     logger.logStringMessage('style added: ' + styleAdded);
     onSuccess(styleAdded);
   },
-  styleAdded: function(styleURI, onFinish, onError) {
+  styleAdded: function(styleURI, onResult, onError) {
+    logger.logStringMessage('ask style added: ' + styleURI)
     var q = 'SELECT count(*) AS count FROM styles WHERE styleURI=:styleURI';
     var _this = this;
     this.db.query(q, {styleURI: styleURI}, {
-      onFinish: function(aResultSet) {
-        _this.styleAdded_(aResultSet, onSuccess);
+      onResult: function(aResultSet) {
+        _this.styleAdded_(aResultSet, onResult);
       },
       onError: onError
     });
@@ -105,19 +112,44 @@ Storage.prototype = {
     var q = 'SELECT * FROM styles';
 
     logger.logStringMessage('start get styles');
+    var styles = [];
     this.db.query(q, {}, {
-      onFinish: function(aResultSet) {
+      onFinish: function() {
+        logger.logStringMessage('on finish');
+        onSuccess(styles);
+      },
+      onResult: function(aResultSet) {
         logger.logStringMessage('get styles');
-        var styles = [];
         if(aResultSet) {
           for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
             styles.push(row.getResultByName("styleURI"));
           }
         }
-        onSuccess(styles);
       },
       onError: function () {
         logger.logStringMessage('get styles error');
+      }
+    });
+  },
+  getStyle: function(styleURI, callback) {
+    var q = 'SELECT * FROM styles WHERE styleURI=:styleURI';
+    var style = null;
+    this.db.query(q, {styleURI: styleURI}, {
+      onFinish: function() {
+        callback(style);
+      },
+      onResult: function(aResultSet) {
+        if(aResultSet) {
+          for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+            style = {
+              isActive: row.getResultByName('isActive'),
+              styleURI: row.getResultByName('styleURI')
+            }
+          }
+        }
+      },
+      onError: function () {
+        logger.logStringMessage('get a style error');
       }
     });
   },
@@ -148,7 +180,9 @@ var StyleLoader = function() {
   return {
     load: function(styleURI) {
       var uri = getURI(styleURI);
+      logger.logStringMessage('load style:' + styleURI);
       if(!sss.sheetRegistered(uri, sss.AGENT_SHEET)) {
+      logger.logStringMessage('load style!!:' + styleURI);
         sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
         storage.addStyle(styleURI, true);
       }
@@ -165,7 +199,7 @@ var StyleLoader = function() {
         callback();
       }
     },
-    unloadAll: function(callback) {
+    unloadAll: function(callback,except) {
       var _this = this;
       logger.logStringMessage('call unload all');
       callback = typeof callback === 'function' ? callback : function() {};
@@ -182,7 +216,11 @@ var StyleLoader = function() {
         if(styles.length) {
           styles.forEach(function(style) {
             logger.logStringMessage('try to unload');
-            _this.unLoad(style, onUnload);
+            if(!except.some(function(s){return s == style})) {
+              _this.unLoad(style, onUnload);
+            } else {
+              onUnload();
+            }
           });
         } else {
           callback();
