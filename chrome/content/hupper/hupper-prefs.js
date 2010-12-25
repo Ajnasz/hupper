@@ -27,6 +27,7 @@ Hupper.setPrefWinVals = function() {
   document.getElementById('HUP-style-indent').checked = HUP.hp.get.styleIndent();
   document.getElementById('HUP-style-accessibility').checked = HUP.hp.get.styleAccessibility();
   document.getElementById('HUP-style-sidebar-width').value = HUP.hp.get.styleWiderSidebar();
+  document.getElementById('HUP-style-min-fontsize').value = HUP.hp.get.styleMinFontsize();
 
   //document.getElementById('HUP-hupper-password').value = new _HUPPasswordManager().getPassword();
   //document.getElementById('HUP-hupper-username').value = HUP.hp.get.username();
@@ -57,6 +58,7 @@ Hupper.savePreferences = function() {
   HUP.hp.set.styleIndent(document.getElementById('HUP-style-indent').checked);
   HUP.hp.set.styleAccessibility(document.getElementById('HUP-style-accessibility').checked);
   HUP.hp.set.styleWiderSidebar(document.getElementById('HUP-style-sidebar-width').value);
+  HUP.hp.set.styleMinFontsize(document.getElementById('HUP-style-min-fontsize').value);
 
 
   //HUP.hp.set.username(document.getElementById('HUP-hupper-username').value);

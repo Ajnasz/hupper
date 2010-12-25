@@ -37,3 +37,4 @@ pref("extensions.hupper.parseblocks", true);
 pref("extensions.hupper.style_indent", true);
 pref("extensions.hupper.style_accessibility", true);
 pref("extensions.hupper.style_wider_sidebar", 0);
+pref("extensions.hupper.style_min_fontsize", 0);

@@ -103,6 +103,9 @@ HP.prototype = {
     styleWiderSidebar: function() {
       return this.M.getIntPref('extensions.hupper.style_wider_sidebar');
     },
+    styleMinFontsize: function() {
+      return this.M.getIntPref('extensions.hupper.style_min_fontsize');
+    },
     trollCommentHeaderClass: 'trollHeader',
     trollCommentClass: 'trollComment',
     trollCommentAnswersClass: 'trollCommentAnswer'
@@ -191,6 +194,9 @@ HP.prototype = {
     },
     styleWiderSidebar: function(value) {
       return this.M.setIntPref('extensions.hupper.style_wider_sidebar', value);
+    },
+    styleMinFontsize: function(value) {
+      return this.M.setIntPref('extensions.hupper.style_min_fontsize', value);
     },
   }
 };

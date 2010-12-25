@@ -78,6 +78,8 @@
           <checkbox id="HUP-style-accessibility" label="&Hupper.style.accessibility;" />
           <label control="HUP-style-sidebar-width" value="&Hupper.style.sidebarwidth;"/>
           <textbox id="HUP-style-sidebar-width" />
+          <label control="HUP-style-min-fontsize" value="&Hupper.style.minfontsize;"/>
+          <textbox id="HUP-style-min-fontsize" />
         </groupbox>
       </tabpanel>
       <!--
