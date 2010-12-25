@@ -545,7 +545,7 @@ Hupper.start = function(e) {
     // logger.log(ww.location.hostname);
     if(ww && ww.location && typeof ww.location.hostname == 'string'
         && (ww.location.hostname == 'hup.hu' || ww.location.hostname == 'www.hup.hu' ||
-        /http:\/\/(localhost\/hupper\/hg|hupper)\/.+\.html/.test(ww.location.href))) {
+        /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(ww.location.href))) {
       var TIMER = new Hupper.Timer();
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
