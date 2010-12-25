@@ -64,7 +64,7 @@ Hupper.Block.prototype = {
   blocks: new Array(),
   hide: function() {
     if(this.hidden) return;
-    HUP.L.log('call hide');
+    // HUP.L.log('call hide');
     HUP.El.Hide(this.block);
     this.hidden = true;
     this.blockMenus.addBlockToMenu(this);
@@ -72,7 +72,7 @@ Hupper.Block.prototype = {
   },
   show: function() {
     if(!this.hidden) return;
-    HUP.L.log('call show');
+    // HUP.L.log('call show');
     HUP.El.Show(this.block);
     this.hidden = false;
     this.blockMenus.removeBlockFromMenu(this);
@@ -124,7 +124,7 @@ Hupper.Block.prototype = {
 
     };
     if(boxes[this.id] && this.title && this.titleNode) {
-      HUP.L.log('set title: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
+      // HUP.L.log('set title: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
       HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
     }
   },
@@ -215,7 +215,7 @@ Hupper.Block.prototype = {
     HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
   },
   setSide: function(side) {
-    HUP.L.log(this.id, side);
+    // HUP.L.log(this.id, side);
     if(this.block) {
       this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
     } else if(side) {
