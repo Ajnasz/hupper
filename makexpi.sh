@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='1.0b'`date '+%Y%m%d%H%M%S'`;
+  VER='1.1b'`date '+%Y%m%d%H%M%S'`;
 else
   VER=$1;
 fi
