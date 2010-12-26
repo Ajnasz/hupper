@@ -7,6 +7,7 @@
   title="Hupper Preferences"
   ondialogaccept="return Hupper.savePreferences();"
   buttons="accept,cancel"
+  buttonlabelaccept="&Hupper.pref.acceptbutton;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://hupper/content/namespace.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>

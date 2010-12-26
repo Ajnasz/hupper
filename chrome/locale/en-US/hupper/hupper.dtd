@@ -33,3 +33,4 @@
 <!ENTITY Hupper.style.sidebarwidth "Width of sidebars">
 <!ENTITY Hupper.style.minfontsize "Minimum font size">
 
+<!ENTITY Hupper.pref.acceptbutton "Apply">
