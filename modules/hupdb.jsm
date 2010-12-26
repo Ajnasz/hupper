@@ -1,4 +1,4 @@
-var HupDB = function() {}
+var HupDB = function() {};
 HupDB.prototype = {
   dbSchema: {
      tables: {
@@ -60,8 +60,27 @@ HupDB.prototype = {
   },
   close: function() {
     if(this.dbConnection) {
-      this.dbConnection.asyncClose();
-      this.dbConnection = null;
+      if (typeof this.dbConnection.asyncClose === 'function') {
+        this.dbConnection.asyncClose();
+        this.dbConnection = null;
+      } else {
+        try {
+          this.dbConnection.close();
+          if (this.timer) {
+            this.timer.cancel();
+            this.timer = null;
+          }
+          this.dbConnection = null;
+        } catch(e) {
+          this.timer = Components.classes["@mozilla.org/timer;1"]
+                  .createInstance(Components.interfaces.nsITimer),
+              _this = this;
+
+          this.timer.initWithCallback({notify: function() {
+            _this.close();
+          }}, 300, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+        }
+      }
     }
   },
 
