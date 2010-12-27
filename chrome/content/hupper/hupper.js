@@ -464,6 +464,10 @@ Hupper.StatusClickHandling.prototype = {
     if(this.st == 2) {
       this.ob.addEventListener('dblclick', function(event){_this.click(event)}, false);
     }
+    this.ob.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }, false);
   },
   /**
    * event handler runs when user click on the statusbar icon
@@ -473,10 +477,10 @@ Hupper.StatusClickHandling.prototype = {
    *   2 = right click
    * @param {Object} event
    */
-  click: function(event) {
+  click: function(e) {
     var currentTab = this.openHUP();
     if(currentTab.contentDocument.Jumps) {
-      switch(event.button) {
+      switch(e.button) {
         case 0:
           currentTab.contentDocument.Jumps.next();
         break;
