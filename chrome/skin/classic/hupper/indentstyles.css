@@ -8,7 +8,7 @@
   }
   .indented:hover,   .indented:focus  {
     background:  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACAQMAAACjTyRkAAAAAXNSR0IArs4c6QAAAAZQTFRFt9BTt7eL4xrPVQAAAAF0Uk5TAEDm2GYAAAABYktHRACIBR1IAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2gsOCiIz/YtxKwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY2hgYAAAAYQAgSjdetcAAAAASUVORK5CYII=
-) 25px 0 repeat-y;
+) 0 0 repeat-y;
   }
   a:target + .comment {
     background-color: #F6F6EB !important;
