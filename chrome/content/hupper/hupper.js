@@ -32,79 +32,81 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
       processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
 
   hupperBlocks.UI = Hupper.Blocks.UI(elementer, hupperBlocks);
-  var blocksFromConfig = HUPJson.decode(HUP.hp.get.blocks());
-  if(blocksFromConfig.left || blocksFromConfig.right) {
-    leftBlocksFromConf = blocksFromConfig.left;
-    rightBlocksFromConf = blocksFromConfig.right;
+  HUP.hp.get.blocks(function(response) {
+    var blocksFromConfig = HUPJson.decode(response.pref.value);
+    if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
+      leftBlocksFromConf = blocksFromConfig.left;
+      rightBlocksFromConf = blocksFromConfig.right;
 
-    var processedBlocks = leftBlocksFromConf.map(function(leftBlock) {
-      var matched = false,
-          blockElement,
-          bl = blockElements.length;
-
-      while(bl--) {
-        blockElement = blockElements[bl];
-        if(blockElement.id == leftBlock.id) {
-          blockElements.splice(bl, 1);
-          break;
-        }
-      }
-
-      return new Hupper.Block({
-        id: leftBlock.id,
-        blockMenus: blockMenus,
-        blocks: hupperBlocks,
-        side: 'left',
-        hidden: leftBlock.hidden,
-        contentHidden: leftBlock.contentHidden,
-      });
-    }).concat(
-      rightBlocksFromConf.map(function(rightBlock) {
-        var blockElement,
+      var processedBlocks = leftBlocksFromConf.map(function(leftBlock) {
+        var matched = false,
+            blockElement,
             bl = blockElements.length;
 
         while(bl--) {
           blockElement = blockElements[bl];
-          if(blockElement.id == rightBlock.id) {
+          if(blockElement.id == leftBlock.id) {
             blockElements.splice(bl, 1);
             break;
           }
         }
 
         return new Hupper.Block({
-          id: rightBlock.id,
+          id: leftBlock.id,
           blockMenus: blockMenus,
           blocks: hupperBlocks,
-          side: 'right',
-          hidden: rightBlock.hidden,
-          contentHidden: rightBlock.contentHidden,
+          side: 'left',
+          hidden: leftBlock.hidden,
+          contentHidden: leftBlock.contentHidden,
         });
-      })
-    ).concat(
-      blockElements.map(function(blockElement) {
+      }).concat(
+        rightBlocksFromConf.map(function(rightBlock) {
+          var blockElement,
+              bl = blockElements.length;
+
+          while(bl--) {
+            blockElement = blockElements[bl];
+            if(blockElement.id == rightBlock.id) {
+              blockElements.splice(bl, 1);
+              break;
+            }
+          }
+
+          return new Hupper.Block({
+            id: rightBlock.id,
+            blockMenus: blockMenus,
+            blocks: hupperBlocks,
+            side: 'right',
+            hidden: rightBlock.hidden,
+            contentHidden: rightBlock.contentHidden,
+          });
+        })
+      ).concat(
+        blockElements.map(function(blockElement) {
+          return new Hupper.Block({
+            block: blockElement,
+            blockMenus: blockMenus,
+            blocks: hupperBlocks,
+          });
+        })
+      );
+
+    } else {
+      processedBlocks = blockElements.map(function(blockElement) {
         return new Hupper.Block({
           block: blockElement,
           blockMenus: blockMenus,
           blocks: hupperBlocks,
         });
-      })
-    );
-
-  } else {
-    processedBlocks = blockElements.map(function(blockElement) {
-      return new Hupper.Block({
-        block: blockElement,
-        blockMenus: blockMenus,
-        blocks: hupperBlocks,
       });
+    }
+    processedBlocks.forEach(function(block, a, b) {
+      hupperBlocks.registerBlock(block);
     });
-  }
-  processedBlocks.forEach(function(block, a, b) {
-     hupperBlocks.registerBlock(block);
+    hupperBlocks.save();
+    hupperBlocks.UI.rearrangeBlocks();
+    hupperBlocks.save();
   });
-  hupperBlocks.save();
-  hupperBlocks.UI.rearrangeBlocks();
-  hupperBlocks.save();
 };
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
@@ -142,6 +144,10 @@ Hupper.markNodeAsRead = function(e) {
       if(this.el.nextSibling.getAttribute('class') == 'hnew') {
         HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
       }
+      var el = this.el;
+      setTimeout(function() {
+        HUP.El.Remove(el);
+      }, 750);
     },
     loadHandler: function() {
       var img = HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
@@ -193,21 +199,15 @@ Hupper.appendNewNotifier = function(link, mark, hupMenu) {
     hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
-Hupper.hideHupAds = function() {
-  var ids = new Array();
-  ids.push(HUP.El.GetId('block-block-18'));
-  ids.forEach(function(ad) {
-    if(ad) {
-      HUP.El.AddClass(ad, 'hidden');
+Hupper.setBlocks = function() {
+  HUP.hp.get.parseblocks(function(response) {
+    if (response.pref.value) {
+      var blocks = Hupper.getBlocks();
+      Hupper.parseBlocks(blocks, HUP.BlockMenus, HUP.El);
     }
   });
 };
-Hupper.setBlocks = function() {
-  if(HUP.hp.get.parseblocks()) {
-    var blocks = Hupper.getBlocks();
-    Hupper.parseBlocks(blocks, HUP.BlockMenus, HUP.El);
-  }
-};
+
 
 Hupper.init = function() {
   var appcontent = document.getElementById("appcontent");   // browser

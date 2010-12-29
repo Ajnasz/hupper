@@ -1,6 +1,8 @@
 (function() {
   var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\.)');
   var minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\.)');
+  var commentClasses = null;
+  var prefs = null;
   /**
    * @constructor
    * @class Comment
@@ -137,14 +139,32 @@
       }
       this.header.style.backgroundColor = color;
     },
+    _highlightComment: function() {
+      HUP.El.AddClass(this.comment, commentClasses.trollCommentClass);
+      HUP.El.AddClass(this.header, commentClasses.trollCommentHeaderClass);
+      if(this.childs != -1) {
+        HUP.El.AddClass(this.childs, commentClasses.trollCommentAnswersClass);
+      }
+    },
     /**
      * highligts the header of the node if the user is a troll
      */
     highlightTroll: function()  {
-      HUP.El.AddClass(this.comment, HUP.hp.get.trollCommentClass);
-      HUP.El.AddClass(this.header, HUP.hp.get.trollCommentHeaderClass);
-      if(this.childs != -1) {
-        HUP.El.AddClass(this.childs, HUP.hp.get.trollCommentAnswersClass);
+      var _this = this;;
+      if (!commentClasses) {
+        HUP.hp.get.trollCommentClass(function(response) {
+          commentClasses = {};
+          commentClasses.trollCommentClass = response.pref.value;
+           HUP.hp.get.trollCommentHeaderClass(function(response) {
+            commentClasses.trollCommentHeaderClass = response.pref.value;
+            HUP.hp.get.trollCommentAnswersClass(function(response) {
+              commentClasses.trollCommentAnswersClass = response.pref.value;
+              _this._highlightComment();
+            });
+           });
+        });
+      } else {
+        this._highlightComment();
       }
     },
     /**
@@ -247,7 +267,7 @@
         HUP.El.Add(HUP.El.Txt('plus'), type);
         HUP.El.Add(type, this.plusContainer);
         this.plusContainer.setAttribute('title','plus');
-  
+
         this.plusPoints.forEach(function(comment) {
           HUP.El.Add(createPoint(comment), _this.plusContainer);
         })
@@ -310,15 +330,15 @@
         }
       });
     },
-    parseComments: function() {
-      var replacenewcommenttext = HUP.hp.get.replacenewcommenttext(),
-      prevnextlinks = HUP.hp.get.prevnextlinks(),
-      trolls = HUP.hp.get.trolls(),
-      filtertrolls = HUP.hp.get.filtertrolls(),
-      huppers = HUP.hp.get.huppers(),
-      extraCommentLinks = HUP.hp.get.extracommentlinks(),
-      insertPermalink = HUP.hp.get.insertpermalink(),
-      highlightUsers = HUP.hp.get.highlightusers().split(','),
+    _parseComments: function() {
+      var replacenewcommenttext = prefs.replacenewcommenttext,
+      prevnextlinks = prefs.prevnextlinks,
+      trolls = prefs.trolls,
+      filtertrolls = prefs.filtertrolls,
+      huppers = prefs.huppers,
+      extraCommentLinks = prefs.extraCommentLinks,
+      insertPermalink = prefs.insertPermalink,
+      highlightUsers = prefs.highlightUsers.split(','),
       hh = {}, bh;
       highlightUsers.forEach(function(hluser) {
         bh = hluser.split(':');
@@ -358,6 +378,39 @@
           }
           HUP.El.Insert(tmpSpan1, this.newComments[i].header.firstChild);
         }
+      }
+    },
+    parseComments: function() {
+      if (!prefs) {
+        prefs = {};
+        var _this = this;
+        HUP.hp.get.replacenewcommenttext(function(response) {
+          prefs.replacenewcommenttext = response.pref.value;
+          HUP.hp.get.prevnextlinks(function(response) {
+            prefs.prevnextlinks = response.pref.value;
+            HUP.hp.get.trolls(function(response) {
+              prefs.trolls = response.pref.value;
+              HUP.hp.get.filtertrolls(function(response) {
+                prefs.filtertrolls = response.pref.value;
+                HUP.hp.get.huppers(function(response) {
+                  prefs.huppers = response.pref.value;
+                  HUP.hp.get.extracommentlinks(function(response) {
+                    prefs.extraCommentLinks = response.pref.value;
+                    HUP.hp.get.insertpermalink(function(response) {
+                      prefs.insertPermalink = response.pref.value;
+                      HUP.hp.get.highlightusers(function(response) {
+                        prefs.highlightUsers = response.pref.value;
+                        _this._parseComments();
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      } else {
+        this._parseComments();
       }
     }
   };

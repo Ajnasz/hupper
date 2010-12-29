@@ -38,7 +38,7 @@ Hupper.NodeHeaderBuilder = function() {
   // Title text nodes
   this.fit = HUP.El.Txt(this.firstLinkText);
   this.lat = HUP.El.Txt(this.lastLinkText);
-  this.newCt = HUP.El.Txt(HUP.hp.get.newcommenttext());
+  // this.newCt = HUP.El.Txt(HUP.hp.get.newcommenttext());
 
   // Mark as read node
   this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
@@ -105,7 +105,10 @@ Hupper.NodeHeaderBuilder.prototype = {
   buildNewText: function() {
     var nsp = HUP.El.Span();
     HUP.El.AddClass(nsp, 'hnew');
-    HUP.El.Add(this.newCt.cloneNode(true), nsp);
+    var _this = this;
+    HUP.hp.get.newcommenttext(function(response) {
+      HUP.El.Add(HUP.El.Txt(response.pref.value), nsp);
+    })
     return nsp;
   },
   /**
@@ -150,12 +153,14 @@ Hupper.NodeHeaderBuilder.prototype = {
     var tmpList = HUP.El.Li(),
     link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
     // if fading enabled, add an event listener, which will fades the parent node
-    if(HUP.hp.get.fadeparentcomment()) {
-      link.addEventListener('click', function(e) {
-        new Transform(e.target.n.comment, 'FadeIn');
-      }, false);
-      link.n = parent;
-    }
+    HUP.hp.get.fadeparentcomment(function(response) {
+      if(response.pref.value) {
+        link.addEventListener('click', function(e) {
+          new Transform(e.target.n.comment, 'FadeIn');
+        }, false);
+        link.n = parent;
+      }
+    });
     HUP.El.Add(link, tmpList);
     return tmpList;
   },

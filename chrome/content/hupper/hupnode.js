@@ -55,11 +55,14 @@ Hupper.Node.prototype = {
     }
   },
   checkTaxonomy: function() {
+    var _this = this;
     Components.utils.import('resource://huppermodules/hupstringer.jsm');
-    var hideTaxonomies = HupStringer.trim(HUP.hp.get.hidetaxonomy());
-    (hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) ?
-      this.hide() :
-      this.show();
+    HUP.hp.get.hidetaxonomy(function(response) {
+      var hideTaxonomies = HupStringer.trim(response.pref.value);
+      (hideTaxonomies.length && hideTaxonomies.indexOf(_this.taxonomy) != -1) ?
+        _this.hide() :
+        _this.show();
+    });
   },
   addNnewSpan: function() {
     this.sp = HUP.El.Span();
@@ -107,11 +110,14 @@ Hupper.Node.prototype = {
     HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
   },
   addToHide: function() {
-    var taxonomies = HUP.hp.get.hidetaxonomy().split(';');
-    if(taxonomies.indexOf(this.taxonomy) == -1) {
-      taxonomies.push(this.taxonomy);
-    }
-    HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+    var _this;
+    HUP.hp.get.hidetaxonomy(function(response) {
+      var taxonomies = response.pref.value.split(';');
+      if(taxonomies.indexOf(_this.taxonomy) == -1) {
+        taxonomies.push(_this.taxonomy);
+      }
+      HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+    });
   },
   addNodes: function(nodes, nodeMenu) {
     this.nodes = nodes;
@@ -160,18 +166,20 @@ Hupper.NodeMenus.prototype = {
     if(this.nodes[node.taxonomy]) {
       HUP.El.Remove(this.nodes[node.taxonomy]);
       delete this.nodes[node.taxonomy];
-      var taxonomies = HUP.hp.get.hidetaxonomy().split(';');
-      for(var i = 0, tl = taxonomies.length; i < tl; i++) {
-        if(taxonomies[i] == node.taxonomy) {
-          taxonomies.splice(i, 1);
-          break;
+      HUP.hp.get.hidetaxonomy(function(response) {
+        var taxonomies = response.pref.value.split(';');
+        for(var i = 0, tl = taxonomies.length; i < tl; i++) {
+          if(taxonomies[i] == node.taxonomy) {
+            taxonomies.splice(i, 1);
+            break;
+          }
         }
-      }
-      //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
-      //taxonomies = taxonomies.replace(rex, '');
-      HUP.L.log(taxonomies.join(';'));
-      HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
-      Hupper.HideTaxonomyNodes(node.nodes);
+        //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
+        //taxonomies = taxonomies.replace(rex, '');
+        HUP.L.log(taxonomies.join(';'));
+        HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+        Hupper.HideTaxonomyNodes(node.nodes);
+      });
     }
     var n = 0;
     for(var i in this.nodes) {n++;}

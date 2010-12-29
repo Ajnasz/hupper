@@ -12,24 +12,20 @@ Hupper.boot = function(e) {
         /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(ww.location.href))) {
       var isTestEnv = ww.location.hostname === 'hupperl';
       if (isTestEnv) {
-      alert("O")
         Components.utils.import('resource://huppermodules/timer.jsm');
-      alert("O")
         var TIMER = new Timer();
       }
       /**
       * A unique global object to store all global objects/array/... of the Hupper Extension
       */
       HUP = {};
-      var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);  
-      var newWindow = wm.getMostRecentWindow("navigator:browser");  
-      var b = newWindow.getBrowser();
       // HUP document object
       HUP.w = ww;
       HUP.hp = new HP();
       // Logger
       HUP.L = new Hupper.Log();
       Hupper.postInstall();
+      Hupper.styles();
       // Elementer
       var elementer = new Hupper.Elementer(ww);;
       HUP.El = elementer;
@@ -46,24 +42,25 @@ Hupper.boot = function(e) {
       if(HUP.El.GetId('comments')) {
         var c = new Hupper.GetComments();
         var newComments = c.newComments;
-        if(c.newComments.length && HUP.hp.get.showqnavbox()) {
-          Hupper.appendNewNotifier(null, null, hupMenu);
-        }
-      } else {
-        if(HUP.hp.get.insertnewtexttonode()) {
-          var nodes = Hupper.getNodes();
-          Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
-          if(nodes[1].length > 0 && HUP.hp.get.showqnavbox()) {
-            Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
+        HUP.hp.get.showqnavbox(function(response) {
+          if(c.newComments.length && response.pref.value) {
+            Hupper.appendNewNotifier(null, null, hupMenu);
           }
-        }
+        });
+      } else {
+        HUP.hp.get.insertnewtexttonode(function(response) {
+          if(response.pref.value) {
+            var nodes = Hupper.getNodes();
+            Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
+            HUP.hp.get.showqnavbox(function(response) {
+              if(nodes[1].length > 0 && response.pref.value) {
+                Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
+              }
+            });
+          }
+        });
       }
       Hupper.setBlocks();
-      Hupper.styles();
-     //  if(HupperPrefs.hideads()) {
-     //    Hupper.hideHupAds();
-     //  }
-     //  bindHUPKeys();
       Components.utils.import('resource://huppermodules/hupjumper.jsm');
       HUP.w.Jumps = new HupJumper(HUP.w, HUP.w.nextLinks);
       if (isTestEnv) {
