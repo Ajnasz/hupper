@@ -13,7 +13,8 @@ Hupper.Node = function(node) {
   this.element = node;
   this.id = parseInt(node.id.replace('node-', ''));
   this.header = header;
-  this.path = Hupper.Stringer.trim(HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
+  Components.utils.import('resource://huppermodules/hupstringer.jsm');
+  this.path = HupStringer.trim(HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
   this.submitData = submitData;
   this.cont = cont;
   this.footer = footer;
@@ -54,8 +55,11 @@ Hupper.Node.prototype = {
     }
   },
   checkTaxonomy: function() {
-    var hideTaxonomies = Hupper.Stringer.trim(HUP.hp.get.hidetaxonomy());
-    (hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) ? this.hide() : this.show();
+    Components.utils.import('resource://huppermodules/hupstringer.jsm');
+    var hideTaxonomies = HupStringer.trim(HUP.hp.get.hidetaxonomy());
+    (hideTaxonomies.length && hideTaxonomies.indexOf(this.taxonomy) != -1) ?
+      this.hide() :
+      this.show();
   },
   addNnewSpan: function() {
     this.sp = HUP.El.Span();

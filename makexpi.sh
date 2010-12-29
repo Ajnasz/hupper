@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='1.1b'`date '+%Y%m%d%H%M%S'`;
+  VER='1.2a'`date '+%Y%m%d%H%M%S'`;
 else
   VER=$1;
 fi
@@ -33,7 +33,14 @@ function buildXPI {
   cd ..;
   echo "Build package $PROJECT_NAME.xpi";
   rm $PROJECT_NAME*.xpi;
-  zip $PROJECT_NAME.xpi chrome.manifest install.rdf modules/hupdb.jsm modules/styleLoader.jsm chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
+  zip $PROJECT_NAME.xpi chrome.manifest install.rdf \
+    modules/hupdb.jsm \
+    modules/styleLoader.jsm \
+    modules/hupjumper.jsm \
+    modules/hupstringer.jsm \
+    modules/statusclickhandler.jsm \
+    modules/timer.jsm \
+    chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
 
   echo "Replace old XPIs with the new one";
   if [ -d $DOWNLOAD_DIR ]; then
