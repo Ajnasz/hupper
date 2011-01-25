@@ -10,6 +10,12 @@ StatusClickHandler = function(ob) {
 StatusClickHandler.prototype = {
   st: null,
   ob: null,
+  getGBrowser: function () {
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                      .getService(Components.interfaces.nsIWindowMediator);
+    var mainWindow = wm.getMostRecentWindow("navigator:browser");
+    return mainWindow.gBrowser;
+  },
   /**
    * add the event handler to the statusbar icon
    */
@@ -52,6 +58,7 @@ StatusClickHandler.prototype = {
     }
   },
   getOpenedHUP: function() {
+    var gBrowser = this.getGBrowser();
     var brl = gBrowser.browsers.length;
     var outObj = {hupTab: false, blankPage: false};
     var r = this.pageRex;
@@ -66,6 +73,7 @@ StatusClickHandler.prototype = {
     return outObj;
   },
   openHUP: function() {
+    var gBrowser = this.getGBrowser();
     var currentTab = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex);
     if(!/^https?:\/\/(?:www\.)?hup\.hu/.test(currentTab.currentURI.spec)) {
       var openedHUP = this.getOpenedHUP();
