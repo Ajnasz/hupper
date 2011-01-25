@@ -176,7 +176,7 @@ Hupper.NodeMenus.prototype = {
         }
         //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
         //taxonomies = taxonomies.replace(rex, '');
-        HUP.L.log(taxonomies.join(';'));
+        // HUP.L.log(taxonomies.join(';'));
         HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
         Hupper.HideTaxonomyNodes(node.nodes);
       });

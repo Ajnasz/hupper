@@ -1,4 +1,4 @@
-var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService)
+// var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService)
 Components.utils.import('resource://huppermodules/hupdb.jsm');
 var bind = function(fn, context) {
   var args = [];
@@ -26,8 +26,8 @@ Storage.prototype = {
   },
   addStyle: function(styleURI, isActive, onFinish, onError) {
     this.styleAdded(styleURI, bind(function(added) {
-      logger.logStringMessage('style is added: ' + added);
-      logger.logStringMessage(styleURI);
+      // logger.logStringMessage('style is added: ' + added);
+      // logger.logStringMessage(styleURI);
       if(!added) {
         this.addStyle_(styleURI, isActive, onFinish, onError);
       }
@@ -41,7 +41,7 @@ Storage.prototype = {
       let value = row.getResultByName("active");
       styleActive = !!value;
     }
-    logger.logStringMessage('hupper style active: '  + styleActive);
+    // logger.logStringMessage('hupper style active: '  + styleActive);
     onSuccess(styleActive);
   },
   styleIsActive: function(styleURI, onFinish, onError) {
@@ -59,11 +59,11 @@ Storage.prototype = {
         styleAdded = value > 0;
       }
     }
-    logger.logStringMessage('style added: ' + styleAdded);
+    // logger.logStringMessage('style added: ' + styleAdded);
     onSuccess(styleAdded);
   },
   styleAdded: function(styleURI, onResult, onError) {
-    logger.logStringMessage('ask style added: ' + styleURI)
+    // logger.logStringMessage('ask style added: ' + styleURI)
     var q = 'SELECT count(*) AS count FROM styles WHERE styleURI=:styleURI';
     var _this = this;
     this.db.query(q, {styleURI: styleURI}, {
@@ -91,14 +91,14 @@ Storage.prototype = {
     this.db.query(q, {styleURI: styleURI}, {
       onFinish: onFinish,
       onSuccess: function() {
-        logger.logStringMessage('deactivate failed');
+        // logger.logStringMessage('deactivate failed');
       }
     });
   },
   deactiveateStyle: function(styleURI, onSuccess) {
-    logger.logStringMessage('call deactivateStyle_');
+    // logger.logStringMessage('call deactivateStyle_');
     this.styleAdded(styleURI, bind(function(added) {
-      logger.logStringMessage('DEACTIVATE STYLE' + styleURI + ' ' + added)
+      // logger.logStringMessage('DEACTIVATE STYLE' + styleURI + ' ' + added)
       if(added) {
         this.styleIsActive(styleURI, bind(function() {
           this.deactivateStyle_(styleURI, onSuccess);
@@ -111,15 +111,15 @@ Storage.prototype = {
   getStyles: function(onSuccess) {
     var q = 'SELECT * FROM styles';
 
-    logger.logStringMessage('start get styles');
+    // logger.logStringMessage('start get styles');
     var styles = [];
     this.db.query(q, {}, {
       onFinish: function() {
-        logger.logStringMessage('on finish');
+        // logger.logStringMessage('on finish');
         onSuccess(styles);
       },
       onResult: function(aResultSet) {
-        logger.logStringMessage('get styles');
+        // logger.logStringMessage('get styles');
         if(aResultSet) {
           for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
             styles.push(row.getResultByName("styleURI"));
@@ -127,7 +127,7 @@ Storage.prototype = {
         }
       },
       onError: function () {
-        logger.logStringMessage('get styles error');
+        // logger.logStringMessage('get styles error');
       }
     });
   },
@@ -149,7 +149,7 @@ Storage.prototype = {
         }
       },
       onError: function () {
-        logger.logStringMessage('get a style error');
+        // logger.logStringMessage('get a style error');
       }
     });
   },
@@ -180,9 +180,9 @@ var StyleLoader = function() {
   return {
     load: function(styleURI) {
       var uri = getURI(styleURI);
-      logger.logStringMessage('load style:' + styleURI);
+      // logger.logStringMessage('load style:' + styleURI);
       if(!sss.sheetRegistered(uri, sss.AGENT_SHEET)) {
-      logger.logStringMessage('load style!!:' + styleURI);
+      // logger.logStringMessage('load style!!:' + styleURI);
         sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
         storage.addStyle(styleURI, true);
       }
@@ -190,7 +190,7 @@ var StyleLoader = function() {
     unLoad: function(styleURI, callback) {
       var uri = getURI(styleURI);
       callback = typeof callback === 'function' ? callback : function() {
-        logger.logStringMessage('hupper: dummy unload');
+        // logger.logStringMessage('hupper: dummy unload');
       };
       if(sss.sheetRegistered(uri, sss.AGENT_SHEET)) {
         sss.unregisterSheet(uri, sss.AGENT_SHEET);
@@ -201,21 +201,21 @@ var StyleLoader = function() {
     },
     unloadAll: function(callback,except) {
       var _this = this;
-      logger.logStringMessage('call unload all');
+      // logger.logStringMessage('call unload all');
       callback = typeof callback === 'function' ? callback : function() {};
       storage.getStyles(function(styles) {
         var unloadedStyles = 0;
         var onUnload = function() {
           unloadedStyles += 1;
-          logger.logStringMessage('hupper unload: ' + unloadedStyles + ' !! ' + styles.length);
+          // logger.logStringMessage('hupper unload: ' + unloadedStyles + ' !! ' + styles.length);
           if(unloadedStyles >= styles.length) {
-            logger.logStringMessage('styles: ' + styles.toSource());
+            // logger.logStringMessage('styles: ' + styles.toSource());
             callback();
           }
         };
         if(styles.length) {
           styles.forEach(function(style) {
-            logger.logStringMessage('try to unload');
+            // logger.logStringMessage('try to unload');
             if(!except.some(function(s){return s == style})) {
               _this.unLoad(style, onUnload);
             } else {
