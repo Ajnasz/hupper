@@ -25,7 +25,6 @@ Hupper.styles = function() {
 
               HUP.hp.get.hilightforumlinesonhover(function(response) {
                 var hilightforumlinesonhover = response.pref.value;
-                console.log('highligh forum: ', hilightforumlinesonhover);
                 switch(trollfiltermethod) {
                   case 'hide':
                     styles += '.' + trollCommentClass + ' {display:none !important;}';
@@ -41,6 +40,7 @@ Hupper.styles = function() {
                 if(hilightforumlinesonhover) {
                   styles += 'tr.odd:hover td, tr.even:hover td {background-color: #D8D8C4;}';
                 }
+                styles = '/* hupper user styles */@-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) {' + styles; + '}';
                 addStyle(styles);
               });
             });
