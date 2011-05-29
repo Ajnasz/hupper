@@ -34,7 +34,9 @@ Hupper.Node = function(node) {
   this.checkTaxonomy();
   this.builder = new Hupper.NodeHeaderBuilder();
   this.addNnewSpan();
-  if(this.taxonomy) this.addTaxonomyCloser();
+  if(this.taxonomy) {
+    this.addTaxonomyCloser();
+  }
 };
 Hupper.Node.prototype = {
   hidden: false,
@@ -103,14 +105,14 @@ Hupper.Node.prototype = {
     HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
     this.taxonomyButton.setAttribute('title', HUP.Bundles.getFormattedString('hideTaxonomy', [this.taxonomy]));
     var _this = this;
-    HUP.Ev.addEvent(this.taxonomyButton, 'click', function(){
+    HUP.Ev.addEvent(this.taxonomyButton, 'click', function() {
       _this.addToHide();
       Hupper.HideTaxonomyNodes(_this.nodes);
     });
     HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
   },
   addToHide: function() {
-    var _this;
+    var _this = this;
     HUP.hp.get.hidetaxonomy(function(response) {
       var taxonomies = response.pref.value.split(';');
       if(taxonomies.indexOf(_this.taxonomy) == -1) {

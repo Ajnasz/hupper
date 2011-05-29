@@ -172,15 +172,15 @@ Hupper.Block.prototype = {
         delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
         hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
         showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
-    HUP.Ev.addEvent(delButton, 'click', function() {
+    delButton.addEventListener('click', function() {
       block.hide();
-    });
-    HUP.Ev.addEvent(hideButton, 'click', function() {
+    }, false);
+    hideButton.addEventListener('click', function() {
       block.hideContent();
-    });
-    HUP.Ev.addEvent(showButton, 'click', function() {
+    }, false);
+    showButton.addEventListener('click', function() {
       block.showContent();
-    });
+    }, false);
     // HUP.L.log('add buttons = ' + this.id, delButton, hideButton, showButton);
     HUP.El.Hide(showButton);
     HUP.El.Insert(showButton, titleNode.firstChild);
@@ -197,18 +197,18 @@ Hupper.Block.prototype = {
     this.leftButton = HUP.El.Button(HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
     this.rightButton = HUP.El.Button(HUP.Bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
-    HUP.Ev.addEvent(this.upButton, 'click', function() {
+    this.upButton.addEventListener('click', function() {
       _this.moveUp();
-    });
-    HUP.Ev.addEvent(this.downButton, 'click', function() {
+    }, false);
+    this.downButton.addEventListener('click', function() {
       _this.moveDown();
-    });
-    HUP.Ev.addEvent(this.leftButton, 'click', function() {
+    }, false);
+    this.leftButton.addEventListener('click', function() {
       _this.moveLeft();
-    });
-    HUP.Ev.addEvent(this.rightButton, 'click', function() {
+    }, false);
+    this.rightButton.addEventListener('click', function() {
       _this.moveRight();
-    });
+    }, false);
     HUP.El.Insert(this.upButton, this.titleNode.firstChild);
     HUP.El.Insert(this.downButton, this.titleNode.firstChild);
     HUP.El.Insert(this.leftButton, this.titleNode.firstChild);
