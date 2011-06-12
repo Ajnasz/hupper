@@ -12,7 +12,7 @@ Hupper.boot = function(e) {
         /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(ww.location.href))) {
       var isTestEnv = ww.location.hostname === 'hupperl';
       if (isTestEnv) {
-        Components.utils.import('resource://huppermodules/timer.jsm');
+        Components.utils.import('resource://huppermodules/Timer.jsm');
         var TIMER = new Timer();
       }
       /**
