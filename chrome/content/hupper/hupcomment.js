@@ -35,7 +35,8 @@
     this.minusPoints = [];
     if(this.parent != -1) {
       this.getPlusOrMinus();
-      this.parent.cont.innerHTML += '<a href="#'+this.id+'">' + this.id + '</a>, ';
+      this.addLinkToParent();
+      // this.parent.cont.innerHTML += '<a href="#'+this.id+'">' + this.user + '</a>, ';
       if(this.plusOne || this.minusOne) {
         if(this.plusOne) {
           this.parent.addPoint(1, this)
@@ -71,6 +72,23 @@
         indent++;
       }
       this.indent = indent;
+    },
+    addLinkToParent: function () {
+        var replys = HUP.El.GetByClass(this.parent.cont, 'hup-replys', 'div'),
+            link = HUP.El.CreateLink(this.user, '#' + this.id);
+        if (this.isBoringComment()) {
+            HUP.El.AddClass(link, 'hup-boring');
+        }
+        if (!replys.length) {
+          replys = HUP.El.Div();
+          HUP.El.AddClass(replys, 'hup-replys');
+          HUP.El.Add(HUP.El.Txt('replys: '), replys);
+          HUP.El.Add(replys, this.parent.cont);
+        } else {
+          replys = replys[0];
+          HUP.El.Add(HUP.El.Txt(', '), replys);
+        }
+        HUP.El.Add(link, replys);
     },
     /**
      * checks the comment, and if it has been posted "today", than adds the "új" text to it's header
@@ -214,9 +232,18 @@
       return plusOneRex.test(firstParagraph.innerHTML);
     },
     isBoringComment: function () {
-      var firstParagraph = HUP.El.GetFirstTag('p', this.cont),
-          trimComment = firstParagraph.innerHTML.replace(/^\s*|\s*$/g, '');
-      return (trimComment === '.'  || trimComment === '-' || trimComment === '+1' || trimComment === '-1');
+      var paragraphs = HUP.El.GetTag('p', this.cont),
+          output = false,
+          trimComment;
+      if (typeof this.isBoring !== 'boolean') {
+        if (paragraphs.length === 1) {
+          trimComment = paragraphs[0].innerHTML.replace(/^\s*|\s*$/g, '');
+          this.isBoring = (trimComment === '.'  || trimComment === '-' ||
+            trimComment === '+1' || trimComment === '-1');
+        }
+      }
+      output = this.isBoring;
+      return output;
     },
     isMinusOne: function() {
       var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
