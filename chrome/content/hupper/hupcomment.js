@@ -44,6 +44,9 @@
         }
       }
     }
+    if (this.isBoringComment()) {
+      HUP.El.AddClass(this.comment, 'hup-boring');
+    }
   };
   Hupper.Comment.prototype = {
     /**
@@ -209,6 +212,11 @@
     isPlusOne: function() {
       var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
       return plusOneRex.test(firstParagraph.innerHTML);
+    },
+    isBoringComment: function () {
+      var firstParagraph = HUP.El.GetFirstTag('p', this.cont),
+          trimComment = firstParagraph.innerHTML.replace(/^\s*|\s*$/g, '');
+      return (trimComment === '.'  || trimComment === '-' || trimComment === '+1' || trimComment === '-1');
     },
     isMinusOne: function() {
       var firstParagraph = HUP.El.GetFirstTag('p', this.cont);

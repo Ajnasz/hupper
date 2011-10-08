@@ -68,6 +68,15 @@ Hupper.styles = function() {
     '}';
   };
 
+  var boringComment = function () {
+    return '' +
+      '/* boring comment */@-moz-document url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
+        '.hup-boring {' +
+          'opacity:0.5 !important;' +
+      '}' +
+    '}';
+  };
+
 
   HUP.hp.get.styleIndent(function(response) {
     if (response.pref.value) {
@@ -91,6 +100,7 @@ Hupper.styles = function() {
       addStyle(minFontsizeStyle(minFontsize));
     }
   });
+  addStyle(boringComment());
   addStyle("chrome://hupper/skin/hupper.css");
 
   Components.utils.import('resource://huppermodules/styleLoader.jsm');
