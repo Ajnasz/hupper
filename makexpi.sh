@@ -40,6 +40,8 @@ function buildXPI {
     modules/hupstringer.jsm \
     modules/statusclickhandler.jsm \
     modules/timer.jsm \
+    modules/TreeView.jsm \
+    modules/HupEvent.jsm \
     chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
 
   echo "Replace old XPIs with the new one";

@@ -114,6 +114,94 @@ Hupper.mapWindows = function(onMap) {
     }
   }
 };
+Hupper.setUserManager = function (doc) {
+  var scope = {},
+      element = doc.getElementById('HUP-usermanagement'),
+      hlUsers = HUP.hp.get.highlightusers().split(','),
+      hlUsersObj = [], hlUser, hl, lastItem;
+  for(i = 0, hl = hlUsers.length, hlUser; i < hl; i++) {
+    hlUser = hlUsers[i].split(':');
+    hlUsersObj.push({
+        namecol: {text:hlUser[0], editable: true},
+        colorcol: {text:hlUser[1].toUpperCase(), editable: true}
+    });
+  }
+  lastItem = hlUsersObj[hlUsersObj.length - 1];
+
+  if (lastItem.namecol.text !== '' && lastItem.colorcol.text) {
+      hlUsersObj.push({
+          namecol: {text:'', editable: true},
+          colorcol: {text:'', editable: true}
+      });
+  }
+
+  var log = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+  var isEmpty = function (item) {
+      return item && item.namecol.text === '' && item.colorcol.text === '';
+  };
+  var isValidItem = function (colName, value) {
+      var isDuplicate = false;
+      if (colName === 'namecol') {
+        isDuplicate = hlUsersObj.some(function (item) {
+            return (value === item.namecol.text);
+        });
+      }
+      return !isDuplicate;
+  };
+  var updateTree = function () {
+    var output = [],
+        lastItem = hlUsersObj[hlUsersObj.length - 1];
+
+    // add extra row
+    if (!isEmpty(lastItem)) {
+        hlUsersObj.push({
+            namecol: {text:'', editable: true},
+            colorcol: {text:'', editable: true}
+        });
+    } else {
+        // or remove the last one, because the one before the last is also empty
+        while (hlUsersObj.length > 1 && isEmpty(hlUsersObj[hlUsersObj.length - 2])) {
+            hlUsersObj.length = hlUsersObj.length - 1;
+        }
+    }
+    hlUsersObj.forEach(function (item) {
+        var name = item.namecol.text,
+            color = item.colorcol.text;
+        if (name || color) {
+            output.push(name + ':' + color);
+        }
+    });
+
+    var field = doc.getElementById('HUP-hupper-highlightusers');
+    field.value = output.join(',');
+    treeView = scope.treeView(hlUsersObj, element);
+  };
+
+
+  Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
+  var treeView = scope.treeView(hlUsersObj, element);
+  treeView.on('setCellText', function (args) {
+    var colName = args.col.id,
+        value = args.text;
+    //if (isValidItem(colName, value)) {
+      hlUsersObj[args.row][colName].text = value;
+    // }
+    updateTree();
+    if (element.view.selection) {
+      element.view.selection.select(args.row);
+    }
+  });
+  doc.getElementById('HUP-usermanagement-container').addEventListener('keypress', function (e) {
+    if (e.keyCode == e.DOM_VK_DELETE || e.keyCode == e.DOM_VK_BACK_SPACE) {
+        if (element.view.selection && element.editingRow === -1) {
+          var index = element.view.selection.currentIndex;
+          hlUsersObj.splice(element.view.selection.currentIndex, 1);
+          updateTree();
+          element.view.selection.select(index);
+        }
+    }
+  }, false);
+};
 Hupper.resetBlocks = function() {
   if(confirm(HUP.Bundles.getString('confirmBlockReset'))) {
     HUP.hp.set.blocks('({})');
@@ -128,4 +216,5 @@ Hupper.StartHupperPrefernces = function() {
   Hupper.disableFields();
   Hupper.setPrefWinVals();
   Hupper.onChangeFilterMethod();
+  Hupper.setUserManager(document);
 };
