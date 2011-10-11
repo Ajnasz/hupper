@@ -216,6 +216,9 @@ Hupper.isTroll = function (user, cb) {
   });
 };
 
+Hupper.isHighlighted = function () {
+};
+
 
 Hupper.init = function() {
   var appcontent = document.getElementById("appcontent");   // browser
@@ -234,11 +237,18 @@ Hupper.init = function() {
   document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', function () {
       var element = document.popupNode,
           parent = element.parentNode,
+          user = element.innerHTML,
           isUsername = element.title === "Felhasználói profil megtekintése.";
 
-      Hupper.isTroll(element.innerHTML, function (isTroll) {
-          document.getElementById('markAsTroll').hidden = !isUsername || isTroll;
-          document.getElementById('unmarkTroll').hidden = !isUsername || !isTroll;
+      Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
+      Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+      scope.trollHandler.isTroll(user, function (isTroll) {
+          document.getElementById('HUP-markAsTroll').hidden = !isUsername || isTroll;
+          document.getElementById('HUP-unmarkTroll').hidden = !isUsername || !isTroll;
+          scope.trollHandler.isHighlighted(user, function (isHighlighted) {
+              document.getElementById('HUP-highilghtUser').hidden = !isUsername || isTroll || isHighlighted;
+              document.getElementById('HUP-unhighilghtUser').hidden = !isUsername || isTroll || !isHighlighted;
+          });
       });
   }, false);
 };

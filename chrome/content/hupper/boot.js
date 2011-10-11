@@ -68,10 +68,10 @@ Hupper.boot = function (e) {
                 });
             }
             Hupper.setBlocks();
-            document.getElementById('markAsTroll').addEventListener('command', function (e) {
+            document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
                 var element = document.popupNode, user, trolls, isAdded;
-                Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                 if (element) {
+                    Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                     user = element.innerHTML;
                     scope.trollHandler.addTroll(user, function () {
                         if (c) {
@@ -84,15 +84,51 @@ Hupper.boot = function (e) {
                     });
                 }
             }, false);
-            document.getElementById('unmarkTroll').addEventListener('command', function (e) {
+            document.getElementById('HUP-unmarkTroll').addEventListener('command', function (e) {
                 var element = document.popupNode, user, trolls, output, isAdded;
                 if (element) {
+                    Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                     user = element.innerHTML;
                     scope.trollHandler.removeTroll(user, function () {
                         if (c) {
                             c.comments.forEach(function (comment) {
                                 if (comment.user === user) {
                                     comment.unsetTroll();
+                                }
+                            });
+                        }
+                    });
+                }
+            }, false);
+            document.getElementById('HUP-highilghtUser').addEventListener('command', function (e) {
+                var element = document.popupNode, user, trolls, output, isAdded;
+                if (element) {
+                    Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+                    user = element.innerHTML;
+                    HUP.hp.get.huppercolor(function (response) {
+                        var color = response.pref.value || '#A5FF9F';
+                        scope.trollHandler.highlightUser(user, color, function () {
+                            if (c) {
+                                c.comments.forEach(function (comment) {
+                                    if (comment.user === user) {
+                                        comment.highLightComment(color);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+            }, false);
+            document.getElementById('HUP-unhighilghtUser').addEventListener('command', function (e) {
+                var element = document.popupNode, user, trolls, output, isAdded;
+                if (element) {
+                    Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+                    user = element.innerHTML;
+                    scope.trollHandler.unhighlightUser(user, function () {
+                        if (c) {
+                            c.comments.forEach(function (comment) {
+                                if (comment.user === user) {
+                                    comment.unhighLightComment();
                                 }
                             });
                         }

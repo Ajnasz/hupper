@@ -36,8 +36,10 @@
     <menuitem label="Hupper" oncommand="window.openDialog('chrome://hupper/content/hupper-prefs.xul', 'Hupper', 'chrome,titlebar,toolbar,centerscreen,modal');" image="chrome://hupper/skin/hupper-small.png" class="menuitem-iconic"/>
   </menupopup>
   <menupopup id="contentAreaContextMenu">
-    <menuitem id="markAsTroll" label="&Hupper.contextMenu.markastroll;"/>
-    <menuitem id="unmarkTroll" label="&Hupper.contextMenu.unmarktroll;"/>
+    <menuitem id="HUP-markAsTroll" label="&Hupper.contextMenu.markastroll;"/>
+    <menuitem id="HUP-unmarkTroll" label="&Hupper.contextMenu.unmarktroll;"/>
+    <menuitem id="HUP-highilghtUser" label="Highlight user comments"/>
+    <menuitem id="HUP-unhighilghtUser" label="UNHighlight user comments"/>
   </menupopup>
 </overlay>
 

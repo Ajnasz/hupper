@@ -162,6 +162,9 @@
         }
         this.header.style.backgroundColor = color;
       },
+      unhighLightComment: function () {
+          this.header.style.backgroundColor = '';
+      },
       _highlightComment: function () {
           HUP.El.AddClass(this.comment, commentClasses.trollCommentClass);
           HUP.El.AddClass(this.header, commentClasses.trollCommentHeaderClass);
