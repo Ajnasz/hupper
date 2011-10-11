@@ -1,46 +1,48 @@
-var HupDB = function() {};
+/*jslint indent:2*/
+/*global Components:true*/
+var HupDB = function () {};
 HupDB.prototype = {
   dbSchema: {
-     tables: {
-       styles: "styleURI TEXT NOT NULL PRIMARY KEY," +
+    tables: {
+      styles: "styleURI TEXT NOT NULL PRIMARY KEY," +
                 "isActive INTEGER"
     }
   },
 
-  connect: function() {
+  connect: function () {
     var Cc = Components.classes,
-        Ci= Components.interfaces;
-    var dirService = Cc["@mozilla.org/file/directory_service;1"].
-      getService(Ci.nsIProperties);
+        Ci = Components.interfaces,
+        dirService = Cc["@mozilla.org/file/directory_service;1"]
+          .getService(Ci.nsIProperties),
+        dbFile, dbService, dbConnection;
 
-    var dbFile = dirService.get("ProfD", Ci.nsIFile);
+    dbFile = dirService.get("ProfD", Ci.nsIFile);
     dbFile.append("hupper.sqlite");
 
-    var dbService = Cc["@mozilla.org/storage/service;1"].
-      getService(Ci.mozIStorageService);
+    dbService = Cc["@mozilla.org/storage/service;1"]
+      .getService(Ci.mozIStorageService);
 
-    var dbConnection;
-
-    if (!dbFile.exists())
+    if (!dbFile.exists()) {
       dbConnection = this._dbCreate(dbService, dbFile);
-    else {
+    } else {
       dbConnection = dbService.openDatabase(dbFile);
     }
     this.dbConnection = dbConnection;
   },
 
-  query: function(query, params, callbacks) {
+  query: function (query, params, callbacks) {
+    var onFinish, onResult, onError, statement;
     this.connect();
 
-    var statement = this.dbConnection.createStatement(query);
+    statement = this.dbConnection.createStatement(query);
     callbacks = typeof callbacks === 'object' && callbacks !== null ? callbacks : {};
 
-    onFinish = typeof callbacks.onFinish === 'function' ? callbacks.onFinish : function() {};
-    onResult = typeof callbacks.onResult === 'function' ? callbacks.onResult : function() {};
-    onError = typeof callbacks.onError === 'function' ? callbacks.onError : function() {};
+    onFinish = typeof callbacks.onFinish === 'function' ? callbacks.onFinish : function () {};
+    onResult = typeof callbacks.onResult === 'function' ? callbacks.onResult : function () {};
+    onError = typeof callbacks.onError === 'function' ? callbacks.onError : function () {};
     params = typeof params === 'object' && params !== null ? params : {};
 
-    for(var name in params) {
+    for(let name in params) {
       if(params.hasOwnProperty(name)) {
         statement.params[name] = params[name];
       }
@@ -48,7 +50,7 @@ HupDB.prototype = {
     statement.executeAsync({
       handleResult: onResult,
       handleError: onError,
-      handleCompletion: function(aReason) {
+      handleCompletion: function (aReason) {
         if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
           onError();
         } else {
@@ -58,7 +60,7 @@ HupDB.prototype = {
     });
     this.close();
   },
-  close: function() {
+  close: function () {
     if(this.dbConnection) {
       if (typeof this.dbConnection.asyncClose === 'function') {
         this.dbConnection.asyncClose();
@@ -71,12 +73,12 @@ HupDB.prototype = {
             this.timer = null;
           }
           this.dbConnection = null;
-        } catch(e) {
+        } catch (e) {
           this.timer = Components.classes["@mozilla.org/timer;1"]
                   .createInstance(Components.interfaces.nsITimer),
               _this = this;
 
-          this.timer.initWithCallback({notify: function() {
+          this.timer.initWithCallback({notify: function () {
             _this.close();
           }}, 300, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
         }
@@ -84,13 +86,13 @@ HupDB.prototype = {
     }
   },
 
-  _dbCreate: function(aDBService, aDBFile) {
+  _dbCreate: function (aDBService, aDBFile) {
     var dbConnection = aDBService.openDatabase(aDBFile);
     this._dbCreateTables(dbConnection);
     return dbConnection;
   },
 
-  _dbCreateTables: function(aDBConnection) {
+  _dbCreateTables: function (aDBConnection) {
     for(var name in this.dbSchema.tables)
       aDBConnection.createTable(name, this.dbSchema.tables[name]);
   },

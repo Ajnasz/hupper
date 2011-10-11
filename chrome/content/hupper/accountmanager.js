@@ -15,13 +15,11 @@ var HupAccountManager = {
   passwordManager: function() {
     return new _HUPPasswordManager();
   },
-  hp: function () {
-      if(typeof this._hp === 'undefined') {
-          var scope = {};
-          Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-          this._hp = new scope.HP();
-      }
-      return this._hp;
+  hp: function() {
+    if(typeof hp == 'undefined') {
+      var hp = new HP();
+    }
+    return hp;
   },
   accountExists: function() {
     if(this.hp().get.username() && this.passwordManager().getPassword()) {

@@ -68,6 +68,7 @@ Hupper.styles = function() {
     '}';
   };
 
+
   HUP.hp.get.styleIndent(function(response) {
     if (response.pref.value) {
       addStyle(indentStyle);
