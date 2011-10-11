@@ -1,109 +1,178 @@
-#filteredhuppers, #filteredtrolls {display:block !important;}
-#tags {background-color:#F6F6EB; }
-#tags h4 {margin: 0;padding:0; }
-#tags ul {list-style:none;padding:0;margin:0;}#tags li {padding-left:5px;margin:0;}
-.hnew { color: red; font-weight: bold; }
-.nnew { float:right; }
-.nnew, .nnew a { font-size:10px; font-weight: normal;}
-.nnew * { margin-left: 2px; margin-right: 2px; }
-.hnav { float: right; padding-right: 5px; }
-.hnav * { margin-left: 2px; margin-right: 2px; }
-.submitted { padding: 2px !important; }
-.mark { cursor: pointer; color: #000; }
-.hidden {display: none;}
-.block h2 {
-  position: relative;
-}
-.hupper-button {
-  background: transparent url('chrome://hupper/skin/block-icons.gif') no-repeat;
-  border: 0;
-  cursor: pointer;
-  height: 16px;
-  width: 16px;
-}
-.block-button,
-.block-move-button {
-  position: absolute;
-  top: 0;
-  z-index: -1;
-}
-.block:hover .block-button,
-.block:hover .block-move-button {
-  z-index: 1;
-}
-.hide-button,
-.show-button {
-  right: 18px;
-}
-.delete-button {
-  background-position: -16px -32px;
-  right: 0;
-}
-.delete-button:hover {
-  background-position: -16px -48px;
-}
-.hide-button {
-  background-position: -16px 0;
-}
-.hide-button:hover {
-  background-position: -16px -16px;
-}
-.show-button {
-  background-position: -32px -0px;
-}
-.show-button:hover {
-  background-position: -32px -16px;
-}
+@namespace url(http://www.w3.org/1999/xhtml);
 
 
-.up-button {
-  background-position: 0 -64px;
-  left: 0;
-}
-.up-button:hover {
-  background-position: 0 -80px;
-}
+@-moz-document url-prefix(http://hup.hu),url-prefix(http://hupperl) {
+  #filteredhuppers, #filteredtrolls {display: block !important;}
+  #tags {background-color:#F6F6EB !important; }
+  #tags h4 {margin: 0 !important;padding: 0 !important; }
+  #tags ul {list-style: none !important;padding: 0 !important;margin: 0 !important;}
+  #tags li {padding-left: 5px !important;margin: 0 !important;}
+  .hnew { color: red !important; font-weight: bold !important; }
+  .nnew { float: right !important; }
+  .nnew, .nnew a { font-size: 10px !important; font-weight: normal !important;}
+  .nnew * { margin-left: 2px !important; margin-right: 2px !important; }
+  .hnav { float: right !important; padding-right: 5px !important; }
+  .hnav * { margin-left: 2px !important; margin-right: 2px !important; }
+  .submitted { padding: 2px !important; }
+  .mark { cursor: pointer !important; color: #000 !important; }
+  .hup-hidden {display: none !important;}
+  .block h2 {
+    position: relative !important;
+  }
+  .content-hidden .content {
+    display: none !important;
+  }
+  .content-hidden h2 {
+    border-bottom: 0 !important;
+  }
+  .hupper-button {
+    background-color: transparent !important;
+    background-image: url('data:image/gif;base64,R0lGODlhMABgAOMJALu7qM3Nv8/OwePj3Orq5O3t6PHx7fv7+v39/MfHsMfHsMfHsMfHsMfHsMfHsMfHsCwAAAAAMABgAAAE/nCESWsd0uqJ95bEgYxkiRSTYa4HGqhr2U5ibNK2jOfjMfGlH8IjLBJHQlIyGEAeh02ox8mM3qzAoi2apGyxPG2MS94owTnxiuw0U4FvNPIt/cLjW3p9LR9z81BXfneBQ4BLYX18bW47WYqCdxMFNTkuBXAEk5kBGUQUHZ+gnqKhop2knwMCpxytr7CxsrO0XmkWiY2fubZfGme1uFNuUsEVxce/vrXIXsp+wc0/xMa/w9TVzmZP2drW3ae84OPkr6lEpqXnHumq6x/vGhKYPAeaL0AzhHNwPgGVOXzsMySJTSRIawYxaVOFHyE5vQrt6YXwhq8zVSJWDAJMGaJj/hz3WeEGBqSSgX0oYnlG8CG0hQz3tJSkEKPMiSgfGoS58WQ/RGlQ0gt4idPAeBbaoTtqDukFlOWAihsHVRYjIz2v2npSDFhVXFpVdvwKVhrQsgWlhl3CEo5JPsSakTXJtWNWs3bpjozoVhe2LmqXwdIaU2fUueCYtlLKTvEpxh+EAmRxb6ilu/9+9sS8KJLbnBk92wzpMi/M0z5L49XDeuZnKtP2diZNUzSd2BI5285NDTRqPSx1/5bIyKJInbNT1+47OYZAkZZtXGouQ5Njdeauu8suMipm74jXDu7+tlVYsnBJou2rVtR58n8IupcW3uxWfm/Zg5yfvn64K3w9FQKWeabBR8t7hpWDWDfaoeMUKANFAAA7') !important;
 
-.down-button {
-  background-position: -16px -64px;
-  left: 18px;
-}
-.down-button:hover {
-  background-position: -16px -80px;
-}
 
-.left-button {
-  background-position: 0 0;
-  left: 36px;
-}
-.left-button:hover {
-  background-position: 0 -16px;
-}
+    background-repeat: no-repeat !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    height: 16px !important;
+    width: 16px !important;
 
-.right-button {
-  background-position: 0 -32px;
-  left: 36px;
-}
-.right-button:hover {
-  background-position: 0 -48px;
-}
-#sidebar-left .left-button,
-#sidebar-right .right-button {
-  display: none;
-}
-.hide-submenu ul {
-  display: none;
-}
-.node table ul.links.inline li.first.last {
-  padding-right: 20px;
-  position: relative;
-}
-.taxonomy-button {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-li:hover .taxonomy-button {
-  display: block;
+    -moz-appearance: none;
+  }
+  .block-button,
+  .block-move-button {
+    position: absolute !important;
+    top: 0 !important;
+    z-index: -1 !important;
+  }
+  .block:hover .block-button,
+  .block:hover .block-move-button {
+    z-index: 1 !important;
+  }
+  .hide-button,
+  .show-button {
+    right: 18px !important;
+  }
+  .delete-button {
+    background-position: -16px -32px !important;
+    right: 0 !important;
+  }
+  .delete-button:hover {
+    background-position: -16px -48px !important;
+  }
+  .hide-button {
+    background-position: -16px 0 !important;
+  }
+  .hide-button:hover {
+    background-position: -16px -16px !important;
+  }
+  .show-button {
+    background-position: -32px -0px !important;
+  }
+  .show-button:hover {
+    background-position: -32px -16px !important;
+  }
+  .up-button {
+    background-position: 0 -64px !important;
+    left: 0 !important;
+  }
+  .up-button:hover {
+    background-position: 0 -80px !important;
+  }
+
+  .down-button {
+    background-position: -16px -64px !important;
+    left: 18px !important;
+  }
+  .down-button:hover {
+    background-position: -16px -80px !important;
+  }
+
+  .left-button {
+    background-position: 0 0 !important;
+    left: 36px !important;
+  }
+  .left-button:hover {
+    background-position: 0 -16px !important;
+  }
+
+  .right-button {
+    background-position: 0 -32px !important;
+    left: 36px !important;
+  }
+  .right-button:hover {
+    background-position: 0 -48px !important;
+  }
+  #sidebar-left .left-button,
+  #sidebar-right .right-button {
+    display: none !important;
+  }
+  .hide-submenu ul {
+    display: none !important;
+  }
+  .node table ul.links.inline li.first.last {
+    padding-right: 20px !important;
+    position: relative !important;
+  }
+  .taxonomy-button {
+    display: none !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+  }
+  li:hover .taxonomy-button {
+    display: block !important;
+  }
+  .points {
+    -moz-box-shadow: rgba(0,0,0,0.5) 0px 3px 4px !important;
+    border: 1px solid #B7B78B !important;
+    float: right !important;
+    margin-bottom: 10px !important;
+    margin: 5px !important;
+    padding: 0 !important;
+  }
+  .points h6 {
+    background-color:#D8D8C4 !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 5px !important;
+    text-align: right !important;
+  }
+  .points .point-details {
+    background-color: #F6F6EB !important;
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 5px 5px !important;
+  }
+  .points ul {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .points li {
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .points.show {
+    width: 140px !important;
+  }
+  .points.show .point-details {
+    border-top: 1px solid #B7B78B !important;
+    display: block !important;
+    width: 128px !important;
+  }
+  .points ul li.type {
+    font-weight: bold !important;
+  }
+  .hup-replies {
+    background: #eee !important;
+  }
+  .hup-replies .hup-boring {
+      color: #999 !important;
+  }
+  .comment.hup-boring {
+      display: none !important;
+  }
+  a:target + .comment.hup-boring {
+      display: block !important;
+  }
 }

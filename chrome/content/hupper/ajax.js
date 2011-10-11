@@ -1,13 +1,7 @@
 /**
- * ajax.js
- * @author Koszti Lajos [Ajnasz] {@link http://ajnasz.hu http://ajnasz.hu} ajnasz@ajnasz.hu
- * @license GPL v2
- * for more detials see the licence.txt file
- */
-/**
- * Creates an AJAX request
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @class HupAjax sends request to the {@link http://hup.hu hup.hu} site
+ * @class HupAjax
+ * @description sends request to the {@link http://hup.hu hup.hu} site
  * @constructor
  * @param {Object} pars object to overwrite the default parameters
  */

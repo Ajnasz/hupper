@@ -5,17 +5,21 @@
 <dialog
   id="hupper-prefs"
   title="Hupper Preferences"
-  ondialogaccept="return savePreferences();"
+  ondialogaccept="return Hupper.savePreferences();"
   buttons="accept,cancel"
+  buttonlabelaccept="&Hupper.pref.acceptbutton;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://hupper/content/namespace.js" />
+  <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hp.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
   <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>
+  <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript">
     <![CDATA[
-    window.addEventListener('load', StartHupperPrefernces, false);
+    window.addEventListener('load', Hupper.StartHupperPrefernces, false);
     ]]>
   </script>
   <stringbundlset id="stringbundleset">
@@ -25,7 +29,8 @@
   <tabbox id="hupper-tabbox">
     <tabs>
       <tab label="&Hupper.tabgeneral;" />
-       <tab label="&Hupper.tabcomment;" />
+      <tab label="&Hupper.tabcomment;" />
+      <tab label="&Hupper.tabsyles;" />
        <!--       <tab label="&Hupper.tabaccount;" /> -->
     </tabs>
     <tabpanels>
@@ -44,46 +49,65 @@
           <textbox id="HUP-hide-taxonomy" />
           <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
           <checkbox id="HUP-parseblocks" label="&Hupper.parseblocks;" />
+          <button label="&Hupper.resetblocks;" oncommand="Hupper.resetBlocks();" />
         </groupbox>
       </tabpanel>
       <tabpanel>
         <groupbox flex="1">
           <!-- trollfiter section -->
-          <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
-          <label control="HUP-trolls" value="&Hupper.trolls;" />
-          <textbox id="HUP-trolls"  />
-          <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
-          <textbox id="HUP-troll-color" />
-          <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />
-          <menulist id="HUP-trollfilter-method">
-            <menupopup>
-              <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
-              <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
-            </menupopup>
-          </menulist>
-          <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
-          <!-- trollfiter section end -->
-          <!-- hupper filter section -->
-          <!--
-          <separator class="groove" />
-          <checkbox id="HUP-enable-hupperfilter" label="&Hupper.enablehupperfilter;" />
-          <label control="HUP-huppers" value="&Hupper.huppers;" />
-          <textbox id="HUP-huppers"  />
-          <label control="HUP-hupper-color" value="&Hupper.huppercolor;" />
-          <textbox id="HUP-hupper-color" />
-          -->
-          <!-- hupper filter section end -->
-          <separator class="groove" />
-          <label control="HUP-hupper-highlightusers" value="&Hupper.highlightuser;"/>
-          <textbox id="HUP-hupper-highlightusers" />
+          <vbox>
+            <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
+            <label control="HUP-trolls" value="&Hupper.trolls;" />
+            <textbox id="HUP-trolls" style="display:none;" />
+            <vbox id="HUP-trollmanagement-container">
+              <tree id="HUP-trollmanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">
+                <treecols>
+                  <treecol primary="true" id="namecol" label="Name" flex="1" editable="true" />
+                  <splitter class="tree-splitter" ordinal="2"/>
+                </treecols>
+                <treechildren/>
+              </tree>
+            </vbox>
+            <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
+            <textbox id="HUP-troll-color" />
+            <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />
+            <menulist id="HUP-trollfilter-method">
+              <menupopup>
+                <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
+                <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
+              </menupopup>
+            </menulist>
+            <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
+            <textbox id="HUP-hupper-highlightusers" style="display:none;"/>
+          </vbox>
+          <vbox id="HUP-usermanagement-container">
+            <tree id="HUP-usermanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">
+              <treecols>
+                <treecol primary="true" id="namecol" label="Name" flex="1" editable="true" />
+                <splitter class="tree-splitter" ordinal="2"/>
+                <treecol id="colorcol" label="Color" flex="1" editable="true" />
+              </treecols>
+              <treechildren/>
+            </tree>
+          </vbox>
+        </groupbox>
+      </tabpanel>
+      <tabpanel>
+        <groupbox>
+          <checkbox id="HUP-style-indent" label="&Hupper.style.indent;" />
+          <checkbox id="HUP-style-accessibility" label="&Hupper.style.accessibility;" />
+          <label control="HUP-style-sidebar-width" value="&Hupper.style.sidebarwidth;"/>
+          <textbox id="HUP-style-sidebar-width" />
+          <label control="HUP-style-min-fontsize" value="&Hupper.style.minfontsize;"/>
+          <textbox id="HUP-style-min-fontsize" />
         </groupbox>
       </tabpanel>
       <!--
       <tabpanel>
         <groupbox>
-          <label contrl="HUP-hupper-username" value="&Hupper.username;"/>
+          <label control="HUP-hupper-username" value="&Hupper.username;"/>
           <textbox id="HUP-hupper-username"/>
-          <label contrl="HUP-hupper-password" value="&Hupper.password;"/>
+          <label control="HUP-hupper-password" value="&Hupper.password;"/>
           <textbox id="HUP-hupper-password" type="password"/>
         </groupbox>
       </tabpanel>

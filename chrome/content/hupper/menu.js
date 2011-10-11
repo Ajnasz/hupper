@@ -1,9 +1,30 @@
-var HUPMenu = function() {
+/**
+ * @constructor
+ * @class Menu
+ * @namespace Hupper
+ * @module Hupper
+ * @description handles the hupper block
+ */
+Hupper.Menu = function() {
   this.add();
 };
-HUPMenu.prototype = {
+Hupper.Menu.prototype = {
   block: null,
   id: 'block-hupper-0',
+  hidden: false,
+  menuItems: 0,
+  hide: function() {
+    if(this.block) {
+      HUP.El.AddClass(this.block, 'hup-hidden');
+      this.hidden = true;
+    }
+  },
+  show: function() {
+    if(this.block) {
+      HUP.El.RemoveClass(this.block, 'hup-hidden');
+      this.hidden = false;
+    }
+  },
   create: function() {
     this.titleNode = HUP.El.El('h2');
 
@@ -23,6 +44,7 @@ HUPMenu.prototype = {
     HUP.El.Hide(this.block);
     var googleBlock = HUP.El.GetId('block-user-1');
     HUP.El.Insert(this.block, googleBlock);
+    this.hide();
   },
   addMainMenu: function() {
     if(this.menu) return;
@@ -44,7 +66,10 @@ HUPMenu.prototype = {
     HUP.El.Remove(menu);
   },
   /**
-   * @param {Object} menuItem {name: 'name of the menu item'[, click: function,] [href: 'http://...]}
+   * @param {Object} menuItem
+   *  name: 'name of the menu item'
+   *  click: function
+   *  href: 'http://...
    * @param {Element} [parent] parent element where the menu item should be appended
    * @param {Boolean} [first] insert it as a first menu item
    */
@@ -62,9 +87,13 @@ HUPMenu.prototype = {
     HUP.El.AddClass(li, 'leaf');
     HUP.El.Add(a, li);
     (first && parent.firstChild) ? HUP.El.Insert(li, parent.firstChild) : HUP.El.Add(li, parent);
+    if(this.hidden) this.show();
+    this.menuItems++;
     return li;
   },
   removeMenuItem: function(menuItem) {
     HUP.El.Remove(menuItem);
+    this.menuItems--;
+    if(this.menuItems == 0) this.hide();
   }
 };

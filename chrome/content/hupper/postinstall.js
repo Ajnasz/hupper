@@ -1,8 +1,10 @@
 /**
  * If some data format has been changed, the postinstall
  * will convert the datas to the newer format
+ * @method postInstall
+ * @namespace Hupper
  */
-var HUP_postInstall = function() {
+Hupper.postInstall = function() {
 
   const HUPPER_VERSION = '###VERSION###';
 
@@ -25,6 +27,25 @@ var HUP_postInstall = function() {
       HUP.hp.set.huppers('');
     }
   };
+  var convertBlockSettings = function() {
+    var blocks = HUPJson.decode(HUP.hp.get.blocks());
+    var output = {left: [], right: []}
+
+    if(!blocks['block-blog-0']) {
+      for(var block in blocks) {
+        block.left ? output.left.push(block) : block.right.push(block);
+      }
+      output.left.sort(function(a,b) {
+        return a.index > b.index;
+      });
+      output.right.sort(function(a,b) {
+        return a.index > b.index;
+      });
+    } else if(blocks['left'] || blocks['right']) {
+      output = blocks;
+    }
+    HUP.hp.set.blocks(HUPJson.encode(output));
+  };
 
   /**
    * creates a float number from the ver param, which will
@@ -39,22 +60,23 @@ var HUP_postInstall = function() {
 
 
 
-  var oldVer = 0, oldVerValue = 0; // previous version
+  var oldVerValue = 0; // previous version
   try {
-    oldVerValue = HUP.hp.M.getCharPref('extensions.hupper.version');
-    oldVer = parseVersion(oldVerValue);
+    oldVerValue = parseVersion(HUP.hp.M.getCharPref('extensions.hupper.version'));
   } catch(e){HUP.L.log(e.message);}
 
   var version = parseVersion(HUPPER_VERSION); // current version eg.: 0.0053
-  if(!oldVer || oldVerValue != HUPPER_VERSION) {
+  if(!oldVerValue || oldVerValue < HUPPER_VERSION) {
 
     // after the v0.0.5.3 the huppers were removed
-    if(oldVer < 0.0053) {
+    if(oldVerValue < 0.0053) {
       try {
         convertColors();
       } catch(e) { HUP.L.log(e.message, e.fileName, e.lineNumber)}
+    } else if(oldVerValue < 0.0054) {
+      convertBlockSettings();
     }
-    HUP.L.log('postinstall');
+    HUP.L.log('postinstall', version, oldVerValue);
     HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
   }
 };
