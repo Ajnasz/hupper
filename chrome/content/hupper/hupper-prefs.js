@@ -114,32 +114,239 @@ Hupper.mapWindows = function(onMap) {
     }
   }
 };
-Hupper.setUserManager = function (doc) {
+
+Hupper.treeviewer = function (doc, options) {
+    var scope = {},
+        element = doc.getElementById(options.treeId),
+        rows = options.rows,
+        rowsObject,
+        lastItem;
+
+    Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
+    // create a treeview, it will create the events too
+    var view = scope.TreeView();
+
+    rowsObject = options.rowsToTree(rows);
+
+    var updateTree = function () {
+        var output = [],
+            lastItem = rowsObject[rowsObject.length - 1];
+
+        // add extra row
+        if (!options.isEmpty(lastItem)) {
+            rowsObject.push(options.getEmptyRow());
+        } else {
+            // or remove the last one, because the one before the last is also empty
+            while (rowsObject.length > 1 && options.isEmpty(rowsObject[rowsObject.length - 2])) {
+                rowsObject.length = rowsObject.length - 1;
+            }
+        }
+
+        output = options.treeObjectToRow(rowsObject);
+        var field = doc.getElementById(options.storageFieldId);
+        field.value = options.rowsToVal(output);
+        view.treeView(rowsObject, element);
+    };
+
+    view.events.on('setCellText', function (args) {
+        var colName = args.col.id,
+            value = args.text;
+        rowsObject[args.row][colName].text = value;
+        updateTree();
+        if (element.view.selection) {
+            element.view.selection.select(args.row);
+        }
+    });
+    doc.getElementById(options.treeContainerId).addEventListener('keypress', function (e) {
+        if (e.keyCode == e.DOM_VK_DELETE || e.keyCode == e.DOM_VK_BACK_SPACE) {
+            if (element.view.selection && element.editingRow === -1) {
+                var index = element.view.selection.currentIndex;
+                rowsObject.splice(element.view.selection.currentIndex, 1);
+                updateTree();
+                element.view.selection.select(index);
+            }
+        }
+    }, false);
+    updateTree();
+};
+
+Hupper.setTrollManager = function (doc) {
+  Hupper.treeviewer(doc, {
+      rows: HUP.hp.get.trolls().split(','),
+      treeId: 'HUP-trollmanagement',
+      treeContainerId: 'HUP-trollmanagement-container',
+      storageFieldId: 'HUP-trolls',
+      isEmpty: function (row) {
+          return row && row.namecol.text === '';
+      },
+      getEmptyRow: function () {
+          return {namecol: {text: '', editable: true}};
+      },
+      rowsToTree: function (rows) {
+          return rows.map(function (row) {
+              return {namecol: {text: row, editable: true}};
+          });
+      },
+      treeObjectToRow: function (rows) {
+          var output = [];
+          rows.forEach(function (row) {
+              if (row) {
+                  output.push(row.namecol.text);
+              }
+          });
+          return output;
+      },
+      rowsToVal: function (rows) {
+          return rows.join(',');
+      }
+  });
+  return;
   var scope = {},
-      element = doc.getElementById('HUP-usermanagement'),
-      hlUsers = HUP.hp.get.highlightusers().split(','),
-      hlUsersObj = [], hlUser, hl, lastItem;
-  for(i = 0, hl = hlUsers.length, hlUser; i < hl; i++) {
-    hlUser = hlUsers[i].split(':');
-    hlUsersObj.push({
-        namecol: {text:hlUser[0], editable: true},
-        colorcol: {text:hlUser[1].toUpperCase(), editable: true}
+      element = doc.getElementById('HUP-trollmanagement'),
+      trollUsers = HUP.hp.get.trolls().split(','),
+      trollUsersObj = [], output = [], hl, lastItem;
+  Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
+  scope.treeView = scope.TreeView();
+  for(i = 0, hl = trollUsers.length; i < hl; i++) {
+    trollUsersObj.push({
+        namecol: {text:trollUsers[i], editable: true}
     });
   }
-  lastItem = hlUsersObj[hlUsersObj.length - 1];
+  lastItem = trollUsersObj[trollUsersObj.length - 1];
 
-  if (lastItem.namecol.text !== '' && lastItem.colorcol.text) {
-      hlUsersObj.push({
+  if (lastItem.namecol.text !== '') {
+      trollUsersObj.push({
           namecol: {text:'', editable: true},
-          colorcol: {text:'', editable: true}
       });
   }
 
-  var log = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
   var isEmpty = function (item) {
+      return item && item.namecol.text === '';
+  };
+  var updateTree = function () {
+    var output = [],
+        lastItem = trollUsersObj[trollUsersObj.length - 1];
+
+    // add extra row
+    if (!isEmpty(lastItem)) {
+        trollUsersObj.push({
+            namecol: {text:'', editable: true},
+        });
+    } else {
+        // or remove the last one, because the one before the last is also empty
+        while (trollUsersObj.length > 1 && isEmpty(trollUsersObj[trollUsersObj.length - 2])) {
+            trollUsersObj.length = trollUsersObj.length - 1;
+        }
+    }
+
+    trollUsersObj.forEach(function (item) {
+        var name = item.namecol.text;
+        if (name) {
+            output.push(name);
+        }
+    });
+    var field = doc.getElementById('HUP-trolls');
+    field.value = output.join(',');
+    treeView = scope.treeView(trollUsersObj, element);
+  };
+
+
+  var treeView = scope.treeView(trollUsersObj, element);
+  scope.events.on('setCellText', function (args) {
+    var colName = args.col.id,
+        value = args.text;
+    //if (isValidItem(colName, value)) {
+      trollUsersObj[args.row][colName].text = value;
+    // }
+    updateTree();
+    if (element.view.selection) {
+      element.view.selection.select(args.row);
+    }
+  });
+  doc.getElementById('HUP-trollmanagement-container').addEventListener('keypress', function (e) {
+    if (e.keyCode === e.DOM_VK_DELETE || e.keyCode === e.DOM_VK_BACK_SPACE) {
+        if (element.view.selection && element.editingRow === -1) {
+          var index = element.view.selection.currentIndex;
+          trollUsersObj.splice(element.view.selection.currentIndex, 1);
+          updateTree();
+          element.view.selection.select(index);
+        }
+    } else if (e.keyCode === e.DOM_VK_TAB) {
+    }
+  }, false);
+};
+
+Hupper.setUserManager = function (doc) {
+  Hupper.treeviewer(doc, {
+      rows: HUP.hp.get.highlightusers().split(','),
+      treeId: 'HUP-usermanagement',
+      treeContainerId: 'HUP-usermanagement-container',
+      storageFieldId: 'HUP-hupper-highlightusers',
+      isEmpty: function (row) {
+          return row && row.namecol.text === '' && row.colorcol.text === '';
+      },
+      getEmptyRow: function () {
+          return {namecol: {text: '', editable: true}, colorcol: {text: '', editable: true}};
+      },
+      rowsToTree: function (rows) {
+          return rows.map(function (row) {
+              var hlUser = row.split(':');
+              return {
+                namecol: {text:hlUser[0], editable: true},
+                colorcol: {text:hlUser[1].toUpperCase(), editable: true}
+              };
+          });
+      },
+      treeObjectToRow: function (rows) {
+          var output = [];
+          rows.forEach(function (row) {
+              var name = row.namecol.text,
+                  color = row.colorcol.text;
+              if (name || color) {
+                  output.push(row.namecol.text + ':' + row.colorcol.text);
+              }
+          });
+          return output;
+      },
+      rowsToVal: function (rows) {
+          return rows.join(',');
+      }
+  });
+  return;
+  var scope = {},
+      treeId = 'HUP-usermanagement',
+      treeParentId = 'HUP-hupper-highlightusers',
+      element = doc.getElementById(treeId),
+      hlUsers = HUP.hp.get.highlightusers().split(','),
+      hlUsersObj = [],
+      emptyRow = {
+          namecol: {text:'', editable: true},
+          colorcol: {text:'', editable: true}
+      },
+      isEmpty, isValidItem, updateTree,
+      hlUser, hl, lastItem;
+
+  Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
+  scope.treeView = scope.TreeView();
+
+  hlUsersObj = hlUsers.map(function (item) {
+      var hlUser = item.split(':');
+      return {
+        namecol: {text:hlUser[0], editable: true},
+        colorcol: {text:hlUser[1].toUpperCase(), editable: true}
+    };
+  });
+
+  lastItem = hlUsersObj[hlUsersObj.length - 1];
+
+  if (lastItem.namecol.text !== '' && lastItem.colorcol.text) {
+      hlUsersObj.push(emptyRow);
+  }
+
+  isEmpty = function (item) {
       return item && item.namecol.text === '' && item.colorcol.text === '';
   };
-  var isValidItem = function (colName, value) {
+  isValidItem = function (colName, value) {
       var isDuplicate = false;
       if (colName === 'namecol') {
         isDuplicate = hlUsersObj.some(function (item) {
@@ -148,44 +355,40 @@ Hupper.setUserManager = function (doc) {
       }
       return !isDuplicate;
   };
-  var updateTree = function () {
-    var output = [],
-        lastItem = hlUsersObj[hlUsersObj.length - 1];
+  updateTree = function () {
+      var output = [],
+          lastItem = hlUsersObj[hlUsersObj.length - 1];
 
-    // add extra row
-    if (!isEmpty(lastItem)) {
-        hlUsersObj.push({
-            namecol: {text:'', editable: true},
-            colorcol: {text:'', editable: true}
-        });
-    } else {
-        // or remove the last one, because the one before the last is also empty
-        while (hlUsersObj.length > 1 && isEmpty(hlUsersObj[hlUsersObj.length - 2])) {
-            hlUsersObj.length = hlUsersObj.length - 1;
-        }
-    }
-    hlUsersObj.forEach(function (item) {
-        var name = item.namecol.text,
-            color = item.colorcol.text;
-        if (name || color) {
-            output.push(name + ':' + color);
-        }
-    });
+      // add extra row
+      if (!isEmpty(lastItem)) {
+          hlUsersObj.push(emptyRow);
+      } else {
+          // or remove the last one, because the one before the last is also empty
+          while (hlUsersObj.length > 1 && isEmpty(hlUsersObj[hlUsersObj.length - 2])) {
+              hlUsersObj.length = hlUsersObj.length - 1;
+          }
+      }
+      hlUsersObj.forEach(function (item) {
+          var name = item.namecol.text,
+              color = item.colorcol.text;
+          if (name || color) {
+              output.push(name + ':' + color);
+          }
+      });
 
-    var field = doc.getElementById('HUP-hupper-highlightusers');
-    field.value = output.join(',');
-    treeView = scope.treeView(hlUsersObj, element);
+      var field = doc.getElementById(treeParentId);
+      field.value = output.join(',');
+      treeView = scope.treeView(hlUsersObj, element);
   };
 
 
-  Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
-  var treeView = scope.treeView(hlUsersObj, element);
-  treeView.on('setCellText', function (args) {
+  scope.treeView(hlUsersObj, element);
+  scope.treeView.events.on('setCellText', function (args) {
     var colName = args.col.id,
         value = args.text;
-    //if (isValidItem(colName, value)) {
+    if (isValidItem(colName, value)) {
       hlUsersObj[args.row][colName].text = value;
-    // }
+    }
     updateTree();
     if (element.view.selection) {
       element.view.selection.select(args.row);
@@ -209,12 +412,15 @@ Hupper.resetBlocks = function() {
   }
 };
 Hupper.StartHupperPrefernces = function() {
+  var scope = {};
+  Components.utils.import('resource://huppermodules/prefs.jsm', scope);
   HUP = {};
+  HUP.hp = new scope.HP();
   HUP.L = new Hupper.Log();
-  HUP.hp = new HP();
   HUP.Bundles = document.getElementById('hupper-prefs-bundles');
   Hupper.disableFields();
   Hupper.setPrefWinVals();
   Hupper.onChangeFilterMethod();
   Hupper.setUserManager(document);
+  Hupper.setTrollManager(document);
 };

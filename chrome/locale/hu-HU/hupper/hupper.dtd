@@ -34,3 +34,6 @@
 <!ENTITY Hupper.style.minfontsize "Minimum betűméret">
 
 <!ENTITY Hupper.pref.acceptbutton "Alkalmaz">
+
+<!ENTITY Hupper.contextMenu.markastroll "Ő egy troll">
+<!ENTITY Hupper.contextMenu.unmarktroll "Ő nem troll">

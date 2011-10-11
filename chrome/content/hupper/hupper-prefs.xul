@@ -58,7 +58,16 @@
           <vbox>
             <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
             <label control="HUP-trolls" value="&Hupper.trolls;" />
-            <textbox id="HUP-trolls"  />
+            <textbox id="HUP-trolls" style="display:none;" />
+            <vbox id="HUP-trollmanagement-container">
+              <tree id="HUP-trollmanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">
+                <treecols>
+                  <treecol primary="true" id="namecol" label="Name" flex="1" editable="true" />
+                  <splitter class="tree-splitter" ordinal="2"/>
+                </treecols>
+                <treechildren/>
+              </tree>
+            </vbox>
             <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
             <textbox id="HUP-troll-color" />
             <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />

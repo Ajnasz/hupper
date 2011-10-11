@@ -207,6 +207,14 @@ Hupper.setBlocks = function() {
     }
   });
 };
+Hupper.isTroll = function (user, cb) {
+  HUP.hp.get.trolls(function (response) {
+      var trolls = response.pref.value.split(',');
+      cb(trolls.some(function (troll) {
+          return troll === user;
+      }));
+  });
+};
 
 
 Hupper.init = function() {
@@ -214,13 +222,32 @@ Hupper.init = function() {
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", Hupper.boot, true);
   }
-  var showInStatusbar = new HP().get.showinstatusbar();
+  var scope = {};
+  Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+  var showInStatusbar = new scope.HP().get.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
   statusbar.hidden = !showInStatusbar;
   if(showInStatusbar) {
-    Components.utils.import('resource://huppermodules/statusclickhandler.jsm');
-    new StatusClickHandler(statusbar);
+      Components.utils.import('resource://huppermodules/statusclickhandler.jsm');
+      new StatusClickHandler(statusbar);
   }
+  document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', function () {
+      var element = document.popupNode,
+          parent = element.parentNode,
+          isUsername = element.title === "Felhasználói profil megtekintése.";
+
+      Hupper.isTroll(element.innerHTML, function (isTroll) {
+          document.getElementById('markAsTroll').hidden = !isUsername || isTroll;
+          document.getElementById('unmarkTroll').hidden = !isUsername || !isTroll;
+      });
+  }, false);
 };
-window.addEventListener('load', function(){ Hupper.init(); }, false);
-window.removeEventListener('unload', function(){ Hupper.init(); }, false);
+Hupper.initialize = function () {
+    // if (!Hupper.initialized) {
+        Hupper.init();
+        // Hupper.initialized = true;
+    // }
+    window.removeEventListener('unload', Hupper.initialize, false);
+};
+window.addEventListener('load', Hupper.initialize, false);
+window.removeEventListener('unload', Hupper.initialize, false);

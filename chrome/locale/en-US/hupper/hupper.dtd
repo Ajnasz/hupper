@@ -34,3 +34,6 @@
 <!ENTITY Hupper.style.minfontsize "Minimum font size">
 
 <!ENTITY Hupper.pref.acceptbutton "Apply">
+
+<!ENTITY Hupper.contextMenu.markastroll "Mark as troll">
+<!ENTITY Hupper.contextMenu.unmarktroll "Unmark troll">
