@@ -1,10 +1,10 @@
-content hupper jar:chrome/hupper.jar!/content/hupper/
-content hupper jar:chrome/hupper.jar!/content/hupper/ contentaccessible=yes
+content hupper chrome/content/hupper/
+content hupper chrome/content/hupper/ contentaccessible=yes
 overlay chrome://browser/content/browser.xul chrome://hupper/content/hupper.xul
 overlay chrome://navigator/content/navigator.xul chrome://hupper/content/hupper.xul
 resource huppermodules modules/
 
-locale hupper en-US jar:chrome/hupper.jar!/locale/en-US/hupper/
-locale hupper hu-HU jar:chrome/hupper.jar!/locale/hu-HU/hupper/
+locale hupper en-US chrome/locale/en-US/hupper/
+locale hupper hu-HU chrome/locale/hu-HU/hupper/
 
-skin hupper classic/1.0      jar:chrome/hupper.jar!/skin/classic/hupper/
+skin hupper classic/1.0      chrome/skin/classic/hupper/
