@@ -20,8 +20,22 @@
 <!ENTITY Hupper.tabgeneral "General">
 <!ENTITY Hupper.tabcomment "Comment color">
 <!ENTITY Hupper.tabaccount "Account information">
+<!ENTITY Hupper.tabsyles "Styles">
 <!ENTITY Hupper.username "Username:">
 <!ENTITY Hupper.password "Password:">
 <!ENTITY Hupper.hidetaxonomy "Hidable article types">
 <!ENTITY Hupper.showinstatusbar "Show icon in statusbar">
 <!ENTITY Hupper.parseblocks "Parse blocks">
+<!ENTITY Hupper.resetblocks "Reset blocks">
+
+<!ENTITY Hupper.style.indent "Show line guide to the parent comment">
+<!ENTITY Hupper.style.accessibility "Load accessibility styles">
+<!ENTITY Hupper.style.sidebarwidth "Width of sidebars">
+<!ENTITY Hupper.style.minfontsize "Minimum font size">
+
+<!ENTITY Hupper.pref.acceptbutton "Apply">
+
+<!ENTITY Hupper.contextMenu.markastroll "Mark as troll">
+<!ENTITY Hupper.contextMenu.unmarktroll "Unmark troll">
+<!ENTITY Hupper.contextMenu.highlightusercomments "Highlight user comments">
+<!ENTITY Hupper.contextMenu.unhighlightusercomments "Unhighlight user comments">

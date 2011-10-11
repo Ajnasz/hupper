@@ -1,66 +1,103 @@
 /**
- * @class HUPBlock
+ * @class Block
+ * @namespace Hupper
  * @constructor
- * @param {Element} block
+ * @description Parses a block and adds buttons, hides them
+ * @param {Object} cfg Configuration object, possible properties are:
+ *  id: {String}, the id of the block,
+ *  block: {HTMLElement} the block element
+ *  blockMenus: {Hupper.BlockMenus} a blockmenus instance
+ *  blocks: {Hupper.Blocks} a Blocks instance
+ *  hidden: {Boolean} set to true if the element has to be hidden by default
+ *  contentHidden: {Boolean} set to true if the element's content has to be hidden by default
+ *  side: {String} left or right, use to set the side of the block
  */
-var HUPBlock = function(block, sides, blockMenus) {
-  if(!block) return;
-  this.block = block;
-  this.id = this.block.getAttribute('id');
-  this.blockMenus = blockMenus;
-  this.titleNode = HUP.El.GetFirstTag('h2', this.block);
+Hupper.Block = function(cfg) {
+  // if(!block) return;
+  if(typeof cfg != 'object') {
+    throw new Error('Config not defined');
+  }
+  if(cfg.block && cfg.block.nodeType == 1 && typeof cfg.id == 'string') {
+    throw new Error('both block and id defined in config, which one should I use?');
+  }
+  if((!cfg.block || cfg.block.nodeType != 1) && typeof cfg.id != 'string') {
+    throw new Error('both block and id are invalid');
+  }
+  var blockElement, blockID;
+  if(cfg.block && cfg.block.nodeType == 1) {
+    blockElement = cfg.block;
+    blockID = blockElement.getAttribute('id');
+  } else {
+    blockID = cfg.id;
+    blockElement = HUP.El.GetId(blockID);
+  }
+  if(blockElement) {
+    if(blockID != blockElement.getAttribute('id')) {
+      throw new Error('blockID is not the same as the block elements id!');
+    }
+  }
+  this.block = blockElement;
+  this.blocks = cfg.blocks;
+  this.id = blockID;
+  this.blockMenus = cfg.blockMenus;
   var contents = HUP.El.GetByClass(this.block, 'content', 'div');
   this.contentNode = contents.length ? contents[0] : null;
-  if(this.titleNode) this.title = this.titleNode.innerHTML;
-  this.makeTitle();
-  if(this.id != 'block-hupper-0') this.addButtons(); // exception for hup block
-  this.addMoveButtons();
-  var properties = HUPBlocksProperties.getBlock(this.id);
-  if(properties) {
-    this.side = properties.side;
-    this.setIndex(properties.index);
-    properties.hidden ? this.hide() : this.show();
-    properties.contentHidden ? this.hideContent() : this.showContent();
-  } else {
-    this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
-    this.setIndex(sides[this.side]);
-    this.saveProperties();
-    sides[this.side]++;
+  if(this.block) {
+    this.titleNode = HUP.El.GetFirstTag('h2', this.block);
+    if(this.titleNode) {
+      this.title = this.titleNode.innerHTML;
+    }
   }
+  this.makeTitle();
+  this.addMoveButtons();
+  if(this.id != 'block-hupper-0') { // exception for hup block
+    this.addButtons();
+  }
+  this.setSide(cfg.side);
+  cfg.hidden ? this.hide() : this.show();
+  cfg.contentHidden ? this.hideContent() : this.showContent();
+  // Hupper.Blocks.save();
 };
-HUPBlock.prototype = {
+Hupper.Block.prototype = {
   hidden: false,
   contentHidden: false,
   blocks: new Array(),
   hide: function() {
+    if(this.hidden) return;
+    // HUP.L.log('call hide');
     HUP.El.Hide(this.block);
     this.hidden = true;
     this.blockMenus.addBlockToMenu(this);
-    this.saveProperties();
+    this.blocks.save();
   },
   show: function() {
+    if(!this.hidden) return;
+    // HUP.L.log('call show');
     HUP.El.Show(this.block);
     this.hidden = false;
     this.blockMenus.removeBlockFromMenu(this);
-    this.saveProperties();
+    this.blocks.save();
   },
-  hideContent: function() {
-    if(!this.contentNode) return;
-    HUP.El.Hide(this.contentNode);
+  hideContent: function(force) {
+    if(!this.contentNode || (this.contentHidden && !force)) return;
+    // HUP.El.Hide(this.contentNode);
+    HUP.El.AddClass(this.block, 'content-hidden');
     HUP.El.Hide(this.hideButton);
     HUP.El.Show(this.showButton);
     this.contentHidden = true;
-    this.saveProperties();
+    this.blocks.save();
   },
-  showContent: function() {
-    if(!this.contentNode) return;
-    HUP.El.Show(this.contentNode);
+  showContent: function(force) {
+    if(!this.contentNode || (!this.contentHidden && !force)) return;
+    // HUP.El.Show(this.contentNode);
+    HUP.El.RemoveClass(this.block, 'content-hidden');
     HUP.El.Show(this.hideButton);
     HUP.El.Hide(this.showButton);
     this.contentHidden = false;
-    this.saveProperties();
+    this.blocks.save();
   },
   makeTitle: function() {
+    if(!this.block) return;
     var boxes = {
         'block-aggregator-feed-13': 'http://distrowatch.com',
         'block-aggregator-feed-19': 'http://www.freebsd.org',
@@ -72,6 +109,11 @@ HUPBlock.prototype = {
         'block-aggregator-feed-44': 'http://hwsw.hu',
         'block-aggregator-feed-46': 'http://www.linuxdevices.com',
         'block-aggregator-feed-47': 'http://undeadly.org',
+        'block-aggregator-feed-50': '/allasajanlatok',
+        'block-aggregator-feed-51': 'http://blogs.sun.com/sunhu/',
+        'block-block-15': 'irc://irc.freenode.net/hup.hu',
+        'block-block-12': '/tamogatok',
+        'block-block-7': 'http://www.google.com/custom?ie=UTF-8&oe=UTF-8&domains=hup.hu&sa=Keres%C3%A9s&cof=\%22S%3Ahttp%3A%2F%2Fhup.hu%3BVLC%3A7a7a76%3BAH%3Acenter%3BLH%3A74%3BLC%3A7a7a76%3BGFNT%3A7a7a76%3BL%3Ahttp%3A%2F%2Fhup.hu%2Fimages%2Fhup_search.png%3BLW%3A484%3BT%3Ablack%3BAWFID%3Ab92ddab1875cce47%3B\%22&sitesearch=hup.hu',
         'block-block-6': 'http://www.mozilla.com/firefox?from=sfx&uid=225821&t=308',
         'block-blog-0': '/blog',
         'block-comment-0': '/tracker',
@@ -82,32 +124,19 @@ HUPBlock.prototype = {
 
     };
     if(boxes[this.id] && this.title && this.titleNode) {
+      // HUP.L.log('set title: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
       HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
     }
   },
   moveUp: function() {
-    var block = this.getUpBlock();
-    while(!block.titleNode || block.hidden) {
-      block = this.getUpBlock(block);
-    }
-    var newIndex = block.index;
-    var thisIndex = this.index;
-    this.blocks[this.blocks.indexOf(block)].index = thisIndex;
-    this.index = newIndex;
-    HUPRearrangeBlocks(this.blocks);
-    this.saveProperties();
+    this.blocks.blockToUp(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   moveDown: function() {
-    var block = this.getDownBlock();
-    while(!block.titleNode || block.hidden) {
-      block = this.getDownBlock(block);
-    }
-    var thisIndex = this.index;
-    var newIndex = block.index;
-    this.blocks[this.blocks.indexOf(block)].index = thisIndex;
-    this.index = newIndex;
-    HUPRearrangeBlocks(this.blocks);
-    this.saveProperties();
+    this.blocks.blockToDown(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   getDownBlock: function(refBlock) {
     if(!refBlock) refBlock = this;
@@ -128,42 +157,38 @@ HUPBlock.prototype = {
     return this.blocks[newIndex];
   },
   moveRight: function() {
-    if(this.side == 'right') return;
-    this.side = 'right';
-    this.index = -1;
-    this.saveProperties();
-    HUPRearrangeBlocks(this.blocks);
+    this.blocks.blockToRight(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   moveLeft: function() {
-    if(this.side == 'left') return;
-    this.side = 'left';
-    this.index = -1;
-    this.saveProperties();
-    HUPRearrangeBlocks(this.blocks);
-  },
-  setIndex: function(index, save) {
-    this.index = index;
-    if(save) this.saveProperties();
+    this.blocks.blockToLeft(this.id);
+    this.blocks.UI.rearrangeBlocks(this.blocks);
+    this.blocks.save();
   },
   addButtons: function() {
-    if(!this.titleNode) return;
-    var _this = this;
-    this.delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button');
-    this.hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button');
-    this.showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
-    HUP.El.Hide(this.showButton);
-    HUP.Ev.addEvent(this.delButton, 'click', function() {
-      _this.hide();
+    if(!this.titleNode) {return;}
+    var block = this, titleNode = this.titleNode,
+        delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+    HUP.Ev.addEvent(delButton, 'click', function() {
+      block.hide();
     });
-    HUP.Ev.addEvent(this.hideButton, 'click', function() {
-      _this.hideContent();
+    HUP.Ev.addEvent(hideButton, 'click', function() {
+      block.hideContent();
     });
-    HUP.Ev.addEvent(this.showButton, 'click', function() {
-      _this.showContent();
+    HUP.Ev.addEvent(showButton, 'click', function() {
+      block.showContent();
     });
-    HUP.El.Insert(this.showButton, this.titleNode.firstChild);
-    HUP.El.Insert(this.hideButton, this.titleNode.firstChild);
-    HUP.El.Insert(this.delButton, this.titleNode.firstChild);
+    // HUP.L.log('add buttons = ' + this.id, delButton, hideButton, showButton);
+    HUP.El.Hide(showButton);
+    HUP.El.Insert(showButton, titleNode.firstChild);
+    HUP.El.Insert(hideButton, titleNode.firstChild);
+    HUP.El.Insert(delButton, titleNode.firstChild);
+    this.delButton = delButton;
+    this.hideButton = hideButton;
+    this.showButton = showButton;
   },
   addMoveButtons: function() {
     if(!this.titleNode) return;
@@ -189,37 +214,44 @@ HUPBlock.prototype = {
     HUP.El.Insert(this.leftButton, this.titleNode.firstChild);
     HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
   },
-  saveProperties: function() {
-    var props = {
-      hidden: this.hidden,
-      contentHidden: this.contentHidden,
-      index: this.index,
-      side: this.side
-    };
-    HUPBlocksProperties.setBlock(this.id, props);
-  }
+  setSide: function(side) {
+    // HUP.L.log(this.id, side);
+    if(this.block) {
+      this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+    } else if(side) {
+      this.side = side;
+    } else {
+      throw new Error('Can not set the side of block ' + this.id);
+    }
+  },
+  updateUI: function() {
+    if(this.hidden) {
+      this.hide(true);
+    } else {
+      this.show(true);
+    }
+    if(this.contentHidden) {
+      this.hideContent(true);
+    } else {
+      this.showContent(true);
+    }
+  },
+  toString: function() {
+    return 'Hupper.Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') + ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' + (this.contentHidden ? 'true' : 'false');
+  },
 };
-HUPBlocksProperties = {
-  set: function(blocks) {
-    HUP.hp.set.blocks(HUPJson.encode(blocks));
-  },
-  get: function() {
-    return HUPJson.decode(HUP.hp.get.blocks());
-  },
-  setBlock: function(block, props) {
-    var blocks = this.get();
-    blocks[block] = props;
-    this.set(blocks);
-  },
-  getBlock: function(block) {
-    return this.get()[block];
-  }
-};
-HUPBlockMenus = function(hupMenu) {
+
+/**
+ * @class BlockMenus
+ * @namespace Hupper
+ * @constructor
+ * @param {Hupper.Menu} hupMenu
+ */
+Hupper.BlockMenus = function(hupMenu) {
   this.blocks = new Object();
   this.hupMenu = hupMenu;
 };
-HUPBlockMenus.prototype = {
+Hupper.BlockMenus.prototype = {
   addMenu: function() {
     if(this.menu) return;
     this.menuitem = this.hupMenu.addMenuItem({name:  HUP.Bundles.getString('restoreBlocks'), click: function() {
@@ -240,7 +272,7 @@ HUPBlockMenus.prototype = {
     }
   },
   addBlockToMenu: function(block) {
-    if(!this.blocks[block.id]) {
+    if(!this.blocks[block.id] && block.block) {
       if(!this.menu) this.addMenu();
       var _this = this;
       this.blocks[block.id] = this.hupMenu.addMenuItem({name: block.title, click: function() {block.show()}}, _this.menu);
@@ -255,28 +287,4 @@ HUPBlockMenus.prototype = {
     for(var i in this.blocks) {n++;}
     if(n == 0) this.removeMenu();
   }
-};
-HUPRearrangeBlocks = function(blocks) {
-  blocks.sort(function(a, b) {
-    if((a.side == b.side && a.index < b.index) || (a.side == 'left' && b.side == 'right') || !a.titleNode) return -1;
-    if((a.side == b.side && a.index > b.index) || (a.side == 'right' && b.side == 'left')) return 1;
-  });
-  var sides = {left:1, right:1};
-  blocks.forEach(function(block, index) {
-    if(block.side == 'left') {
-      block.setIndex(sides.left, true);
-      sides.left++;
-    }  else {
-      block.setIndex(sides.right, true);
-      sides.right++;
-    }
-  });
-  var left = HUP.El.GetId('sidebar-left');
-  var right = HUP.El.GetId('sidebar-right');
-  HUP.El.RemoveAll(left);
-  HUP.El.RemoveAll(right);
-  blocks.forEach(function(block, index){
-    (block.side == 'left') ? HUP.El.Add(block.block, left) : HUP.El.Add(block.block, right);
-    block.blocks = blocks;
-  });
 };

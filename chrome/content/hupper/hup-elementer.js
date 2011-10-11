@@ -1,9 +1,11 @@
 /**
- * Class to create and manipulate DOM elements
+ * @class Elementer
+ * @namespace Hupper
+ * @description Class to create and manipulate DOM elements
  * @constructor
  */
-var HUPElementer = function() {
-  this.doc = HUP.w;
+Hupper.Elementer = function(doc) {
+  this.doc = doc || HUP.w;
   this.li = this.doc.createElement('li');
   this.ul = this.doc.createElement('ul');
   this.div = this.doc.createElement('div');
@@ -13,7 +15,7 @@ var HUPElementer = function() {
   this.button = this.doc.createElement('button');
   this.GetBody();
 };
-HUPElementer.prototype = {
+Hupper.Elementer.prototype = {
   /**
    * Creates an 'li' element
    * @return Li element
@@ -72,10 +74,10 @@ HUPElementer.prototype = {
    * @return button element
    * @type Element
    */
-  Button: function(title, class) {
+  Button: function(title, className) {
     var button = this.button.cloneNode(true);
     button.setAttribute('title', title);
-    this.AddClass(button, class);
+    this.AddClass(button, className);
     return button;
   },
   /**
@@ -117,6 +119,10 @@ HUPElementer.prototype = {
     * @type Element
     */
   Insert: function(elem, before) {
+    if(!before || !elem) {
+      Hupper.Log('huha', elem);
+      return;
+    }
     before.parentNode.insertBefore(elem, before);
     return elem;
   },
@@ -126,16 +132,16 @@ HUPElementer.prototype = {
     * @param {Element} parent
     */
   Remove: function(elem, parent) {
-    if(!elem || (!elem.parentNode && !parent)) return;
-    (typeof parent == 'object') ? parent.removeChild(elem) : elem.parentNode.removeChild(elem);
+    if(!elem || !elem.parentNode) return;
+    elem.parentNode.removeChild(elem);
   },
   /**
   * Removes all childnode of the element
   * @param {Element} element
   */
   RemoveAll: function(element) {
-    while(element.firstChild) {
-      this.Remove(element.firstChild, element);
+    while(element && element.firstChild) {
+      this.Remove(element.firstChild);
     }
   },
   /**
@@ -189,17 +195,18 @@ HUPElementer.prototype = {
     * @type Element
     */
   GetId: function(id, parent) {
-    if(!this.elements) {
-      this.elements = new Object();
-    }
-    if(!this.elements[id]) {
-      if(typeof parent == 'object') {
-        this.elements[id] = parent.getElementById(id);
-      } else {
-        this.elements[id] = this.doc.getElementById(id);
+    // if(!this.elements) {
+    //   this.elements = new Object();
+    // }
+    var output;
+    // if(!this.elements[id]) {
+      if(typeof parent == 'object' && parent.nodeType === 1) {
+        output = parent.getElementById(id);
+      } else if(typeof(parent) == 'undefined') {
+        output = this.doc.getElementById(id);
       }
-    }
-    return this.elements[id];
+    // }
+    return output;
   },
   /**
   * Adds the specified class to the element
@@ -208,8 +215,9 @@ HUPElementer.prototype = {
   */
   AddClass: function(el, c) {
     if(!el || !c || this.HasClass(el, c)) return false;
+    Components.utils.import('resource://huppermodules/hupstringer.jsm');
     var curClass = el.getAttribute('class');
-    (curClass === null || Stringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
+    (curClass === null || HupStringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
   /**
   * Removes the specified class from the element
@@ -330,10 +338,16 @@ HUPElementer.prototype = {
     return l;
   },
   Hide: function(el) {
-    this.AddClass(el, 'hidden');
+    if(el && typeof el == 'object' && el.nodeName != 'BUTTON') {
+      // HUP.L.log('HIDE', el);
+    }
+    this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
-    this.RemoveClass(el, 'hidden');
+    if(el && el == 'object' && el.nodeName != 'BUTTON') {
+      // HUP.L.log('SHOW', el);
+    }
+    this.RemoveClass(el, 'hup-hidden');
   }
 };
 

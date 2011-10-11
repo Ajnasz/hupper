@@ -1,12 +1,4 @@
 /**
- * accountmanager.js
- *
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @license GPL v2
- * for more details see the license.txt file
- */
-
-/**
  * Google account manager namespace,
  * check that the user is logged in,
  * logging in the user
@@ -23,11 +15,13 @@ var HupAccountManager = {
   passwordManager: function() {
     return new _HUPPasswordManager();
   },
-  hp: function() {
-    if(typeof hp == 'undefined') {
-      var hp = new HP();
-    }
-    return hp;
+  hp: function () {
+      if(typeof this._hp === 'undefined') {
+          var scope = {};
+          Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+          this._hp = new scope.HP();
+      }
+      return this._hp;
   },
   accountExists: function() {
     if(this.hp().get.username() && this.passwordManager().getPassword()) {

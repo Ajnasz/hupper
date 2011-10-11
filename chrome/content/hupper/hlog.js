@@ -1,12 +1,14 @@
 /**
- * Mozilla logging service
- * @class HLog is a class to make the logging easier
+ * @class Log
+ * @namespace Hupper
  * @constructor
+ * @module Hupper
+ * @description Mozilla logging service, is a class to make the logging easier
  */
-var HLog = function() {
-  this.s = this.serv();
+Hupper.Log = function() {
+  this.s = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 };
-HLog.prototype = {
+Hupper.Log.prototype = {
   /**
    * Stores a log service
    */
@@ -15,14 +17,6 @@ HLog.prototype = {
    * Stores the loggable message
    */
   msg: null,
-  /**
-   * Mozilla log service initialization method
-   * @return Mozilla log service
-   * @type Service
-   */
-  serv: function() {
-    return Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-  },
   /**
    * @param {String} arguments The arguments will be written to the error console
    */

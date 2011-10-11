@@ -1,12 +1,7 @@
 /**
- * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @license GPL v2
- * for more details see the license.txt
- */
-
-/**
  * @constructor
- * @class _HUPPasswordManager Interface to handle easily the user accounts on ff2 and ff3
+ * @class _HUPPasswordManager
+ * @description  Interface to handle easily the user accounts on ff2 and ff3
  */
 var _HUPPasswordManager = function() {
   this.url = 'chrome://hupper';
