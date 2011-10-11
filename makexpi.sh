@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  VER='1.2a'`date '+%Y%m%d%H%M%S'`;
+  VER='1.4a'`date '+%Y%m%d%H%M%S'`;
 else
   VER=$1;
 fi
@@ -40,6 +40,12 @@ function buildXPI {
     modules/hupstringer.jsm \
     modules/statusclickhandler.jsm \
     modules/timer.jsm \
+    modules/TreeView.jsm \
+    modules/HupEvent.jsm \
+    modules/UserMenu.jsm \
+    modules/trollHandler.jsm \
+    modules/hup-events.jsm \
+    modules/prefs.jsm \
     chrome/$PROJECT_NAME.jar defaults/preferences/$PROJECT_NAME.js license.txt -x \*.svn/\*
 
   echo "Replace old XPIs with the new one";

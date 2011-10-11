@@ -55,22 +55,41 @@
       <tabpanel>
         <groupbox flex="1">
           <!-- trollfiter section -->
-          <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
-          <label control="HUP-trolls" value="&Hupper.trolls;" />
-          <textbox id="HUP-trolls"  />
-          <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
-          <textbox id="HUP-troll-color" />
-          <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />
-          <menulist id="HUP-trollfilter-method">
-            <menupopup>
-              <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
-              <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
-            </menupopup>
-          </menulist>
-          <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
-          <separator class="groove" />
-          <label control="HUP-hupper-highlightusers" value="&Hupper.highlightuser;"/>
-          <textbox id="HUP-hupper-highlightusers" />
+          <vbox>
+            <checkbox id="HUP-enable-trollfilter" label="&Hupper.enabletrollfilter;" />
+            <label control="HUP-trolls" value="&Hupper.trolls;" />
+            <textbox id="HUP-trolls" style="display:none;" />
+            <vbox id="HUP-trollmanagement-container">
+              <tree id="HUP-trollmanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">
+                <treecols>
+                  <treecol primary="true" id="namecol" label="Name" flex="1" editable="true" />
+                  <splitter class="tree-splitter" ordinal="2"/>
+                </treecols>
+                <treechildren/>
+              </tree>
+            </vbox>
+            <label control="HUP-troll-color" value="&Hupper.trollcolor;" />
+            <textbox id="HUP-troll-color" />
+            <label control="HUP-trollfilter-method" value="&Hupper.trollfiltermethod;" />
+            <menulist id="HUP-trollfilter-method">
+              <menupopup>
+                <menuitem value="hide" label="&Hupper.trollfilter.hide;" />
+                <menuitem value="hilight" label="&Hupper.trollfilter.hilight;" />
+              </menupopup>
+            </menulist>
+            <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
+            <textbox id="HUP-hupper-highlightusers" style="display:none;"/>
+          </vbox>
+          <vbox id="HUP-usermanagement-container">
+            <tree id="HUP-usermanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">
+              <treecols>
+                <treecol primary="true" id="namecol" label="Name" flex="1" editable="true" />
+                <splitter class="tree-splitter" ordinal="2"/>
+                <treecol id="colorcol" label="Color" flex="1" editable="true" />
+              </treecols>
+              <treechildren/>
+            </tree>
+          </vbox>
         </groupbox>
       </tabpanel>
       <tabpanel>

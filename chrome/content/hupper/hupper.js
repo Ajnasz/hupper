@@ -207,6 +207,17 @@ Hupper.setBlocks = function() {
     }
   });
 };
+Hupper.isTroll = function (user, cb) {
+  HUP.hp.get.trolls(function (response) {
+      var trolls = response.pref.value.split(',');
+      cb(trolls.some(function (troll) {
+          return troll === user;
+      }));
+  });
+};
+
+Hupper.isHighlighted = function () {
+};
 
 
 Hupper.init = function() {
@@ -214,13 +225,39 @@ Hupper.init = function() {
   if(appcontent) {
     appcontent.addEventListener("DOMContentLoaded", Hupper.boot, true);
   }
-  var showInStatusbar = new HP().get.showinstatusbar();
+  var scope = {};
+  Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+  var showInStatusbar = new scope.HP().get.showinstatusbar();
   var statusbar = document.getElementById('HUP-statusbar');
   statusbar.hidden = !showInStatusbar;
   if(showInStatusbar) {
-    Components.utils.import('resource://huppermodules/statusclickhandler.jsm');
-    new StatusClickHandler(statusbar);
+      Components.utils.import('resource://huppermodules/statusclickhandler.jsm');
+      new StatusClickHandler(statusbar);
   }
+  document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', function () {
+      var element = document.popupNode,
+          parent = element.parentNode,
+          user = element.innerHTML,
+          isUsername = element.title === "Felhasználói profil megtekintése.";
+
+      Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
+      Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+      scope.trollHandler.isTroll(user, function (isTroll) {
+          document.getElementById('HUP-markAsTroll').hidden = !isUsername || isTroll;
+          document.getElementById('HUP-unmarkTroll').hidden = !isUsername || !isTroll;
+          scope.trollHandler.isHighlighted(user, function (isHighlighted) {
+              document.getElementById('HUP-highilghtUser').hidden = !isUsername || isTroll || isHighlighted;
+              document.getElementById('HUP-unhighilghtUser').hidden = !isUsername || isTroll || !isHighlighted;
+          });
+      });
+  }, false);
 };
-window.addEventListener('load', function(){ Hupper.init(); }, false);
-window.removeEventListener('unload', function(){ Hupper.init(); }, false);
+Hupper.initialize = function () {
+    // if (!Hupper.initialized) {
+        Hupper.init();
+        // Hupper.initialized = true;
+    // }
+    window.removeEventListener('unload', Hupper.initialize, false);
+};
+window.addEventListener('load', Hupper.initialize, false);
+window.removeEventListener('unload', Hupper.initialize, false);

@@ -163,4 +163,16 @@
   .points ul li.type {
     font-weight: bold !important;
   }
+  .hup-replies {
+    background: #eee !important;
+  }
+  .hup-replies .hup-boring {
+      color: #999 !important;
+  }
+  .comment.hup-boring {
+      display: none !important;
+  }
+  a:target + .comment.hup-boring {
+      display: block !important;
+  }
 }
