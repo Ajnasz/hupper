@@ -38,8 +38,8 @@
   <menupopup id="contentAreaContextMenu">
     <menuitem id="HUP-markAsTroll" label="&Hupper.contextMenu.markastroll;"/>
     <menuitem id="HUP-unmarkTroll" label="&Hupper.contextMenu.unmarktroll;"/>
-    <menuitem id="HUP-highilghtUser" label="Highlight user comments"/>
-    <menuitem id="HUP-unhighilghtUser" label="UNHighlight user comments"/>
+    <menuitem id="HUP-highilghtUser" label="&Hupper.contextMenu.highlightusercomments;"/>
+    <menuitem id="HUP-unhighilghtUser" label="&Hupper.contextMenu.unhighlightusercomments;"/>
   </menupopup>
 </overlay>
 

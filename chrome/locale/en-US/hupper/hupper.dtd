@@ -37,3 +37,5 @@
 
 <!ENTITY Hupper.contextMenu.markastroll "Mark as troll">
 <!ENTITY Hupper.contextMenu.unmarktroll "Unmark troll">
+<!ENTITY Hupper.contextMenu.highlightusercomments "Highlight user comments">
+<!ENTITY Hupper.contextMenu.unhighlightusercomments "Unhighlight user comments">
