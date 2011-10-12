@@ -159,6 +159,9 @@ HP.prototype = {
         styleMinFontsize: function (cb) {
             return this.M.getIntPref('extensions.hupper.style_min_fontsize', cb);
         },
+        hideboringcomments: function (cb) {
+            return this.M.getBoolPref('extensions.hupper.hideboringcomments', cb);
+        },
         trollCommentHeaderClass: function (cb) {
             cb({success: true, pref: {value: 'trollHeader', name: 'trollHeader'}});
         },
@@ -167,7 +170,7 @@ HP.prototype = {
         },
         trollCommentAnswersClass: function (cb) {
             cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
-        },
+        }
     },
     set: {
         M: this.M,
@@ -256,6 +259,9 @@ HP.prototype = {
         },
         styleMinFontsize: function (value, cb) {
             return this.M.setIntPref('extensions.hupper.style_min_fontsize', value, cb);
+        },
+        hideboringcomments: function (value, cb) {
+            return this.M.setBoolPref('extensions.hupper.hideboringcomments', value, cb);
         }
     }
 };
