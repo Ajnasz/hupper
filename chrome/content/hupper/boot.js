@@ -68,8 +68,8 @@ Hupper.boot = function (e) {
                 });
             }
             Hupper.setBlocks();
-            document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
-                var element = document.popupNode, user, trolls, isAdded;
+            var markAsTroll = function (element) {
+                var user, trolls, isAdded;
                 if (element) {
                     Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                     user = element.innerHTML;
@@ -82,7 +82,11 @@ Hupper.boot = function (e) {
                             });
                         }
                     });
-                }
+                  }
+            };
+            document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
+                var element = document.popupNode;
+                markAsTroll(element);
             }, false);
             document.getElementById('HUP-unmarkTroll').addEventListener('command', function (e) {
                 var element = document.popupNode, user, trolls, output, isAdded;
