@@ -48,9 +48,11 @@
             }
         }
         var me = this;
-        if (this.isBoringComment()) {
-            HUP.El.AddClass(this.comment, 'hup-boring');
-        }
+        this.isBoringComment(function (isBoring) {
+            if (isBoring) {
+                HUP.El.AddClass(me.comment, 'hup-boring');
+            }
+        });
         if (this.children !== -1) {
             HUP.El.AddClass(this.comment, 'has-children');
         }
@@ -82,9 +84,11 @@
         addLinkToParent: function () {
             var replies = HUP.El.GetByClass(this.parent.cont, 'hup-replies', 'div'),
                 link = HUP.El.CreateLink(this.user, '#' + this.id);
-            if (this.isBoringComment()) {
-                HUP.El.AddClass(link, 'hup-boring');
-            }
+            this.isBoringComment(function (isBoring) {
+                if (isBoring) {
+                    HUP.El.AddClass(link, 'hup-boring');
+                }
+            });
             if (!replies.length) {
               replies = HUP.El.Div();
               HUP.El.AddClass(replies, 'hup-replies');
@@ -275,19 +279,19 @@
           var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
           return plusOneRex.test(firstParagraph.innerHTML);
         },
-        isBoringComment: function () {
+        isBoringComment: function (cb) {
           var paragraphs = HUP.El.GetTag('p', this.cont),
-              output = false,
               trimComment;
-          if (typeof this.isBoring !== 'boolean') {
-            if (paragraphs.length === 1) {
-              trimComment = paragraphs[0].innerHTML.replace(/^\s*|\s*$/g, '');
-              this.isBoring = (trimComment === '.'  || trimComment === '-' ||
-                trimComment === '+1' || trimComment === '-1');
-            }
+          if (paragraphs.length === 1) {
+            trimComment = paragraphs[0].innerHTML.replace(/^\s*|\s*$/g, '');
+            HUP.hp.get.boringcommentcontents(function (response) {
+                var rex = new RegExp(response.pref.value);
+                output = rex.test(trimComment);
+                cb(output);
+            });
+          } else {
+            cb(false);
           }
-          output = this.isBoring;
-          return output;
         },
         isMinusOne: function() {
           var firstParagraph = HUP.El.GetFirstTag('p', this.cont);

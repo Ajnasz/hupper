@@ -170,6 +170,9 @@ HP.prototype = {
         },
         trollCommentAnswersClass: function (cb) {
             cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
+        },
+        boringcommentcontents: function (cb) {
+            return this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
         }
     },
     set: {
@@ -177,10 +180,6 @@ HP.prototype = {
         trolls: function (value, cb) {
             this.M.setCharPref('extensions.hupper.trolls', value, cb);
         },
-        /**
-        * @namespace HP.set
-        * @return {Boolean}
-        */
         filtertrolls: function (value, cb) {
             this.M.setBoolPref('extensions.hupper.filtertrolls', value, cb);
         },
@@ -262,6 +261,9 @@ HP.prototype = {
         },
         hideboringcomments: function (value, cb) {
             return this.M.setBoolPref('extensions.hupper.hideboringcomments', value, cb);
+        },
+        boringcommentcontents: function (value, cb) {
+            return this.M.setCharPref('extensions.hupper.boringcommentcontents', value, cb);
         }
     }
 };

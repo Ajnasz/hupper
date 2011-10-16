@@ -110,7 +110,7 @@ Hupper.boot = function (e) {
                     Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                     user = element.innerHTML;
                     HUP.hp.get.huppercolor(function (response) {
-                        var color = response.pref.value || '#A5FF9F';
+                        var color = response.pref.value || '#B5D7BE';
                         scope.trollHandler.highlightUser(user, color, function () {
                             if (c) {
                                 c.comments.forEach(function (comment) {

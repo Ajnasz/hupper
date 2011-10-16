@@ -40,3 +40,4 @@ pref("extensions.hupper.style_wider_sidebar", 0);
 pref("extensions.hupper.style_min_fontsize", 0);
 
 pref("extensions.hupper.hideboringcomments", true);
+pref("extensions.hupper.boringcommentcontents", "^([-_]|-1|\\+1)$");
