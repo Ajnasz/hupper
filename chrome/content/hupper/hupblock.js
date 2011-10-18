@@ -169,9 +169,9 @@ Hupper.Block.prototype = {
   addButtons: function() {
     if(!this.titleNode) {return;}
     var block = this, titleNode = this.titleNode,
-        delButton = HUP.El.Button(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
-        hideButton = HUP.El.Button(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
-        showButton = HUP.El.Button(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+        delButton = HUP.El.Btn(HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = HUP.El.Btn(HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = HUP.El.Btn(HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
     HUP.Ev.addEvent(delButton, 'click', function() {
       block.hide();
     });
@@ -192,10 +192,10 @@ Hupper.Block.prototype = {
   },
   addMoveButtons: function() {
     if(!this.titleNode) return;
-    this.upButton = HUP.El.Button(HUP.Bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
-    this.downButton = HUP.El.Button(HUP.Bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
-    this.leftButton = HUP.El.Button(HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
-    this.rightButton = HUP.El.Button(HUP.Bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
+    this.upButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+    this.downButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+    this.leftButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+    this.rightButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
     HUP.Ev.addEvent(this.upButton, 'click', function() {
       _this.moveUp();

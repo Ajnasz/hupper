@@ -74,7 +74,7 @@ Hupper.Elementer.prototype = {
    * @return button element
    * @type Element
    */
-  Button: function(title, className) {
+  Btn: function(title, className) {
     var button = this.button.cloneNode(true);
     button.setAttribute('title', title);
     this.AddClass(button, className);
