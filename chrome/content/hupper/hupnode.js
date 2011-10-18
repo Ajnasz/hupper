@@ -109,9 +109,9 @@ Hupper.Node.prototype = {
     });
     HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
   },
-  addToHide: function() {
-    var _this;
-    HUP.hp.get.hidetaxonomy(function(response) {
+  addToHide: function () {
+    var _this = this;
+    HUP.hp.get.hidetaxonomy(function (response) {
       var taxonomies = response.pref.value.split(';');
       if(taxonomies.indexOf(_this.taxonomy) == -1) {
         taxonomies.push(_this.taxonomy);
