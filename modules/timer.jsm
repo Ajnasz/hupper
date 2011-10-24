@@ -1,33 +1,14 @@
-/**
- * @class Timer
- * @namespace Hupper
- * @description is small bencmark utility
- * @constructor
- */
-var Timer = function() {
-  this.start();
+var later = function(fn, delay) {
+  var timer = Components.classes["@mozilla.org/timer;1"]
+                .createInstance(Components.interfaces.nsITimer);
+  var callback = {notify: fn};
+  timer.initWithCallback(callback, delay, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+  return timer;
 };
-Timer.prototype = {
-  /**
-   * Start the timer
-   */
-  start: function() {
-    this.startTime = new Date();
-  },
-  /**
-   * Stop the timer
-   */
-  stop: function() {
-    this.endTime = new Date();
-  },
-  /**
-   * Finish the run and return the result
-   * @return The difference between the start and the and in ms
-   * @type Int
-   */
-  finish: function() {
-    return this.endTime.getTime() - this.startTime.getTime();
+var never = function(timer) {
+  if(timer && typeof timer.cancel === 'function') {
+    timer.cancel();
   }
 };
 
-let EXPORTED_SYMBOLS = ['Timer'];
+let EXPORTED_SYMBOLS = ['later', 'never'];

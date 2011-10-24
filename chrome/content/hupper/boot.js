@@ -10,15 +10,15 @@ Hupper.boot = function (e) {
             logger = new Hupper.Log(),
             scope = {},
             elementer, hupMenu,
-            isTestEnv, timer, c, newComments;
+            isTestEnv, bench, c, newComments;
         // logger.log(ww.location.hostname);
         if (ww && ww.location && typeof ww.location.hostname === 'string'
             && (ww.location.hostname === 'hup.hu' || ww.location.hostname === 'www.hup.hu' ||
               /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(ww.location.href))) {
             isTestEnv = ww.location.hostname === 'hupperl';
             if (isTestEnv) {
-                Components.utils.import('resource://huppermodules/timer.jsm', scope);
-                timer = new scope.Timer();
+                Components.utils.import('resource://huppermodules/Bench.jsm', scope);
+                bench = new scope.Bench();
             }
             /**
             * A unique global object to store all global objects/array/... of the Hupper Extension
@@ -143,8 +143,8 @@ Hupper.boot = function (e) {
             Components.utils.import('resource://huppermodules/hupjumper.jsm', scope);
             HUP.w.Jumps = new scope.HupJumper(HUP.w, HUP.w.nextLinks);
             if (isTestEnv) {
-                timer.stop();
-                HUP.L.log('initialized', 'Run time: ' + timer.finish() + 'ms');
+                bench.stop();
+                HUP.L.log('initialized', 'Run time: ' + bench.finish() + 'ms');
             }
         }
     } catch(e) {

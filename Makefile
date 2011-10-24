@@ -35,6 +35,7 @@ xpi:
     modules/hupstringer.jsm \
     modules/statusclickhandler.jsm \
     modules/timer.jsm \
+    modules/Bench.jsm \
     modules/TreeView.jsm \
     modules/HupEvent.jsm \
     modules/trollHandler.jsm \

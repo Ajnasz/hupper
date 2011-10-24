@@ -165,7 +165,8 @@
         font-weight: bold !important;
     }
     .hup-replies {
-        background: #EEE !important;
+        float: left !important;
+        padding-left: 2px !important;
     }
     .hup-replies .hup-boring {
         color: #999 !important;
