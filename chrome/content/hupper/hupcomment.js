@@ -41,12 +41,10 @@
             this.getPlusOrMinus();
             this.parent.addReply(this);
             // this.parent.cont.innerHTML += '<a href="#'+this.id+'">' + this.user + '</a>, ';
-            if (this.plusOne || this.minusOne) {
-                if (this.plusOne) {
-                    this.parent.addPoint(1, this);
-                } else {
-                    this.parent.addPoint(-1, this);
-                }
+            if (this.plusOne) {
+                this.parent.addPoint(1, this);
+            } else if (this.minusOne) {
+                this.parent.addPoint(-1, this);
             }
         }
         var me = this;
@@ -82,25 +80,6 @@
                 indent++;
             }
             this.indent = indent;
-        },
-        addLinkToParent: function () {
-            var replies = HUP.El.GetByClass(this.parent.cont, 'hup-replies', 'div'),
-                link = HUP.El.CreateLink(this.user, '#' + this.id);
-            this.isBoringComment(function (isBoring) {
-                if (isBoring) {
-                    HUP.El.AddClass(link, 'hup-boring');
-                }
-            });
-            if (!replies.length) {
-                replies = HUP.El.Div();
-                HUP.El.AddClass(replies, 'hup-replies');
-                HUP.El.Add(HUP.El.Txt('replies: '), replies);
-                HUP.El.Add(replies, this.parent.cont);
-            } else {
-                replies = replies[0];
-                HUP.El.Add(HUP.El.Txt(', '), replies);
-            }
-            HUP.El.Add(link, replies);
         },
         /**
         * checks the comment, and if it has been posted "today", than adds the

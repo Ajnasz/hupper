@@ -1,3 +1,4 @@
+/*jslint indent: 2*/
 /**
  * @class Block
  * @namespace Hupper
@@ -52,10 +53,10 @@ Hupper.Block = function(cfg) {
   this.addMoveButtons();
   if(this.id != 'block-hupper-0') { // exception for hup block
     this.addButtons();
+    this.setSide(cfg.side);
+    cfg.hidden ? this.hide() : this.show();
+    cfg.contentHidden ? this.hideContent() : this.showContent();
   }
-  this.setSide(cfg.side);
-  cfg.hidden ? this.hide() : this.show();
-  cfg.contentHidden ? this.hideContent() : this.showContent();
   // Hupper.Blocks.save();
 };
 Hupper.Block.prototype = {
@@ -191,7 +192,9 @@ Hupper.Block.prototype = {
     this.showButton = showButton;
   },
   addMoveButtons: function() {
-    if(!this.titleNode) return;
+    if(!this.titleNode) {
+        return;
+    }
     this.upButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
     this.downButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
     this.leftButton = HUP.El.Btn(HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
