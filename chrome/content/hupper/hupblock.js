@@ -45,7 +45,7 @@ Hupper.Block = function(cfg) {
   if(this.block) {
     this.titleNode = HUP.El.GetFirstTag('h2', this.block);
     if(this.titleNode) {
-      this.title = this.titleNode.innerHTML;
+      this.blockTitle = this.titleNode.innerHTML;
     }
   }
   this.makeTitle();
@@ -123,9 +123,9 @@ Hupper.Block.prototype = {
         'block-tagadelic-1': '/temak'
 
     };
-    if(boxes[this.id] && this.title && this.titleNode) {
-      // HUP.L.log('set title: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
-      HUP.El.Update(HUP.El.CreateLink(this.title, boxes[this.id]), this.titleNode);
+    if(boxes[this.id] && this.blockTitle && this.titleNode) {
+      // HUP.L.log('set blockTitle: ' + this.id + ' ' + boxes[this.id] + ' ' + this.titleNode.parentNode.id);
+      HUP.El.Update(HUP.El.CreateLink(this.blockTitle, boxes[this.id]), this.titleNode);
     }
   },
   moveUp: function() {
@@ -275,7 +275,7 @@ Hupper.BlockMenus.prototype = {
     if(!this.blocks[block.id] && block.block) {
       if(!this.menu) this.addMenu();
       var _this = this;
-      this.blocks[block.id] = this.hupMenu.addMenuItem({name: block.title, click: function() {block.show()}}, _this.menu);
+      this.blocks[block.id] = this.hupMenu.addMenuItem({name: block.blockTitle, click: function() {block.show()}}, _this.menu);
     }
   },
   removeBlockFromMenu: function(block) {
