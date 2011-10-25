@@ -307,7 +307,7 @@
         },
         isPlusOne: function () {
             var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-            return plusOneRex.test(firstParagraph.innerHTML);
+            return plusOneRex.test(firstParagraph.textContent);
         },
         isBoringComment: function (cb) {
             var paragraphs = HUP.El.GetTag('p', this.cont),
@@ -325,7 +325,7 @@
         },
         isMinusOne: function () {
             var firstParagraph = HUP.El.GetFirstTag('p', this.cont);
-            return minusOneRex.test(firstParagraph.innerHTML);
+            return minusOneRex.test(firstParagraph.textContent);
         },
         renderReplies: function () {
             var replies = HUP.El.GetByClass(this.footer, 'hup-replies', 'div');
