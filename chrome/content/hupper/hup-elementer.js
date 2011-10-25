@@ -133,7 +133,8 @@ Hupper.Elementer.prototype = {
     */
   Remove: function(elem, parent) {
     if(!elem || !elem.parentNode) return;
-    elem.parentNode.removeChild(elem);
+    var el = elem.parentNode.removeChild(elem);
+    el = null;
   },
   /**
   * Removes all childnode of the element
