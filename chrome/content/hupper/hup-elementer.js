@@ -145,6 +145,9 @@ Hupper.Elementer.prototype = {
       this.Remove(element.firstChild);
     }
   },
+  Fragment: function () {
+      return this.doc.createDocumentFragment();
+  },
   /**
     * @param {Element} inner the new content element
     * @param {Element} obj updatable element
