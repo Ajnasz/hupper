@@ -172,7 +172,10 @@ HP.prototype = {
             cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
         },
         boringcommentcontents: function (cb) {
-            return this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
+            this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
+        },
+        setunlimitedlinks: function (cb) {
+            this.M.getBoolPref('extensions.hupper.setunlimitedlinks', cb);
         }
     },
     set: {
@@ -264,6 +267,9 @@ HP.prototype = {
         },
         boringcommentcontents: function (value, cb) {
             return this.M.setCharPref('extensions.hupper.boringcommentcontents', value, cb);
+        },
+        setunlimitedlinks: function (value, cb) {
+            return this.M.setBoolPref('extensions.hupper.setunlimitedlinks', value, cb);
         }
     }
 };
