@@ -53,10 +53,10 @@ Hupper.Block = function(cfg) {
   this.addMoveButtons();
   if(this.id != 'block-hupper-0') { // exception for hup block
     this.addButtons();
-    this.setSide(cfg.side);
-    cfg.hidden ? this.hide() : this.show();
-    cfg.contentHidden ? this.hideContent() : this.showContent();
   }
+  this.setSide(cfg.side);
+  cfg.hidden ? this.hide() : this.show();
+  cfg.contentHidden ? this.hideContent() : this.showContent();
   // Hupper.Blocks.save();
 };
 Hupper.Block.prototype = {
