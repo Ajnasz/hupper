@@ -54,7 +54,7 @@ Hupper.savePreferences = function () {
         if (elem.nodeName.toLowerCase() === 'checkbox') {
             value = elem.checked;
         } else {
-            value = value;
+            value = elem.value;
         }
         value = HUP.hp.set[item.prefName](value);
     });
