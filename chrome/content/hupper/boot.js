@@ -173,7 +173,6 @@ Hupper.boot = function (e) {
                         callStr.push('a[href^=" http://www.hup.hu' + link + '"]');
                         callStr.push('a[href^=" http://www.hup.hu' + link + '"]');
                     });
-                    HUP.L.log(callStr);
                     Array.prototype.slice
                         .call(HUP.w.querySelectorAll(callStr.join(',')))
                         .forEach(function (elem) {

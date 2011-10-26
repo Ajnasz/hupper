@@ -58,34 +58,6 @@ Hupper.savePreferences = function () {
         }
         value = HUP.hp.set[item.prefName](value);
     });
-  /*
-  HUP.hp.set.filtertrolls(document.getElementById('HUP-enable-trollfilter').checked);
-  HUP.hp.set.trolls(document.getElementById('HUP-trolls').value);
-  HUP.hp.set.trollcolor(document.getElementById('HUP-troll-color').value);
-  HUP.hp.set.trollfiltermethod(document.getElementById('HUP-trollfilter-method').value);
-  // HUP.hp.set.filterhuppers(document.getElementById('HUP-enable-hupperfilter').checked);
-  // HUP.hp.set.huppers(document.getElementById('HUP-huppers').value);
-  // HUP.hp.set.huppercolor(document.getElementById('HUP-hupper-color').value);
-  HUP.hp.set.replacenewcommenttext(document.getElementById('HUP-enable-new-comment-changer').checked);
-  HUP.hp.set.newcommenttext(document.getElementById('HUP-new-comment-text').value);
-  HUP.hp.set.extracommentlinks(document.getElementById('HUP-enable-extra-comment-links').checked);
-  HUP.hp.set.hilightforumlinesonhover(document.getElementById('HUP-hilight-forum-lines-onhover').checked);
-  HUP.hp.set.insertpermalink(document.getElementById('HUP-insert-permalink').checked);
-  HUP.hp.set.insertnewtexttonode(document.getElementById('HUP-insert-new-text-to-node').checked);
-  HUP.hp.set.fadeparentcomment(document.getElementById('HUP-fade-parent-comment').checked);
-  HUP.hp.set.showqnavbox(document.getElementById('HUP-show-quick-nav-box').checked);
-  HUP.hp.set.hidetrollanswers(document.getElementById('HUP-hide-troll-answers').checked);
-  HUP.hp.set.highlightusers(document.getElementById('HUP-hupper-highlightusers').value);
-  HUP.hp.set.hidetaxonomy(document.getElementById('HUP-hide-taxonomy').value);
-  HUP.hp.set.showinstatusbar(document.getElementById('HUP-show-in-statusbar').checked);
-  HUP.hp.set.parseblocks(document.getElementById('HUP-parseblocks').checked);
-  HUP.hp.set.styleIndent(document.getElementById('HUP-style-indent').checked);
-  HUP.hp.set.styleAccessibility(document.getElementById('HUP-style-accessibility').checked);
-  HUP.hp.set.styleWiderSidebar(document.getElementById('HUP-style-sidebar-width').value);
-  HUP.hp.set.styleMinFontsize(document.getElementById('HUP-style-min-fontsize').value);
-  //HUP.hp.set.username(document.getElementById('HUP-hupper-username').value);
-  //new _HUPPasswordManager().addPassword(document.getElementById('HUP-hupper-password').value);
-  */
     var hideIcon = !HUP.hp.get.showinstatusbar();
     Hupper.mapWindows(function (win) {
         win.document.getElementById('HUP-statusbar').hidden = hideIcon;
@@ -105,38 +77,39 @@ Hupper.onChangeFilterMethod = function () {
     }
 };
 Hupper.checkHLUsers = function () {
-  var hlUsers = document.getElementById('HUP-hupper-highlightusers').value.split(',');
-  var trolls = document.getElementById('HUP-trolls').value.split(',');
-  // var huppers = document.getElementById('HUP-huppers').value.split(',');
-  var hlUsersObj = {};
-  for(var i = 0, hl = hlUsers.length, hlUser; i < hl; i++) {
-    hlUser = hlUsers[i].split(':');
-    hlUsersObj[hlUser[0]] = hlUsers[1];
-  }
-  var used = new Array();
-  for(var i = 0, tl= trolls.length; i < tl; i++) {
-    if(hlUsersObj[trolls[i]]) {
-      used.push(trolls[i]);
+    var hlUsers = document.getElementById('HUP-hupper-highlightusers').value.split(','),
+        trolls = document.getElementById('HUP-trolls').value.split(','),
+    // var huppers = document.getElementById('HUP-huppers').value.split(',');
+        hlUsersObj = {}, i, hl, hlUser, tl, used;
+    for (i = 0, hl = hlUsers.length; i < hl; i += 1) {
+        hlUser = hlUsers[i].split(':');
+        hlUsersObj[hlUser[0]] = hlUsers[1];
     }
-  }
-  if(used.length > 0) {
-    return confirm(HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
-  }
-  return true;
+    used = [];
+    for (i = 0, tl = trolls.length; i < tl; i += 1) {
+        if (hlUsersObj[trolls[i]]) {
+            used.push(trolls[i]);
+        }
+    }
+    if (used.length > 0) {
+        return confirm(HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
+    }
+    return true;
 };
 /**
  * Run the given parameter for every window
  * @param {Function} onMap A function which should run for every opened window
  */
 Hupper.mapWindows = function(onMap) {
-  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-  var enumerator = wm.getEnumerator('navigator:browser'), win;
-  while(enumerator.hasMoreElements()) {
-    win = enumerator.getNext();
-    if(typeof win != 'undefined' && typeof onMap == 'function') {
-      onMap(win);
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator),
+        enumerator = wm.getEnumerator('navigator:browser'), win;
+
+    while (enumerator.hasMoreElements()) {
+        win = enumerator.getNext();
+        if (typeof win !== 'undefined' && typeof onMap === 'function') {
+            onMap(win);
+        }
     }
-  }
 };
 
 Hupper.treeviewer = function (doc, options) {
@@ -144,11 +117,11 @@ Hupper.treeviewer = function (doc, options) {
         element = doc.getElementById(options.treeId),
         rows = options.rows,
         rowsObject,
-        lastItem;
+        lastItem, view;
 
     Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
     // create a treeview, it will create the events too
-    var view = scope.TreeView();
+    view = scope.TreeView();
 
     rowsObject = options.rowsToTree(rows);
 
@@ -224,80 +197,6 @@ Hupper.setTrollManager = function (doc) {
           return rows.join(',');
       }
   });
-  return;
-  var scope = {},
-      element = doc.getElementById('HUP-trollmanagement'),
-      trollUsers = HUP.hp.get.trolls().split(','),
-      trollUsersObj = [], output = [], hl, lastItem;
-  Components.utils.import('resource://huppermodules/TreeView.jsm', scope);
-  scope.treeView = scope.TreeView();
-  for(i = 0, hl = trollUsers.length; i < hl; i++) {
-    trollUsersObj.push({
-        namecol: {text:trollUsers[i], editable: true}
-    });
-  }
-  lastItem = trollUsersObj[trollUsersObj.length - 1];
-
-  if (lastItem.namecol.text !== '') {
-      trollUsersObj.push({
-          namecol: {text:'', editable: true},
-      });
-  }
-
-  var isEmpty = function (item) {
-      return item && item.namecol.text === '';
-  };
-  var updateTree = function () {
-    var output = [],
-        lastItem = trollUsersObj[trollUsersObj.length - 1];
-
-    // add extra row
-    if (!isEmpty(lastItem)) {
-        trollUsersObj.push({
-            namecol: {text:'', editable: true},
-        });
-    } else {
-        // or remove the last one, because the one before the last is also empty
-        while (trollUsersObj.length > 1 && isEmpty(trollUsersObj[trollUsersObj.length - 2])) {
-            trollUsersObj.length = trollUsersObj.length - 1;
-        }
-    }
-
-    trollUsersObj.forEach(function (item) {
-        var name = item.namecol.text;
-        if (name) {
-            output.push(name);
-        }
-    });
-    var field = doc.getElementById('HUP-trolls');
-    field.value = output.join(',');
-    treeView = scope.treeView(trollUsersObj, element);
-  };
-
-
-  var treeView = scope.treeView(trollUsersObj, element);
-  scope.events.on('setCellText', function (args) {
-    var colName = args.col.id,
-        value = args.text;
-    //if (isValidItem(colName, value)) {
-      trollUsersObj[args.row][colName].text = value;
-    // }
-    updateTree();
-    if (element.view.selection) {
-      element.view.selection.select(args.row);
-    }
-  });
-  doc.getElementById('HUP-trollmanagement-container').addEventListener('keypress', function (e) {
-    if (e.keyCode === e.DOM_VK_DELETE || e.keyCode === e.DOM_VK_BACK_SPACE) {
-        if (element.view.selection && element.editingRow === -1) {
-          var index = element.view.selection.currentIndex;
-          trollUsersObj.splice(element.view.selection.currentIndex, 1);
-          updateTree();
-          element.view.selection.select(index);
-        }
-    } else if (e.keyCode === e.DOM_VK_TAB) {
-    }
-  }, false);
 };
 
 Hupper.setUserManager = function (doc) {
