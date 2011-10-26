@@ -1,7 +1,7 @@
 /*global Hupper: true, HUP: true, Transform: true */
 (function () {
-    var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.)'),
-        minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.)'),
+    var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
+        minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
         commentClasses = null;
     /**
     * @constructor
