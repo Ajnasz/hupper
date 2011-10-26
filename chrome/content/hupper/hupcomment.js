@@ -425,9 +425,11 @@
                 sumContainer.setAttribute('title', 'osszesen');
                 sumContainer.addEventListener('click', togglePoints, true);
                 HUP.El.AddClass(sumContainer, 'sum-points');
-                points = this.plusPoints.length - this.minusPoints.length + ' points';
-                HUP.L.log('points: ', points);
-                sumContainer.innerHTML = points;
+                points = HUP.El.Txt(HUP.Bundles
+                  .getFormattedString('pointSum',
+                    [this.plusPoints.length - this.minusPoints.length]));
+                HUP.El.RemoveAll(sumContainer);
+                HUP.El.Add(points, sumContainer);
 
                 HUP.El.AddClass(pointDetails, 'point-details');
 
