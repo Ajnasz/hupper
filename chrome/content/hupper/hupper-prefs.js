@@ -36,7 +36,8 @@ Hupper.setPrefWinVals = function () {
     Hupper.prefItems.forEach(function (item) {
         var elem = document.getElementById(item.id),
             value = HUP.hp.get[item.prefName]();
-        if (elem.nodeName === 'checkbox') {
+
+        if (elem.nodeName.toLowerCase() === 'checkbox') {
             elem.checked = value;
         } else {
             elem.value = value;
@@ -50,7 +51,7 @@ Hupper.savePreferences = function () {
     Hupper.prefItems.forEach(function (item) {
         var elem = document.getElementById(item.id),
             value;
-        if (elem.nodeName === 'checkbox') {
+        if (elem.nodeName.toLowerCase() === 'checkbox') {
             value = elem.checked;
         } else {
             value = value;
