@@ -1,12 +1,12 @@
 <!ENTITY Hupper.enabletrollfilter "Enable trollfilter">
-<!ENTITY Hupper.trolls "Trolls (comma separated user names)">
+<!ENTITY Hupper.trolls "Trolls">
 <!ENTITY Hupper.trollcolor "The background color of the header of troll comments">
 <!ENTITY Hupper.trollfiltermethod "Effect to filter troll comments">
 <!ENTITY Hupper.trollfilter.hide "Hide">
 <!ENTITY Hupper.trollfilter.hilight "Highlight">
 <!ENTITY Hupper.trollfilter.hideanswers "Hide answers to troll comments">
 <!ENTITY Hupper.enablehupperfilter "Enable hupperfilter">
-<!ENTITY Hupper.huppers "Huppers (comma separated user names)">
+<!ENTITY Hupper.huppers "Huppers">
 <!ENTITY Hupper.huppercolor "The color of the header of hupper comments">
 <!ENTITY Hupper.enablenewcommentchange "Enable to replace the 'új' text in the header of recently posted comments">
 <!ENTITY Hupper.newcommenttext "The text to replace to">
@@ -16,7 +16,8 @@
 <!ENTITY Hupper.insertnewtexttonode "Insert the NEW text in the header of the articles where unread feeds are">
 <!ENTITY Hupper.fadeparentcomment "Fade parent comment">
 <!ENTITY Hupper.showquicknavbox "Show quick navigation box">
-<!ENTITY Hupper.highlightuser "Highlight user comments (username:#fff999,username2:#999fff)">
+<!ENTITY Hupper.setunlimitedlinks "Show as many comments as possible on a page">
+<!ENTITY Hupper.highlightuser "Highlight user comments">
 <!ENTITY Hupper.tabgeneral "General">
 <!ENTITY Hupper.tabcomment "Comment color">
 <!ENTITY Hupper.tabaccount "Account information">

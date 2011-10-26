@@ -45,6 +45,7 @@
           <checkbox id="HUP-insert-new-text-to-node" label="&Hupper.insertnewtexttonode;" />
           <checkbox id="HUP-fade-parent-comment" label="&Hupper.fadeparentcomment;" />
           <checkbox id="HUP-show-quick-nav-box" label="&Hupper.showquicknavbox;" />
+          <checkbox id="HUP-set-unlimited-links" label="&Hupper.setunlimitedlinks;" />
           <label control="HUP-hide-taxonomy" value="&Hupper.hidetaxonomy;" />
           <textbox id="HUP-hide-taxonomy" />
           <checkbox id="HUP-show-in-statusbar" label="&Hupper.showinstatusbar;" />
