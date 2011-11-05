@@ -180,14 +180,9 @@ Hupper.markAllNodeAsRead = function(e) {
  * @type {Boolean}
  */
 Hupper.inArray = function(value, array) {
-  var i = array.length - 1;
-  while(array[i]) {
-    if(array[i] === value) {
-      return true;
-    }
-    i--;
-  }
-  return false;
+    return array.some(function (item) {
+        return item === value;
+    });
 };
 /**
  * Appends a new link to the top of the page, if there is new comment

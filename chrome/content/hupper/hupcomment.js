@@ -523,7 +523,7 @@
         _parseComments: function (prefs) {
             var replacenewcommenttext = prefs.replacenewcommenttext,
             prevnextlinks = prefs.prevnextlinks,
-            trolls = prefs.trolls,
+            trolls = prefs.trolls.split(','),
             filtertrolls = prefs.filtertrolls,
             huppers = prefs.huppers,
             extraCommentLinks = prefs.extraCommentLinks,
@@ -538,7 +538,7 @@
             builder = new Hupper.NodeHeaderBuilder();
             try {
                 this.comments.forEach(function (C) {
-                    if (filtertrolls && Hupper.inArray(C.user, trolls.split(','))) {
+                    if (filtertrolls && Hupper.inArray(C.user, trolls)) {
                         C.setTroll();
                     }
                     if (extraCommentLinks) {
