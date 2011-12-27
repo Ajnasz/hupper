@@ -41,7 +41,27 @@ xpi:
     modules/trollHandler.jsm \
     modules/hup-events.jsm \
     modules/prefs.jsm \
-		chrome/ \
+		chrome/skin/ \
+		chrome/locale/ \
+		chrome/content/hupper/namespace.js \
+		chrome/content/hupper/ajax.js \
+		chrome/content/hupper/hlog.js \
+		chrome/content/hupper/postinstall.js \
+		chrome/content/hupper/json.js \
+		chrome/content/hupper/hup-elementer.js \
+		chrome/content/hupper/transform.js \
+		chrome/content/hupper/menu.js \
+		chrome/content/hupper/hupcomment.js \
+		chrome/content/hupper/hupnode.js \
+		chrome/content/hupper/hupblocks.js \
+		chrome/content/hupper/hupblock.js \
+		chrome/content/hupper/styles.js \
+		chrome/content/hupper/nodeheadbuilder.js \
+		chrome/content/hupper/boot.js \
+		chrome/content/hupper/hupper.js \
+		chrome/content/hupper/hupper-prefs.js \
+		chrome/content/hupper/hupper.xul \
+		chrome/content/hupper/hupper-prefs.xul \
 		license.txt;
 
 restore:
