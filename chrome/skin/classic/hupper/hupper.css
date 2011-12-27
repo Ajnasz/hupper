@@ -138,7 +138,7 @@
         padding: 0 5px !important;
         text-align: right !important;
     }
-    .points .point-details {
+    .points > .point-details {
         background-color: #F6F6EB !important;
         display: none !important;
         margin: 0 !important;
@@ -156,7 +156,7 @@
     .points.show {
         width: 140px !important;
     }
-    .points.show .point-details {
+    .points.show > .point-details {
         border-top: 1px solid #B7B78B !important;
         display: block !important;
         width: 128px !important;
@@ -174,12 +174,13 @@
     .comment.hup-boring {
         display: none !important;
     }
-    .comment.hup-boring .submitted {
+    .comment.hup-boring > .submitted {
         background-color: #EBEBD5;
     }
     .comment.has-children,
     .keep-boring-comments .comment.hup-boring,
-    a:target + .comment.hup-boring {
+    a:target + .comment.hup-boring,
+    a#new:target + a + .comment.hup-boring {
         display: block !important;
     }
     .comment.has-children {
