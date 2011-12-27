@@ -1,5 +1,6 @@
-/*global Hupper: true, HUP: true, StyleLoader: true*/
+/*global Hupper: true, StyleLoader: true*/
 Hupper.styles = function () {
+    var scope = {};
     var stylesToLoad = [],
     addStyle, indentStyle,
     accesibilityStyle, widthStyle, minFontsizeStyle,
@@ -106,9 +107,9 @@ Hupper.styles = function () {
     });
     addStyle("chrome://hupper/skin/hupper.css");
 
-    Components.utils.import('resource://huppermodules/styleLoader.jsm');
-    if (!(Hupper.styleLoader instanceof StyleLoader)) {
-        styleLoader = new StyleLoader();
+    Components.utils.import('resource://huppermodules/styleLoader.jsm', scope);
+    if (!(Hupper.styleLoader instanceof scope.StyleLoader)) {
+        styleLoader = new scope.StyleLoader();
         Hupper.styleLoader = styleLoader;
     }
     styleLoader = Hupper.styleLoader;

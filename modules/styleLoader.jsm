@@ -1,5 +1,6 @@
 // var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService)
-Components.utils.import('resource://huppermodules/hupdb.jsm');
+var scope = {};
+Components.utils.import('resource://huppermodules/hupdb.jsm', scope);
 var bind = function(fn, context) {
   var args = [];
   for (var i = 2; i < arguments.length; i++) {
@@ -14,7 +15,7 @@ var bind = function(fn, context) {
 };
 
 var Storage = function() {
-  this.db = new HupDB();
+  this.db = new scope.HupDB();
 };
 Storage.prototype = {
   addStyle_: function(styleURI, isActive, onFinish, onError) {
