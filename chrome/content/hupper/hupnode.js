@@ -4,6 +4,7 @@
  * @param {Element} node an article node
  */
 Hupper.Node = function (node) {
+  var scope = {};
   var header = Hupper.HUP.El.GetFirstTag('h2', node),
     submitData = node.childNodes[3],
     cont = node.childNodes[5],
@@ -13,7 +14,7 @@ Hupper.Node = function (node) {
   this.element = node;
   this.id = parseInt(node.id.replace('node-', ''), 10);
   this.header = header;
-  Components.utils.import('resource://huppermodules/hupstringer.jsm');
+  Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
   this.path = HupStringer.trim(Hupper.HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
   this.submitData = submitData;
   this.cont = cont;
@@ -58,7 +59,8 @@ Hupper.Node.prototype = {
   },
   checkTaxonomy: function () {
     var _this = this;
-    Components.utils.import('resource://huppermodules/hupstringer.jsm');
+    var scope = {};
+    Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
     Hupper.HUP.hp.get.hidetaxonomy(function(response) {
       var hideTaxonomies = HupStringer.trim(response.pref.value);
       if (hideTaxonomies.length && hideTaxonomies.indexOf(_this.taxonomy) !== -1) {

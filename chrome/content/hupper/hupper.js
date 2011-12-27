@@ -226,8 +226,8 @@ Hupper.init = function() {
   var statusbar = document.getElementById('HUP-statusbar');
   statusbar.hidden = !showInStatusbar;
   if(showInStatusbar) {
-      Components.utils.import('resource://huppermodules/statusclickhandler.jsm');
-      new StatusClickHandler(statusbar);
+      Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
+      var handler = new scope.StatusClickHandler(statusbar);
   }
   document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', function () {
       var element = document.popupNode,
