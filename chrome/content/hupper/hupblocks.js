@@ -123,7 +123,7 @@
             contentHidden: block.contentHidden,
           });
         });
-        HUP.hp.set.blocks(HUPJson.encode(json));
+        HUP.hp.set.blocks(Hupper.Json.encode(json));
       },
     };
   };

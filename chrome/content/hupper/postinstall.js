@@ -31,7 +31,7 @@ Hupper.postInstall = function() {
     }
   };
   var convertBlockSettings = function() {
-    var blocks = HUPJson.decode(HUP.hp.get.blocks());
+    var blocks = Hupper.Json.decode(HUP.hp.get.blocks());
     var output = {left: [], right: []}
 
     if(!blocks['block-blog-0']) {
@@ -47,7 +47,7 @@ Hupper.postInstall = function() {
     } else if(blocks['left'] || blocks['right']) {
       output = blocks;
     }
-    HUP.hp.set.blocks(HUPJson.encode(output));
+    HUP.hp.set.blocks(Hupper.Json.encode(output));
   };
 
   /**

@@ -33,7 +33,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
 
   hupperBlocks.UI = Hupper.Blocks.UI(elementer, hupperBlocks);
   HUP.hp.get.blocks(function(response) {
-    var blocksFromConfig = HUPJson.decode(response.pref.value);
+    var blocksFromConfig = Hupper.Json.decode(response.pref.value);
     if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
       leftBlocksFromConf = blocksFromConfig.left;
       rightBlocksFromConf = blocksFromConfig.right;
