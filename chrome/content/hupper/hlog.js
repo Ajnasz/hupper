@@ -1,3 +1,6 @@
+ if (typeof Hupper === 'undefined') {
+    var Hupper = {};
+ }
 /**
  * @class Log
  * @namespace Hupper
