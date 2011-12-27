@@ -1,3 +1,6 @@
+ if (typeof Hupper === 'undefined') {
+    var Hupper = {};
+ }
 /**
  * If some data format has been changed, the postinstall
  * will convert the datas to the newer format
