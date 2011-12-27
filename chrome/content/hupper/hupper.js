@@ -13,11 +13,11 @@
  * @type Array
  */
 Hupper.getNodes = function() {
-  var c = HUP.El.GetId('content-both');
-  var ds = HUP.El.GetTag('div', c);
+  var c = Hupper.HUP.El.GetId('content-both');
+  var ds = Hupper.HUP.El.GetTag('div', c);
   var nodes = new Array(), newnodes = new Array();
   for(var i = 0, dsl = ds.length; i < dsl; i++) {
-    if(HUP.El.HasClass(ds[i], 'node')) {
+    if(Hupper.HUP.El.HasClass(ds[i], 'node')) {
       node = new Hupper.Node(ds[i]);
       node.newc && !node.hidden ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
     }
@@ -25,14 +25,14 @@ Hupper.getNodes = function() {
   return new Array(nodes, newnodes);
 };
 Hupper.getBlocks = function() {
-  return HUP.El.GetByClass(HUP.El.GetId('sidebar-left'), 'block', 'div').concat(HUP.El.GetByClass(HUP.El.GetId('sidebar-right'), 'block', 'div'));
+  return Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-left'), 'block', 'div').concat(Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
 Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
   var hupperBlocks = new Hupper.Blocks(),
       processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
 
   hupperBlocks.UI = Hupper.Blocks.UI(elementer, hupperBlocks);
-  HUP.hp.get.blocks(function(response) {
+  Hupper.HUP.hp.get.blocks(function(response) {
     var blocksFromConfig = Hupper.Json.decode(response.pref.value);
     if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
       leftBlocksFromConf = blocksFromConfig.left;
@@ -114,7 +114,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
  * @param {Array} newNodes
  */
 Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
-  var spa = HUP.El.Span(), sp, builder = new Hupper.NodeHeaderBuilder(), mread, next, prev;
+  var spa = Hupper.HUP.El.Span(), sp, builder = new Hupper.NodeHeaderBuilder(), mread, next, prev;
   for(var i = 0, nl = nodes.length, node; i < nl; i++) {
     node = nodes[i];
     if(node.newc) {
@@ -122,7 +122,7 @@ Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
       node.next = (node.index == newNodes.length - 1) ? false : newNodes[node.index + 1].id;
       node.previous = (node.index == 0 || !newNodes[node.index - 1]) ? false : newNodes[node.index - 1].id;
       node.addNewNodeLinks();
-      if(!node.hidden) HUP.w.nextLinks.push('node-' + node.id);
+      if(!node.hidden) Hupper.HUP.w.nextLinks.push('node-' + node.id);
     }
   }
   nodes.forEach(function(node) {
@@ -140,24 +140,24 @@ Hupper.markNodeAsRead = function(e) {
     method: 'get',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
     successHandler: function() {
-      this.el.innerHTML = HUP.Bundles.getString('markingSuccess');
+      this.el.innerHTML = Hupper.HUP.Bundles.getString('markingSuccess');
       if(this.el.nextSibling.getAttribute('class') == 'hnew') {
-        HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
+        Hupper.HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
       }
       var el = this.el;
       setTimeout(function() {
-        HUP.El.Remove(el);
+        Hupper.HUP.El.Remove(el);
       }, 750);
     },
     loadHandler: function() {
-      var img = HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
-      HUP.El.RemoveAll(this.el);
-      HUP.El.Add(img, this.el);
+      var img = Hupper.HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
+      Hupper.HUP.El.RemoveAll(this.el);
+      Hupper.HUP.El.Add(img, this.el);
     },
     errorHandler: function() {
-      var t = HUP.El.Txt(HUP.Bundles.getString('markingError'));
-      HUP.El.RemoveAll(this.el);
-      HUP.El.Add(t, this.el);
+      var t = Hupper.HUP.El.Txt(Hupper.HUP.Bundles.getString('markingError'));
+      Hupper.HUP.El.RemoveAll(this.el);
+      Hupper.HUP.El.Add(t, this.el);
     }
   }, e.target);
 };
@@ -166,8 +166,8 @@ Hupper.markNodeAsRead = function(e) {
  * @param {Event} e event object
  */
 Hupper.markAllNodeAsRead = function(e) {
-  var n = HUP.markReadNodes;
-  var d = document || HUP.w;
+  var n = Hupper.HUP.markReadNodes;
+  var d = document || Hupper.HUP.w;
   for(var i = 0, nl = n.length; i < nl; i++) {
     var click = d.createEvent("MouseEvents");
     click.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -189,21 +189,21 @@ Hupper.inArray = function(value, array) {
  * @param {String} [link]
  */
 Hupper.appendNewNotifier = function(link, mark, hupMenu) {
-  hupMenu.addMenuItem({name: HUP.Bundles.getString('firstNew'), href: link || '#new'})
+  hupMenu.addMenuItem({name: Hupper.HUP.Bundles.getString('firstNew'), href: link || '#new'})
   if(mark) {
-    hupMenu.addMenuItem({name: HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
+    hupMenu.addMenuItem({name: Hupper.HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
 Hupper.setBlocks = function() {
-  HUP.hp.get.parseblocks(function(response) {
+  Hupper.HUP.hp.get.parseblocks(function(response) {
     if (response.pref.value) {
       var blocks = Hupper.getBlocks();
-      Hupper.parseBlocks(blocks, HUP.BlockMenus, HUP.El);
+      Hupper.parseBlocks(blocks, Hupper.HUP.BlockMenus, Hupper.HUP.El);
     }
   });
 };
 Hupper.isTroll = function (user, cb) {
-  HUP.hp.get.trolls(function (response) {
+  Hupper.HUP.hp.get.trolls(function (response) {
       var trolls = response.pref.value.split(',');
       cb(trolls.some(function (troll) {
           return troll === user;

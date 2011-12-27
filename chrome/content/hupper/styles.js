@@ -7,25 +7,25 @@ Hupper.styles = function () {
     addStyle = function (s) {
         stylesToLoad.push(s);
     };
-    HUP.hp.get.trollfiltermethod(function (response) {
+    Hupper.HUP.hp.get.trollfiltermethod(function (response) {
         var styles = '',
             trollfiltermethod = response.pref.value;
 
-        HUP.hp.get.trollCommentClass(function (response) {
+        Hupper.HUP.hp.get.trollCommentClass(function (response) {
             var trollCommentClass = response.pref.value;
-            HUP.hp.get.hidetrollanswers(function (response) {
+            Hupper.HUP.hp.get.hidetrollanswers(function (response) {
                 var hidetrollanswers = response.pref.value;
 
-                HUP.hp.get.trollCommentAnswersClass(function (response) {
+                Hupper.HUP.hp.get.trollCommentAnswersClass(function (response) {
                     var trollCommentAnswersClass = response.pref.value;
 
-                    HUP.hp.get.trollCommentHeaderClass(function (response) {
+                    Hupper.HUP.hp.get.trollCommentHeaderClass(function (response) {
                         var trollCommentHeaderClass = response.pref.value;
 
-                        HUP.hp.get.trollcolor(function (response) {
+                        Hupper.HUP.hp.get.trollcolor(function (response) {
                             var trollcolor = response.pref.value;
 
-                            HUP.hp.get.hilightforumlinesonhover(function (response) {
+                            Hupper.HUP.hp.get.hilightforumlinesonhover(function (response) {
                                 var hilightforumlinesonhover = response.pref.value;
                                 switch (trollfiltermethod) {
                                 case 'hide':
@@ -52,7 +52,7 @@ Hupper.styles = function () {
                                 styles = '/* hupper user styles */@-moz-document' +
                                 ' url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
                                   styles + '}';
-                                HUP.L.log('add styles: ', styles);
+                                Hupper.HUP.L.log('add styles: ', styles);
                                 addStyle(styles);
                             });
                         });
@@ -82,23 +82,23 @@ Hupper.styles = function () {
         '}';
     };
 
-    HUP.hp.get.styleIndent(function (response) {
+    Hupper.HUP.hp.get.styleIndent(function (response) {
         if (response.pref.value) {
             addStyle(indentStyle);
         }
     });
-    HUP.hp.get.styleAccessibility(function (response) {
+    Hupper.HUP.hp.get.styleAccessibility(function (response) {
         if (response.pref.value) {
             addStyle(accesibilityStyle);
         }
     });
-    HUP.hp.get.styleWiderSidebar(function (response) {
+    Hupper.HUP.hp.get.styleWiderSidebar(function (response) {
         var width = response.pref.value;
         if (width > 0) {
             addStyle(widthStyle(width));
         }
     });
-    HUP.hp.get.styleMinFontsize(function (response) {
+    Hupper.HUP.hp.get.styleMinFontsize(function (response) {
         var minFontsize = response.pref.value;
         if (minFontsize > 0) {
             addStyle(minFontsizeStyle(minFontsize));

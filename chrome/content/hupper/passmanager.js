@@ -26,7 +26,7 @@ var _HUPPasswordManager = function() {
         return false;
       }
       catch(ex){
-       HUP.L.log(ex);
+       Hupper.HUP.L.log('pw1', ex);
       }
     };
 
@@ -42,7 +42,7 @@ var _HUPPasswordManager = function() {
         var extLoginInfo = new this.nsLoginInfo(this.url, this.formSubmitURL, null, this.username, password, "", "");
         this.loginManager.addLogin(extLoginInfo);
       } catch(ex) {
-        HUP.L.log(ex);
+        Hupper.HUP.L.log('pw2', ex);
       }
 
     }
@@ -65,7 +65,7 @@ var _HUPPasswordManager = function() {
             return pass.password
           }
         } catch (ex){
-          HUP.L.log(ex);
+          Hupper.HUP.L.log('pw3', ex);
         }
       }
     },
@@ -77,12 +77,12 @@ var _HUPPasswordManager = function() {
         this.passwordManager.removeUser(this.url, this.username);
       }
       catch (ex) {
-        HUP.L.log(ex);
+        Hupper.HUP.L.log('pw4', ex);
       }
       try {
         this.passwordManager.addUser(this.url, this.username, password);
       } catch(ex) {
-        HUP.L.log(ex);
+        Hupper.HUP.L.log('pw5', ex);
       }
     }
   }

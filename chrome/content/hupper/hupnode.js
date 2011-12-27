@@ -4,21 +4,21 @@
  * @param {Element} node an article node
  */
 Hupper.Node = function (node) {
-  var header = HUP.El.GetFirstTag('h2', node),
+  var header = Hupper.HUP.El.GetFirstTag('h2', node),
     submitData = node.childNodes[3],
     cont = node.childNodes[5],
-    footer = HUP.El.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false,
-    sender = HUP.El.GetByAttrib(submitData, 'a', 'title', 'Felhasználói profil megtekintése.'),
-    taxonomy = HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag');
+    footer = Hupper.HUP.El.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false,
+    sender = Hupper.HUP.El.GetByAttrib(submitData, 'a', 'title', 'Felhasználói profil megtekintése.'),
+    taxonomy = Hupper.HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag');
   this.element = node;
   this.id = parseInt(node.id.replace('node-', ''), 10);
   this.header = header;
   Components.utils.import('resource://huppermodules/hupstringer.jsm');
-  this.path = HupStringer.trim(HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
+  this.path = HupStringer.trim(Hupper.HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
   this.submitData = submitData;
   this.cont = cont;
   this.footer = footer;
-  this.newc = HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
+  this.newc = Hupper.HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
   if (taxonomy.length > 0) {
     this.taxonomy = taxonomy[0].innerHTML;
     this.taxonomyNode = taxonomy[0];
@@ -43,14 +43,14 @@ Hupper.Node.prototype = {
   next: false,
   previous: false,
   hide: function () {
-    HUP.El.AddClass(this.element, 'hup-hidden');
+    Hupper.HUP.El.AddClass(this.element, 'hup-hidden');
     this.hidden = true;
     if (this.nodeMenu) {
       this.nodeMenu.addNodeToMenu(this);
     }
   },
   show: function () {
-    HUP.El.RemoveClass(this.element, 'hup-hidden');
+    Hupper.HUP.El.RemoveClass(this.element, 'hup-hidden');
     this.hidden = false;
     if (this.nodeMenu) {
       this.nodeMenu.removeNodeFromMenu(this);
@@ -59,7 +59,7 @@ Hupper.Node.prototype = {
   checkTaxonomy: function () {
     var _this = this;
     Components.utils.import('resource://huppermodules/hupstringer.jsm');
-    HUP.hp.get.hidetaxonomy(function(response) {
+    Hupper.HUP.hp.get.hidetaxonomy(function(response) {
       var hideTaxonomies = HupStringer.trim(response.pref.value);
       if (hideTaxonomies.length && hideTaxonomies.indexOf(_this.taxonomy) !== -1) {
         _this.hide();
@@ -69,9 +69,9 @@ Hupper.Node.prototype = {
     });
   },
   addNnewSpan: function () {
-    this.sp = HUP.El.Span();
-    HUP.El.AddClass(this.sp, 'nnew');
-    HUP.El.Insert(this.sp, this.header.firstChild);
+    this.sp = Hupper.HUP.El.Span();
+    Hupper.HUP.El.AddClass(this.sp, 'nnew');
+    Hupper.HUP.El.Insert(this.sp, this.header.firstChild);
   },
   /**
    * @param {Integer} i node index
@@ -86,50 +86,50 @@ Hupper.Node.prototype = {
   },
   addMarkAsRead: function () {
     var mread = this.builder.buildMarker(this.path, this.id);
-    HUP.markReadNodes.push(mread);
-    HUP.El.Add(mread, this.sp);
+    Hupper.HUP.markReadNodes.push(mread);
+    Hupper.HUP.El.Add(mread, this.sp);
   },
   addNewText: function () {
-    HUP.El.Add(this.builder.buildNewText(), this.sp);
+    Hupper.HUP.El.Add(this.builder.buildNewText(), this.sp);
   },
   addNameLink: function () {
-    // HUP.El.Insert(this.builder.buildNameLink('node-' + this.id), this.header);
-    HUP.El.Insert(this.builder.buildNameLink(this.id, 'node'), this.header);
+    // Hupper.HUP.El.Insert(this.builder.buildNameLink('node-' + this.id), this.header);
+    Hupper.HUP.El.Insert(this.builder.buildNameLink(this.id, 'node'), this.header);
   },
   addNext: function () {
     if (this.next === false) {
-      HUP.El.Add(this.builder.buildLastLink(), this.sp);
+      Hupper.HUP.El.Add(this.builder.buildLastLink(), this.sp);
     } else {
-      HUP.El.Add(this.builder.buildNextLink('node-' + this.next), this.sp);
+      Hupper.HUP.El.Add(this.builder.buildNextLink('node-' + this.next), this.sp);
     }
   },
   addPrev: function () {
     if (this.previous === false) {
-      HUP.El.Add(this.builder.buildFirstLink(), this.sp);
+      Hupper.HUP.El.Add(this.builder.buildFirstLink(), this.sp);
     } else {
-      HUP.El.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
+      Hupper.HUP.El.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
     }
   },
   addTaxonomyCloser: function () {
-    this.taxonomyButton = HUP.El.Btn();
-    HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
+    this.taxonomyButton = Hupper.HUP.El.Btn();
+    Hupper.HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
     this.taxonomyButton.setAttribute('title',
-      HUP.Bundles.getFormattedString('hideTaxonomy', [this.taxonomy]));
+      Hupper.HUP.Bundles.getFormattedString('hideTaxonomy', [this.taxonomy]));
     var _this = this;
-    HUP.Ev.addEvent(this.taxonomyButton, 'click', function () {
+    Hupper.HUP.Ev.addEvent(this.taxonomyButton, 'click', function () {
       _this.addToHide();
       Hupper.HideTaxonomyNodes(_this.nodes);
     });
-    HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
+    Hupper.HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
   },
   addToHide: function () {
     var _this = this;
-    HUP.hp.get.hidetaxonomy(function (response) {
+    Hupper.HUP.hp.get.hidetaxonomy(function (response) {
       var taxonomies = response.pref.value.split(';');
       if (taxonomies.indexOf(_this.taxonomy) === -1) {
         taxonomies.push(_this.taxonomy);
       }
-      HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+      Hupper.HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
     });
   },
   addNodes: function (nodes, nodeMenu) {
@@ -154,15 +154,15 @@ Hupper.NodeMenus.prototype = {
       return;
     }
     this.menuitem = this.hupMenu.addMenuItem({
-      name: HUP.Bundles.getString('restoreNodes'),
+      name: Hupper.HUP.Bundles.getString('restoreNodes'),
       click: function () {
-        HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
-        HUP.El.ToggleClass(this.parentNode, 'collapsed');
-        HUP.El.ToggleClass(this.parentNode, 'expanded');
+        Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
+        Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');
+        Hupper.HUP.El.ToggleClass(this.parentNode, 'expanded');
       }
     }, null, true);
-    HUP.El.RemoveClass(this.menuitem, 'leaf');
-    HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
+    Hupper.HUP.El.RemoveClass(this.menuitem, 'leaf');
+    Hupper.HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
     this.menu = this.hupMenu.addMenu(this.menuitem);
   },
   removeMenu: function () {
@@ -189,9 +189,9 @@ Hupper.NodeMenus.prototype = {
   },
   removeNodeFromMenu: function (node) {
     if (this.nodes[node.taxonomy]) {
-      HUP.El.Remove(this.nodes[node.taxonomy]);
+      Hupper.HUP.El.Remove(this.nodes[node.taxonomy]);
       delete this.nodes[node.taxonomy];
-      HUP.hp.get.hidetaxonomy(function (response) {
+      Hupper.HUP.hp.get.hidetaxonomy(function (response) {
         var taxonomies = response.pref.value.split(';'),
             i, tl;
         for (i = 0, tl = taxonomies.length; i < tl; i += 1) {
@@ -202,8 +202,8 @@ Hupper.NodeMenus.prototype = {
         }
         //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
         //taxonomies = taxonomies.replace(rex, '');
-        // HUP.L.log(taxonomies.join(';'));
-        HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+        // Hupper.HUP.L.log(taxonomies.join(';'));
+        Hupper.HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
         Hupper.HideTaxonomyNodes(node.nodes);
       });
     }

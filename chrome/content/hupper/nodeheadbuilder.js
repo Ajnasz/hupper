@@ -9,40 +9,40 @@ Hupper.NodeHeaderBuilder = function() {
   /**
    * @final
    */
-  this.firstLinkText = HUP.Bundles.getString('FirstLinkText');
+  this.firstLinkText = Hupper.HUP.Bundles.getString('FirstLinkText');
   /**
    * @final
    */
-  this.lastLinkText = HUP.Bundles.getString('LastLinkText');
+  this.lastLinkText = Hupper.HUP.Bundles.getString('LastLinkText');
   /**
    * @final
    */
-  this.prevLinkText = HUP.Bundles.getString('PrevLinkText');
+  this.prevLinkText = Hupper.HUP.Bundles.getString('PrevLinkText');
   /**
    * @final
    */
-  this.nextLinkText = HUP.Bundles.getString('NextLinkText');
+  this.nextLinkText = Hupper.HUP.Bundles.getString('NextLinkText');
   /**
    * @final
    */
-  this.topLinkText = HUP.Bundles.getString('TopLinkText');
+  this.topLinkText = Hupper.HUP.Bundles.getString('TopLinkText');
   /**
    * @final
    */
-  this.backLinkText = HUP.Bundles.getString('BackLinkText');
+  this.backLinkText = Hupper.HUP.Bundles.getString('BackLinkText');
   /**
    * @final
    */
-  this.parentLinkText = HUP.Bundles.getString('ParentLinkText');
+  this.parentLinkText = Hupper.HUP.Bundles.getString('ParentLinkText');
 
   // Title text nodes
-  this.fit = HUP.El.Txt(this.firstLinkText);
-  this.lat = HUP.El.Txt(this.lastLinkText);
-  // this.newCt = HUP.El.Txt(HUP.hp.get.newcommenttext());
+  this.fit = Hupper.HUP.El.Txt(this.firstLinkText);
+  this.lat = Hupper.HUP.El.Txt(this.lastLinkText);
+  // this.newCt = Hupper.HUP.El.Txt(Hupper.HUP.hp.get.newcommenttext());
 
   // Mark as read node
-  this.markR = HUP.El.CreateLink(HUP.Bundles.getString('markingText'));
-  HUP.El.AddClass(this.markR, 'mark');
+  this.markR = Hupper.HUP.El.CreateLink(Hupper.HUP.Bundles.getString('markingText'));
+  Hupper.HUP.El.AddClass(this.markR, 'mark');
 };
 Hupper.NodeHeaderBuilder.prototype = {
   /**
@@ -52,7 +52,7 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildNextLink: function(path) {
-    return HUP.El.CreateLink(this.nextLinkText, '#' + path);
+    return Hupper.HUP.El.CreateLink(this.nextLinkText, '#' + path);
   },
   /**
     * Builds a link which points to the specified path with the prev link text
@@ -61,7 +61,7 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildPrevLink: function(path) {
-    return HUP.El.CreateLink(this.prevLinkText, '#' + path);
+    return Hupper.HUP.El.CreateLink(this.prevLinkText, '#' + path);
   },
   /**
     * Builds a text node with the first text
@@ -69,8 +69,8 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildFirstLink: function() {
-    var nsp = HUP.El.Span();
-    HUP.El.Add(this.fit, nsp);
+    var nsp = Hupper.HUP.El.Span();
+    Hupper.HUP.El.Add(this.fit, nsp);
     return nsp;
   },
   /**
@@ -79,8 +79,8 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildLastLink: function() {
-    var nsp = HUP.El.Span();
-    HUP.El.Add(this.lat, nsp);
+    var nsp = Hupper.HUP.El.Span();
+    Hupper.HUP.El.Add(this.lat, nsp);
     return nsp;
   },
   /**
@@ -103,11 +103,11 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildNewText: function() {
-    var nsp = HUP.El.Span();
-    HUP.El.AddClass(nsp, 'hnew');
+    var nsp = Hupper.HUP.El.Span();
+    Hupper.HUP.El.AddClass(nsp, 'hnew');
     var _this = this;
-    HUP.hp.get.newcommenttext(function(response) {
-      HUP.El.Add(HUP.El.Txt(response.pref.value), nsp);
+    Hupper.HUP.hp.get.newcommenttext(function(response) {
+      Hupper.HUP.El.Add(Hupper.HUP.El.Txt(response.pref.value), nsp);
     })
     return nsp;
   },
@@ -118,7 +118,7 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildNameLink: function(i, type) {
-    var liaC = HUP.El.A();
+    var liaC = Hupper.HUP.El.A();
     if(!type) type = 'n';
     liaC.setAttribute('name', type + '-' + i);
     return liaC;
@@ -129,8 +129,8 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildComExtraTop: function() {
-    var tmpList = HUP.El.Li();
-    HUP.El.Add(HUP.El.CreateLink(this.topLinkText, '#'), tmpList);
+    var tmpList = Hupper.HUP.El.Li();
+    Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink(this.topLinkText, '#'), tmpList);
     return tmpList;
   },
   /**
@@ -139,8 +139,8 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildComExtraBack: function() {
-    var tmpList = HUP.El.Li();
-    HUP.El.Add(HUP.El.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
+    var tmpList = Hupper.HUP.El.Li();
+    Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
     return tmpList;
   },
   /**
@@ -150,10 +150,10 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildComExtraParent: function(parent) {
-    var tmpList = HUP.El.Li(),
-    link = HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
+    var tmpList = Hupper.HUP.El.Li(),
+    link = Hupper.HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
     // if fading enabled, add an event listener, which will fades the parent node
-    HUP.hp.get.fadeparentcomment(function(response) {
+    Hupper.HUP.hp.get.fadeparentcomment(function(response) {
       if(response.pref.value) {
         link.addEventListener('click', function(e) {
           new Hupper.Transform(e.target.n.comment, 'FadeIn');
@@ -161,7 +161,7 @@ Hupper.NodeHeaderBuilder.prototype = {
         link.n = parent;
       }
     });
-    HUP.El.Add(link, tmpList);
+    Hupper.HUP.El.Add(link, tmpList);
     return tmpList;
   },
   /**
@@ -171,8 +171,8 @@ Hupper.NodeHeaderBuilder.prototype = {
     * @type Element
     */
   buildComExtraPerma: function(cid) {
-    var tmpList = HUP.El.Li();
-    HUP.El.Add(HUP.El.CreateLink('permalink', '#' + cid), tmpList);
+    var tmpList = Hupper.HUP.El.Li();
+    Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink('permalink', '#' + cid), tmpList);
     return tmpList;
   }
 };

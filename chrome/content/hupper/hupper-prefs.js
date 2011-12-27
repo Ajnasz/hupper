@@ -35,7 +35,7 @@ Hupper.prefItems = [
 Hupper.setPrefWinVals = function () {
     Hupper.prefItems.forEach(function (item) {
         var elem = document.getElementById(item.id),
-            value = HUP.hp.get[item.prefName]();
+            value = Hupper.HUP.hp.get[item.prefName]();
 
         if (elem.nodeName.toLowerCase() === 'checkbox') {
             elem.checked = value;
@@ -56,9 +56,9 @@ Hupper.savePreferences = function () {
         } else {
             value = elem.value;
         }
-        value = HUP.hp.set[item.prefName](value);
+        value = Hupper.HUP.hp.set[item.prefName](value);
     });
-    var hideIcon = !HUP.hp.get.showinstatusbar();
+    var hideIcon = !Hupper.HUP.hp.get.showinstatusbar();
     Hupper.mapWindows(function (win) {
         win.document.getElementById('HUP-statusbar').hidden = hideIcon;
     });
@@ -92,7 +92,7 @@ Hupper.checkHLUsers = function () {
         }
     }
     if (used.length > 0) {
-        return confirm(HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
+        return confirm(Hupper.HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
     }
     return true;
 };
@@ -169,7 +169,7 @@ Hupper.treeviewer = function (doc, options) {
 
 Hupper.setTrollManager = function (doc) {
   Hupper.treeviewer(doc, {
-      rows: HUP.hp.get.trolls().split(','),
+      rows: Hupper.HUP.hp.get.trolls().split(','),
       treeId: 'HUP-trollmanagement',
       treeContainerId: 'HUP-trollmanagement-container',
       storageFieldId: 'HUP-trolls',
@@ -201,7 +201,7 @@ Hupper.setTrollManager = function (doc) {
 
 Hupper.setUserManager = function (doc) {
   Hupper.treeviewer(doc, {
-      rows: HUP.hp.get.highlightusers().split(','),
+      rows: Hupper.HUP.hp.get.highlightusers().split(','),
       treeId: 'HUP-usermanagement',
       treeContainerId: 'HUP-usermanagement-container',
       storageFieldId: 'HUP-hupper-highlightusers',
@@ -240,7 +240,7 @@ Hupper.setUserManager = function (doc) {
       treeId = 'HUP-usermanagement',
       treeParentId = 'HUP-hupper-highlightusers',
       element = doc.getElementById(treeId),
-      hlUsers = HUP.hp.get.highlightusers().split(','),
+      hlUsers = Hupper.HUP.hp.get.highlightusers().split(','),
       hlUsersObj = [],
       emptyRow = {
           namecol: {text:'', editable: true},
@@ -329,18 +329,18 @@ Hupper.setUserManager = function (doc) {
   }, false);
 };
 Hupper.resetBlocks = function() {
-  if(confirm(HUP.Bundles.getString('confirmBlockReset'))) {
-    HUP.hp.set.blocks('({})');
-    alert(HUP.Bundles.getString('reloadHUPPlease'));
+  if(confirm(Hupper.HUP.Bundles.getString('confirmBlockReset'))) {
+    Hupper.HUP.hp.set.blocks('({})');
+    alert(Hupper.HUP.Bundles.getString('reloadHUPPlease'));
   }
 };
 Hupper.StartHupperPrefernces = function() {
   var scope = {};
   Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-  HUP = {};
-  HUP.hp = new scope.HP();
-  HUP.L = new Hupper.Log();
-  HUP.Bundles = document.getElementById('hupper-prefs-bundles');
+  Hupper.HUP = {};
+  Hupper.HUP.hp = new scope.HP();
+  Hupper.HUP.L = new Hupper.Log();
+  Hupper.HUP.Bundles = document.getElementById('hupper-prefs-bundles');
   Hupper.disableFields();
   Hupper.setPrefWinVals();
   Hupper.onChangeFilterMethod();

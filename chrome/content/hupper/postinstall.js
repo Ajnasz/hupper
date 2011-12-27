@@ -17,21 +17,21 @@ Hupper.postInstall = function() {
    * the color of the huppers
    */
   var convertColors = function() {
-    var filterhuppers = HUP.hp.get.filterhuppers();
+    var filterhuppers = Hupper.HUP.hp.get.filterhuppers();
     if(filterhuppers) {
-      var huppers = HUP.hp.get.huppers().split(',');
-      var color = HUP.hp.get.huppercolor();
-      var colors = HUP.hp.get.highlightusers();
+      var huppers = Hupper.HUP.hp.get.huppers().split(',');
+      var color = Hupper.HUP.hp.get.huppercolor();
+      var colors = Hupper.HUP.hp.get.highlightusers();
       huppers.forEach(function(hup_user) {
         colors += ',' + hup_user + ':' + color;
       })
-      HUP.hp.set.highlightusers(colors);
-      HUP.hp.set.huppercolor('');
-      HUP.hp.set.huppers('');
+      Hupper.HUP.hp.set.highlightusers(colors);
+      Hupper.HUP.hp.set.huppercolor('');
+      Hupper.HUP.hp.set.huppers('');
     }
   };
   var convertBlockSettings = function() {
-    var blocks = Hupper.Json.decode(HUP.hp.get.blocks());
+    var blocks = Hupper.Json.decode(Hupper.HUP.hp.get.blocks());
     var output = {left: [], right: []}
 
     if(!blocks['block-blog-0']) {
@@ -47,7 +47,7 @@ Hupper.postInstall = function() {
     } else if(blocks['left'] || blocks['right']) {
       output = blocks;
     }
-    HUP.hp.set.blocks(Hupper.Json.encode(output));
+    Hupper.HUP.hp.set.blocks(Hupper.Json.encode(output));
   };
 
   /**
@@ -65,8 +65,8 @@ Hupper.postInstall = function() {
 
   var oldVerValue = 0; // previous version
   try {
-    oldVerValue = parseVersion(HUP.hp.M.getCharPref('extensions.hupper.version'));
-  } catch(e){HUP.L.log(e.message);}
+    oldVerValue = parseVersion(Hupper.HUP.hp.M.getCharPref('extensions.hupper.version'));
+  } catch(e){Hupper.HUP.L.log('postinstallerror: ', e.message);}
 
   var version = parseVersion(HUPPER_VERSION); // current version eg.: 0.0053
   if(!oldVerValue || oldVerValue < HUPPER_VERSION) {
@@ -75,11 +75,11 @@ Hupper.postInstall = function() {
     if(oldVerValue < 0.0053) {
       try {
         convertColors();
-      } catch(e) { HUP.L.log(e.message, e.fileName, e.lineNumber)}
+      } catch(e) { Hupper.HUP.L.log('postinstallerror2', e.message, e.fileName, e.lineNumber)}
     } else if(oldVerValue < 0.0054) {
       convertBlockSettings();
     }
-    HUP.L.log('postinstall', version, oldVerValue);
-    HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
+    Hupper.HUP.L.log('postinstall', version, oldVerValue);
+    Hupper.HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
   }
 };

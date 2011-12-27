@@ -8,7 +8,7 @@ if (typeof Hupper === 'undefined') {
  * @constructor
  */
 Hupper.Elementer = function(doc) {
-  this.doc = doc || HUP.w;
+  this.doc = doc || Hupper.HUP.w;
   this.li = this.doc.createElement('li');
   this.ul = this.doc.createElement('ul');
   this.div = this.doc.createElement('div');

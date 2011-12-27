@@ -123,13 +123,13 @@
             contentHidden: block.contentHidden,
           });
         });
-        HUP.hp.set.blocks(Hupper.Json.encode(json));
+        Hupper.HUP.hp.set.blocks(Hupper.Json.encode(json));
       },
     };
   };
   Blocks.UI = function(elementer, hupperBlocks) {
     var timeout;
-    elementer = elementer || HUP.El;
+    elementer = elementer || Hupper.HUP.El;
     return {
       rearrangeBlocks: function() {
         if(timeout) {
@@ -149,7 +149,7 @@
               elementer.Add(block.block, right);
             });
           } else {
-            HUP.L.log('no blocks are defined');
+            Hupper.HUP.L.log('no blocks are defined');
           }
         }, 10);
       }

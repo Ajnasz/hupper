@@ -87,8 +87,8 @@ Hupper.Ajax.prototype = {
    * @param {Int} er Error code
    */
   errorHandler: function(msg, er) {
-    HUP.L.log('Ajax error: ' + msg + ' || ' + er);
-    HUP.L.log(this.url);
+    Hupper.HUP.L.log('Ajax error: ' + msg + ' || ' + er);
+    Hupper.HUP.L.log(this.url);
     return false;
   },
   /**
