@@ -156,7 +156,7 @@ Hupper.NodeHeaderBuilder.prototype = {
     HUP.hp.get.fadeparentcomment(function(response) {
       if(response.pref.value) {
         link.addEventListener('click', function(e) {
-          new Transform(e.target.n.comment, 'FadeIn');
+          new Hupper.Transform(e.target.n.comment, 'FadeIn');
         }, false);
         link.n = parent;
       }
