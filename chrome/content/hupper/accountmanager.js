@@ -5,7 +5,10 @@
  * @requires _HUPPasswordManager to get the users password
  * @requires #getFeedList function, to gets the feeds
  */
-var HupAccountManager = {
+ if (typeof Hupper === 'undefined') {
+    var Hupper = {};
+ }
+Hupper.AccountManager = {
   // mozilla nsi cookie manager component
   CookieManager: Components.classes["@mozilla.org/cookiemanager;1"].getService(Components.interfaces.nsICookieManager),
   /**
