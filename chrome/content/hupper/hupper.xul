@@ -17,8 +17,8 @@
   <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>
   <!-- <script type="application/x-javascript" src="chrome://hupper/content/hp.js"></script> -->
-  <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>
+  <!-- <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script> -->
+  <!-- <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>-->
   <script type="application/x-javascript" src="chrome://hupper/content/nodeheadbuilder.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/boot.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
