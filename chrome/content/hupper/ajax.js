@@ -1,11 +1,14 @@
 /**
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
- * @class HupAjax
+ * @class Hupper.Ajax
  * @description sends request to the {@link http://hup.hu hup.hu} site
  * @constructor
  * @param {Object} pars object to overwrite the default parameters
  */
-var HupAjax = function(pars, el) {
+ if (typeof Hupper === 'undefined') {
+    var Hupper = {};
+ }
+Hupper.Ajax = function(pars, el) {
   if(typeof pars.url == 'undefined') {
     return false;
   }
@@ -37,7 +40,7 @@ var HupAjax = function(pars, el) {
   this.req.send(this.pars);
   return true;
 };
-HupAjax.prototype = {
+Hupper.Ajax.prototype = {
   url: null,
   pars: null,
   req: null,

@@ -38,7 +38,7 @@ var HupAccountManager = {
       var url = 'http://hup.hu/node?destination=node';
       var param = 'name='+encodeURIComponent(this.hp().get.username())+'&pass='+encodeURIComponent(this.passwordManager().getPassword())+'&op=' + encodeURIComponent('Belépés') + '&form_id=user_login_block';
       var _this = this;
-      new HupAjax({
+      var ajax = new Hupper.Ajax({
         url: url,
         method: 'post',
         successHandler: function(e) {
