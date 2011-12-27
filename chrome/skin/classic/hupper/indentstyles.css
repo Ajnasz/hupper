@@ -10,12 +10,14 @@
     background:  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACAQMAAACjTyRkAAAAAXNSR0IArs4c6QAAAAZQTFRFt9BTt7eL4xrPVQAAAAF0Uk5TAEDm2GYAAAABYktHRACIBR1IAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2gsOCiIz/YtxKwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY2hgYAAAAYQAgSjdetcAAAAASUVORK5CYII=
 ) 0 0 repeat-y;
   }
+  a#new:target + a + .comment,
   a:target + .comment {
     background-color: #F6F6EB !important;
     border-color: #000 !important;
     -moz-transition: border-color 2s ease-out, background-color 0.5s ease;
   }
-  a:target + .comment .submitted {
+  a:target + .comment > .submitted,
+  a#new:target + a +  .comment > .submitted {
     color: #000 !important;
     font-weight: bold;
   }
