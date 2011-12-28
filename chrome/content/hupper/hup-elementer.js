@@ -222,9 +222,10 @@ Hupper.Elementer.prototype = {
   */
   AddClass: function(el, c) {
     if(!el || !c || this.HasClass(el, c)) return false;
-    Components.utils.import('resource://huppermodules/hupstringer.jsm');
+    var scope = {};
+    Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
     var curClass = el.getAttribute('class');
-    (curClass === null || HupStringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
+    (curClass === null || scope.HupStringer.empty(curClass)) ? el.setAttribute('class', c) : el.setAttribute('class', curClass + ' ' + c);
   },
   /**
   * Removes the specified class from the element

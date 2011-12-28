@@ -15,7 +15,7 @@
 Hupper.getNodes = function() {
   var c = Hupper.HUP.El.GetId('content-both');
   var ds = Hupper.HUP.El.GetTag('div', c);
-  var nodes = new Array(), newnodes = new Array();
+  var nodes = [], newnodes = [], node;
   for(var i = 0, dsl = ds.length; i < dsl; i++) {
     if(Hupper.HUP.El.HasClass(ds[i], 'node')) {
       node = new Hupper.Node(ds[i]);

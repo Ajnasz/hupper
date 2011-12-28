@@ -15,7 +15,7 @@ Hupper.Node = function (node) {
   this.id = parseInt(node.id.replace('node-', ''), 10);
   this.header = header;
   Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
-  this.path = HupStringer.trim(Hupper.HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
+  this.path = scope.HupStringer.trim(Hupper.HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
   this.submitData = submitData;
   this.cont = cont;
   this.footer = footer;
@@ -62,7 +62,7 @@ Hupper.Node.prototype = {
     var scope = {};
     Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
     Hupper.HUP.hp.get.hidetaxonomy(function(response) {
-      var hideTaxonomies = HupStringer.trim(response.pref.value);
+      var hideTaxonomies = scope.HupStringer.trim(response.pref.value);
       if (hideTaxonomies.length && hideTaxonomies.indexOf(_this.taxonomy) !== -1) {
         _this.hide();
       } else {
