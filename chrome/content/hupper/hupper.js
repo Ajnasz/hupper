@@ -13,10 +13,11 @@
  * @type Array
  */
 Hupper.getNodes = function() {
-  var c = Hupper.HUP.El.GetId('content-both');
-  var ds = Hupper.HUP.El.GetTag('div', c);
-  var nodes = [], newnodes = [], node;
-  for(var i = 0, dsl = ds.length; i < dsl; i++) {
+  var c = Hupper.HUP.El.GetId('content-both'),
+      ds = Hupper.HUP.El.GetTag('div', c),
+      nodes = [], newnodes = [],
+      i, dsl, node;
+  for(i = 0, dsl = ds.length; i < dsl; i++) {
     if(Hupper.HUP.El.HasClass(ds[i], 'node')) {
       node = new Hupper.Node(ds[i]);
       node.newc && !node.hidden ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
@@ -114,8 +115,10 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
  * @param {Array} newNodes
  */
 Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
-  var spa = Hupper.HUP.El.Span(), sp, builder = new Hupper.NodeHeaderBuilder(), mread, next, prev;
-  for(var i = 0, nl = nodes.length, node; i < nl; i++) {
+  var spa = Hupper.HUP.El.Span(),
+      builder = new Hupper.NodeHeaderBuilder(),
+      sp, node, mread, next, prev;
+  for(var i = 0, nl = nodes.length; i < nl; i++) {
     node = nodes[i];
     if(node.newc) {
       node.index = newNodes.indexOf(node);
