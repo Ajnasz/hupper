@@ -34,14 +34,15 @@ Hupper.prefItems = [
 ];
 Hupper.setPrefWinVals = function () {
     Hupper.prefItems.forEach(function (item) {
-        var elem = document.getElementById(item.id),
-            value = Hupper.HUP.hp.get[item.prefName]();
-
-        if (elem.nodeName.toLowerCase() === 'checkbox') {
-            elem.checked = value;
-        } else {
-            elem.value = value;
-        }
+        var elem = document.getElementById(item.id);
+        Hupper.HUP.hp.get[item.prefName](function (response) {
+            var value = response.pref.value;
+            if (elem.nodeName.toLowerCase() === 'checkbox') {
+                elem.checked = value;
+            } else {
+                elem.value = value;
+            }
+        });
     });
 };
 Hupper.savePreferences = function () {

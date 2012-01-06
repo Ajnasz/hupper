@@ -172,10 +172,10 @@ HP.prototype = {
             cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
         },
         boringcommentcontents: function (cb) {
-            this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
+            return this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
         },
         setunlimitedlinks: function (cb) {
-            this.M.getBoolPref('extensions.hupper.setunlimitedlinks', cb);
+            return this.M.getBoolPref('extensions.hupper.setunlimitedlinks', cb);
         }
     },
     set: {
