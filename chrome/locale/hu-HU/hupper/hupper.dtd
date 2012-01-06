@@ -40,3 +40,5 @@
 <!ENTITY Hupper.contextMenu.unmarktroll "Ő nem troll">
 <!ENTITY Hupper.contextMenu.highlightusercomments "Hozzászólásai kiemelése">
 <!ENTITY Hupper.contextMenu.unhighlightusercomments "Hozzászólás-kiemelés levétele">
+
+<!ENTITY Hupper.boring.comment.contents "Reguláris kifjezés, unalmas hozzászólások azonosításához">

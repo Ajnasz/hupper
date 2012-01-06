@@ -90,6 +90,10 @@
               <treechildren/>
             </tree>
           </vbox>
+          <vbox>
+            <label control="HUP-boring-comment-contents" value="&Hupper.boring.comment.contents;" />
+            <textbox id="HUP-boring-comment-contents" />
+          </vbox>
         </groupbox>
       </tabpanel>
       <tabpanel>

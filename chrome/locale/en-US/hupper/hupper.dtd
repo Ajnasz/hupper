@@ -40,3 +40,5 @@
 <!ENTITY Hupper.contextMenu.unmarktroll "Unmark troll">
 <!ENTITY Hupper.contextMenu.highlightusercomments "Highlight user comments">
 <!ENTITY Hupper.contextMenu.unhighlightusercomments "Unhighlight user comments">
+
+<!ENTITY Hupper.boring.comment.contents "Regular expression to identify boring comments">
