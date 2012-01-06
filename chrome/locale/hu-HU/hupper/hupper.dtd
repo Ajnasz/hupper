@@ -24,9 +24,9 @@
 <!ENTITY Hupper.tabsyles "Stílusok">
 <!ENTITY Hupper.username "Felhasználói név:">
 <!ENTITY Hupper.password "Jelszó:">
-<!ENTITY Hupper.hidetaxonomy "Elrejtendo cikk tipusok">
+<!ENTITY Hupper.hidetaxonomy "Elrejtendo cikk típusok">
 <!ENTITY Hupper.showinstatusbar "Ikon mutatása az állapotsorban">
-<!ENTITY Hupper.parseblocks "Blokkok feldologozása">
+<!ENTITY Hupper.parseblocks "Blokkok feldolgozása">
 <!ENTITY Hupper.resetblocks "Blokkok visszaállítása">
 
 <!ENTITY Hupper.style.indent "Vonal mutatása a szülő hozzászóláshoz">
