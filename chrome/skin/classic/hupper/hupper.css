@@ -177,7 +177,7 @@
     .comment.hup-boring > .submitted {
         background-color: #EBEBD5;
     }
-    .comment.has-children,
+    .comment.has-children:not(.trollComment),
     .keep-boring-comments .comment.hup-boring,
     a:target + .comment.hup-boring,
     a#new:target + a + .comment.hup-boring {
