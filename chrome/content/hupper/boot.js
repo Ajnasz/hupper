@@ -150,6 +150,7 @@ Hupper.boot = function (e) {
                     var linkParams = [
                         '/cikkek',
                         '/node',
+                        '/szavazasok',
                         '/promo'
                     ], callStr = [];
                     linkParams.forEach(function (link) {
