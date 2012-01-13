@@ -154,24 +154,26 @@ Hupper.boot = function (e) {
                         '/promo'
                     ], callStr = [];
                     linkParams.forEach(function (link) {
-                        callStr.push('a[href^="' + link + '"]');
-                        callStr.push('a[href^="' + link + '"]');
-                        callStr.push('a[href^="' + link + '"]');
-                        callStr.push('a[href^=" ' + link + '"]');
-                        callStr.push('a[href^=" ' + link + '"]');
-                        callStr.push('a[href^=" ' + link + '"]');
-                        callStr.push('a[href^="http://hup.hu' + link + '"]');
-                        callStr.push('a[href^="http://hup.hu' + link + '"]');
-                        callStr.push('a[href^="http://hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://hup.hu' + link + '"]');
-                        callStr.push('a[href^="http://www.hup.hu' + link + '"]');
-                        callStr.push('a[href^="http://www.hup.hu' + link + '"]');
-                        callStr.push('a[href^="http://www.hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://www.hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://www.hup.hu' + link + '"]');
-                        callStr.push('a[href^=" http://www.hup.hu' + link + '"]');
+                        callStr.push(
+                            'a[href^="' + link + '"]',
+                            'a[href^="' + link + '"]',
+                            'a[href^="' + link + '"]',
+                            'a[href^=" ' + link + '"]',
+                            'a[href^=" ' + link + '"]',
+                            'a[href^=" ' + link + '"]',
+                            'a[href^="http://hup.hu' + link + '"]',
+                            'a[href^="http://hup.hu' + link + '"]',
+                            'a[href^="http://hup.hu' + link + '"]',
+                            'a[href^=" http://hup.hu' + link + '"]',
+                            'a[href^=" http://hup.hu' + link + '"]',
+                            'a[href^=" http://hup.hu' + link + '"]',
+                            'a[href^="http://www.hup.hu' + link + '"]',
+                            'a[href^="http://www.hup.hu' + link + '"]',
+                            'a[href^="http://www.hup.hu' + link + '"]',
+                            'a[href^=" http://www.hup.hu' + link + '"]',
+                            'a[href^=" http://www.hup.hu' + link + '"]',
+                            'a[href^=" http://www.hup.hu' + link + '"]'
+                        );
                     });
                     Array.prototype.slice
                         .call(Hupper.HUP.w.querySelectorAll(callStr.join(',')))
@@ -189,7 +191,7 @@ Hupper.boot = function (e) {
                 }
             });
         }
-    } catch(e) {
+    } catch (e) {
         Components.classes["@mozilla.org/consoleservice;1"]
           .getService(Components.interfaces.nsIConsoleService)
           .logStringMessage('HUPPER: INIT ' + e.message + ', ' + e.lineNumber +
