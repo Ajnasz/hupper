@@ -6,6 +6,8 @@
 var _HUPPasswordManager = function() {
   this.url = 'chrome://hupper';
   this.username = 'Hupper';
+  var scope = {};
+  Components.utils.import('resource://huppermodules/log.jsm', scope);
 
   try { // Firefox 3
     this.loginManager = Components.classes["@mozilla.org/login-manager;1"].getService(Components.interfaces.nsILoginManager) || Components.classes["@mozilla.org/passwordmanager;1"].createInstance(Components.interfaces.nsIPasswordManager),
@@ -24,9 +26,8 @@ var _HUPPasswordManager = function() {
           }
         }
         return false;
-      }
-      catch(ex){
-       Hupper.HUP.L.log('pw1', ex);
+      } catch(ex) {
+        scope.hupperLog('pw1', ex);
       }
     };
 
@@ -42,7 +43,7 @@ var _HUPPasswordManager = function() {
         var extLoginInfo = new this.nsLoginInfo(this.url, this.formSubmitURL, null, this.username, password, "", "");
         this.loginManager.addLogin(extLoginInfo);
       } catch(ex) {
-        Hupper.HUP.L.log('pw2', ex);
+        scope.hupperLog('pw2', ex);
       }
 
     }
@@ -65,7 +66,7 @@ var _HUPPasswordManager = function() {
             return pass.password
           }
         } catch (ex){
-          Hupper.HUP.L.log('pw3', ex);
+          scope.hupperLog('pw3', ex);
         }
       }
     },
@@ -77,12 +78,12 @@ var _HUPPasswordManager = function() {
         this.passwordManager.removeUser(this.url, this.username);
       }
       catch (ex) {
-        Hupper.HUP.L.log('pw4', ex);
+        scope.hupperLog('pw4', ex);
       }
       try {
         this.passwordManager.addUser(this.url, this.username, password);
       } catch(ex) {
-        Hupper.HUP.L.log('pw5', ex);
+        scope.hupperLog('pw5', ex);
       }
     }
   }

@@ -341,7 +341,6 @@ Hupper.StartHupperPrefernces = function() {
   Components.utils.import('resource://huppermodules/prefs.jsm', scope);
   Hupper.HUP = {};
   Hupper.HUP.hp = new scope.HP();
-  Hupper.HUP.L = new Hupper.Log();
   Hupper.HUP.Bundles = document.getElementById('hupper-prefs-bundles');
   Hupper.disableFields();
   Hupper.setPrefWinVals();

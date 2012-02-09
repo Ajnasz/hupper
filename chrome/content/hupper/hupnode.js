@@ -202,9 +202,6 @@ Hupper.NodeMenus.prototype = {
             break;
           }
         }
-        //var rex = new RegExp('\\b,?' + node.taxonomy + '\\b');
-        //taxonomies = taxonomies.replace(rex, '');
-        // Hupper.HUP.L.log(taxonomies.join(';'));
         Hupper.HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
         Hupper.HideTaxonomyNodes(node.nodes);
       });

@@ -6,11 +6,9 @@
 Hupper.boot = function (e) {
     try {
         var ww = e.originalTarget,
-            logger = new Hupper.Log(),
             scope = {},
             elementer, hupMenu,
             isTestEnv, bench, c, newComments;
-        // logger.log(ww.location.hostname);
         if (ww && ww.location && typeof ww.location.hostname === 'string'
             && (ww.location.hostname === 'hup.hu' || ww.location.hostname === 'www.hup.hu' ||
               /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(ww.location.href))) {
@@ -30,7 +28,6 @@ Hupper.boot = function (e) {
             Components.utils.import('resource://huppermodules/hup-events.jsm', scope);
             Hupper.HUP.Ev = new scope.HUPEvents(Hupper.HUP.w);
             // Logger
-            Hupper.HUP.L = new Hupper.Log();
             Hupper.postInstall();
             Hupper.styles();
             // Elementer
@@ -143,7 +140,8 @@ Hupper.boot = function (e) {
             Hupper.HUP.w.Jumps = new scope.HupJumper(Hupper.HUP.w, Hupper.HUP.w.nextLinks);
             if (isTestEnv) {
                 bench.stop();
-                Hupper.HUP.L.log('initialized', 'Run time: ' + bench.finish() + 'ms');
+                Components.utils.import('resource://huppermodules/log.jsm', scope);
+                scope.hupperLog('initialized', 'Run time: ' + bench.finish() + 'ms');
             }
             Hupper.HUP.hp.get.setunlimitedlinks(function (response) {
                 if (response.pref.value) {

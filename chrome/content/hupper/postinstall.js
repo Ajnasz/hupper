@@ -64,9 +64,13 @@ Hupper.postInstall = function() {
 
 
   var oldVerValue = 0; // previous version
+  var scope = {};
+  Components.utils.import('resource://huppermodules/log.jsm', scope);
   try {
     oldVerValue = parseVersion(Hupper.HUP.hp.M.getCharPref('extensions.hupper.version'));
-  } catch(e){Hupper.HUP.L.log('postinstallerror: ', e.message);}
+  } catch(e) {
+    scope.hupperLog('postinstallerror: ', e.message);
+  }
 
   var version = parseVersion(HUPPER_VERSION); // current version eg.: 0.0053
   if(!oldVerValue || oldVerValue < HUPPER_VERSION) {
@@ -75,11 +79,13 @@ Hupper.postInstall = function() {
     if(oldVerValue < 0.0053) {
       try {
         convertColors();
-      } catch(e) { Hupper.HUP.L.log('postinstallerror2', e.message, e.fileName, e.lineNumber)}
+      } catch(e) {
+        scope.hupperLog('postinstallerror2', e.message, e.fileName, e.lineNumber);
+      }
     } else if(oldVerValue < 0.0054) {
       convertBlockSettings();
     }
-    Hupper.HUP.L.log('postinstall', version, oldVerValue);
+    scope.hupperLog('postinstall', version, oldVerValue);
     Hupper.HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
   }
 };

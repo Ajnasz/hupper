@@ -348,27 +348,6 @@
                 me.renderReplies();
                 me._repliesRender = null;
             }, 20);
-            /*
-            var me = this,
-                replies = Hupper.HUP.El.GetByClass(this.footer, 'hup-replies', 'div'),
-                link = Hupper.HUP.El.CreateLink(child.user, '#' + child.id);
-            child.isBoringComment(function (isBoring) {
-                Hupper.HUP.L.log('isBoring: ', isBoring);
-                if (isBoring) {
-                    Hupper.HUP.El.AddClass(link, 'hup-boring');
-                }
-                if (!replies.length) {
-                    replies = Hupper.HUP.El.Div();
-                    Hupper.HUP.El.AddClass(replies, 'hup-replies');
-                    Hupper.HUP.El.Add(Hupper.HUP.El.Txt('replies: '), replies);
-                    Hupper.HUP.El.Insert(replies, me.footer.firstChild);
-                } else {
-                    replies = replies[0];
-                    Hupper.HUP.El.Add(Hupper.HUP.El.Txt(', '), replies);
-                }
-                Hupper.HUP.El.Add(link, replies);
-            });
-            */
         },
         addPoint: function (direction, comment) {
             if (direction > 0) {
@@ -554,7 +533,9 @@
                     C.showPoints();
                 });
             } catch (e) {
-                Hupper.HUP.L.log('hupcomment', e.message, e.lineNumber, e.fileName);
+                var scope = {};
+                Components.utils.import('resource://huppermodules/log.jsm', scope);
+                scope.hupperLog('hupcomment', e.message, e.lineNumber, e.fileName);
             }
             if (replacenewcommenttext || prevnextlinks) {
                 spanNode = Hupper.HUP.El.Span();

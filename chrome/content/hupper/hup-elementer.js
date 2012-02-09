@@ -123,7 +123,6 @@ Hupper.Elementer.prototype = {
     */
   Insert: function(elem, before) {
     if(!before || !elem) {
-      Hupper.Log('huha', elem);
       return;
     }
     before.parentNode.insertBefore(elem, before);
@@ -348,15 +347,9 @@ Hupper.Elementer.prototype = {
     return l;
   },
   Hide: function(el) {
-    if(el && typeof el == 'object' && el.nodeName != 'BUTTON') {
-      // HUP.L.log('HIDE', el);
-    }
     this.AddClass(el, 'hup-hidden');
   },
   Show: function(el) {
-    if(el && el == 'object' && el.nodeName != 'BUTTON') {
-      // HUP.L.log('SHOW', el);
-    }
     this.RemoveClass(el, 'hup-hidden');
   }
 };

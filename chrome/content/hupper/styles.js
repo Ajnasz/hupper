@@ -53,7 +53,8 @@ Hupper.styles = function () {
                                 styles = '/* hupper user styles */@-moz-document' +
                                 ' url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
                                   styles + '}';
-                                Hupper.HUP.L.log('add styles: ', styles);
+                                Components.utils.import('resource://huppermodules/log.jsm', scope);
+                                scope.hupperLog('add styles: ', styles);
                                 addStyle(styles);
                             });
                         });

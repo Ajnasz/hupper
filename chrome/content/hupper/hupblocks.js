@@ -149,7 +149,9 @@
               elementer.Add(block.block, right);
             });
           } else {
-            Hupper.HUP.L.log('no blocks are defined');
+            var scope = {};
+            Components.utils.import('resource://huppermodules/log.jsm', scope);
+            scope.hupperLog('no blocks are defined');
           }
         }, 10);
       }
