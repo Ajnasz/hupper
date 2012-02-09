@@ -6,34 +6,37 @@
  * @constructor
  */
 Hupper.NodeHeaderBuilder = function() {
+  var scope = {}, bundles;
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  bundles = scope.hupperBundles;
   /**
    * @final
    */
-  this.firstLinkText = Hupper.HUP.Bundles.getString('FirstLinkText');
+  this.firstLinkText = bundles.getString('FirstLinkText');
   /**
    * @final
    */
-  this.lastLinkText = Hupper.HUP.Bundles.getString('LastLinkText');
+  this.lastLinkText = bundles.getString('LastLinkText');
   /**
    * @final
    */
-  this.prevLinkText = Hupper.HUP.Bundles.getString('PrevLinkText');
+  this.prevLinkText = bundles.getString('PrevLinkText');
   /**
    * @final
    */
-  this.nextLinkText = Hupper.HUP.Bundles.getString('NextLinkText');
+  this.nextLinkText = bundles.getString('NextLinkText');
   /**
    * @final
    */
-  this.topLinkText = Hupper.HUP.Bundles.getString('TopLinkText');
+  this.topLinkText = bundles.getString('TopLinkText');
   /**
    * @final
    */
-  this.backLinkText = Hupper.HUP.Bundles.getString('BackLinkText');
+  this.backLinkText = bundles.getString('BackLinkText');
   /**
    * @final
    */
-  this.parentLinkText = Hupper.HUP.Bundles.getString('ParentLinkText');
+  this.parentLinkText = bundles.getString('ParentLinkText');
 
   // Title text nodes
   this.fit = Hupper.HUP.El.Txt(this.firstLinkText);
@@ -41,7 +44,7 @@ Hupper.NodeHeaderBuilder = function() {
   // this.newCt = Hupper.HUP.El.Txt(Hupper.HUP.hp.get.newcommenttext());
 
   // Mark as read node
-  this.markR = Hupper.HUP.El.CreateLink(Hupper.HUP.Bundles.getString('markingText'));
+  this.markR = Hupper.HUP.El.CreateLink(bundles.getString('markingText'));
   Hupper.HUP.El.AddClass(this.markR, 'mark');
 };
 Hupper.NodeHeaderBuilder.prototype = {

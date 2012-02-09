@@ -47,7 +47,7 @@
                 this.parent.addPoint(-1, this);
             }
         }
-        var me = this;
+        var me = this, scope = {};
         this.isBoringComment(function (isBoring) {
             if (isBoring) {
                 Hupper.HUP.El.AddClass(me.comment, 'hup-boring');
@@ -56,6 +56,8 @@
         if (this.children !== -1) {
             Hupper.HUP.El.AddClass(this.comment, 'has-children');
         }
+        Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+        this.bundles = scope.hupperBundles;
     };
     Hupper.Comment.prototype = {
         /**
@@ -404,7 +406,7 @@
                 sumContainer.setAttribute('title', 'osszesen');
                 sumContainer.addEventListener('click', togglePoints, true);
                 Hupper.HUP.El.AddClass(sumContainer, 'sum-points');
-                points = Hupper.HUP.El.Txt(Hupper.HUP.Bundles
+                points = Hupper.HUP.El.Txt(this.bundles
                   .getFormattedString('pointSum',
                     [this.plusPoints.length - this.minusPoints.length]));
                 Hupper.HUP.El.RemoveAll(sumContainer);

@@ -5,6 +5,8 @@
  */
 Hupper.Node = function (node) {
   var scope = {};
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  this.bundles = scope.hupperBundles;
   var header = Hupper.HUP.El.GetFirstTag('h2', node),
     submitData = node.childNodes[3],
     cont = node.childNodes[5],
@@ -115,8 +117,8 @@ Hupper.Node.prototype = {
   addTaxonomyCloser: function () {
     this.taxonomyButton = Hupper.HUP.El.Btn();
     Hupper.HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
-    this.taxonomyButton.setAttribute('title',
-      Hupper.HUP.Bundles.getFormattedString('hideTaxonomy', [this.taxonomy]));
+    var txt = this.bundles.getFormattedString('hideTaxonomy', [this.taxonomy]);
+    this.taxonomyButton.setAttribute('title', txt);
     var _this = this;
     Hupper.HUP.Ev.addEvent(this.taxonomyButton, 'click', function () {
       _this.addToHide();
@@ -149,6 +151,9 @@ Hupper.Node.prototype = {
 Hupper.NodeMenus = function (hupMenu) {
   this.nodes = {};
   this.hupMenu = hupMenu;
+  var scope = {};
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  this.bundles = scope.hupperBundles;
 };
 Hupper.NodeMenus.prototype = {
   addMenu: function () {
@@ -156,7 +161,7 @@ Hupper.NodeMenus.prototype = {
       return;
     }
     this.menuitem = this.hupMenu.addMenuItem({
-      name: Hupper.HUP.Bundles.getString('restoreNodes'),
+      name: this.bundles.getString('restoreNodes'),
       click: function () {
         Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
         Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');

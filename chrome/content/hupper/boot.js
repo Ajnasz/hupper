@@ -33,8 +33,6 @@ Hupper.boot = function (e) {
             // Elementer
             elementer = new Hupper.Elementer(ww);
             Hupper.HUP.El = elementer;
-            // Lang stuffs
-            Hupper.HUP.Bundles = document.getElementById('hupper-bundles');
             // Hupper.addHupStyles();
             hupMenu = new Hupper.Menu();
             Hupper.HUP.BlockMenus = new Hupper.BlockMenus(hupMenu);

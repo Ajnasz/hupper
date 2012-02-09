@@ -41,6 +41,7 @@ xpi:
     modules/trollHandler.jsm \
     modules/hup-events.jsm \
     modules/prefs.jsm \
+    modules/bundles.jsm \
     modules/log.jsm \
 		chrome/skin/ \
 		chrome/locale/ \

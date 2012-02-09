@@ -37,6 +37,9 @@ Hupper.Block = function(cfg) {
       throw new Error('blockID is not the same as the block elements id!');
     }
   }
+  var scope = {};
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  this.bundles = scope.hupperBundles;
   this.block = blockElement;
   this.blocks = cfg.blocks;
   this.id = blockID;
@@ -167,9 +170,9 @@ Hupper.Block.prototype = {
   addButtons: function() {
     if(!this.titleNode) {return;}
     var block = this, titleNode = this.titleNode,
-        delButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
-        hideButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
-        showButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+        delButton = Hupper.HUP.El.Btn(this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = Hupper.HUP.El.Btn(this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = Hupper.HUP.El.Btn(this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
     Hupper.HUP.Ev.addEvent(delButton, 'click', function() {
       block.hide();
     });
@@ -191,10 +194,10 @@ Hupper.Block.prototype = {
     if(!this.titleNode) {
         return;
     }
-    this.upButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
-    this.downButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
-    this.leftButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
-    this.rightButton = Hupper.HUP.El.Btn(Hupper.HUP.Bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
+    this.upButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+    this.downButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+    this.leftButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+    this.rightButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
     Hupper.HUP.Ev.addEvent(this.upButton, 'click', function() {
       _this.moveUp();
@@ -252,11 +255,14 @@ Hupper.BlockMenus = function(hupMenu) {
 Hupper.BlockMenus.prototype = {
   addMenu: function() {
     if(this.menu) return;
-    this.menuitem = this.hupMenu.addMenuItem({name:  Hupper.HUP.Bundles.getString('restoreBlocks'), click: function() {
-      Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
-      Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');
-      Hupper.HUP.El.ToggleClass(this.parentNode, 'expanded');
-    }}, null, true);
+    this.menuitem = this.hupMenu.addMenuItem({
+          name: this.bundles.getString('restoreBlocks'),
+          click: function() {
+            Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
+            Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');
+            Hupper.HUP.El.ToggleClass(this.parentNode, 'expanded');
+          }
+    }, null, true);
     Hupper.HUP.El.RemoveClass(this.menuitem, 'leaf');
     Hupper.HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
     this.menu = this.hupMenu.addMenu(this.menuitem);

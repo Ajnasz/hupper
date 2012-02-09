@@ -139,11 +139,14 @@ Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
  * @see Hupper.Ajax
  */
 Hupper.markNodeAsRead = function(e) {
+  var scope = {}, bundles;
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  bundles = scope.hupperBundles;
   var ajax = new Hupper.Ajax({
     method: 'get',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
     successHandler: function() {
-      this.el.innerHTML = Hupper.HUP.Bundles.getString('markingSuccess');
+      this.el.innerHTML = bundles.getString('markingSuccess');
       if(this.el.nextSibling.getAttribute('class') == 'hnew') {
         Hupper.HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
       }
@@ -158,7 +161,7 @@ Hupper.markNodeAsRead = function(e) {
       Hupper.HUP.El.Add(img, this.el);
     },
     errorHandler: function() {
-      var t = Hupper.HUP.El.Txt(Hupper.HUP.Bundles.getString('markingError'));
+      var t = Hupper.HUP.El.Txt(bundles.getString('markingError'));
       Hupper.HUP.El.RemoveAll(this.el);
       Hupper.HUP.El.Add(t, this.el);
     }
@@ -192,9 +195,12 @@ Hupper.inArray = function(value, array) {
  * @param {String} [link]
  */
 Hupper.appendNewNotifier = function(link, mark, hupMenu) {
-  hupMenu.addMenuItem({name: Hupper.HUP.Bundles.getString('firstNew'), href: link || '#new'})
+  var scope = {}, bundles;
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  bundles = scope.hupperBundles;
+  hupMenu.addMenuItem({name: bundles.getString('firstNew'), href: link || '#new'})
   if(mark) {
-    hupMenu.addMenuItem({name: Hupper.HUP.Bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
+    hupMenu.addMenuItem({name: bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
 Hupper.setBlocks = function() {

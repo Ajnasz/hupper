@@ -94,7 +94,9 @@ Hupper.checkHLUsers = function () {
         }
     }
     if (used.length > 0) {
-        return confirm(Hupper.HUP.Bundles.getFormattedString('userIsTroll', [used.join(', ')]));
+        var scope = {};
+        Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+        return confirm(scope.hupperBundles.getFormattedString('userIsTroll', [used.join(', ')]));
     }
     return true;
 };
@@ -331,9 +333,13 @@ Hupper.setUserManager = function (doc) {
   }, false);
 };
 Hupper.resetBlocks = function() {
-  if(confirm(Hupper.HUP.Bundles.getString('confirmBlockReset'))) {
+  var scope = {},
+      bundles;
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  bundles = scope.hupperBundles;
+  if(confirm(bundles.getString('confirmBlockReset'))) {
     Hupper.HUP.hp.set.blocks('({})');
-    alert(Hupper.HUP.Bundles.getString('reloadHUPPlease'));
+    alert(bundles.getString('reloadHUPPlease'));
   }
 };
 Hupper.StartHupperPrefernces = function() {
@@ -341,7 +347,6 @@ Hupper.StartHupperPrefernces = function() {
   Components.utils.import('resource://huppermodules/prefs.jsm', scope);
   Hupper.HUP = {};
   Hupper.HUP.hp = new scope.HP();
-  Hupper.HUP.Bundles = document.getElementById('hupper-prefs-bundles');
   Hupper.disableFields();
   Hupper.setPrefWinVals();
   Hupper.onChangeFilterMethod();
