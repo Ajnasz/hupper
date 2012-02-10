@@ -26,32 +26,35 @@ Hupper.Block = function (doc, cfg) {
     throw new Error('both block and id are invalid');
   }
   var blockElement, blockID, scope, contents;
+
+  this.doc = doc;
+
+  scope = {};
+  Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+  this.elementer = new scope.Elementer(this.doc);
+
   if (cfg.block && cfg.block.nodeType === 1) {
     blockElement = cfg.block;
     blockID = blockElement.getAttribute('id');
   } else {
     blockID = cfg.id;
-    blockElement = Hupper.HUP.El.GetId(blockID);
+    blockElement = this.elementer.GetId(blockID);
   }
   if (blockElement) {
     if (blockID !== blockElement.getAttribute('id')) {
       throw new Error('blockID is not the same as the block elements id!');
     }
   }
-  this.doc = doc;
-  scope = {};
   Components.utils.import('resource://huppermodules/bundles.jsm', scope);
   this.bundles = scope.hupperBundles;
-  Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
-  this.elementer = new scope.Elementer(this.doc);
   this.block = blockElement;
   this.blocks = cfg.blocks;
   this.id = blockID;
   this.blockMenus = cfg.blockMenus;
-  contents = Hupper.HUP.El.GetByClass(this.block, 'content', 'div');
+  contents = this.elementer.GetByClass(this.block, 'content', 'div');
   this.contentNode = contents.length ? contents[0] : null;
   if (this.block) {
-    this.titleNode = Hupper.HUP.El.GetFirstTag('h2', this.block);
+    this.titleNode = this.elementer.GetFirstTag('h2', this.block);
     if (this.titleNode) {
       this.blockTitle = this.titleNode.innerHTML;
     }
@@ -82,7 +85,7 @@ Hupper.Block.prototype = {
     if (this.hidden) {
       return;
     }
-    Hupper.HUP.El.Hide(this.block);
+    this.elementer.Hide(this.block);
     this.hidden = true;
     this.blockMenus.addBlockToMenu(this);
     this.blocks.save();
@@ -91,7 +94,7 @@ Hupper.Block.prototype = {
     if (!this.hidden) {
       return;
     }
-    Hupper.HUP.El.Show(this.block);
+    this.elementer.Show(this.block);
     this.hidden = false;
     this.blockMenus.removeBlockFromMenu(this);
     this.blocks.save();
@@ -100,10 +103,10 @@ Hupper.Block.prototype = {
     if (!this.contentNode || (this.contentHidden && !force)) {
       return;
     }
-    // Hupper.HUP.El.Hide(this.contentNode);
-    Hupper.HUP.El.AddClass(this.block, 'content-hidden');
-    Hupper.HUP.El.Hide(this.hideButton);
-    Hupper.HUP.El.Show(this.showButton);
+    // this.elementer.Hide(this.contentNode);
+    this.elementer.AddClass(this.block, 'content-hidden');
+    this.elementer.Hide(this.hideButton);
+    this.elementer.Show(this.showButton);
     this.contentHidden = true;
     this.blocks.save();
   },
@@ -111,10 +114,10 @@ Hupper.Block.prototype = {
     if (!this.contentNode || (!this.contentHidden && !force)) {
       return;
     }
-    // Hupper.HUP.El.Show(this.contentNode);
-    Hupper.HUP.El.RemoveClass(this.block, 'content-hidden');
-    Hupper.HUP.El.Show(this.hideButton);
-    Hupper.HUP.El.Hide(this.showButton);
+    // this.elementer.Show(this.contentNode);
+    this.elementer.RemoveClass(this.block, 'content-hidden');
+    this.elementer.Show(this.hideButton);
+    this.elementer.Hide(this.showButton);
     this.contentHidden = false;
     this.blocks.save();
   },
@@ -152,7 +155,7 @@ Hupper.Block.prototype = {
       'block-tagadelic-1': '/temak'
     };
     if (boxes[this.id] && this.blockTitle && this.titleNode) {
-      Hupper.HUP.El.Update(Hupper.HUP.El.CreateLink(this.blockTitle, boxes[this.id]), this.titleNode);
+      this.elementer.Update(this.elementer.CreateLink(this.blockTitle, boxes[this.id]), this.titleNode);
     }
   },
   moveUp: function () {
@@ -202,9 +205,9 @@ Hupper.Block.prototype = {
       return;
     }
     var block = this, titleNode = this.titleNode,
-        delButton = Hupper.HUP.El.Btn(this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
-        hideButton = Hupper.HUP.El.Btn(this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
-        showButton = Hupper.HUP.El.Btn(this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+        delButton = this.elementer.Btn(this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = this.elementer.Btn(this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = this.elementer.Btn(this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
     Hupper.HUP.Ev.addEvent(delButton, 'click', function () {
       block.hide();
     });
@@ -214,10 +217,10 @@ Hupper.Block.prototype = {
     Hupper.HUP.Ev.addEvent(showButton, 'click', function () {
       block.showContent();
     });
-    Hupper.HUP.El.Hide(showButton);
-    Hupper.HUP.El.Insert(showButton, titleNode.firstChild);
-    Hupper.HUP.El.Insert(hideButton, titleNode.firstChild);
-    Hupper.HUP.El.Insert(delButton, titleNode.firstChild);
+    this.elementer.Hide(showButton);
+    this.elementer.Insert(showButton, titleNode.firstChild);
+    this.elementer.Insert(hideButton, titleNode.firstChild);
+    this.elementer.Insert(delButton, titleNode.firstChild);
     this.delButton = delButton;
     this.hideButton = hideButton;
     this.showButton = showButton;
@@ -226,10 +229,10 @@ Hupper.Block.prototype = {
     if (!this.titleNode) {
       return;
     }
-    this.upButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
-    this.downButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
-    this.leftButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
-    this.rightButton = Hupper.HUP.El.Btn(this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
+    this.upButton = this.elementer.Btn(this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+    this.downButton = this.elementer.Btn(this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+    this.leftButton = this.elementer.Btn(this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+    this.rightButton = this.elementer.Btn(this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
     Hupper.HUP.Ev.addEvent(this.upButton, 'click', function () {
       _this.moveUp();
@@ -243,10 +246,10 @@ Hupper.Block.prototype = {
     Hupper.HUP.Ev.addEvent(this.rightButton, 'click', function () {
       _this.moveRight();
     });
-    Hupper.HUP.El.Insert(this.upButton, this.titleNode.firstChild);
-    Hupper.HUP.El.Insert(this.downButton, this.titleNode.firstChild);
-    Hupper.HUP.El.Insert(this.leftButton, this.titleNode.firstChild);
-    Hupper.HUP.El.Insert(this.rightButton, this.titleNode.firstChild);
+    this.elementer.Insert(this.upButton, this.titleNode.firstChild);
+    this.elementer.Insert(this.downButton, this.titleNode.firstChild);
+    this.elementer.Insert(this.leftButton, this.titleNode.firstChild);
+    this.elementer.Insert(this.rightButton, this.titleNode.firstChild);
   },
   setSide: function (side) {
     if (this.block) {
@@ -284,6 +287,9 @@ Hupper.BlockMenus = function (doc, hupMenu) {
   this.blocks = {};
   this.hupMenu = hupMenu;
   this.doc = doc;
+  var scope = {};
+  Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+  this.elementer = new scope.Elementer(this.doc);
 };
 Hupper.BlockMenus.prototype = {
   addMenu: function () {
@@ -293,13 +299,13 @@ Hupper.BlockMenus.prototype = {
     this.menuitem = this.hupMenu.addMenuItem({
       name: this.bundles.getString('restoreBlocks'),
       click: function () {
-        Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
-        Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');
-        Hupper.HUP.El.ToggleClass(this.parentNode, 'expanded');
+        this.elementer.ToggleClass(this.parentNode, 'hide-submenu');
+        this.elementer.ToggleClass(this.parentNode, 'collapsed');
+        this.elementer.ToggleClass(this.parentNode, 'expanded');
       }
     }, null, true);
-    Hupper.HUP.El.RemoveClass(this.menuitem, 'leaf');
-    Hupper.HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
+    this.elementer.RemoveClass(this.menuitem, 'leaf');
+    this.elementer.AddClass(this.menuitem, 'hide-submenu collapsed');
     this.menu = this.hupMenu.addMenu(this.menuitem);
   },
   removeMenu: function () {
@@ -326,7 +332,7 @@ Hupper.BlockMenus.prototype = {
   },
   removeBlockFromMenu: function (block) {
     if (this.blocks[block.id]) {
-      Hupper.HUP.El.Remove(this.blocks[block.id]);
+      this.elementer.Remove(this.blocks[block.id]);
       delete this.blocks[block.id];
     }
     var n = 0, i;
