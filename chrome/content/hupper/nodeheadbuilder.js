@@ -10,6 +10,8 @@ Hupper.NodeHeaderBuilder = function (doc) {
     var scope = {},
         bundles;
     this.doc = doc;
+    Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+    this.prefs = new scope.HP();
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
     this.elementer = new scope.Elementer(doc);
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
@@ -111,9 +113,9 @@ Hupper.NodeHeaderBuilder.prototype = {
       */
     buildNewText: function () {
         var nsp = this.elementer.Span(),
-          _this = this;
+            _this = this;
         this.elementer.AddClass(nsp, 'hnew');
-        Hupper.HUP.hp.get.newcommenttext(function (response) {
+        this.prefs.get.newcommenttext(function (response) {
             _this.elementer.Add(_this.elementer.Txt(response.pref.value), nsp);
         });
         return nsp;
@@ -162,7 +164,7 @@ Hupper.NodeHeaderBuilder.prototype = {
         var tmpList = this.elementer.Li(),
         link = this.elementer.CreateLink(this.parentLinkText, '#' + parent.id);
         // if fading enabled, add an event listener, which will fades the parent node
-        this.elementer.get.fadeparentcomment(function (response) {
+        this.prefs.get.fadeparentcomment(function (response) {
             if (response.pref.value) {
                 link.addEventListener('click', function (e) {
                     var transform = new Hupper.Transform(e.target.n.comment, 'FadeIn');
