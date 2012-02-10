@@ -6,9 +6,12 @@
  * @description Namespace to build links, lists etc.
  * @constructor
  */
-Hupper.NodeHeaderBuilder = function () {
+Hupper.NodeHeaderBuilder = function (doc) {
     var scope = {},
         bundles;
+    this.doc = doc;
+    Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+    this.elementer = new scope.Elementer(doc);
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
     bundles = scope.hupperBundles;
     /**
@@ -41,13 +44,13 @@ Hupper.NodeHeaderBuilder = function () {
     this.parentLinkText = bundles.getString('ParentLinkText');
 
     // Title text nodes
-    this.fit = Hupper.HUP.El.Txt(this.firstLinkText);
-    this.lat = Hupper.HUP.El.Txt(this.lastLinkText);
-    // this.newCt = Hupper.HUP.El.Txt(Hupper.HUP.hp.get.newcommenttext());
+    this.fit = this.elementer.Txt(this.firstLinkText);
+    this.lat = this.elementer.Txt(this.lastLinkText);
+    // this.newCt = this.elementer.Txt(this.elementer.get.newcommenttext());
 
     // Mark as read node
-    this.markR = Hupper.HUP.El.CreateLink(bundles.getString('markingText'));
-    Hupper.HUP.El.AddClass(this.markR, 'mark');
+    this.markR = this.elementer.CreateLink(bundles.getString('markingText'));
+    this.elementer.AddClass(this.markR, 'mark');
 };
 Hupper.NodeHeaderBuilder.prototype = {
     /**
@@ -57,7 +60,7 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildNextLink: function (path) {
-        return Hupper.HUP.El.CreateLink(this.nextLinkText, '#' + path);
+        return this.elementer.CreateLink(this.nextLinkText, '#' + path);
     },
     /**
       * Builds a link which points to the specified path with the prev link text
@@ -66,7 +69,7 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildPrevLink: function (path) {
-        return Hupper.HUP.El.CreateLink(this.prevLinkText, '#' + path);
+        return this.elementer.CreateLink(this.prevLinkText, '#' + path);
     },
     /**
       * Builds a text node with the first text
@@ -74,8 +77,8 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildFirstLink: function () {
-        var nsp = Hupper.HUP.El.Span();
-        Hupper.HUP.El.Add(this.fit, nsp);
+        var nsp = this.elementer.Span();
+        this.elementer.Add(this.fit, nsp);
         return nsp;
     },
     /**
@@ -84,8 +87,8 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildLastLink: function () {
-        var nsp = Hupper.HUP.El.Span();
-        Hupper.HUP.El.Add(this.lat, nsp);
+        var nsp = this.elementer.Span();
+        this.elementer.Add(this.lat, nsp);
         return nsp;
     },
     /**
@@ -108,10 +111,10 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildNewText: function () {
-        var nsp = Hupper.HUP.El.Span(), _this = this;
-        Hupper.HUP.El.AddClass(nsp, 'hnew');
-        Hupper.HUP.hp.get.newcommenttext(function (response) {
-            Hupper.HUP.El.Add(Hupper.HUP.El.Txt(response.pref.value), nsp);
+        var nsp = this.elementer.Span(), _this = this;
+        this.elementer.AddClass(nsp, 'hnew');
+        this.elementer.get.newcommenttext(function (response) {
+            this.elementer.Add(this.elementer.Txt(response.pref.value), nsp);
         });
         return nsp;
     },
@@ -122,7 +125,7 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildNameLink: function (i, type) {
-        var liaC = Hupper.HUP.El.A();
+        var liaC = this.elementer.A();
         if (!type) {
             type = 'n';
         }
@@ -135,8 +138,8 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildComExtraTop: function () {
-        var tmpList = Hupper.HUP.El.Li();
-        Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink(this.topLinkText, '#'), tmpList);
+        var tmpList = this.elementer.Li();
+        this.elementer.Add(this.elementer.CreateLink(this.topLinkText, '#'), tmpList);
         return tmpList;
     },
     /**
@@ -145,8 +148,8 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildComExtraBack: function () {
-        var tmpList = Hupper.HUP.El.Li();
-        Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
+        var tmpList = this.elementer.Li();
+        this.elementer.Add(this.elementer.CreateLink(this.backLinkText, 'javascript:history.back();'), tmpList);
         return tmpList;
     },
     /**
@@ -156,10 +159,10 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildComExtraParent: function (parent) {
-        var tmpList = Hupper.HUP.El.Li(),
-        link = Hupper.HUP.El.CreateLink(this.parentLinkText, '#' + parent.id);
+        var tmpList = this.elementer.Li(),
+        link = this.elementer.CreateLink(this.parentLinkText, '#' + parent.id);
         // if fading enabled, add an event listener, which will fades the parent node
-        Hupper.HUP.hp.get.fadeparentcomment(function (response) {
+        this.elementer.get.fadeparentcomment(function (response) {
             if (response.pref.value) {
                 link.addEventListener('click', function (e) {
                     var transform = new Hupper.Transform(e.target.n.comment, 'FadeIn');
@@ -167,7 +170,7 @@ Hupper.NodeHeaderBuilder.prototype = {
                 link.n = parent;
             }
         });
-        Hupper.HUP.El.Add(link, tmpList);
+        this.elementer.Add(link, tmpList);
         return tmpList;
     },
     /**
@@ -177,8 +180,8 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildComExtraPerma: function (cid) {
-        var tmpList = Hupper.HUP.El.Li();
-        Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink('permalink', '#' + cid), tmpList);
+        var tmpList = this.elementer.Li();
+        this.elementer.Add(this.elementer.CreateLink('permalink', '#' + cid), tmpList);
         return tmpList;
     }
 };
