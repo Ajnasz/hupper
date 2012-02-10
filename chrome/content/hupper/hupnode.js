@@ -4,11 +4,12 @@
  * @description class to parse a node and make changes on it
  * @param {Element} node an article node
  */
-Hupper.Node = function (node) {
+Hupper.Node = function (doc, node) {
     var scope = {},
         header, submitData, cont, footer, sender, taxonomy;
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
     this.bundles = scope.hupperBundles;
+    this.doc = doc;
     header = Hupper.HUP.El.GetFirstTag('h2', node);
     submitData = node.childNodes[3];
     cont = node.childNodes[5];

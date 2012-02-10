@@ -13,7 +13,8 @@
     * @param {Array} comments all comment of the page
     * @param {Hupper.GetComments} hupComments the general GetHupComments instance
     */
-    Hupper.Comment = function (commentNode, indentComments, comments, hupComments) {
+    Hupper.Comment = function (doc, commentNode, indentComments, comments, hupComments) {
+        this.doc = doc;
         this.comment = commentNode;
         this.hupComments = hupComments;
         this.id = this.comment.previousSibling.previousSibling.id;
@@ -458,7 +459,8 @@
     * @namespace Hupper
     * @description A class to handle all of the comments on the page
     */
-    Hupper.GetComments = function () {
+    Hupper.GetComments = function (doc) {
+        this.doc = doc;
         this.getComments();
         this.parseComments();
     };
@@ -490,7 +492,7 @@
             this.newComments = [];
             _this = this;
             ds.forEach(function (c) {
-                var comment = new Hupper.Comment(c, _this.indentComments, _this.comments, _this);
+                var comment = new Hupper.Comment(_this.doc, c, _this.indentComments, _this.comments, _this);
                 if (typeof _this.indentComments[comment.indent] === 'undefined') {
                     _this.indentComments[comment.indent] = [];
                 }
@@ -516,7 +518,7 @@
                 bh = hluser.split(':');
                 hh[bh[0]] = bh[1];
             });
-            builder = new Hupper.NodeHeaderBuilder();
+            builder = new Hupper.NodeHeaderBuilder(this.doc);
             try {
                 this.comments.forEach(function (C) {
                     if (filtertrolls && Hupper.inArray(C.user, trolls)) {

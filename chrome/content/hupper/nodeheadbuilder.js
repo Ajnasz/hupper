@@ -46,7 +46,6 @@ Hupper.NodeHeaderBuilder = function (doc) {
     // Title text nodes
     this.fit = this.elementer.Txt(this.firstLinkText);
     this.lat = this.elementer.Txt(this.lastLinkText);
-    // this.newCt = this.elementer.Txt(this.elementer.get.newcommenttext());
 
     // Mark as read node
     this.markR = this.elementer.CreateLink(bundles.getString('markingText'));
@@ -111,10 +110,11 @@ Hupper.NodeHeaderBuilder.prototype = {
       * @type Element
       */
     buildNewText: function () {
-        var nsp = this.elementer.Span(), _this = this;
+        var nsp = this.elementer.Span(),
+          _this = this;
         this.elementer.AddClass(nsp, 'hnew');
-        this.elementer.get.newcommenttext(function (response) {
-            this.elementer.Add(this.elementer.Txt(response.pref.value), nsp);
+        Hupper.HUP.hp.get.newcommenttext(function (response) {
+            _this.elementer.Add(_this.elementer.Txt(response.pref.value), nsp);
         });
         return nsp;
     },

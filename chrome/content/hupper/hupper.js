@@ -12,18 +12,24 @@
  * @return An arry with all nodes and only new nodes 0 => all node, 1 => only new nodes
  * @type Array
  */
-Hupper.getNodes = function() {
-  var c = Hupper.HUP.El.GetId('content-both'),
-      ds = Hupper.HUP.El.GetTag('div', c),
-      nodes = [], newnodes = [],
-      i, dsl, node;
-  for(i = 0, dsl = ds.length; i < dsl; i++) {
-    if(Hupper.HUP.El.HasClass(ds[i], 'node')) {
-      node = new Hupper.Node(ds[i]);
-      node.newc && !node.hidden ? nodes.push(node) && newnodes.push(node) : nodes.push(node);
+ /*global Hupper:true */
+Hupper.getNodes = function (doc) {
+    var c = Hupper.HUP.El.GetId('content-both'),
+        ds = Hupper.HUP.El.GetTag('div', c),
+        nodes = [], newnodes = [],
+        i, dsl, node;
+    for (i = 0, dsl = ds.length; i < dsl; i += 1) {
+        if (Hupper.HUP.El.HasClass(ds[i], 'node')) {
+            node = new Hupper.Node(doc, ds[i]);
+            if (node.newc && !node.hidden) {
+                nodes.push(node);
+                newnodes.push(node);
+            } else {
+                nodes.push(node);
+            }
+        }
     }
-  }
-  return new Array(nodes, newnodes);
+    return [nodes, newnodes];
 };
 Hupper.getBlocks = function() {
   return Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-left'), 'block', 'div').concat(Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-right'), 'block', 'div'));
@@ -114,9 +120,9 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
  * @param {Array} nodes
  * @param {Array} newNodes
  */
-Hupper.parseNodes = function(nodes, newNodes, nodeMenu) {
+Hupper.parseNodes = function(doc, nodes, newNodes, nodeMenu) {
   var spa = Hupper.HUP.El.Span(),
-      builder = new Hupper.NodeHeaderBuilder(),
+      builder = new Hupper.NodeHeaderBuilder(doc),
       sp, node, mread, next, prev;
   for(var i = 0, nl = nodes.length; i < nl; i++) {
     node = nodes[i];

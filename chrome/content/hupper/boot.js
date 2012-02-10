@@ -43,7 +43,7 @@ Hupper.boot = function (e) {
             Hupper.HUP.w.nextLinks = [];
             // if comments are available
             if (elementer.GetId('comments')) {
-                c = new Hupper.GetComments();
+                c = new Hupper.GetComments(ww);
                 newComments = c.newComments;
                 Hupper.HUP.hp.get.showqnavbox(function (response) {
                     if (c.newComments.length && response.pref.value) {
@@ -53,8 +53,8 @@ Hupper.boot = function (e) {
             } else {
                 Hupper.HUP.hp.get.insertnewtexttonode(function (response) {
                     if (response.pref.value) {
-                        var nodes = Hupper.getNodes();
-                        Hupper.parseNodes(nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
+                        var nodes = Hupper.getNodes(ww);
+                        Hupper.parseNodes(ww, nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
                         Hupper.HUP.hp.get.showqnavbox(function (response) {
                             if (nodes[1].length > 0 && response.pref.value) {
                                 Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
