@@ -44,6 +44,7 @@ xpi:
     modules/bundles.jsm \
     modules/Elementer.jsm \
     modules/log.jsm \
+		modules/transform.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
@@ -51,7 +52,6 @@ xpi:
 		chrome/content/hupper/postinstall.js \
 		chrome/content/hupper/json.js \
 		chrome/content/hupper/hup-elementer.js \
-		chrome/content/hupper/transform.js \
 		chrome/content/hupper/menu.js \
 		chrome/content/hupper/hupcomment.js \
 		chrome/content/hupper/hupnode.js \

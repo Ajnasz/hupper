@@ -167,7 +167,9 @@ Hupper.NodeHeaderBuilder.prototype = {
         this.prefs.get.fadeparentcomment(function (response) {
             if (response.pref.value) {
                 link.addEventListener('click', function (e) {
-                    var transform = new Hupper.Transform(e.target.n.comment, 'FadeIn');
+                    var scope = {}, transform;
+                    Components.utils.import('resource://huppermodules/transform.jsm', scope);
+                    transform = new scope.Transform(e.target.n.comment, 'FadeIn');
                 }, false);
                 link.n = parent;
             }
