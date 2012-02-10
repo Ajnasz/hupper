@@ -28,7 +28,7 @@ Hupper.getNodes = function() {
 Hupper.getBlocks = function() {
   return Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-left'), 'block', 'div').concat(Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
-Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
+Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
   var hupperBlocks = new Hupper.Blocks(),
       processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
 
@@ -52,7 +52,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
           }
         }
 
-        return new Hupper.Block({
+        return new Hupper.Block(doc, {
           id: leftBlock.id,
           blockMenus: blockMenus,
           blocks: hupperBlocks,
@@ -73,7 +73,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
             }
           }
 
-          return new Hupper.Block({
+          return new Hupper.Block(doc, {
             id: rightBlock.id,
             blockMenus: blockMenus,
             blocks: hupperBlocks,
@@ -84,7 +84,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
         })
       ).concat(
         blockElements.map(function(blockElement) {
-          return new Hupper.Block({
+          return new Hupper.Block(doc, {
             block: blockElement,
             blockMenus: blockMenus,
             blocks: hupperBlocks,
@@ -94,7 +94,7 @@ Hupper.parseBlocks = function(blockElements, blockMenus, elementer) {
 
     } else {
       processedBlocks = blockElements.map(function(blockElement) {
-        return new Hupper.Block({
+        return new Hupper.Block(doc, {
           block: blockElement,
           blockMenus: blockMenus,
           blocks: hupperBlocks,
@@ -203,11 +203,11 @@ Hupper.appendNewNotifier = function(link, mark, hupMenu) {
     hupMenu.addMenuItem({name: bundles.getString('markAllRead'), click: Hupper.markAllNodeAsRead})
   }
 };
-Hupper.setBlocks = function() {
+Hupper.setBlocks = function(doc) {
   Hupper.HUP.hp.get.parseblocks(function(response) {
     if (response.pref.value) {
       var blocks = Hupper.getBlocks();
-      Hupper.parseBlocks(blocks, Hupper.HUP.BlockMenus, Hupper.HUP.El);
+      Hupper.parseBlocks(doc, blocks, Hupper.HUP.BlockMenus, Hupper.HUP.El);
     }
   });
 };

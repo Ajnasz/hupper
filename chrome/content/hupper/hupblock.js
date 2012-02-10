@@ -14,7 +14,7 @@
  *  contentHidden: {Boolean} set to true if the element's content has to be hidden by default
  *  side: {String} left or right, use to set the side of the block
  */
-Hupper.Block = function (cfg) {
+Hupper.Block = function (doc, cfg) {
   // if (!block) return;
   if (typeof cfg !== 'object') {
     throw new Error('Config not defined');
@@ -38,9 +38,12 @@ Hupper.Block = function (cfg) {
       throw new Error('blockID is not the same as the block elements id!');
     }
   }
+  this.doc = doc;
   scope = {};
   Components.utils.import('resource://huppermodules/bundles.jsm', scope);
   this.bundles = scope.hupperBundles;
+  Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+  this.elementer = new scope.Elementer(this.doc);
   this.block = blockElement;
   this.blocks = cfg.blocks;
   this.id = blockID;
@@ -277,9 +280,10 @@ Hupper.Block.prototype = {
  * @constructor
  * @param {Hupper.Menu} hupMenu
  */
-Hupper.BlockMenus = function (hupMenu) {
+Hupper.BlockMenus = function (doc, hupMenu) {
   this.blocks = {};
   this.hupMenu = hupMenu;
+  this.doc = doc;
 };
 Hupper.BlockMenus.prototype = {
   addMenu: function () {

@@ -31,16 +31,18 @@ Hupper.boot = function (e) {
             Hupper.postInstall();
             Hupper.styles();
             // Elementer
-            elementer = new Hupper.Elementer(ww);
+            // elementer = new Hupper.Elementer(ww);
+            Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+            elementer = new scope.Elementer(ww);
             Hupper.HUP.El = elementer;
             // Hupper.addHupStyles();
             hupMenu = new Hupper.Menu();
-            Hupper.HUP.BlockMenus = new Hupper.BlockMenus(hupMenu);
+            Hupper.HUP.BlockMenus = new Hupper.BlockMenus(ww, hupMenu);
             // Stores the mark as read nodes
             Hupper.HUP.markReadNodes = [];
             Hupper.HUP.w.nextLinks = [];
             // if comments are available
-            if (Hupper.HUP.El.GetId('comments')) {
+            if (elementer.GetId('comments')) {
                 c = new Hupper.GetComments();
                 newComments = c.newComments;
                 Hupper.HUP.hp.get.showqnavbox(function (response) {
@@ -61,7 +63,7 @@ Hupper.boot = function (e) {
                     }
                 });
             }
-            Hupper.setBlocks();
+            Hupper.setBlocks(ww);
             var markAsTroll = function (element) {
                 var user, trolls, isAdded;
                 if (element) {

@@ -42,6 +42,7 @@ xpi:
     modules/hup-events.jsm \
     modules/prefs.jsm \
     modules/bundles.jsm \
+    modules/Elementer.jsm \
     modules/log.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
