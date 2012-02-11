@@ -38,7 +38,8 @@ Hupper.Node = function (doc, node) {
         url: sender[0].href
     } : false;
     this.checkTaxonomy();
-    this.builder = new Hupper.NodeHeaderBuilder(this.doc);
+    Components.utils.import('resource://huppermodules/nodeheaderbuilder.jsm', scope);
+    this.builder = new scope.NodeHeaderBuilder(this.doc);
     this.addNnewSpan();
     if (this.taxonomy) {
         this.addTaxonomyCloser();

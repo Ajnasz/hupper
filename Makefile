@@ -46,6 +46,7 @@ xpi:
     modules/log.jsm \
 		modules/transform.jsm \
 		modules/ajax.jsm \
+		modules/nodeheaderbuilder.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
@@ -58,7 +59,6 @@ xpi:
 		chrome/content/hupper/hupblocks.js \
 		chrome/content/hupper/hupblock.js \
 		chrome/content/hupper/styles.js \
-		chrome/content/hupper/nodeheadbuilder.js \
 		chrome/content/hupper/boot.js \
 		chrome/content/hupper/hupper.js \
 		chrome/content/hupper/hupper-prefs.js \

@@ -1,4 +1,4 @@
-/*global Hupper:true, Components: true */
+/*global Components: true */
 /**
  * Namespace to build links, lists etc.
  * @class NodeHeaderBuilder
@@ -6,7 +6,7 @@
  * @description Namespace to build links, lists etc.
  * @constructor
  */
-Hupper.NodeHeaderBuilder = function (doc) {
+var NodeHeaderBuilder = function (doc) {
     var scope = {},
         bundles;
     this.doc = doc;
@@ -53,7 +53,7 @@ Hupper.NodeHeaderBuilder = function (doc) {
     this.markR = this.elementer.CreateLink(bundles.getString('markingText'));
     this.elementer.AddClass(this.markR, 'mark');
 };
-Hupper.NodeHeaderBuilder.prototype = {
+NodeHeaderBuilder.prototype = {
     /**
       * Builds a link which points to the specified path with the next link str
       * @param {String} path Path for the next node
@@ -189,3 +189,5 @@ Hupper.NodeHeaderBuilder.prototype = {
         return tmpList;
     }
 };
+
+var EXPORTED_SYMBOLS = ['NodeHeaderBuilder'];

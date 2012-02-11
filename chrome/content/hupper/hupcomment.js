@@ -249,7 +249,7 @@
             */
         },
         /**
-        * @param {Hupper.NodeHeaderBuilder} builder
+        * @param {NodeHeaderBuilder} builder
         */
         addExtraLinks: function (builder) {
             Hupper.HUP.El.Add(builder.buildComExtraTop(), this.footerLinks);
@@ -257,7 +257,7 @@
         },
         /**
         * replace the 'uj' text in the header of newly posted comments
-        * @param {Hupper.NodeHeaderBuilder} builder
+        * @param {NodeHeaderBuilder} builder
         * @param {Element} tmpSpan1
         */
         replaceNewCommentText: function (builder, tmpSpan1) {
@@ -265,7 +265,7 @@
             Hupper.HUP.El.Add(builder.buildNewText(), tmpSpan1);
         },
         /**
-        * @param {Hupper.NodeHeaderBuilder} builder
+        * @param {NodeHeaderBuilder} builder
         */
         addComExtraParent: function (builder) {
             Hupper.HUP.El.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
@@ -515,12 +515,14 @@
             insertPermalink = prefs.insertPermalink,
             highlightUsers = prefs.highlightUsers.split(','),
             hh = {},
+            scope = {},
             bh, builder, ps, spanNode, tmpSpan1, i, ncl;
             highlightUsers.forEach(function (hluser) {
                 bh = hluser.split(':');
                 hh[bh[0]] = bh[1];
             });
-            builder = new Hupper.NodeHeaderBuilder(this.doc);
+            Components.utils.import('resource://huppermodules/nodeheaderbuilder.jsm', scope);
+            builder = new scope.NodeHeaderBuilder(this.doc);
             try {
                 this.comments.forEach(function (C) {
                     if (filtertrolls && Hupper.inArray(C.user, trolls)) {
@@ -539,7 +541,6 @@
                     C.showPoints();
                 });
             } catch (e) {
-                var scope = {};
                 Components.utils.import('resource://huppermodules/log.jsm', scope);
                 scope.hupperLog('hupcomment', e.message, e.lineNumber, e.fileName);
             }

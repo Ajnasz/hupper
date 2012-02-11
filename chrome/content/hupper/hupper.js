@@ -122,7 +122,6 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
  */
 Hupper.parseNodes = function(doc, nodes, newNodes, nodeMenu) {
   var spa = Hupper.HUP.El.Span(),
-      builder = new Hupper.NodeHeaderBuilder(doc),
       sp, node, mread, next, prev;
   for(var i = 0, nl = nodes.length; i < nl; i++) {
     node = nodes[i];
