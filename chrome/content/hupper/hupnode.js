@@ -92,9 +92,14 @@ Hupper.Node.prototype = {
         this.addNext();
     },
     addMarkAsRead: function () {
-        var mread = this.builder.buildMarker(this.path, this.id);
+        var mread = this.builder.buildMarker(this.path, this.id),
+            _this = this;
         Hupper.HUP.markReadNodes.push(mread);
         Hupper.HUP.El.Add(mread, this.sp);
+        mread.addEventListener('click', function () {
+            _this.markAsRead();
+        }, false);
+        this.readMarker = mread;
     },
     addNewText: function () {
         Hupper.HUP.El.Add(this.builder.buildNewText(), this.sp);
@@ -145,6 +150,37 @@ Hupper.Node.prototype = {
         if (this.hidden) {
             nodeMenu.addNodeToMenu(this);
         }
+    },
+    markAsRead: function () {
+        var scope = {},
+            marker = this.readMarker,
+            ajax, bundles;
+        Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+        bundles = scope.hupperBundles;
+        Components.utils.import('resource://huppermodules/ajax.jsm', scope);
+        ajax = new scope.Ajax({
+            method: 'get',
+            url: 'http://hup.hu' + marker.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
+            successHandler: function () {
+                marker.innerHTML = bundles.getString('markingSuccess');
+                if (marker.nextSibling.getAttribute('class') === 'hnew') {
+                    Hupper.HUP.El.Remove(marker.nextSibling, marker.parentNode);
+                }
+                setTimeout(function () {
+                    Hupper.HUP.El.Remove(marker);
+                }, 750);
+            },
+            loadHandler: function () {
+                var img = Hupper.HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
+                Hupper.HUP.El.RemoveAll(marker);
+                Hupper.HUP.El.Add(img, marker);
+            },
+            errorHandler: function () {
+                var t = Hupper.HUP.El.Txt(bundles.getString('markingError'));
+                Hupper.HUP.El.RemoveAll(marker);
+                Hupper.HUP.El.Add(t, marker);
+            }
+        });
     }
 };
 /**

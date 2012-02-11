@@ -103,7 +103,7 @@ Hupper.NodeHeaderBuilder.prototype = {
         var mr = this.markR.cloneNode(true);
         mr.setAttribute('path', path);
         mr.setAttribute('id', 'marker-' + i);
-        mr.addEventListener('click', Hupper.markNodeAsRead, true);
+        // mr.addEventListener('click', Hupper.markNodeAsRead, true);
         return mr;
     },
     /**
