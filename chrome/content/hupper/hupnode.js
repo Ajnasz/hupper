@@ -10,21 +10,25 @@ Hupper.Node = function (doc, node) {
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
     this.bundles = scope.hupperBundles;
     this.doc = doc;
-    header = Hupper.HUP.El.GetFirstTag('h2', node);
+    Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+    this.elementer = new scope.Elementer(this.doc);
+    Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+    this.prefs = new scope.HP();
+    header = this.elementer.GetFirstTag('h2', node);
     submitData = node.childNodes[3];
     cont = node.childNodes[5];
-    footer = Hupper.HUP.El.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false;
-    sender = Hupper.HUP.El.GetByAttrib(submitData, 'a', 'title', 'Felhasználói profil megtekintése.');
-    taxonomy = Hupper.HUP.El.GetByAttrib(submitData, 'a', 'rel', 'tag');
+    footer = this.elementer.HasClass(node.childNodes[7], 'links') ? node.childNodes[7] : false;
+    sender = this.elementer.GetByAttrib(submitData, 'a', 'title', 'Felhasználói profil megtekintése.');
+    taxonomy = this.elementer.GetByAttrib(submitData, 'a', 'rel', 'tag');
     this.element = node;
     this.id = parseInt(node.id.replace('node-', ''), 10);
     this.header = header;
     Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
-    this.path = scope.HupStringer.trim(Hupper.HUP.El.GetFirstTag('a', this.header).getAttribute('href'));
+    this.path = scope.HupStringer.trim(this.elementer.GetFirstTag('a', this.header).getAttribute('href'));
     this.submitData = submitData;
     this.cont = cont;
     this.footer = footer;
-    this.newc = Hupper.HUP.El.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
+    this.newc = this.elementer.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
     if (taxonomy.length > 0) {
         this.taxonomy = taxonomy[0].innerHTML;
         this.taxonomyNode = taxonomy[0];
@@ -50,14 +54,14 @@ Hupper.Node.prototype = {
     next: false,
     previous: false,
     hide: function () {
-        Hupper.HUP.El.AddClass(this.element, 'hup-hidden');
+        this.elementer.AddClass(this.element, 'hup-hidden');
         this.hidden = true;
         if (this.nodeMenu) {
             this.nodeMenu.addNodeToMenu(this);
         }
     },
     show: function () {
-        Hupper.HUP.El.RemoveClass(this.element, 'hup-hidden');
+        this.elementer.RemoveClass(this.element, 'hup-hidden');
         this.hidden = false;
         if (this.nodeMenu) {
             this.nodeMenu.removeNodeFromMenu(this);
@@ -67,7 +71,7 @@ Hupper.Node.prototype = {
         var _this = this,
             scope = {};
         Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
-        Hupper.HUP.hp.get.hidetaxonomy(function (response) {
+        this.prefs.get.hidetaxonomy(function (response) {
             var hideTaxonomies = scope.HupStringer.trim(response.pref.value);
             if (hideTaxonomies.length && hideTaxonomies.indexOf(_this.taxonomy) !== -1) {
                 _this.hide();
@@ -77,9 +81,9 @@ Hupper.Node.prototype = {
         });
     },
     addNnewSpan: function () {
-        this.sp = Hupper.HUP.El.Span();
-        Hupper.HUP.El.AddClass(this.sp, 'nnew');
-        Hupper.HUP.El.Insert(this.sp, this.header.firstChild);
+        this.sp = this.elementer.Span();
+        this.elementer.AddClass(this.sp, 'nnew');
+        this.elementer.Insert(this.sp, this.header.firstChild);
     },
     /**
     * @param {Integer} i node index
@@ -95,54 +99,54 @@ Hupper.Node.prototype = {
     addMarkAsRead: function () {
         var mread = this.builder.buildMarker(this.path, this.id),
             _this = this;
-        Hupper.HUP.markReadNodes.push(mread);
-        Hupper.HUP.El.Add(mread, this.sp);
+        // Hupper.HUP.markReadNodes.push(mread);
+        this.elementer.Add(mread, this.sp);
         mread.addEventListener('click', function () {
             _this.markAsRead();
         }, false);
         this.readMarker = mread;
     },
     addNewText: function () {
-        Hupper.HUP.El.Add(this.builder.buildNewText(), this.sp);
+        this.elementer.Add(this.builder.buildNewText(), this.sp);
     },
     addNameLink: function () {
-        // Hupper.HUP.El.Insert(this.builder.buildNameLink('node-' + this.id), this.header);
-        Hupper.HUP.El.Insert(this.builder.buildNameLink(this.id, 'node'), this.header);
+        // this.elementer.Insert(this.builder.buildNameLink('node-' + this.id), this.header);
+        this.elementer.Insert(this.builder.buildNameLink(this.id, 'node'), this.header);
     },
     addNext: function () {
         if (this.next === false) {
-            Hupper.HUP.El.Add(this.builder.buildLastLink(), this.sp);
+            this.elementer.Add(this.builder.buildLastLink(), this.sp);
         } else {
-            Hupper.HUP.El.Add(this.builder.buildNextLink('node-' + this.next), this.sp);
+            this.elementer.Add(this.builder.buildNextLink('node-' + this.next), this.sp);
         }
     },
     addPrev: function () {
         if (this.previous === false) {
-            Hupper.HUP.El.Add(this.builder.buildFirstLink(), this.sp);
+            this.elementer.Add(this.builder.buildFirstLink(), this.sp);
         } else {
-            Hupper.HUP.El.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
+            this.elementer.Add(this.builder.buildPrevLink('node-' + this.previous), this.sp);
         }
     },
     addTaxonomyCloser: function () {
-        this.taxonomyButton = Hupper.HUP.El.Btn();
-        Hupper.HUP.El.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
+        this.taxonomyButton = this.elementer.Btn();
+        this.elementer.AddClass(this.taxonomyButton, 'hupper-button taxonomy-button delete-button');
         var txt = this.bundles.getFormattedString('hideTaxonomy', [this.taxonomy]),
             _this = this;
         this.taxonomyButton.setAttribute('title', txt);
-        Hupper.HUP.Ev.addEvent(this.taxonomyButton, 'click', function () {
+        this.taxonomyButton.addEventListener('click', function () {
             _this.addToHide();
             Hupper.HideTaxonomyNodes(_this.nodes);
-        });
-        Hupper.HUP.El.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
+        }, false);
+        this.elementer.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
     },
     addToHide: function () {
         var _this = this;
-        Hupper.HUP.hp.get.hidetaxonomy(function (response) {
+        this.prefs.get.hidetaxonomy(function (response) {
             var taxonomies = response.pref.value.split(';');
             if (taxonomies.indexOf(_this.taxonomy) === -1) {
                 taxonomies.push(_this.taxonomy);
             }
-            Hupper.HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+            _this.prefs.set.hidetaxonomy(taxonomies.join(';'));
         });
     },
     addNodes: function (nodes, nodeMenu) {
@@ -165,21 +169,21 @@ Hupper.Node.prototype = {
             successHandler: function () {
                 marker.innerHTML = bundles.getString('markingSuccess');
                 if (marker.nextSibling.getAttribute('class') === 'hnew') {
-                    Hupper.HUP.El.Remove(marker.nextSibling, marker.parentNode);
+                    this.elementer.Remove(marker.nextSibling, marker.parentNode);
                 }
                 setTimeout(function () {
-                    Hupper.HUP.El.Remove(marker);
+                    this.elementer.Remove(marker);
                 }, 750);
             },
             loadHandler: function () {
-                var img = Hupper.HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
-                Hupper.HUP.El.RemoveAll(marker);
-                Hupper.HUP.El.Add(img, marker);
+                var img = this.elementer.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
+                this.elementer.RemoveAll(marker);
+                this.elementer.Add(img, marker);
             },
             errorHandler: function () {
-                var t = Hupper.HUP.El.Txt(bundles.getString('markingError'));
-                Hupper.HUP.El.RemoveAll(marker);
-                Hupper.HUP.El.Add(t, marker);
+                var t = this.elementer.Txt(bundles.getString('markingError'));
+                this.elementer.RemoveAll(marker);
+                this.elementer.Add(t, marker);
             }
         });
     }
@@ -188,28 +192,34 @@ Hupper.Node.prototype = {
  * @class NodeMenus
  * @namesapce Hupper
  */
-Hupper.NodeMenus = function (hupMenu) {
+Hupper.NodeMenus = function (doc, hupMenu) {
     this.nodes = {};
     this.hupMenu = hupMenu;
     var scope = {};
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
     this.bundles = scope.hupperBundles;
+    this.doc = doc;
+    Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+    this.elementer = new scope.Elementer(this.doc);
+    Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+    this.prefs = new scope.HP();
 };
 Hupper.NodeMenus.prototype = {
     addMenu: function () {
         if (this.menu) {
             return;
         }
+        var _this = this;
         this.menuitem = this.hupMenu.addMenuItem({
             name: this.bundles.getString('restoreNodes'),
             click: function () {
-                Hupper.HUP.El.ToggleClass(this.parentNode, 'hide-submenu');
-                Hupper.HUP.El.ToggleClass(this.parentNode, 'collapsed');
-                Hupper.HUP.El.ToggleClass(this.parentNode, 'expanded');
+                _this.elementer.ToggleClass(this.parentNode, 'hide-submenu');
+                _this.elementer.ToggleClass(this.parentNode, 'collapsed');
+                _this.elementer.ToggleClass(this.parentNode, 'expanded');
             }
         }, null, true);
-        Hupper.HUP.El.RemoveClass(this.menuitem, 'leaf');
-        Hupper.HUP.El.AddClass(this.menuitem, 'hide-submenu collapsed');
+        this.elementer.RemoveClass(this.menuitem, 'leaf');
+        this.elementer.AddClass(this.menuitem, 'hide-submenu collapsed');
         this.menu = this.hupMenu.addMenu(this.menuitem);
     },
     removeMenu: function () {
@@ -235,10 +245,11 @@ Hupper.NodeMenus.prototype = {
         }
     },
     removeNodeFromMenu: function (node) {
+        var _this = this, n, i;
         if (this.nodes[node.taxonomy]) {
-            Hupper.HUP.El.Remove(this.nodes[node.taxonomy]);
+            this.elementer.Remove(this.nodes[node.taxonomy]);
             delete this.nodes[node.taxonomy];
-            Hupper.HUP.hp.get.hidetaxonomy(function (response) {
+            this.prefs.get.hidetaxonomy(function (response) {
                 var taxonomies = response.pref.value.split(';'),
                     i, tl;
                 for (i = 0, tl = taxonomies.length; i < tl; i += 1) {
@@ -247,11 +258,11 @@ Hupper.NodeMenus.prototype = {
                         break;
                     }
                 }
-                Hupper.HUP.hp.set.hidetaxonomy(taxonomies.join(';'));
+                _this.prefs.set.hidetaxonomy(taxonomies.join(';'));
                 Hupper.HideTaxonomyNodes(node.nodes);
             });
         }
-        var n = 0, i;
+        n = 0;
         for (i in this.nodes) {
             if (this.nodes.hasOwnProperty(i)) {
                 n += 1;

@@ -55,7 +55,7 @@ Hupper.boot = function (e) {
                 Hupper.HUP.hp.get.insertnewtexttonode(function (response) {
                     if (response.pref.value) {
                         var nodes = Hupper.getNodes(ww);
-                        Hupper.parseNodes(ww, nodes[0], nodes[1], new Hupper.NodeMenus(hupMenu));
+                        Hupper.parseNodes(ww, nodes[0], nodes[1], new Hupper.NodeMenus(ww, hupMenu));
                         Hupper.HUP.hp.get.showqnavbox(function (response) {
                             if (nodes[1].length > 0 && response.pref.value) {
                                 Hupper.appendNewNotifier('#node-' + nodes[1][0].id, true, hupMenu);
