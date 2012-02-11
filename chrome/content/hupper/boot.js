@@ -36,7 +36,7 @@ Hupper.boot = function (e) {
             elementer = new scope.Elementer(ww);
             Hupper.HUP.El = elementer;
             // Hupper.addHupStyles();
-            hupMenu = new Hupper.Menu();
+            hupMenu = new Hupper.Menu(ww);
             Hupper.HUP.BlockMenus = new Hupper.BlockMenus(ww, hupMenu);
             // Stores the mark as read nodes
             Hupper.HUP.markReadNodes = [];
