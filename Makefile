@@ -49,12 +49,12 @@ xpi:
 		modules/nodeheaderbuilder.jsm \
 		modules/hupcomment.jsm \
 		modules/hupnode.jsm \
+		modules/menu.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
 		chrome/content/hupper/postinstall.js \
 		chrome/content/hupper/json.js \
-		chrome/content/hupper/menu.js \
 		chrome/content/hupper/hupblocks.js \
 		chrome/content/hupper/hupblock.js \
 		chrome/content/hupper/styles.js \

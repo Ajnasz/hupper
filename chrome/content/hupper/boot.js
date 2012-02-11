@@ -36,7 +36,8 @@ Hupper.boot = function (e) {
             elementer = new scope.Elementer(ww);
             Hupper.HUP.El = elementer;
             // Hupper.addHupStyles();
-            hupMenu = new Hupper.Menu(ww);
+            Components.utils.import('resource://huppermodules/menu.jsm', scope);
+            hupMenu = new scope.Menu(ww);
             Hupper.HUP.BlockMenus = new Hupper.BlockMenus(ww, hupMenu);
             // Stores the mark as read nodes
             Hupper.HUP.markReadNodes = [];
@@ -80,7 +81,7 @@ Hupper.boot = function (e) {
                             });
                         }
                     });
-                  }
+                }
             };
             document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
                 var element = document.popupNode;

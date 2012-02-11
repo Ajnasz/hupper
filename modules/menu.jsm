@@ -1,18 +1,15 @@
-/*global Hupper: true */
 /**
  * @constructor
  * @class Menu
- * @namespace Hupper
- * @module Hupper
  * @description handles the hupper block
  */
-Hupper.Menu = function (doc) {
+var Menu = function (doc) {
     var scope = {};
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
     this.elementer = new scope.Elementer(doc);
     this.add();
 };
-Hupper.Menu.prototype = {
+Menu.prototype = {
     block: null,
     id: 'block-hupper-0',
     hidden: false,
@@ -119,3 +116,5 @@ Hupper.Menu.prototype = {
         }
     }
 };
+
+var EXPORTED_SYMBOLS = ['Menu'];
