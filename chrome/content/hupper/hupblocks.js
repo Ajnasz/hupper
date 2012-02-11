@@ -74,8 +74,9 @@
             * @param {Hupper.Block} oBlock
             */
             registerBlock: function (oBlock) {
-                if (!(oBlock instanceof Hupper.Block)) {
-                    throw new Error('can not register block, oBlock type is ' + typeof(oBlock));
+                // if (!(oBlock instanceof Hupper.Block)) {
+                if (typeof oBlock !== 'object') {
+                    throw new Error('can not register block, oBlock type is ' + typeof oBlock);
                 }
 
                 var id, blockExists, side;
@@ -111,7 +112,8 @@
                 return output;
             },
             save: function () {
-                var json = {left: [], right: []};
+                var json = {left: [], right: []},
+                    scope = {};
                 blocks.left.forEach(function (block) {
                     json.left.push({
                         id: block.id,
@@ -126,13 +128,17 @@
                         contentHidden: block.contentHidden
                     });
                 });
-                Hupper.HUP.hp.set.blocks(Hupper.Json.encode(json));
+                Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+                new scope.HP().set.blocks(JSON.stringify(json));
             }
         };
     };
-    Blocks.UI = function (elementer, hupperBlocks) {
-        var timeout;
-        elementer = elementer || Hupper.HUP.El;
+    Blocks.UI = function (doc, hupperBlocks) {
+        var scope = {},
+            timeout, elementer;
+        this.doc = doc;
+        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+        elementer = new scope.Elementer(doc);
         return {
             rearrangeBlocks: function () {
                 if (timeout) {
