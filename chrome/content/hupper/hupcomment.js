@@ -1,8 +1,6 @@
-/*global Hupper: true, HUP: true */
 (function () {
     var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
-        minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
-        commentClasses = null;
+        minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)');
     /**
     * @constructor
     * @class Comment
@@ -14,21 +12,26 @@
     * @param {Hupper.GetComments} hupComments the general GetHupComments instance
     */
     Hupper.Comment = function (doc, commentNode, indentComments, comments, hupComments) {
+        var me = this, scope = {};
         this.doc = doc;
+        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+        this.elementer = new scope.Elementer(doc);
+        Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+        this.prefs = new scope.HP();
         this.comment = commentNode;
         this.hupComments = hupComments;
         this.id = this.comment.previousSibling.previousSibling.id;
-        this.header = Hupper.HUP.El.GetByClass(this.comment, 'submitted', 'div')[0];
-        this.footer = Hupper.HUP.El.GetByClass(this.comment, 'link', 'div')[0];
-        this.cont = Hupper.HUP.El.GetByClass(this.comment, 'content', 'div')[0];
+        this.header = me.elementer.GetByClass(this.comment, 'submitted', 'div')[0];
+        this.footer = me.elementer.GetByClass(this.comment, 'link', 'div')[0];
+        this.cont = me.elementer.GetByClass(this.comment, 'content', 'div')[0];
         this.isDeletedUser();
         this.getDate();
-        if (Hupper.HUP.w.location.search.replace(/\?page=/, '') > 0) {
+        if (this.doc.location.search.replace(/\?page=/, '') > 0) {
             this.todayComment();
         }
         this.replies = [];
         this.newComment();
-        this.footerLinks = Hupper.HUP.El.GetFirstTag('ul', this.footer);
+        this.footerLinks = me.elementer.GetFirstTag('ul', this.footer);
         this.getIndent(); // get indent state
         this.getChildComment(); // get child comments
         this.userElement = this.header.childNodes[1];
@@ -48,14 +51,13 @@
                 this.parent.addPoint(-1, this);
             }
         }
-        var me = this, scope = {};
         this.isBoringComment(function (isBoring) {
             if (isBoring) {
-                Hupper.HUP.El.AddClass(me.comment, 'hup-boring');
+                me.elementer.AddClass(me.comment, 'hup-boring');
             }
         });
         if (this.children !== -1) {
-            Hupper.HUP.El.AddClass(this.comment, 'has-children');
+            me.elementer.AddClass(this.comment, 'has-children');
         }
         Components.utils.import('resource://huppermodules/bundles.jsm', scope);
         this.bundles = scope.hupperBundles;
@@ -67,7 +69,7 @@
         */
         getChildComment: function () {
             var children = this.comment.nextSibling.nextSibling;
-            if (Hupper.HUP.El.HasClass(children, 'indented')) {
+            if (this.elementer.HasClass(children, 'indented')) {
                 this.children = children;
             } else {
                 this.children = -1;
@@ -78,9 +80,9 @@
         */
         getIndent: function () {
             var indent = 0, elem = this.comment;
-            while (Hupper.HUP.El.HasClass(elem.parentNode, 'indented')) {
+            while (this.elementer.HasClass(elem.parentNode, 'indented')) {
                 elem = elem.parentNode;
-                indent++;
+                indent += 1;
             }
             this.indent = indent;
         },
@@ -95,17 +97,16 @@
             if (this.date.getFullYear() === today.getFullYear() &&
                 this.date.getMonth() === today.getMonth() &&
                 this.date.getDate() === today.getDate()) {
-                s = Hupper.HUP.El.Span();
-                a = Hupper.HUP.El.A();
-                Hupper.HUP.El.AddClass(s, 'new');
-                Hupper.HUP.El.Add(Hupper.HUP.El.Txt('új'), s);
-                Hupper.HUP.El.Insert(s, _comment.comment.firstChild);
+                s = this.elementer.Span();
+                a = this.elementer.A();
+                this.elementer.Add(this.elementer.Txt('új'), s);
+                this.elementer.Insert(s, _comment.comment.firstChild);
                 a.setAttribute('id', 'new');
-                Hupper.HUP.El.Insert(a, _comment.comment.firstChild);
+                this.elementer.Insert(a, _comment.comment.firstChild);
             }
         },
         newComment: function () {
-            var newNodes = Hupper.HUP.El.GetByClass(this.comment, 'new', 'span');
+            var newNodes = this.elementer.GetByClass(this.comment, 'new', 'span');
             this.newComm = newNodes.length ? newNodes[0] : false;
         },
         /**
@@ -188,39 +189,39 @@
             this.header.style.backgroundColor = '';
         },
         _highlightComment: function () {
-            Hupper.HUP.El.AddClass(this.comment, commentClasses.trollCommentClass);
-            Hupper.HUP.El.AddClass(this.header, commentClasses.trollCommentHeaderClass);
+            this.elementer.AddClass(this.comment, commentClasses.trollCommentClass);
+            this.elementer.AddClass(this.header, commentClasses.trollCommentHeaderClass);
             if (this.children !== -1) {
-                Hupper.HUP.El.AddClass(this.children, commentClasses.trollCommentAnswersClass);
+                this.elementer.AddClass(this.children, commentClasses.trollCommentAnswersClass);
             }
         },
         setTroll: function () {
             this.troll = true;
             var me = this;
-            Hupper.HUP.hp.get.trollCommentClass(function (response) {
-                Hupper.HUP.El.AddClass(me.comment, response.pref.value);
+            this.prefs.get.trollCommentClass(function (response) {
+                me.elementer.AddClass(me.comment, response.pref.value);
             });
-            Hupper.HUP.hp.get.trollCommentHeaderClass(function (response) {
-                Hupper.HUP.El.AddClass(me.header, response.pref.value);
+            this.prefs.get.trollCommentHeaderClass(function (response) {
+                me.elementer.AddClass(me.header, response.pref.value);
             });
             if (this.children !== -1) {
-                Hupper.HUP.hp.get.trollCommentAnswersClass(function (response) {
-                    Hupper.HUP.El.AddClass(me.children, response.pref.value);
+                this.prefs.get.trollCommentAnswersClass(function (response) {
+                    me.elementer.AddClass(me.children, response.pref.value);
                 });
             }
         },
         unsetTroll: function () {
             this.troll = false;
             var me = this;
-            Hupper.HUP.hp.get.trollCommentClass(function (response) {
-                Hupper.HUP.El.RemoveClass(me.comment, response.pref.value);
+            this.prefs.get.trollCommentClass(function (response) {
+                me.elementer.RemoveClass(me.comment, response.pref.value);
             });
-            Hupper.HUP.hp.get.trollCommentHeaderClass(function (response) {
-                Hupper.HUP.El.RemoveClass(me.header, response.pref.value);
+            this.prefs.get.trollCommentHeaderClass(function (response) {
+                me.elementer.RemoveClass(me.header, response.pref.value);
             });
             if (this.children !== -1) {
-                Hupper.HUP.hp.get.trollCommentAnswersClass(function (response) {
-                    Hupper.HUP.El.RemoveClass(me.children, response.pref.value);
+                this.prefs.get.trollCommentAnswersClass(function (response) {
+                    me.elementer.RemoveClass(me.children, response.pref.value);
                 });
             }
         },
@@ -229,31 +230,13 @@
         */
         highlightTroll: function () {
             this.setTroll();
-            /*
-            var _this = this;;
-            if (!commentClasses) {
-              Hupper.HUP.hp.get.trollCommentClass(function (response) {
-                commentClasses = {};
-                commentClasses.trollCommentClass = response.pref.value;
-                Hupper.HUP.hp.get.trollCommentHeaderClass(function (response) {
-                  commentClasses.trollCommentHeaderClass = response.pref.value;
-                  Hupper.HUP.hp.get.trollCommentAnswersClass(function (response) {
-                    commentClasses.trollCommentAnswersClass = response.pref.value;
-                    _this._highlightComment();
-                  });
-                });
-              });
-            } else {
-              this._highlightComment();
-            }
-            */
         },
         /**
         * @param {NodeHeaderBuilder} builder
         */
         addExtraLinks: function (builder) {
-            Hupper.HUP.El.Add(builder.buildComExtraTop(), this.footerLinks);
-            Hupper.HUP.El.Add(builder.buildComExtraBack(), this.footerLinks);
+            this.elementer.Add(builder.buildComExtraTop(), this.footerLinks);
+            this.elementer.Add(builder.buildComExtraBack(), this.footerLinks);
         },
         /**
         * replace the 'uj' text in the header of newly posted comments
@@ -261,14 +244,14 @@
         * @param {Element} tmpSpan1
         */
         replaceNewCommentText: function (builder, tmpSpan1) {
-            Hupper.HUP.El.Remove(this.newComm, this.comment);
-            Hupper.HUP.El.Add(builder.buildNewText(), tmpSpan1);
+            this.elementer.Remove(this.newComm, this.comment);
+            this.elementer.Add(builder.buildNewText(), tmpSpan1);
         },
         /**
         * @param {NodeHeaderBuilder} builder
         */
         addComExtraParent: function (builder) {
-            Hupper.HUP.El.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
+            this.elementer.Add(builder.buildComExtraParent(this.parent), this.footerLinks);
         },
         /**
         * @param {Object} users
@@ -288,15 +271,15 @@
             }
         },
         isPlusOne: function () {
-            var firstParagraph = Hupper.HUP.El.GetFirstTag('p', this.cont);
+            var firstParagraph = this.elementer.GetFirstTag('p', this.cont);
             return plusOneRex.test(firstParagraph.textContent);
         },
         isBoringComment: function (cb) {
-            var paragraphs = Hupper.HUP.El.GetTag('p', this.cont),
+            var paragraphs = this.elementer.GetTag('p', this.cont),
                 trimComment;
             if (paragraphs.length === 1) {
                 trimComment = paragraphs[0].innerHTML.replace(/^\s*|\s*$/g, '');
-                Hupper.HUP.hp.get.boringcommentcontents(function (response) {
+                this.prefs.get.boringcommentcontents(function (response) {
                     var rex = new RegExp(response.pref.value),
                         output = rex.test(trimComment);
                     cb(output);
@@ -306,34 +289,35 @@
             }
         },
         isMinusOne: function () {
-            var firstParagraph = Hupper.HUP.El.GetFirstTag('p', this.cont);
+            var firstParagraph = this.elementer.GetFirstTag('p', this.cont);
             return minusOneRex.test(firstParagraph.textContent);
         },
         renderReplies: function () {
-            var replies = Hupper.HUP.El.GetByClass(this.footer, 'hup-replies', 'div'),
-                fragment = Hupper.HUP.El.Fragment();
+            var replies = this.elementer.GetByClass(this.footer, 'hup-replies', 'div'),
+                fragment = this.elementer.Fragment(),
+                _this = this;
             if (!replies.length) {
-                replies = Hupper.HUP.El.Div();
-                Hupper.HUP.El.AddClass(replies, 'hup-replies');
-                Hupper.HUP.El.Insert(replies, this.footer.firstChild);
+                replies = this.elementer.Div();
+                this.elementer.AddClass(replies, 'hup-replies');
+                this.elementer.Insert(replies, this.footer.firstChild);
             } else {
                 replies = replies[0];
-                Hupper.HUP.El.RemoveAll(replies);
+                this.elementer.RemoveAll(replies);
             }
-            Hupper.HUP.El.Add(Hupper.HUP.El.Txt('replies: '), fragment);
+            this.elementer.Add(this.elementer.Txt('replies: '), fragment);
             this.replies.forEach(function (reply, index) {
                 if (index > 0) {
-                    Hupper.HUP.El.Add(Hupper.HUP.El.Txt(', '), fragment);
+                    _this.elementer.Add(_this.elementer.Txt(', '), fragment);
                 }
                 reply.isBoringComment(function (isBoring) {
-                    var link = Hupper.HUP.El.CreateLink(reply.user, '#' + reply.id);
+                    var link = _this.elementer.CreateLink(reply.user, '#' + reply.id);
                     if (isBoring) {
-                        Hupper.HUP.El.AddClass(link, 'hup-boring');
+                        _this.elementer.AddClass(link, 'hup-boring');
                     }
-                    Hupper.HUP.El.Add(link, fragment);
+                    _this.elementer.Add(link, fragment);
                 });
             });
-            Hupper.HUP.El.Add(fragment, replies);
+            this.elementer.Add(fragment, replies);
         },
         addReply: function (child) {
             var scope = {},
@@ -365,13 +349,13 @@
                     return;
                 }
                 /**
-                * @param {Hupper.Comment} comment a HUPComment object
+                * @param {Comment} comment a HUPComment object
                 */
                 var _this = this,
                 createPoint = function (comment) {
-                    var point = Hupper.HUP.El.Li();
-                    Hupper.HUP.El.AddClass(point, 'point');
-                    Hupper.HUP.El.Add(Hupper.HUP.El.CreateLink(comment.user, '#' + comment.id), point);
+                    var point = _this.elementer.Li();
+                    _this.elementer.AddClass(point, 'point');
+                    _this.elementer.Add(_this.elementer.CreateLink(comment.user, '#' + comment.id), point);
                     return point;
                 },
                 togglePoints, type, points, fragment,
@@ -384,72 +368,72 @@
                         scope = {},
                         transform;
                     Components.utils.import('resource://huppermodules/transform.jsm', scope);
-                    if (Hupper.HUP.El.HasClass(this.parentNode, 'show')) {
+                    if (_this.elementer.HasClass(this.parentNode, 'show')) {
                         transform = new scope.Transform(
-                            Hupper.HUP.El.GetByClass(this.parentNode, 'point-details')[0],
+                            _this.elementer.GetByClass(this.parentNode, 'point-details')[0],
                             'SlideUp',
                             {
                                 onEnd: function () {
-                                    Hupper.HUP.El.RemoveClass(_this.parentNode, 'show');
+                                    _this.elementer.RemoveClass(_this.parentNode, 'show');
                                 }
                             }
                         );
                     } else {
-                        Hupper.HUP.El.AddClass(this.parentNode, 'show');
+                        _this.elementer.AddClass(this.parentNode, 'show');
                         transform = new scope.Transform(
-                            Hupper.HUP.El.GetByClass(this.parentNode, 'point-details')[0],
+                            _this.elementer.GetByClass(this.parentNode, 'point-details')[0],
                             'SlideDown'
                         );
                     }
                 };
-                pointContainer = Hupper.HUP.El.Div();
-                sumContainer = Hupper.HUP.El.El('h6');
-                pointDetails  = Hupper.HUP.El.Div();
+                pointContainer = _this.elementer.Div();
+                sumContainer = _this.elementer.El('h6');
+                pointDetails  = _this.elementer.Div();
 
                 sumContainer.setAttribute('title', 'osszesen');
                 sumContainer.addEventListener('click', togglePoints, true);
-                Hupper.HUP.El.AddClass(sumContainer, 'sum-points');
-                points = Hupper.HUP.El.Txt(this.bundles
+                _this.elementer.AddClass(sumContainer, 'sum-points');
+                points = _this.elementer.Txt(this.bundles
                   .getFormattedString('pointSum',
                     [this.plusPoints.length - this.minusPoints.length]));
-                Hupper.HUP.El.RemoveAll(sumContainer);
-                Hupper.HUP.El.Add(points, sumContainer);
+                _this.elementer.RemoveAll(sumContainer);
+                _this.elementer.Add(points, sumContainer);
 
-                Hupper.HUP.El.AddClass(pointDetails, 'point-details');
+                _this.elementer.AddClass(pointDetails, 'point-details');
 
-                Hupper.HUP.El.AddClass(pointContainer, 'points');
-                Hupper.HUP.El.Add(sumContainer, pointContainer);
-                Hupper.HUP.El.Add(pointDetails, pointContainer);
-                fragment = Hupper.HUP.El.Fragment();
-                Hupper.HUP.El.Add(pointContainer, fragment);
+                _this.elementer.AddClass(pointContainer, 'points');
+                _this.elementer.Add(sumContainer, pointContainer);
+                _this.elementer.Add(pointDetails, pointContainer);
+                fragment = _this.elementer.Fragment();
+                _this.elementer.Add(pointContainer, fragment);
 
                 if (this.plusPoints.length) {
-                    plusContainer = Hupper.HUP.El.Ul();
-                    type = Hupper.HUP.El.Li();
-                    Hupper.HUP.El.AddClass(type, 'type');
-                    Hupper.HUP.El.Add(Hupper.HUP.El.Txt('plus'), type);
-                    Hupper.HUP.El.Add(type, plusContainer);
+                    plusContainer = _this.elementer.Ul();
+                    type = _this.elementer.Li();
+                    _this.elementer.AddClass(type, 'type');
+                    _this.elementer.Add(_this.elementer.Txt('plus'), type);
+                    _this.elementer.Add(type, plusContainer);
                     plusContainer.setAttribute('title', 'plus');
 
                     this.plusPoints.forEach(function (comment) {
-                        Hupper.HUP.El.Add(createPoint(comment), plusContainer);
+                        _this.elementer.Add(createPoint(comment), plusContainer);
                     });
-                    Hupper.HUP.El.Add(plusContainer, pointDetails);
+                    _this.elementer.Add(plusContainer, pointDetails);
                 }
                 if (this.minusPoints.length) {
-                    minusContainer = Hupper.HUP.El.Ul();
+                    minusContainer = _this.elementer.Ul();
                     minusContainer.setAttribute('title', 'minus');
-                    type = Hupper.HUP.El.Li();
-                    Hupper.HUP.El.AddClass(type, 'type');
-                    Hupper.HUP.El.Add(Hupper.HUP.El.Txt('minus'), type);
-                    Hupper.HUP.El.Add(type, minusContainer);
+                    type = _this.elementer.Li();
+                    _this.elementer.AddClass(type, 'type');
+                    _this.elementer.Add(_this.elementer.Txt('minus'), type);
+                    _this.elementer.Add(type, minusContainer);
                     this.minusPoints.forEach(function (comment) {
-                        Hupper.HUP.El.Add(createPoint(comment), minusContainer);
+                        _this.elementer.Add(createPoint(comment), minusContainer);
                     });
-                    Hupper.HUP.El.Add(minusContainer, pointDetails);
+                    _this.elementer.Add(minusContainer, pointDetails);
                 }
 
-                Hupper.HUP.El.Insert(fragment, this.cont.firstChild);
+                _this.elementer.Insert(fragment, this.cont.firstChild);
             } catch (e) {
                 Components.utils.reportError(e);
             }
@@ -462,7 +446,12 @@
     * @description A class to handle all of the comments on the page
     */
     Hupper.GetComments = function (doc) {
+        var scope = {};
         this.doc = doc;
+        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+        this.elementer = new scope.Elementer(this.doc);
+        Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+        this.prefs = new scope.HP();
         this.getComments();
         this.parseComments();
     };
@@ -479,20 +468,20 @@
             return (comments.length) ? comments[0] : null;
         },
         getComments: function () {
-            var coms = Hupper.HUP.El.GetId('comments'), ds, _this;
+            var coms = this.elementer.GetId('comments'), ds, _this;
             if (!coms) {
                 return false;
             }
-            Hupper.HUP.hp.get.hideboringcomments(function (response) {
+            _this = this;
+            this.prefs.get.hideboringcomments(function (response) {
                 if (!response.pref.value) {
-                    Hupper.HUP.El.AddClass(coms, 'keep-boring-comments');
+                    _this.elementer.AddClass(coms, 'keep-boring-comments');
                 }
             });
-            ds = Hupper.HUP.El.GetByClass(coms, 'comment', 'div');
+            ds = _this.elementer.GetByClass(coms, 'comment', 'div');
             this.comments = [];
             this.indentComments = [];
             this.newComments = [];
-            _this = this;
             ds.forEach(function (c) {
                 var comment = new Hupper.Comment(_this.doc, c, _this.indentComments, _this.comments, _this);
                 if (typeof _this.indentComments[comment.indent] === 'undefined') {
@@ -516,6 +505,7 @@
             highlightUsers = prefs.highlightUsers.split(','),
             hh = {},
             scope = {},
+            _this = this,
             bh, builder, ps, spanNode, tmpSpan1, i, ncl;
             highlightUsers.forEach(function (hluser) {
                 bh = hluser.split(':');
@@ -535,7 +525,7 @@
                         C.addComExtraParent(builder);
                     }
                     if (insertPermalink) {
-                        Hupper.HUP.El.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
+                        _this.elementer.Add(builder.buildComExtraPerma(C.id), C.footerLinks);
                     }
                     C.highlightComment(hh);
                     C.showPoints();
@@ -545,27 +535,27 @@
                 scope.hupperLog('hupcomment', e.message, e.lineNumber, e.fileName);
             }
             if (replacenewcommenttext || prevnextlinks) {
-                spanNode = Hupper.HUP.El.Span();
+                spanNode = _this.elementer.Span();
                 for (i = 0, ncl = this.newComments.length; i < ncl; i += 1) {
                     tmpSpan1 = spanNode.cloneNode(true);
-                    Hupper.HUP.El.AddClass(tmpSpan1, 'hnav');
+                    this.elementer.AddClass(tmpSpan1, 'hnav');
                     if (prevnextlinks) {
                         if (i > 0) {
-                            Hupper.HUP.El.Add(builder.buildPrevLink(this.newComments[i - 1].id), tmpSpan1);
+                            this.elementer.Add(builder.buildPrevLink(this.newComments[i - 1].id), tmpSpan1);
                         } else {
-                            Hupper.HUP.El.Add(builder.buildFirstLink(), tmpSpan1);
+                            this.elementer.Add(builder.buildFirstLink(), tmpSpan1);
                         }
                         if (i < ncl - 1) {
-                            Hupper.HUP.El.Add(builder.buildNextLink(this.newComments[i + 1].id), tmpSpan1);
+                            this.elementer.Add(builder.buildNextLink(this.newComments[i + 1].id), tmpSpan1);
                         } else {
-                            Hupper.HUP.El.Add(builder.buildLastLink(), tmpSpan1);
+                            this.elementer.Add(builder.buildLastLink(), tmpSpan1);
                         }
                         Hupper.HUP.w.nextLinks.push(this.newComments[i].id);
                     }
                     if (replacenewcommenttext) {
                         this.newComments[i].replaceNewCommentText(builder, tmpSpan1);
                     }
-                    Hupper.HUP.El.Insert(tmpSpan1, this.newComments[i].header.firstChild);
+                    this.elementer.Insert(tmpSpan1, this.newComments[i].header.firstChild);
                 }
             }
         },
@@ -573,21 +563,21 @@
           // if (!prefs) {
             var prefs = {},
                 _this = this;
-            Hupper.HUP.hp.get.replacenewcommenttext(function (response) {
+            _this.prefs.get.replacenewcommenttext(function (response) {
                 prefs.replacenewcommenttext = response.pref.value;
-                Hupper.HUP.hp.get.prevnextlinks(function (response) {
+                _this.prefs.get.prevnextlinks(function (response) {
                     prefs.prevnextlinks = response.pref.value;
-                    Hupper.HUP.hp.get.trolls(function (response) {
+                    _this.prefs.get.trolls(function (response) {
                         prefs.trolls = response.pref.value;
-                        Hupper.HUP.hp.get.filtertrolls(function (response) {
+                        _this.prefs.get.filtertrolls(function (response) {
                             prefs.filtertrolls = response.pref.value;
-                            Hupper.HUP.hp.get.huppers(function (response) {
+                            _this.prefs.get.huppers(function (response) {
                                 prefs.huppers = response.pref.value;
-                                Hupper.HUP.hp.get.extracommentlinks(function (response) {
+                                _this.prefs.get.extracommentlinks(function (response) {
                                     prefs.extraCommentLinks = response.pref.value;
-                                    Hupper.HUP.hp.get.insertpermalink(function (response) {
+                                    _this.prefs.get.insertpermalink(function (response) {
                                         prefs.insertPermalink = response.pref.value;
-                                        Hupper.HUP.hp.get.highlightusers(function (response) {
+                                        _this.prefs.get.highlightusers(function (response) {
                                             prefs.highlightUsers = response.pref.value;
                                             _this._parseComments(prefs);
                                         });
