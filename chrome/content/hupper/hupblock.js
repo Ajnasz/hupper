@@ -290,6 +290,8 @@ Hupper.BlockMenus = function (doc, hupMenu) {
   var scope = {};
   Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
   this.elementer = new scope.Elementer(this.doc);
+  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+  this.bundles = scope.hupperBundles;
 };
 Hupper.BlockMenus.prototype = {
   addMenu: function () {
