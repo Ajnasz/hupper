@@ -43,7 +43,8 @@ Hupper.boot = function (e) {
             Hupper.HUP.w.nextLinks = [];
             // if comments are available
             if (elementer.GetId('comments')) {
-                c = new Hupper.GetComments(ww);
+                Components.utils.import('resource://huppermodules/hupcomment.jsm', scope);
+                c = new scope.GetComments(ww);
                 newComments = c.newComments;
                 Hupper.HUP.hp.get.showqnavbox(function (response) {
                     if (c.newComments.length && response.pref.value) {
