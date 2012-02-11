@@ -17,10 +17,12 @@ Hupper.getNodes = function (doc) {
     var c = Hupper.HUP.El.GetId('content-both'),
         ds = Hupper.HUP.El.GetTag('div', c),
         nodes = [], newnodes = [],
+        scope = {},
         i, dsl, node;
+    Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
     for (i = 0, dsl = ds.length; i < dsl; i += 1) {
         if (Hupper.HUP.El.HasClass(ds[i], 'node')) {
-            node = new Hupper.Node(doc, ds[i]);
+            node = new scope.Node(doc, ds[i]);
             if (node.newc && !node.hidden) {
                 nodes.push(node);
                 newnodes.push(node);

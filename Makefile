@@ -48,6 +48,7 @@ xpi:
 		modules/ajax.jsm \
 		modules/nodeheaderbuilder.jsm \
 		modules/hupcomment.jsm \
+		modules/hupnode.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
@@ -55,7 +56,6 @@ xpi:
 		chrome/content/hupper/json.js \
 		chrome/content/hupper/hup-elementer.js \
 		chrome/content/hupper/menu.js \
-		chrome/content/hupper/hupnode.js \
 		chrome/content/hupper/hupblocks.js \
 		chrome/content/hupper/hupblock.js \
 		chrome/content/hupper/styles.js \

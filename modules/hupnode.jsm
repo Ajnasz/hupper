@@ -1,10 +1,15 @@
 /*global Hupper: true */
+var hideTaxonomyNodes = function (nodes) {
+    nodes.forEach(function (node) {
+        node.checkTaxonomy();
+    });
+};
 /**
  * @class Node
  * @description class to parse a node and make changes on it
  * @param {Element} node an article node
  */
-Hupper.Node = function (doc, node) {
+var Node = function (doc, node) {
     var scope = {},
         header, submitData, cont, footer, sender, taxonomy;
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
@@ -49,7 +54,7 @@ Hupper.Node = function (doc, node) {
         this.addTaxonomyCloser();
     }
 };
-Hupper.Node.prototype = {
+Node.prototype = {
     hidden: false,
     next: false,
     previous: false,
@@ -135,7 +140,7 @@ Hupper.Node.prototype = {
         this.taxonomyButton.setAttribute('title', txt);
         this.taxonomyButton.addEventListener('click', function () {
             _this.addToHide();
-            Hupper.HideTaxonomyNodes(_this.nodes);
+            hideTaxonomyNodes(_this.nodes);
         }, false);
         this.elementer.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
     },
@@ -190,9 +195,8 @@ Hupper.Node.prototype = {
 };
 /**
  * @class NodeMenus
- * @namesapce Hupper
  */
-Hupper.NodeMenus = function (doc, hupMenu) {
+var NodeMenus = function (doc, hupMenu) {
     this.nodes = {};
     this.hupMenu = hupMenu;
     var scope = {};
@@ -204,7 +208,7 @@ Hupper.NodeMenus = function (doc, hupMenu) {
     Components.utils.import('resource://huppermodules/prefs.jsm', scope);
     this.prefs = new scope.HP();
 };
-Hupper.NodeMenus.prototype = {
+NodeMenus.prototype = {
     addMenu: function () {
         if (this.menu) {
             return;
@@ -259,7 +263,7 @@ Hupper.NodeMenus.prototype = {
                     }
                 }
                 _this.prefs.set.hidetaxonomy(taxonomies.join(';'));
-                Hupper.HideTaxonomyNodes(node.nodes);
+                hideTaxonomyNodes(node.nodes);
             });
         }
         n = 0;
@@ -273,8 +277,5 @@ Hupper.NodeMenus.prototype = {
         }
     }
 };
-Hupper.HideTaxonomyNodes = function (nodes) {
-    nodes.forEach(function (node) {
-        node.checkTaxonomy();
-    });
-};
+
+var EXPORTED_SYMBOLS = ['hideTaxonomyNodes', 'Node', 'NodeMenus'];
