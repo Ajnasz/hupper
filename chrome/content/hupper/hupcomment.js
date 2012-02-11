@@ -515,7 +515,7 @@
             builder = new scope.NodeHeaderBuilder(this.doc);
             try {
                 this.comments.forEach(function (C) {
-                    if (filtertrolls && Hupper.inArray(C.user, trolls)) {
+                    if (filtertrolls && trolls.indexOf(C.user) > -1) {
                         C.setTroll();
                     }
                     if (extraCommentLinks) {
@@ -550,7 +550,7 @@
                         } else {
                             this.elementer.Add(builder.buildLastLink(), tmpSpan1);
                         }
-                        Hupper.HUP.w.nextLinks.push(this.newComments[i].id);
+                        // Hupper.HUP.w.nextLinks.push(this.newComments[i].id);
                     }
                     if (replacenewcommenttext) {
                         this.newComments[i].replaceNewCommentText(builder, tmpSpan1);
