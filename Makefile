@@ -54,7 +54,6 @@ xpi:
 		chrome/content/hupper/namespace.js \
 		chrome/content/hupper/postinstall.js \
 		chrome/content/hupper/json.js \
-		chrome/content/hupper/hup-elementer.js \
 		chrome/content/hupper/menu.js \
 		chrome/content/hupper/hupblocks.js \
 		chrome/content/hupper/hupblock.js \
