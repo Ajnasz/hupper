@@ -141,14 +141,13 @@ Hupper.parseNodes = function(doc, nodes, newNodes, nodeMenu) {
 /**
  * Send an AJAX HEAD request to the server, to remove the unread nodes
  * @param {Event} e Event object
- * @requires Hupper.Ajax
- * @see Hupper.Ajax
  */
 Hupper.markNodeAsRead = function(e) {
   var scope = {}, bundles;
   Components.utils.import('resource://huppermodules/bundles.jsm', scope);
   bundles = scope.hupperBundles;
-  var ajax = new Hupper.Ajax({
+  Components.utils.import('resource://huppermodules/ajax.jsm', scope);
+  var ajax = new scope.Ajax({
     method: 'get',
     url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
     successHandler: function() {

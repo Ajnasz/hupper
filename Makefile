@@ -45,10 +45,10 @@ xpi:
     modules/Elementer.jsm \
     modules/log.jsm \
 		modules/transform.jsm \
+		modules/ajax.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
-		chrome/content/hupper/ajax.js \
 		chrome/content/hupper/postinstall.js \
 		chrome/content/hupper/json.js \
 		chrome/content/hupper/hup-elementer.js \
