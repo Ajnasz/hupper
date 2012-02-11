@@ -139,40 +139,6 @@ Hupper.parseNodes = function(doc, nodes, newNodes, nodeMenu) {
   });
 };
 /**
- * Send an AJAX HEAD request to the server, to remove the unread nodes
- * @param {Event} e Event object
- */
-Hupper.markNodeAsRead = function(e) {
-  var scope = {}, bundles;
-  Components.utils.import('resource://huppermodules/bundles.jsm', scope);
-  bundles = scope.hupperBundles;
-  Components.utils.import('resource://huppermodules/ajax.jsm', scope);
-  var ajax = new scope.Ajax({
-    method: 'get',
-    url: 'http://hup.hu' + this.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
-    successHandler: function() {
-      this.el.innerHTML = bundles.getString('markingSuccess');
-      if(this.el.nextSibling.getAttribute('class') == 'hnew') {
-        Hupper.HUP.El.Remove(this.el.nextSibling, this.el.parentNode);
-      }
-      var el = this.el;
-      setTimeout(function() {
-        Hupper.HUP.El.Remove(el);
-      }, 750);
-    },
-    loadHandler: function() {
-      var img = Hupper.HUP.El.Img('chrome://hupper/skin/ajax-loader.gif', 'marking...');
-      Hupper.HUP.El.RemoveAll(this.el);
-      Hupper.HUP.El.Add(img, this.el);
-    },
-    errorHandler: function() {
-      var t = Hupper.HUP.El.Txt(bundles.getString('markingError'));
-      Hupper.HUP.El.RemoveAll(this.el);
-      Hupper.HUP.El.Add(t, this.el);
-    }
-  }, e.target);
-};
-/**
  * Marks as read all nodes, which have unread items
  * @param {Event} e event object
  */
