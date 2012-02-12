@@ -149,7 +149,7 @@
         elementer = new scope.Elementer(doc);
         return elementer.GetByClass(elementer.GetId('sidebar-left'), 'block', 'div').concat(elementer.GetByClass(elementer.GetId('sidebar-right'), 'block', 'div'));
     };
-    parseBlocks = function (doc, blockElements, blockMenus, elementer) {
+    parseBlocks = function (doc, blockElements, blockMenus) {
         var scope = {},
             processedBlocks, leftBlocksFromConf, rightBlocksFromConf,
             hupperBlocks, prefs;
@@ -237,9 +237,11 @@
     * @param {Array} newNodes
     */
     parseNodes = function (doc, nodes, newNodes, nodeMenu) {
-        var spa = Hupper.HUP.El.Span(),
-            sp, node, mread, next, prev,
-            i, nl;
+        var scope = {},
+            elementer, spa, sp, node, mread, next, prev, i, nl;
+        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+        elementer = new scope.Elementer(doc);
+        spa = elementer.Span();
         for (i = 0, nl = nodes.length; i < nl; i += 1) {
             node = nodes[i];
             if (node.newc) {
@@ -290,13 +292,15 @@
         }
     };
     setBlocks = function (doc) {
-        var scope = {}, prefs;
+        var scope = {}, prefs, elementer;
         Components.utils.import('resource://huppermodules/prefs.jsm', scope);
         prefs = new scope.HP();
+        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
+        elementer = new scope.Elementer(doc);
         prefs.get.parseblocks(function (response) {
             if (response.pref.value) {
                 var blocks = getBlocks(doc);
-                parseBlocks(doc, blocks, Hupper.HUP.BlockMenus, Hupper.HUP.El);
+                parseBlocks(doc, blocks, Hupper.HUP.BlockMenus);
             }
         });
     };
@@ -338,7 +342,6 @@
                 // elementer = new Hupper.Elementer(ww);
                 Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
                 elementer = new scope.Elementer(ww);
-                Hupper.HUP.El = elementer;
                 // Hupper.addHupStyles();
                 Components.utils.import('resource://huppermodules/menu.jsm', scope);
                 hupMenu = new scope.Menu(ww);
