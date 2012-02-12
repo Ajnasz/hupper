@@ -43,6 +43,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
     Components.utils.import('resource://huppermodules/hupblocks.jsm', scope);
     hupperBlocks = new scope.Blocks();
     hupperBlocks.UI = scope.Blocks.UI(doc, hupperBlocks);
+    Components.utils.import('resource://huppermodules/hupblock.jsm', scope);
     Hupper.HUP.hp.get.blocks(function (response) {
         var blocksFromConfig = Hupper.Json.decode(response.pref.value);
         if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
@@ -62,7 +63,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
                     }
                 }
 
-                return new Hupper.Block(doc, {
+                return new scope.Block(doc, {
                   id: leftBlock.id,
                   blockMenus: blockMenus,
                   blocks: hupperBlocks,
@@ -83,7 +84,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
                   }
                 }
 
-                return new Hupper.Block(doc, {
+                return new scope.Block(doc, {
                   id: rightBlock.id,
                   blockMenus: blockMenus,
                   blocks: hupperBlocks,
@@ -94,7 +95,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
               })
             ).concat(
               blockElements.map(function(blockElement) {
-                return new Hupper.Block(doc, {
+                return new scope.Block(doc, {
                   block: blockElement,
                   blockMenus: blockMenus,
                   blocks: hupperBlocks,
@@ -104,7 +105,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
 
         } else {
           processedBlocks = blockElements.map(function(blockElement) {
-            return new Hupper.Block(doc, {
+            return new scope.Block(doc, {
               block: blockElement,
               blockMenus: blockMenus,
               blocks: hupperBlocks,

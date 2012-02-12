@@ -38,7 +38,8 @@ Hupper.boot = function (e) {
             // Hupper.addHupStyles();
             Components.utils.import('resource://huppermodules/menu.jsm', scope);
             hupMenu = new scope.Menu(ww);
-            Hupper.HUP.BlockMenus = new Hupper.BlockMenus(ww, hupMenu);
+            Components.utils.import('resource://huppermodules/hupblock.jsm', scope);
+            Hupper.HUP.BlockMenus = new scope.BlockMenus(ww, hupMenu);
             // Stores the mark as read nodes
             Hupper.HUP.markReadNodes = [];
             Hupper.HUP.w.nextLinks = [];

@@ -1,20 +1,18 @@
 /*jslint indent: 2*/
-/*global Hupper: true */
 /**
  * @class Block
- * @namespace Hupper
  * @constructor
  * @description Parses a block and adds buttons, hides them
  * @param {Object} cfg Configuration object, possible properties are:
  *  id: {String}, the id of the block,
  *  block: {HTMLElement} the block element
- *  blockMenus: {Hupper.BlockMenus} a blockmenus instance
- *  blocks: {Hupper.Blocks} a Blocks instance
+ *  blockMenus: {BlockMenus} a blockmenus instance
+ *  blocks: {Blocks} a Blocks instance
  *  hidden: {Boolean} set to true if the element has to be hidden by default
  *  contentHidden: {Boolean} set to true if the element's content has to be hidden by default
  *  side: {String} left or right, use to set the side of the block
  */
-Hupper.Block = function (doc, cfg) {
+var Block = function (doc, cfg) {
   // if (!block) return;
   if (typeof cfg !== 'object') {
     throw new Error('Config not defined');
@@ -75,9 +73,9 @@ Hupper.Block = function (doc, cfg) {
   } else {
     this.showContent();
   }
-  // Hupper.Blocks.save();
+  // Blocks.save();
 };
-Hupper.Block.prototype = {
+Block.prototype = {
   hidden: false,
   contentHidden: false,
   blocks: [],
@@ -283,7 +281,7 @@ Hupper.Block.prototype = {
  * @constructor
  * @param {Hupper.Menu} hupMenu
  */
-Hupper.BlockMenus = function (doc, hupMenu) {
+BlockMenus = function (doc, hupMenu) {
   this.blocks = {};
   this.hupMenu = hupMenu;
   this.doc = doc;
@@ -293,7 +291,7 @@ Hupper.BlockMenus = function (doc, hupMenu) {
   Components.utils.import('resource://huppermodules/bundles.jsm', scope);
   this.bundles = scope.hupperBundles;
 };
-Hupper.BlockMenus.prototype = {
+BlockMenus.prototype = {
   addMenu: function () {
     if (this.menu) {
       return;
@@ -348,3 +346,5 @@ Hupper.BlockMenus.prototype = {
     }
   }
 };
+
+var EXPORTED_SYMBOLS = ['Block', 'BlockMenus'];
