@@ -60,11 +60,13 @@ Hupper.savePreferences = function () {
         }
         value = Hupper.HUP.hp.set[item.prefName](value);
     });
-    var hideIcon = !Hupper.HUP.hp.get.showinstatusbar();
+    var hideIcon = !Hupper.HUP.hp.get.showinstatusbar(),
+        scope = {};
     Hupper.mapWindows(function (win) {
         win.document.getElementById('HUP-statusbar').hidden = hideIcon;
     });
-    Hupper.styles();
+    Components.utils.import('resource://huppermodules/hupperStyleHandler.jsm', scope);
+    scope.hupperStyleHandler();
     return true;
 };
 Hupper.disableFields = function () {

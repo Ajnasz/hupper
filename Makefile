@@ -52,12 +52,12 @@ xpi:
 		modules/menu.jsm \
 		modules/hupblocks.jsm \
 		modules/hupblock.jsm \
+		modules/hupperStyleHandler.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
 		chrome/content/hupper/namespace.js \
 		chrome/content/hupper/postinstall.js \
 		chrome/content/hupper/json.js \
-		chrome/content/hupper/styles.js \
 		chrome/content/hupper/boot.js \
 		chrome/content/hupper/hupper.js \
 		chrome/content/hupper/hupper-prefs.js \

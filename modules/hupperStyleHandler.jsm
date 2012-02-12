@@ -1,5 +1,5 @@
 /*global Hupper: true, StyleLoader: true*/
-Hupper.styles = function () {
+var hupperStyleHandler = function () {
     var scope = {},
         stylesToLoad = [],
         addStyle, indentStyle,
@@ -114,3 +114,5 @@ Hupper.styles = function () {
         });
     }, stylesToLoad);
 };
+
+var EXPORTED_SYMBOLS = ['hupperStyleHandler'];

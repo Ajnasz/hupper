@@ -29,7 +29,8 @@ Hupper.boot = function (e) {
             Hupper.HUP.Ev = new scope.HUPEvents(Hupper.HUP.w);
             // Logger
             Hupper.postInstall();
-            Hupper.styles();
+            Components.utils.import('resource://huppermodules/hupperStyleHandler.jsm', scope);
+            scope.hupperStyleHandler();
             // Elementer
             // elementer = new Hupper.Elementer(ww);
             Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
