@@ -2,25 +2,10 @@
 <!DOCTYPE overlay SYSTEM "chrome://hupper/locale/hupper.dtd">
 
 <overlay id="hupper-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://hupper/content/namespace.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/ajax.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hlog.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/postinstall.js"></script>
   <!-- <script type="application/x-javascript" src="chrome://hupper/content/hup-events.js"></script> -->
-  <script type="application/x-javascript" src="chrome://hupper/content/json.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hup-elementer.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/transform.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/menu.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hupcomment.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hupnode.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hupblocks.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>
   <!-- <script type="application/x-javascript" src="chrome://hupper/content/hp.js"></script> -->
   <!-- <script type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script> -->
   <!-- <script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>-->
-  <script type="application/x-javascript" src="chrome://hupper/content/nodeheadbuilder.js"></script>
-  <script type="application/x-javascript" src="chrome://hupper/content/boot.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper.js"></script>
   <stringbundlset id="stringbundleset">
     <stringbundle id="hupper-bundles" src="chrome://hupper/locale/hupper.properties" />

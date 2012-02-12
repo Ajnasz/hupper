@@ -1,4 +1,4 @@
-/*global Hupper: true, HUP: true*/
+var Hupper = {};
 /**
  * @author Koszti Lajos [Ajnasz] http://ajnasz.hu ajnasz@ajnasz.hu
  * @licence General Public Licence v2

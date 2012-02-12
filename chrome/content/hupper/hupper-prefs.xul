@@ -9,13 +9,7 @@
   buttons="accept,cancel"
   buttonlabelaccept="&Hupper.pref.acceptbutton;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://hupper/content/namespace.js" />
-  <script type="application/x-javascript" src="chrome://hupper/content/styles.js"></script>
   <script type="application/x-javascript" src="chrome://hupper/content/hupper-prefs.js" />
-  <script type="application/x-javascript" src="chrome://hupper/content/hlog.js" />
-  <!--<SCRIpt type="application/x-javascript" src="chrome://hupper/content/passmanager.js"></script>-->
-  <!--<script type="application/x-javascript" src="chrome://hupper/content/accountmanager.js"></script>-->
-  <script type="application/x-javascript" src="chrome://hupper/content/hupblock.js"></script>
   <script type="application/x-javascript">
     <![CDATA[
     window.addEventListener('load', Hupper.StartHupperPrefernces, false);

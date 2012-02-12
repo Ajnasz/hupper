@@ -55,10 +55,6 @@ xpi:
 		modules/hupperStyleHandler.jsm \
 		chrome/skin/ \
 		chrome/locale/ \
-		chrome/content/hupper/namespace.js \
-		chrome/content/hupper/postinstall.js \
-		chrome/content/hupper/json.js \
-		chrome/content/hupper/boot.js \
 		chrome/content/hupper/hupper.js \
 		chrome/content/hupper/hupper-prefs.js \
 		chrome/content/hupper/hupper.xul \
