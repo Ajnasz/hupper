@@ -208,15 +208,15 @@ Hupper.Block.prototype = {
         delButton = this.elementer.Btn(this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
         hideButton = this.elementer.Btn(this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
         showButton = this.elementer.Btn(this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
-    Hupper.HUP.Ev.addEvent(delButton, 'click', function () {
+    delButton.addEventListener('click', function () {
       block.hide();
-    });
-    Hupper.HUP.Ev.addEvent(hideButton, 'click', function () {
+    }, false);
+    hideButton.addEventListener('click', function () {
       block.hideContent();
-    });
-    Hupper.HUP.Ev.addEvent(showButton, 'click', function () {
+    }, false);
+    showButton.addEventListener('click', function () {
       block.showContent();
-    });
+    }, false);
     this.elementer.Hide(showButton);
     this.elementer.Insert(showButton, titleNode.firstChild);
     this.elementer.Insert(hideButton, titleNode.firstChild);
@@ -234,18 +234,18 @@ Hupper.Block.prototype = {
     this.leftButton = this.elementer.Btn(this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
     this.rightButton = this.elementer.Btn(this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
-    Hupper.HUP.Ev.addEvent(this.upButton, 'click', function () {
+    this.upButton.addEventListener('click', function () {
       _this.moveUp();
-    });
-    Hupper.HUP.Ev.addEvent(this.downButton, 'click', function () {
+    }, false);
+    this.downButton.addEventListener('click', function () {
       _this.moveDown();
-    });
-    Hupper.HUP.Ev.addEvent(this.leftButton, 'click', function () {
+    }, false);
+    this.leftButton.addEventListener('click', function () {
       _this.moveLeft();
-    });
-    Hupper.HUP.Ev.addEvent(this.rightButton, 'click', function () {
+    }, false);
+    this.rightButton.addEventListener('click', function () {
       _this.moveRight();
-    });
+    }, false);
     this.elementer.Insert(this.upButton, this.titleNode.firstChild);
     this.elementer.Insert(this.downButton, this.titleNode.firstChild);
     this.elementer.Insert(this.leftButton, this.titleNode.firstChild);
