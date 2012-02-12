@@ -1,5 +1,5 @@
 // var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService)
-var scope = {};
+var scope = {}, styleLoader;
 Components.utils.import('resource://huppermodules/hupdb.jsm', scope);
 var bind = function(fn, context) {
   var args = [];
@@ -230,4 +230,8 @@ var StyleLoader = function() {
     },
   };
 };
-let EXPORTED_SYMBOLS = ['StyleLoader'];
+
+if (!styleLoader) {
+  styleLoader = new StyleLoader();
+}
+let EXPORTED_SYMBOLS = ['StyleLoader', 'styleLoader'];
