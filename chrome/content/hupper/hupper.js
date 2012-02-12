@@ -37,85 +37,87 @@ Hupper.getBlocks = function() {
   return Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-left'), 'block', 'div').concat(Hupper.HUP.El.GetByClass(Hupper.HUP.El.GetId('sidebar-right'), 'block', 'div'));
 };
 Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
-  var hupperBlocks = new Hupper.Blocks(),
-      processedBlocks, leftBlocksFromConf, rightBlocksFromConf;
+    var scope = {},
+        processedBlocks, leftBlocksFromConf, rightBlocksFromConf,
+        hupperBlocks;
+    Components.utils.import('resource://huppermodules/hupblocks.jsm', scope);
+    hupperBlocks = new scope.Blocks();
+    hupperBlocks.UI = scope.Blocks.UI(doc, hupperBlocks);
+    Hupper.HUP.hp.get.blocks(function (response) {
+        var blocksFromConfig = Hupper.Json.decode(response.pref.value);
+        if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
+            leftBlocksFromConf = blocksFromConfig.left;
+            rightBlocksFromConf = blocksFromConfig.right;
 
-  hupperBlocks.UI = Hupper.Blocks.UI(doc, hupperBlocks);
-  Hupper.HUP.hp.get.blocks(function(response) {
-    var blocksFromConfig = Hupper.Json.decode(response.pref.value);
-    if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
-      leftBlocksFromConf = blocksFromConfig.left;
-      rightBlocksFromConf = blocksFromConfig.right;
+            var processedBlocks = leftBlocksFromConf.map(function(leftBlock) {
+                var matched = false,
+                    blockElement,
+                    bl = blockElements.length;
 
-      var processedBlocks = leftBlocksFromConf.map(function(leftBlock) {
-        var matched = false,
-            blockElement,
-            bl = blockElements.length;
+                while(bl--) {
+                    blockElement = blockElements[bl];
+                    if(blockElement.id == leftBlock.id) {
+                        blockElements.splice(bl, 1);
+                        break;
+                    }
+                }
 
-        while(bl--) {
-          blockElement = blockElements[bl];
-          if(blockElement.id == leftBlock.id) {
-            blockElements.splice(bl, 1);
-            break;
-          }
+                return new Hupper.Block(doc, {
+                  id: leftBlock.id,
+                  blockMenus: blockMenus,
+                  blocks: hupperBlocks,
+                  side: 'left',
+                  hidden: leftBlock.hidden,
+                  contentHidden: leftBlock.contentHidden,
+                });
+            }).concat(
+              rightBlocksFromConf.map(function(rightBlock) {
+                var blockElement,
+                    bl = blockElements.length;
+
+                while(bl--) {
+                  blockElement = blockElements[bl];
+                  if(blockElement.id == rightBlock.id) {
+                    blockElements.splice(bl, 1);
+                    break;
+                  }
+                }
+
+                return new Hupper.Block(doc, {
+                  id: rightBlock.id,
+                  blockMenus: blockMenus,
+                  blocks: hupperBlocks,
+                  side: 'right',
+                  hidden: rightBlock.hidden,
+                  contentHidden: rightBlock.contentHidden,
+                });
+              })
+            ).concat(
+              blockElements.map(function(blockElement) {
+                return new Hupper.Block(doc, {
+                  block: blockElement,
+                  blockMenus: blockMenus,
+                  blocks: hupperBlocks,
+                });
+              })
+            );
+
+        } else {
+          processedBlocks = blockElements.map(function(blockElement) {
+            return new Hupper.Block(doc, {
+              block: blockElement,
+              blockMenus: blockMenus,
+              blocks: hupperBlocks,
+            });
+          });
         }
-
-        return new Hupper.Block(doc, {
-          id: leftBlock.id,
-          blockMenus: blockMenus,
-          blocks: hupperBlocks,
-          side: 'left',
-          hidden: leftBlock.hidden,
-          contentHidden: leftBlock.contentHidden,
+        processedBlocks.forEach(function(block, a, b) {
+          hupperBlocks.registerBlock(block);
         });
-      }).concat(
-        rightBlocksFromConf.map(function(rightBlock) {
-          var blockElement,
-              bl = blockElements.length;
-
-          while(bl--) {
-            blockElement = blockElements[bl];
-            if(blockElement.id == rightBlock.id) {
-              blockElements.splice(bl, 1);
-              break;
-            }
-          }
-
-          return new Hupper.Block(doc, {
-            id: rightBlock.id,
-            blockMenus: blockMenus,
-            blocks: hupperBlocks,
-            side: 'right',
-            hidden: rightBlock.hidden,
-            contentHidden: rightBlock.contentHidden,
-          });
-        })
-      ).concat(
-        blockElements.map(function(blockElement) {
-          return new Hupper.Block(doc, {
-            block: blockElement,
-            blockMenus: blockMenus,
-            blocks: hupperBlocks,
-          });
-        })
-      );
-
-    } else {
-      processedBlocks = blockElements.map(function(blockElement) {
-        return new Hupper.Block(doc, {
-          block: blockElement,
-          blockMenus: blockMenus,
-          blocks: hupperBlocks,
-        });
-      });
-    }
-    processedBlocks.forEach(function(block, a, b) {
-      hupperBlocks.registerBlock(block);
+        hupperBlocks.save();
+        hupperBlocks.UI.rearrangeBlocks();
+        hupperBlocks.save();
     });
-    hupperBlocks.save();
-    hupperBlocks.UI.rearrangeBlocks();
-    hupperBlocks.save();
-  });
 };
 /**
  * Parse the nodes to mark that the node have unread comment, adds prev and next links to the header
