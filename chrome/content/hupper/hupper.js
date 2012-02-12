@@ -45,7 +45,7 @@ Hupper.parseBlocks = function(doc, blockElements, blockMenus, elementer) {
     hupperBlocks.UI = scope.Blocks.UI(doc, hupperBlocks);
     Components.utils.import('resource://huppermodules/hupblock.jsm', scope);
     Hupper.HUP.hp.get.blocks(function (response) {
-        var blocksFromConfig = Hupper.Json.decode(response.pref.value);
+        var blocksFromConfig = JSON.parse(response.pref.value);
         if(blocksFromConfig && (blocksFromConfig.left || blocksFromConfig.right)) {
             leftBlocksFromConf = blocksFromConfig.left;
             rightBlocksFromConf = blocksFromConfig.right;
