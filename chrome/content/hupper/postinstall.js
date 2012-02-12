@@ -10,6 +10,9 @@
 Hupper.postInstall = function() {
 
   const HUPPER_VERSION = '###VERSION###';
+  var scope = {}, prefs;
+  Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+  prefs = new scope.HP();
 
   /**
    * !Previous < 0.0.5.3
@@ -17,21 +20,21 @@ Hupper.postInstall = function() {
    * the color of the huppers
    */
   var convertColors = function() {
-    var filterhuppers = Hupper.HUP.hp.get.filterhuppers();
+    var filterhuppers = prefs.get.filterhuppers();
     if(filterhuppers) {
-      var huppers = Hupper.HUP.hp.get.huppers().split(',');
-      var color = Hupper.HUP.hp.get.huppercolor();
-      var colors = Hupper.HUP.hp.get.highlightusers();
+      var huppers = prefs.get.huppers().split(',');
+      var color = prefs.get.huppercolor();
+      var colors = prefs.get.highlightusers();
       huppers.forEach(function(hup_user) {
         colors += ',' + hup_user + ':' + color;
       })
-      Hupper.HUP.hp.set.highlightusers(colors);
-      Hupper.HUP.hp.set.huppercolor('');
-      Hupper.HUP.hp.set.huppers('');
+      prefs.set.highlightusers(colors);
+      prefs.set.huppercolor('');
+      prefs.set.huppers('');
     }
   };
   var convertBlockSettings = function() {
-    var blocks = Hupper.Json.decode(Hupper.HUP.hp.get.blocks());
+    var blocks = Hupper.Json.decode(prefs.get.blocks());
     var output = {left: [], right: []}
 
     if(!blocks['block-blog-0']) {
@@ -47,7 +50,7 @@ Hupper.postInstall = function() {
     } else if(blocks['left'] || blocks['right']) {
       output = blocks;
     }
-    Hupper.HUP.hp.set.blocks(Hupper.Json.encode(output));
+    prefs.set.blocks(Hupper.Json.encode(output));
   };
 
   /**
@@ -67,7 +70,7 @@ Hupper.postInstall = function() {
   var scope = {};
   Components.utils.import('resource://huppermodules/log.jsm', scope);
   try {
-    oldVerValue = parseVersion(Hupper.HUP.hp.M.getCharPref('extensions.hupper.version'));
+    oldVerValue = parseVersion(prefs.M.getCharPref('extensions.hupper.version'));
   } catch(e) {
     scope.hupperLog('postinstallerror: ', e.message);
   }
@@ -86,6 +89,6 @@ Hupper.postInstall = function() {
       convertBlockSettings();
     }
     scope.hupperLog('postinstall', version, oldVerValue);
-    Hupper.HUP.hp.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
+    prefs.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
   }
 };
