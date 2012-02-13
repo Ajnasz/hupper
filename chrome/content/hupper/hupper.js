@@ -351,11 +351,12 @@
                 Hupper.HUP.markReadNodes = [];
                 // Hupper.HUP.w.nextLinks = [];
                 // if comments are available
+                /*
                 if (elementer.GetId('comments')) {
                     Components.utils.import('resource://huppermodules/hupcomment.jsm', scope);
                     c = new scope.GetComments(ww);
-                    newComments = c.newComments;
                     prefs.get.showqnavbox(function (response) {
+                        newComments = c.newComments;
                         if (c.newComments.length && response.pref.value) {
                             appendNewNotifier(null, null, hupMenu);
                         }
@@ -374,6 +375,10 @@
                         }
                     });
                 }
+                */
+                Components.utils.import('resource://huppermodules/HupSite.jsm', scope);
+                var site = new scope.HupSite(ww);
+                site.init();
                 setBlocks(ww);
                 markAsTroll = function (element) {
                     var user, trolls, isAdded;
