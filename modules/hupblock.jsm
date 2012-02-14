@@ -153,7 +153,8 @@ Block.prototype = {
       'block-tagadelic-1': '/temak'
     };
     if (boxes[this.id] && this.blockTitle && this.titleNode) {
-      this.elementer.Update(this.elementer.CreateLink(this.blockTitle, boxes[this.id]), this.titleNode);
+      this.elementer.Update(
+        this.elementer.CreateLink(this.blockTitle, boxes[this.id]), this.titleNode);
     }
   },
   moveUp: function () {
@@ -203,18 +204,21 @@ Block.prototype = {
       return;
     }
     var block = this, titleNode = this.titleNode,
-        delButton = this.elementer.Btn(this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
-        hideButton = this.elementer.Btn(this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
-        showButton = this.elementer.Btn(this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
-    delButton.addEventListener('click', function () {
+        delButton = this.elementer.Btn(
+          this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
+        hideButton = this.elementer.Btn(
+          this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
+        showButton = this.elementer.Btn(
+          this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+    this.elementer.subscribe(delButton, 'click', function () {
       block.hide();
-    }, false);
-    hideButton.addEventListener('click', function () {
+    });
+    this.elementer.subscribe(hideButton, 'click', function () {
       block.hideContent();
-    }, false);
-    showButton.addEventListener('click', function () {
+    });
+    this.elementer.subscribe(showButton, 'click', function () {
       block.showContent();
-    }, false);
+    });
     this.elementer.Hide(showButton);
     this.elementer.Insert(showButton, titleNode.firstChild);
     this.elementer.Insert(hideButton, titleNode.firstChild);
@@ -227,21 +231,25 @@ Block.prototype = {
     if (!this.titleNode) {
       return;
     }
-    this.upButton = this.elementer.Btn(this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
-    this.downButton = this.elementer.Btn(this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
-    this.leftButton = this.elementer.Btn(this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
-    this.rightButton = this.elementer.Btn(this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
+    this.upButton = this.elementer.Btn(
+      this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+    this.downButton = this.elementer.Btn(
+      this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+    this.leftButton = this.elementer.Btn(
+      this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+    this.rightButton = this.elementer.Btn(
+      this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
     var _this = this;
-    this.upButton.addEventListener('click', function () {
+    this.elementer.subscribe(this.upButton, 'click', function () {
       _this.moveUp();
-    }, false);
-    this.downButton.addEventListener('click', function () {
+    });
+    this.elementer.subscribe(this.downButton, 'click', function () {
       _this.moveDown();
-    }, false);
-    this.leftButton.addEventListener('click', function () {
+    });
+    this.elementer.subscribe(this.leftButton, 'click', function () {
       _this.moveLeft();
     }, false);
-    this.rightButton.addEventListener('click', function () {
+    this.elementer.subscribe(this.rightButton, 'click', function () {
       _this.moveRight();
     }, false);
     this.elementer.Insert(this.upButton, this.titleNode.firstChild);
@@ -251,7 +259,9 @@ Block.prototype = {
   },
   setSide: function (side) {
     if (this.block) {
-      this.side = side ? side : /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+      this.side = side ?
+          side :
+          /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
     } else if (side) {
       this.side = side;
     } else {
@@ -271,7 +281,19 @@ Block.prototype = {
     }
   },
   toString: function () {
-    return 'Hupper.Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') + ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' + (this.contentHidden ? 'true' : 'false');
+    return 'Hupper.Block id: ' + this.id + ', side: ' + (this.left ? 'left' : 'right') +
+        ', hidden: ' + (this.hidden ? 'true' : 'false') + ', contentHidden: ' +
+        (this.contentHidden ? 'true' : 'false');
+  },
+  destroy: function () {
+    this.elementer.destroy();
+    this.elementer = null;
+    this.bundles = null;
+    this.block = null;
+    this.blocks = null;
+    this.id = null;
+    this.blockMenus = null;
+    this.contentNode = null;
   }
 };
 
@@ -281,7 +303,7 @@ Block.prototype = {
  * @constructor
  * @param {Hupper.Menu} hupMenu
  */
-BlockMenus = function (doc, hupMenu) {
+var BlockMenus = function (doc, hupMenu) {
   this.blocks = {};
   this.hupMenu = hupMenu;
   this.doc = doc;
@@ -344,6 +366,10 @@ BlockMenus.prototype = {
     if (n === 0) {
       this.removeMenu();
     }
+  },
+  destroy: function () {
+    this.elementer.destroy();
+    this.elementer = null;
   }
 };
 

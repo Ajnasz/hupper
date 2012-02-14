@@ -89,7 +89,7 @@ Menu.prototype = {
             a = this.elementer.CreateLink(menuItem.name, menuItem.href || 'javascript:void(0)');
 
         if (typeof menuItem.click === 'function') {
-            a.addEventListener('click', menuItem.click, false);
+            this.elementer.subscribe(a, 'click', menuItem.click);
         }
 
         if (!parent) {
@@ -114,6 +114,15 @@ Menu.prototype = {
         if (this.menuItems === 0) {
             this.hide();
         }
+    },
+    destroy: function () {
+        this.elementer.destroy();
+        this.elementer = null;
+        this.menuItems = null;
+        this.blocks = null;
+        this.titleNode = null;
+        this.block = null;
+        this.hidden = null;
     }
 };
 

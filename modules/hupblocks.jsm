@@ -58,7 +58,8 @@ var Blocks = function () {
                     blockBelowIndex = blockIndex;
                     do {
                         blockBelowIndex = blockBelowIndex + 1;
-                    } while (blocks[block.side][blockBelowIndex].hidden && blockBelowIndex + 1 < blocksLength - 1);
+                    } while (blocks[block.side][blockBelowIndex].hidden &&
+                             blockBelowIndex + 1 < blocksLength - 1);
                     blockBelow = blocks[block.side][blockBelowIndex];
                     blocks[block.side][blockBelowIndex] = block;
                     blocks[block.side][blockIndex] = blockBelow;
@@ -127,14 +128,25 @@ var Blocks = function () {
                 });
             });
             Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-            new scope.HP().set.blocks(JSON.stringify(json));
+            var hp = new scope.HP();
+            hp.set.blocks(JSON.stringify(json));
+        },
+        destroy: function () {
+            blocks.left.forEach(function (block) {
+                block = null;
+            });
+            blocks.right.forEach(function (block) {
+                block = null;
+            });
+            delete blocks.left;
+            delete blocks.right;
+            blocks = null;
         }
     };
 };
 Blocks.UI = function (doc, hupperBlocks) {
     var scope = {},
         timeout, elementer;
-    this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
     elementer = new scope.Elementer(doc);
     return {
@@ -162,6 +174,11 @@ Blocks.UI = function (doc, hupperBlocks) {
                     scope.hupperLog('no blocks are defined');
                 }
             }, 10);
+        },
+        destroy: function () {
+            elementer.destroy();
+            elementer = null;
+            doc = null;
         }
     };
 };

@@ -1,3 +1,11 @@
+var generateId = (function () {
+    var i = 0;
+    return function () {
+        i += 1;
+        return 'Hupper-' + i;
+    };
+}());
+
 /**
  * @class Elementer
  * @description Class to create and manipulate DOM elements
@@ -13,6 +21,7 @@ var Elementer = function (doc) {
     this.img = this.doc.createElement('img');
     this.button = this.doc.createElement('button');
     this.GetBody();
+    this.subscriptions = [];
 };
 Elementer.prototype = {
     /**
@@ -361,7 +370,70 @@ Elementer.prototype = {
     },
     Show: function (el) {
         this.RemoveClass(el, 'hup-hidden');
+    },
+    subscribe: function (element, event, callback, capture) {
+        if (!this.HasAttr(element, 'id')) {
+            element.setAttribute('id', generateId());
+        }
+        capture = capture || false;
+        var elementId = element.getAttribute('id'),
+            subscription = {};
+
+        element.addEventListener(event, callback, capture);
+        this.subscriptions.push({
+            element: element,
+            event: event,
+            callback: callback,
+            capture: capture
+        });
+    },
+    unsubscribe: function (element, event, callback, capture) {
+        var callbacks, elementId, indexes, _this;
+        if (typeof element !== 'undefined') {
+            elementId = element.getAttribute('id');
+            if (typeof event !== 'undefined') {
+                indexes = [];
+                _this = this;
+                callbacks = this.subscriptions.forEach(function (cb, index) {
+                    if (
+                      (typeof element === 'undefined' || element === cb.element) &&
+                      (typeof event === 'undefined' || event === cb.event) &&
+                      (typeof callback === 'undefined' || callback === cb.callback) &&
+                      (typeof capture === 'undefined' || capture === cb.capture)
+                    ) {
+                        indexes.push(index);
+                    }
+                });
+                indexes.forEach(function (index) {
+                    var cb = _this.subscriptions[elementId][event][index];
+                    cb.element.removeEventListener(cb.event, cb.callback, cb.capture);
+                    cb.element = null;
+                    cb.event = null;
+                    cb.callback = null;
+                    cb.capture = null;
+                    delete cb.element;
+                    delete cb.event;
+                    delete cb.callback;
+                    delete cb.capture;
+                    cb = null;
+                    _this.subscriptions[elementId][event][index] = null;
+                    delete _this.subscriptions[elementId][event][index];
+                });
+            }
+        }
+    },
+    destroy: function () {
+        this.doc = null;
+        this.li = null;
+        this.ul = null;
+        this.div = null;
+        this.span = null;
+        this.a = null;
+        this.img = null;
+        this.button = null;
+        this.body = null;
+        this.unsubscribe();
     }
 };
 
-var EXPORTED_SYMBOLS = ['Elementer'];
+var EXPORTED_SYMBOLS = ['Elementer', 'generateId'];

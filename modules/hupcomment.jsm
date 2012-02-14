@@ -9,7 +9,7 @@ var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 * @param {Array} comments all comment of the page
 * @param {GetComments} hupComments the general GetHupComments instance
 */
-Comment = function (doc, commentNode, indentComments, comments, hupComments) {
+var Comment = function (doc, commentNode, indentComments, comments, hupComments) {
     var me = this, scope = {};
     this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
@@ -389,7 +389,7 @@ Comment.prototype = {
             pointDetails  = _this.elementer.Div();
 
             sumContainer.setAttribute('title', 'osszesen');
-            sumContainer.addEventListener('click', togglePoints, true);
+            _this.elementer.subscribe(sumContainer, 'click', togglePoints, true);
             _this.elementer.AddClass(sumContainer, 'sum-points');
             points = _this.elementer.Txt(this.bundles
               .getFormattedString('pointSum',
@@ -435,6 +435,26 @@ Comment.prototype = {
         } catch (e) {
             Components.utils.reportError(e);
         }
+    },
+    destroy: function () {
+        this.doc = null;
+        this.replies = null;
+        this.prefs = null;
+        this.comment = null;
+        this.hupComments = null;
+        this.id = null;
+        this.header = null;
+        this.footer = null;
+        this.footerLinks = null;
+        this.cont = null;
+        this.plusPoints = null;
+        this.minusPoints = null;
+        this.parent = null;
+        this.plusOneRex = null;
+        this.userElement = null;
+        this.bundles = null;
+        this.elementer.destroy();
+        this.elementer = null;
     }
 };
 /**
@@ -442,7 +462,7 @@ Comment.prototype = {
 * @class GetComments
 * @description A class to handle all of the comments on the page
 */
-GetComments = function (doc) {
+var GetComments = function (doc) {
     var scope = {};
     this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
@@ -590,6 +610,18 @@ GetComments.prototype = {
         this._parseComments();
       }
       */
+    },
+    destroy: function () {
+        this.newComments = null;
+        this.comments.forEach(function (comment) {
+            comment.destroy();
+            comment = null;
+        });
+        this.comments = null;
+        this.doc = null;
+        this.prefs = null;
+        this.elementer.destroy();
+        this.elementer = null;
     }
 };
 

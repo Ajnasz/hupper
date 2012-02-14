@@ -106,9 +106,9 @@ Node.prototype = {
             _this = this;
         // Hupper.HUP.markReadNodes.push(mread);
         this.elementer.Add(mread, this.sp);
-        mread.addEventListener('click', function () {
+        this.elementer.subscribe(mread, 'click', function () {
             _this.markAsRead();
-        }, false);
+        });
         this.readMarker = mread;
     },
     addNewText: function () {
@@ -138,10 +138,10 @@ Node.prototype = {
         var txt = this.bundles.getFormattedString('hideTaxonomy', [this.taxonomy]),
             _this = this;
         this.taxonomyButton.setAttribute('title', txt);
-        this.taxonomyButton.addEventListener('click', function () {
+        this.elementer.subscribe(this.taxonomyButton, 'click', function () {
             _this.addToHide();
             hideTaxonomyNodes(_this.nodes);
-        }, false);
+        });
         this.elementer.Add(this.taxonomyButton, this.taxonomyNode.parentNode);
     },
     addToHide: function () {
@@ -191,6 +191,10 @@ Node.prototype = {
                 this.elementer.Add(t, marker);
             }
         });
+    },
+    destroy: function () {
+        this.taxonomyButton = null;
+        this.elementer.destroy();
     }
 };
 /**
@@ -275,6 +279,11 @@ NodeMenus.prototype = {
         if (n === 0) {
             this.removeMenu();
         }
+    },
+    destroy: function () {
+        this.elementer.destroy();
+        this.elementer = null;
+        this.menu = null;
     }
 };
 

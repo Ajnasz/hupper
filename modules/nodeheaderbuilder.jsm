@@ -162,15 +162,16 @@ NodeHeaderBuilder.prototype = {
       */
     buildComExtraParent: function (parent) {
         var tmpList = this.elementer.Li(),
-        link = this.elementer.CreateLink(this.parentLinkText, '#' + parent.id);
+            _this = this,
+            link = this.elementer.CreateLink(this.parentLinkText, '#' + parent.id);
         // if fading enabled, add an event listener, which will fades the parent node
         this.prefs.get.fadeparentcomment(function (response) {
             if (response.pref.value) {
-                link.addEventListener('click', function (e) {
+                _this.elementer.subscribe(link, 'click', function (e) {
                     var scope = {}, transform;
                     Components.utils.import('resource://huppermodules/transform.jsm', scope);
                     transform = new scope.Transform(e.target.n.comment, 'FadeIn');
-                }, false);
+                });
                 link.n = parent;
             }
         });
