@@ -1,10 +1,7 @@
 (function () {
     var Hupper = {},
-        postInstall, getBlocks,
-        getNodes, parseNodes,
-        setBlocks,
-        appendNewNotifier,
-        markAllNodeAsRead,
+        postInstall,
+        contextMenuHandling,
         initialize,
         init,
         boot;
@@ -105,39 +102,132 @@
             prefs.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
         }
     };
-    ;
-    /**
-    * Appends a new link to the top of the page, if there is new comment
-    * @param {String} [link]
-    */
-    appendNewNotifier = function (link, mark, hupMenu) {
-        var scope = {}, bundles;
-        Components.utils.import('resource://huppermodules/bundles.jsm', scope);
-        bundles = scope.hupperBundles;
-        hupMenu.addMenuItem({
-            name: bundles.getString('firstNew'),
-            href: link || '#new'
-        });
-        if (mark) {
-            hupMenu.addMenuItem({
-                name: bundles.getString('markAllRead'),
-                click: markAllNodeAsRead
-            });
-        }
+
+    contextMenuHandling = function (sites) {
+        var scope = {},
+//            getSite,
+            highilghtUser,
+            markAsTroll;
+        /*
+        getSite = function () {
+            var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+              .getService(Components.interfaces.nsIWindowMediator),
+              browser, doc, site;
+            if (wm) {
+                browser = wm.getMostRecentWindow('navigator:browser');
+                doc = browser.content.document;
+                sites.forEach(function (s) {
+                    if (s.doc === doc) {
+                        site = s;
+                    }
+                });
+                return site;
+            }
+            return null;
+        };
+        */
+        markAsTroll = function (mark) {
+            var user, trolls, isAdded, handlerMethod,
+                element = document.popupNode;
+
+            if (element) {
+                Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+                user = element.innerHTML;
+                handlerMethod = mark ? scope.trollHandler.addTroll : scope.trollHandler.removeTroll;
+                handlerMethod.call(scope.trollHandler, user, function () {
+                    sites.forEach(function (site) {
+                        var comments;
+                        if (!site) {
+                            Components.utils.reportError('Site not found!');
+                            return false;
+                        }
+                        if (site.comments && site.comments.comments) {
+                            comments = site.comments.comments;
+                            comments.forEach(function (comment) {
+                                if (comment.user === user) {
+                                    if (mark) {
+                                        comment.setTroll();
+                                    } else {
+                                        comment.unsetTroll();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        };
+        document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
+            markAsTroll(true);
+        }, false);
+        document.getElementById('HUP-unmarkTroll').addEventListener('command', function (e) {
+            markAsTroll(false);
+        }, false);
+        highilghtUser = function (highlight) {
+            var element = document.popupNode;
+            if (element) {
+                var user;
+                Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+                user = element.innerHTML;
+                prefs.get.huppercolor(function (response) {
+                    sites.forEach(function (site) {
+                        var hlMethod, color, comments;
+                        if (!site) {
+                            Components.utils.reportError('Site not found!');
+                            return false;
+                        }
+                        if (highlight) {
+                            color = response.pref.value || '#B5D7BE';
+                            scope.trollHandler.highlightUser(user, color, function () {
+                                if (site.comments && site.comments.comments) {
+                                    comments = site.comments.comments;
+                                    comments.forEach(function (comment) {
+                                        if (comment.user === user) {
+                                            if (highlight) {
+                                              comment.highLightComment(color);
+                                            } else {
+                                              comment.unhighLightComment(color);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            scope.trollHandler.unhighlightUser(user, function () {
+                                if (site.comments && site.comments.comments) {
+                                    comments = site.comments.comments;
+                                    comments.forEach(function (comment) {
+                                        if (comment.user === user) {
+                                            comment.unhighLightComment();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        };
+        document.getElementById('HUP-highilghtUser').addEventListener('command', function (e) {
+            highilghtUser(true);
+        }, false);
+        document.getElementById('HUP-unhighilghtUser').addEventListener('command', function (e) {
+            highilghtUser(false);
+        }, false);
+
     };
 
     /**
     * Initialization function, runs when the page is loaded
     * @param {Event} e window load event object
     */
-    boot = function (e, win) {
+    boot = function (e) {
+        var doc = e.originalTarget,
+            scope = {},
+            elementer, hupMenu,
+            isTestEnv, bench, c, newComments,
+            prefs, site;
         try {
-            var doc = e.originalTarget,
-                scope = {},
-                elementer, hupMenu,
-                markAsTroll, isTestEnv, bench, c, newComments,
-                prefs;
-
             if (doc && doc.location && typeof doc.location.hostname === 'string' &&
                 (doc.location.hostname === 'hup.hu' || doc.location.hostname === 'doc.hup.hu' ||
                   /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(doc.location.href))) {
@@ -149,86 +239,15 @@
                 }
                 postInstall();
                 Components.utils.import('resource://huppermodules/HupSite.jsm', scope);
-                var site = new scope.HupSite(doc);
-                site.init();
-                doc.defaultView.addEventListener('unload', function unl () {
+                site = new scope.HupSite(doc);
+                doc.defaultView.addEventListener('unload', function unl() {
                     site.destroy();
+                    site = null;
                     doc.defaultView.removeEventListener('unload', unl, false);
+                    Components.utils.reportError('unloaddd!!');
                 }, false);
-                return;
-                // setBlocks(doc);
-                markAsTroll = function (element) {
-                    var user, trolls, isAdded;
-                    if (element) {
-                        Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
-                        user = element.innerHTML;
-                        scope.trollHandler.addTroll(user, function () {
-                            if (c) {
-                                c.comments.forEach(function (comment) {
-                                    if (comment.user === user) {
-                                        comment.setTroll();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                };
-                document.getElementById('HUP-markAsTroll').addEventListener('command', function (e) {
-                    var element = document.popupNode;
-                    markAsTroll(element);
-                }, false);
-                document.getElementById('HUP-unmarkTroll').addEventListener('command', function (e) {
-                    var element = document.popupNode, user, trolls, output, isAdded;
-                    if (element) {
-                        Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
-                        user = element.innerHTML;
-                        scope.trollHandler.removeTroll(user, function () {
-                            if (c) {
-                                c.comments.forEach(function (comment) {
-                                    if (comment.user === user) {
-                                        comment.unsetTroll();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }, false);
-                document.getElementById('HUP-highilghtUser').addEventListener('command', function (e) {
-                    var element = document.popupNode, user, trolls, output, isAdded;
-                    if (element) {
-                        Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
-                        user = element.innerHTML;
-                        prefs.get.huppercolor(function (response) {
-                            var color = response.pref.value || '#B5D7BE';
-                            scope.trollHandler.highlightUser(user, color, function () {
-                                if (c) {
-                                    c.comments.forEach(function (comment) {
-                                        if (comment.user === user) {
-                                            comment.highLightComment(color);
-                                        }
-                                    });
-                                }
-                            });
-                        });
-                    }
-                }, false);
-                document.getElementById('HUP-unhighilghtUser').addEventListener('command', function (e) {
-                    var element = document.popupNode, user, trolls, output, isAdded;
-                    if (element) {
-                        Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
-                        user = element.innerHTML;
-                        scope.trollHandler.unhighlightUser(user, function () {
-                            if (c) {
-                                c.comments.forEach(function (comment) {
-                                    if (comment.user === user) {
-                                        comment.unhighLightComment();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }, false);
-
+                site.init();
+                return site;
                 Components.utils.import('resource://huppermodules/hupjumper.jsm', scope);
                 // Hupper.HUP.w.Jumps = new scope.HupJumper(Hupper.HUP.w, Hupper.HUP.w.nextLinks);
                 if (isTestEnv) {
@@ -243,25 +262,42 @@
               .logStringMessage('HUPPER: INIT ' + er.message + ', ' + er.lineNumber +
                 ', ' + er.fileName + ', ' + er.toString());
         }
+        return site;
     };
 
     init = function () {
         var appcontent = document.getElementById("appcontent"),
             scope = {},
-            showInStatusbar, statusbar, handler;   // browser
+            sites = [],
+            showInStatusbar, handler;   // browser
         if (appcontent) {
             appcontent.addEventListener("DOMContentLoaded", function (e) {
-                boot(e, window);
+                var site = boot(e),
+                    index = sites.length;
+                if (site) {
+                    site.onDestroy = function () {
+                        sites[index] = null;
+                        delete sites[index];
+                        site.onDestroy = null;
+                        site = null;
+                    };
+                    sites.push(site);
+                } else {
+                    // Components.utils.reportError('The site variable is ' + typeof site);
+                }
             }, true);
         }
+        contextMenuHandling(sites);
         Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-        showInStatusbar = new scope.HP().get.showinstatusbar();
-        statusbar = document.getElementById('HUP-statusbar');
-        statusbar.hidden = !showInStatusbar;
-        if (showInStatusbar) {
-            Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
-            handler = new scope.StatusClickHandler(statusbar);
-        }
+        showInStatusbar = new scope.HP().get.showinstatusbar(function (response) {
+            var statusbar = document.getElementById('HUP-statusbar');
+            statusbar.hidden = !showInStatusbar;
+            return;
+            if (showInStatusbar) {
+                Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
+                handler = new scope.StatusClickHandler(statusbar);
+            }
+        });
         document.getElementById('contentAreaContextMenu')
           .addEventListener('popupshowing', function () {
             var element = document.popupNode,
@@ -269,25 +305,21 @@
                 user = element.innerHTML,
                 isUsername = element.title === "Felhasználói profil megtekintése.";
 
-            Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
             Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
             scope.trollHandler.isTroll(user, function (isTroll) {
                 document.getElementById('HUP-markAsTroll').hidden = !isUsername || isTroll;
                 document.getElementById('HUP-unmarkTroll').hidden = !isUsername || !isTroll;
                 scope.trollHandler.isHighlighted(user, function (isHighlighted) {
-                    document.getElementById('HUP-highilghtUser').hidden = !isUsername || isTroll || isHighlighted;
-                    document.getElementById('HUP-unhighilghtUser').hidden = !isUsername || isTroll || !isHighlighted;
+                    var highlightUser = !isUsername || isTroll || isHighlighted,
+                        unHighlightUser = !isUsername || isTroll || !isHighlighted;
+                    document.getElementById('HUP-highilghtUser').hidden = highlightUser;
+                    document.getElementById('HUP-unhighilghtUser').hidden = unHighlightUser;
                 });
             });
         }, false);
     };
-    initialize = function () {
-        // if (!Hupper.initialized) {
-            init();
-            // Hupper.initialized = true;
-        // }
+    window.addEventListener('load', function initialize() {
+        init();
         window.removeEventListener('load', initialize, false);
-    };
-    window.addEventListener('load', initialize, false);
-    // window.removeEventListener('unload', initialize, false);
+    }, false);
 }());

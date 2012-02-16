@@ -31,7 +31,7 @@ pref("extensions.hupper.username", '');
 pref("extensions.hupper.hidetaxonomy", '');
 pref("extensions.hupper.showinstatusbar", true);
 
-pref("extensions.hupper.blocks", '({})');
+pref("extensions.hupper.blocks", '{}');
 pref("extensions.hupper.parseblocks", true);
 
 pref("extensions.hupper.style_indent", true);

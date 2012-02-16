@@ -370,6 +370,11 @@ BlockMenus.prototype = {
   destroy: function () {
     this.elementer.destroy();
     this.elementer = null;
+    this.blocks = null;
+    this.menu = null;
+    this.hupMenu = null;
+    this.bundles = null;
+    this.doc = null;
   }
 };
 

@@ -16,6 +16,7 @@ HupSite.prototype = {
             this.addNewCommentsNotifier();
         } else {
             this.getNodes();
+            return;
             this.parseNodes();
             this.addNewNodeNotifier();
         }
@@ -208,8 +209,8 @@ HupSite.prototype = {
         this.prefs.get.insertnewtexttonode(function (response) {
             if (response.pref.value) {
                 _this.prefs.get.showqnavbox(function (response) {
-                    if (_this.nodes[1].length > 0 && response.pref.value) {
-                        _this.appendNewNotifier('#node-' + _this.nodes[1][0].id, true);
+                    if (_this.newNodes.length > 0 && response.pref.value) {
+                        _this.appendNewNotifier('#node-' + _this.newNodes[0].id, true);
                     }
                 });
             }
@@ -217,58 +218,42 @@ HupSite.prototype = {
     },
     getNodes: function () {
         var scope = {},
-            c, ds, nodes, newNodes, i, dsl, node,
-            elementer;
+            nodes = [],
+            newNodes = [],
+            c, ds, i, dsl, node, elementer;
         elementer = this.elementer;
         c = elementer.GetId('content-both');
         ds = elementer.GetTag('div', c);
-        nodes = [];
-        newNodes = [];
         Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
         for (i = 0, dsl = ds.length; i < dsl; i += 1) {
             if (elementer.HasClass(ds[i], 'node')) {
                 node = new scope.Node(this.doc, ds[i]);
+                nodes.push(node);
                 if (node.newc && !node.hidden) {
-                    nodes.push(node);
                     newNodes.push(node);
-                } else {
-                    nodes.push(node);
                 }
             }
         }
         this.nodes = nodes;
         this.newNodes = newNodes;
-        return [nodes, newNodes];
     },
     parseNodes: function () {
-        var nodes, newNodes, nodeMenu, elementer, spa, sp, node, mread, next, prev, i, nl;
-        nodes = this.nodes;
-        newNodes = this.newNodes;
+        var nodeMenu, node, i, nl;
         Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
         nodeMenu = new scope.NodeMenus(this.doc, this.menu);
-        elementer = this.elementer;
-        spa = elementer.Span();
-        for (i = 0, nl = nodes.length; i < nl; i += 1) {
-            node = nodes[i];
+        this.nodes.forEach(function (node) {
             if (node.newc) {
-                node.index = newNodes.indexOf(node);
-                node.next = (node.index === newNodes.length - 1) ?
+                node.index = this.newNodes.indexOf(node);
+                node.next = (node.index === this.newNodes.length - 1) ?
                     false :
-                    newNodes[node.index + 1].id;
-                node.previous = (node.index === 0 || !newNodes[node.index - 1]) ?
+                    this.newNodes[node.index + 1].id;
+                node.previous = (node.index === 0 || !this.newNodes[node.index - 1]) ?
                     false :
-                    newNodes[node.index - 1].id;
+                    this.newNodes[node.index - 1].id;
                 node.addNewNodeLinks();
-                /*
-                if (!node.hidden) {
-                    // Hupper.HUP.w.nextLinks.push('node-' + node.id);
-                }
-                */
             }
-        }
-        nodes.forEach(function (node) {
-            node.addNodes(nodes, nodeMenu);
-        });
+            node.addNodes(this.nodes, nodeMenu);
+        }, this);
 
     },
     parseComments: function () {
@@ -301,18 +286,30 @@ HupSite.prototype = {
         }
         if (this.blockMenus) {
             this.blockMenus.destroy();
+            this.blockMenus = null;
         }
         if (this.menu) {
             this.menu.destroy();
+            this.menu = null;
         }
         if (this.nodes) {
             this.nodes.forEach(function (node) {
                 node.destroy();
+                node = null;
             });
+            this.nodes = null;
+        }
+        if (this.newNodes) {
+            this.newNodes.forEach(function (node) {
+                node.destroy();
+                node = null;
+            });
+            this.newNodes = null;
         }
         if (this.processedBlocks) {
             this.processedBlocks.forEach(function (block) {
                 block.destroy();
+                block = null;
             });
         }
         if (this.hupperBlocks) {
@@ -325,6 +322,9 @@ HupSite.prototype = {
         this.prefs = null;
         this.elementer.destroy();
         this.elementer = null;
+        if (typeof this.onDestroy === 'undefined') {
+            this.onDestroy();
+        }
     }
 };
 var EXPORTED_SYMBOLS = ['HupSite'];

@@ -193,8 +193,26 @@ Node.prototype = {
         });
     },
     destroy: function () {
-        this.taxonomyButton = null;
         this.elementer.destroy();
+        this.elementer = null;
+        this.builder.destroy();
+        this.builder = null;
+        this.taxonomyButton = null;
+        this.bundles = null;
+        this.nodes = null;
+        this.nodeMenu = null;
+        this.doc = null;
+        this.prefs = null;
+        this.id = null;
+        this.header = null;
+        this.path = null;
+        this.submitData = null;
+        this.cont = null;
+        this.footer = null;
+        this.newc =null;
+        this.taxonomy = null;
+        this.taxonomyNode = null;
+        this.sender = null;
     }
 };
 /**
@@ -284,6 +302,9 @@ NodeMenus.prototype = {
         this.elementer.destroy();
         this.elementer = null;
         this.menu = null;
+        this.nodes = null;
+        this.hupMenu = null;
+        this.prefs = null;
     }
 };
 

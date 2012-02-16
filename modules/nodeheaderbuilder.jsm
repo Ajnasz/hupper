@@ -188,6 +188,11 @@ NodeHeaderBuilder.prototype = {
         var tmpList = this.elementer.Li();
         this.elementer.Add(this.elementer.CreateLink('permalink', '#' + cid), tmpList);
         return tmpList;
+    },
+    destroy: function () {
+        this.elementer.destroy();
+        this.elementer = null;
+        this.prefs = null;
     }
 };
 
