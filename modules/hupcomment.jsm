@@ -455,6 +455,7 @@ Comment.prototype = {
         this.bundles = null;
         this.elementer.destroy();
         this.elementer = null;
+        this.user = null;
     }
 };
 /**
@@ -499,7 +500,7 @@ GetComments.prototype = {
         this.comments = [];
         this.indentComments = [];
         this.newComments = [];
-        ds.forEach(function (c) {
+        ds.forEach(function (c, i) {
             var comment = new Comment(_this.doc, c, _this.indentComments, _this.comments, _this);
             if (typeof _this.indentComments[comment.indent] === 'undefined') {
                 _this.indentComments[comment.indent] = [];
@@ -507,7 +508,7 @@ GetComments.prototype = {
             _this.indentComments[comment.indent].push(_this.comments.length);
             _this.comments.push(comment);
             if (comment.newComm) {
-                _this.newComments.push(comment);
+                _this.newComments.push(i);
             }
         });
     },
@@ -530,6 +531,7 @@ GetComments.prototype = {
         });
         Components.utils.import('resource://huppermodules/nodeheaderbuilder.jsm', scope);
         builder = new scope.NodeHeaderBuilder(this.doc);
+        this.builder = builder;
         try {
             this.comments.forEach(function (C) {
                 if (filtertrolls && trolls.indexOf(C.user) > -1) {
@@ -558,21 +560,21 @@ GetComments.prototype = {
                 this.elementer.AddClass(tmpSpan1, 'hnav');
                 if (prevnextlinks) {
                     if (i > 0) {
-                        this.elementer.Add(builder.buildPrevLink(this.newComments[i - 1].id), tmpSpan1);
+                        this.elementer.Add(builder.buildPrevLink(this.comments[this.newComments[i - 1]].id), tmpSpan1);
                     } else {
                         this.elementer.Add(builder.buildFirstLink(), tmpSpan1);
                     }
                     if (i < ncl - 1) {
-                        this.elementer.Add(builder.buildNextLink(this.newComments[i + 1].id), tmpSpan1);
+                        this.elementer.Add(builder.buildNextLink(this.comments[this.newComments[i + 1]].id), tmpSpan1);
                     } else {
                         this.elementer.Add(builder.buildLastLink(), tmpSpan1);
                     }
-                    // HUP.w.nextLinks.push(this.newComments[i].id);
+                    // HUP.w.nextLinks.push(this.comments[this.newComments[i]].id);
                 }
                 if (replacenewcommenttext) {
-                    this.newComments[i].replaceNewCommentText(builder, tmpSpan1);
+                    this.comments[this.newComments[i]].replaceNewCommentText(builder, tmpSpan1);
                 }
-                this.elementer.Insert(tmpSpan1, this.newComments[i].header.firstChild);
+                this.elementer.Insert(tmpSpan1, this.comments[this.newComments[i]].header.firstChild);
             }
         }
     },
@@ -612,11 +614,20 @@ GetComments.prototype = {
       */
     },
     destroy: function () {
-        this.newComments = null;
         this.comments.forEach(function (comment) {
             comment.destroy();
             comment = null;
         });
+        if (this.newComments) {
+            var i, nl;
+            for (i = 0, nl = this.newComments.length; i < nl; i += 1) {
+                this.newComments[i] = null;
+                delete this.newComments[i];
+            }
+            this.newComments = null;
+        }
+        this.builder.destroy();
+        this.builder = null;
         this.comments = null;
         this.doc = null;
         this.prefs = null;

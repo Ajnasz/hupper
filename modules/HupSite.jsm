@@ -158,12 +158,10 @@ HupSite.prototype = {
         });
     },
     getBlocks: function () {
-        var scope = {}, elementer;
-        Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
-        elementer = this.elementer;
-        return elementer
-            .GetByClass(elementer.GetId('sidebar-left'), 'block', 'div')
-            .concat(elementer.GetByClass(elementer.GetId('sidebar-right'), 'block', 'div'));
+        var scope = {};
+        return this.elementer
+            .GetByClass(this.elementer.GetId('sidebar-left'), 'block', 'div')
+            .concat(this.elementer.GetByClass(this.elementer.GetId('sidebar-right'), 'block', 'div'));
     },
     setBlocks: function () {
         var _this = this;
@@ -176,8 +174,8 @@ HupSite.prototype = {
     },
     markAllNodeAsRead: function (e) {
         this.newNodes.forEach(function (node) {
-            node.markAsRead();
-        });
+            this.nodes[node].markAsRead();
+        }, this);
     },
     appendNewNotifier: function (link, mark) {
         var scope = {}, bundles;
@@ -209,7 +207,8 @@ HupSite.prototype = {
             if (response.pref.value) {
                 _this.prefs.get.showqnavbox(function (response) {
                     if (_this.newNodes.length > 0 && response.pref.value) {
-                        _this.appendNewNotifier('#node-' + _this.newNodes[0].id, true);
+                        var nodeId = _this.nodes[_this.newNodes[0]].id;
+                        _this.appendNewNotifier('#node-' + nodeId, true);
                     }
                 });
             }
@@ -229,7 +228,7 @@ HupSite.prototype = {
                 node = new scope.Node(this.doc, ds[i]);
                 nodes.push(node);
                 if (node.newc && !node.hidden) {
-                    newNodes.push(node);
+                    newNodes.push(i);
                 }
             }
         }
@@ -240,20 +239,19 @@ HupSite.prototype = {
         var nodeMenu, node, i, nl;
         Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
         nodeMenu = new scope.NodeMenus(this.doc, this.menu);
-        this.nodes.forEach(function (node) {
+        this.nodes.forEach(function (node, i) {
             if (node.newc) {
-                node.index = this.newNodes.indexOf(node);
+                node.index = this.newNodes.indexOf(i);
                 node.next = (node.index === this.newNodes.length - 1) ?
                     false :
                     this.newNodes[node.index + 1].id;
-                node.previous = (node.index === 0 || !this.newNodes[node.index - 1]) ?
+                node.previous = (node.index === 0 || typeof this.newNodes[node.index - 1] === 'undefined') ?
                     false :
                     this.newNodes[node.index - 1].id;
                 node.addNewNodeLinks();
             }
             node.addNodes(this.nodes, nodeMenu);
         }, this);
-
     },
     parseComments: function () {
         Components.utils.import('resource://huppermodules/hupcomment.jsm', scope);
@@ -280,6 +278,7 @@ HupSite.prototype = {
         }
     },
     destroy: function () {
+        Components.utils.import('resource://huppermodules/log.jsm', scope);
         if (this.comments) {
             this.comments.destroy();
         }
@@ -299,10 +298,11 @@ HupSite.prototype = {
             this.nodes = null;
         }
         if (this.newNodes) {
-            this.newNodes.forEach(function (node) {
-                node.destroy();
-                node = null;
-            });
+            var i, nl;
+            for (i = 0, nl = this.newNodes.length; i < nl; i += 1) {
+                this.newNodes[i] = null;
+                delete this.newNodes[i];
+            }
             this.newNodes = null;
         }
         if (this.processedBlocks) {
