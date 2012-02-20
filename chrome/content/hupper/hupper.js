@@ -1,7 +1,6 @@
 (function () {
     var Hupper = {},
         postInstall,
-        contextMenuHandling,
         initialize,
         init,
         boot;
@@ -103,7 +102,22 @@
         }
     };
 
-    contextMenuHandling = function (sites) {
+    function statusbarIconHandling(sites) {
+        var scope = {};
+        Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+        (new scope.HP()).get.showinstatusbar(function (response) {
+            var showInStatusbar = response.pref.value,
+                statusbar = document.getElementById('HUP-statusbar'),
+                handler;
+            statusbar.hidden = !showInStatusbar;
+            if (showInStatusbar) {
+                Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
+                handler = new scope.StatusClickHandler(statusbar, sites);
+            }
+        });
+    }
+
+    function contextMenuHandling(sites) {
         var scope = {},
 //            getSite,
             highilghtUser,
@@ -288,16 +302,7 @@
             }, true);
         }
         contextMenuHandling(sites);
-        Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-        showInStatusbar = new scope.HP().get.showinstatusbar(function (response) {
-            var statusbar = document.getElementById('HUP-statusbar');
-            statusbar.hidden = !showInStatusbar;
-            return;
-            if (showInStatusbar) {
-                Components.utils.import('resource://huppermodules/statusclickhandler.jsm', scope);
-                handler = new scope.StatusClickHandler(statusbar);
-            }
-        });
+        statusbarIconHandling(sites);
         document.getElementById('contentAreaContextMenu')
           .addEventListener('popupshowing', function () {
             var element = document.popupNode,

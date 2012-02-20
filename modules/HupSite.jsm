@@ -16,7 +16,6 @@ HupSite.prototype = {
             this.addNewCommentsNotifier();
         } else {
             this.getNodes();
-            return;
             this.parseNodes();
             this.addNewNodeNotifier();
         }
