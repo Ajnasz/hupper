@@ -112,7 +112,7 @@ var Blocks = function () {
         },
         save: function () {
             var json = {left: [], right: []},
-                scope = {};
+                scope = {}, hp;
             blocks.left.forEach(function (block) {
                 json.left.push({
                     id: block.id,
@@ -128,18 +128,20 @@ var Blocks = function () {
                 });
             });
             Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-            var hp = new scope.HP();
+            hp = new scope.HP();
             hp.set.blocks(JSON.stringify(json));
         },
         destroy: function () {
             blocks.left.forEach(function (block) {
+                block.destroy();
                 block = null;
             });
             blocks.right.forEach(function (block) {
+                block.destroy();
                 block = null;
             });
-            delete blocks.left;
-            delete blocks.right;
+            blocks.left = null;
+            blocks.right = null;
             blocks = null;
         }
     };
@@ -151,10 +153,10 @@ Blocks.UI = function (doc, hupperBlocks) {
     elementer = new scope.Elementer(doc);
     return {
         rearrangeBlocks: function () {
-            if (timeout) {
-                clearTimeout(timeout);
-            }
             Components.utils.import('resource://huppermodules/timer.jsm', scope);
+            if (timeout) {
+                scope.never(timeout);
+            }
             timeout = scope.later(function () {
                 var left = elementer.GetId('sidebar-left'),
                     right = elementer.GetId('sidebar-right'),
@@ -179,6 +181,8 @@ Blocks.UI = function (doc, hupperBlocks) {
             elementer.destroy();
             elementer = null;
             doc = null;
+            timeout = null;
+            hupperBlocks = null;
         }
     };
 };

@@ -206,8 +206,8 @@ HupSite.prototype = {
         this.prefs.get.insertnewtexttonode(function (response) {
             if (response.pref.value) {
                 _this.prefs.get.showqnavbox(function (response) {
-                    if (_this.newNodes.length > 0 && response.pref.value) {
-                        var nodeId = _this.nodes[_this.newNodes[0]].id;
+                    if (_this.newNodeList.length > 0 && response.pref.value) {
+                        var nodeId = _this.nodes[_this.newNodeList.getFirst()].id;
                         _this.appendNewNotifier('#node-' + nodeId, true);
                     }
                 });
@@ -217,8 +217,9 @@ HupSite.prototype = {
     getNodes: function () {
         var scope = {},
             nodes = [],
-            newNodes = [],
             c, ds, i, dsl, node, elementer;
+        Components.utils.import('resource://huppermodules/NewNodeList.jsm', scope);
+        this.newNodeList = new scope.NewNodeList();
         elementer = this.elementer;
         c = elementer.GetId('content-both');
         ds = elementer.GetTag('div', c);
@@ -226,30 +227,39 @@ HupSite.prototype = {
         for (i = 0, dsl = ds.length; i < dsl; i += 1) {
             if (elementer.HasClass(ds[i], 'node')) {
                 node = new scope.Node(this.doc, ds[i]);
+                node.index = nodes.length;
                 nodes.push(node);
                 if (node.newc && !node.hidden) {
-                    newNodes.push(i);
+                    this.newNodeList.add(node.index);
                 }
             }
         }
         this.nodes = nodes;
-        this.newNodes = newNodes;
+        // this.newNodes = newNodes;
     },
     parseNodes: function () {
-        var nodeMenu, node, i, nl;
+        var nodeMenu, node, next, prev, current;
         Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
         nodeMenu = new scope.NodeMenus(this.doc, this.menu);
-        this.nodes.forEach(function (node, i) {
-            if (node.newc) {
-                node.index = this.newNodes.indexOf(i);
-                node.next = (node.index === this.newNodes.length - 1) ?
-                    false :
-                    this.newNodes[node.index + 1].id;
-                node.previous = (node.index === 0 || typeof this.newNodes[node.index - 1] === 'undefined') ?
-                    false :
-                    this.newNodes[node.index - 1].id;
+        Components.utils.import('resource://huppermodules/log.jsm', scope);
+        if (this.newNodeList.hasItem()) {
+            this.newNodeList.current = 0;
+            do {
+                current = this.newNodeList.getCurrent();
+                next = this.newNodeList.getNext();
+                prev = this.newNodeList.getPrevious();
+                node = this.nodes[current];
+                node.next = next !== null ? this.nodes[next].id : false;
+                node.previous = prev !== null ? this.nodes[prev].id : false;
+
                 node.addNewNodeLinks();
-            }
+                node.addNodes(this.nodes, nodeMenu);
+                if (this.newNodeList.next() === false) {
+                    break;
+                }
+            } while (true);
+        }
+        this.nodes.forEach(function (node, i) {
             node.addNodes(this.nodes, nodeMenu);
         }, this);
     },
@@ -277,6 +287,46 @@ HupSite.prototype = {
             this.blockMenus = new scope.BlockMenus(this.doc, this.menu);
         }
     },
+    getNodeIndexFromId: function (id) {
+        var i, nl;
+        for (i = 0, nl = this.nodes.length; i < nl; i += 1) {
+            if (this.nodes[i].id === id) {
+                return this.nodes[i].index;
+            }
+        }
+    },
+    getPrevNew: function () {
+        var index,
+            currentIndex,
+            match;
+        match = this.doc.location.hash.match(/#node-(\d+)/);
+        if (match) {
+            currentIndex = this.getNodeIndexFromId(+match[1]);
+            if (typeof currentIndex === 'number') {
+                this.newNodeList.setCurrent(this.newNodeList.getIndexOf(currentIndex));
+            }
+        }
+        if (this.newNodeList.previous() === false) {
+            this.newNodeList.goToEnd();
+        }
+        return this.nodes[this.newNodeList.getCurrent()];
+    },
+    getNextNew: function () {
+        var index,
+            currentIndex,
+            match;
+        match = this.doc.location.hash.match(/#node-(\d+)/);
+        if (match) {
+            currentIndex = this.getNodeIndexFromId(+match[1]);
+            if (typeof currentIndex === 'number') {
+                this.newNodeList.setCurrent(this.newNodeList.getIndexOf(currentIndex));
+            }
+        }
+        if (this.newNodeList.next() === false) {
+            this.newNodeList.goToBegin();
+        }
+        return this.nodes[this.newNodeList.getCurrent()];
+    },
     destroy: function () {
         Components.utils.import('resource://huppermodules/log.jsm', scope);
         if (this.comments) {
@@ -297,14 +347,11 @@ HupSite.prototype = {
             });
             this.nodes = null;
         }
-        if (this.newNodes) {
-            var i, nl;
-            for (i = 0, nl = this.newNodes.length; i < nl; i += 1) {
-                this.newNodes[i] = null;
-                delete this.newNodes[i];
-            }
-            this.newNodes = null;
+        if (this.newNodeList) {
+            this.newNodeList.destroy();
+            this.newNodeList = null;
         }
+
         if (this.processedBlocks) {
             this.processedBlocks.forEach(function (block) {
                 block.destroy();
@@ -314,6 +361,7 @@ HupSite.prototype = {
         if (this.hupperBlocks) {
             this.hupperBlocks.destroy();
             this.hupperBlocks.UI.destroy();
+            this.hupperBlocks.UI = null;
             this.hupperBlocks = null;
         }
         this.processedBlocks = null;

@@ -286,8 +286,10 @@ Block.prototype = {
         (this.contentHidden ? 'true' : 'false');
   },
   destroy: function () {
-    this.elementer.destroy();
-    this.elementer = null;
+    if (this.elementer) {
+      this.elementer.destroy();
+      this.elementer = null;
+    }
     this.bundles = null;
     this.block = null;
     this.blocks = null;
@@ -368,8 +370,10 @@ BlockMenus.prototype = {
     }
   },
   destroy: function () {
-    this.elementer.destroy();
-    this.elementer = null;
+    if (this.elementer) {
+      this.elementer.destroy();
+      this.elementer = null;
+    }
     this.blocks = null;
     this.menu = null;
     this.hupMenu = null;

@@ -53,6 +53,7 @@ xpi:
 		modules/hupblocks.jsm \
 		modules/hupblock.jsm \
 		modules/hupperStyleHandler.jsm \
+		modules/NewNodeList.jsm \
 		modules/HupSite.jsm \
 		chrome/skin/ \
 		chrome/locale/ \

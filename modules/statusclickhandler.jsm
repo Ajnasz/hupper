@@ -47,22 +47,21 @@ StatusClickHandler.prototype = {
     */
     click: function (e) {
         var currentTab = this.openHUP(),
-            currentSite;
+            currentSite,
+            newNode;
         this.sites.forEach(function (site) {
             if (site && site.doc === currentTab.contentDocument) {
                 currentSite = site;
             }
         });
-        currentTab.contentDocument.location.hash = '#node-' + currentSite.nodes[currentSite.newNodes[1]].id;
-        /*
-        if (currentTab.contentDocument.Jumps) {
+        if (currentTab.contentDocument) {
             switch (e.button) {
             case 0:
-                currentTab.contentDocument.Jumps.next();
+                newNode = currentSite.getNextNew();
                 break;
 
             case 2:
-                currentTab.contentDocument.Jumps.prev();
+                newNode = currentSite.getPrevNew();
                 break;
 
             case 1:
@@ -70,8 +69,10 @@ StatusClickHandler.prototype = {
                 // var currentTab = _this.openHUP();
                 break;
             }
+            if (newNode) {
+                currentTab.contentDocument.location.hash = '#node-' + newNode.id;
+            }
         }
-        */
     },
     getOpenedHUP: function () {
         var gBrowser = this.getGBrowser(),

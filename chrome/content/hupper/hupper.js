@@ -1,15 +1,12 @@
 (function () {
     var Hupper = {},
-        postInstall,
-        initialize,
-        init,
-        boot;
+        initialize;
     /**
     * If some data format has been changed, the postinstall
     * will convert the datas to the newer format
     * @method postInstall
     */
-    postInstall = function () {
+    function postInstall() {
         var HUPPER_VERSION = '###VERSION###',
             scope = {}, prefs, convertColors, convertBlockSettings,
             parseVersion, oldVerValue, version;
@@ -100,7 +97,7 @@
             scope.hupperLog('postinstall', version, oldVerValue);
             prefs.M.setCharPref('extensions.hupper.version', HUPPER_VERSION);
         }
-    };
+    }
 
     function statusbarIconHandling(sites) {
         var scope = {};
@@ -235,7 +232,7 @@
     * Initialization function, runs when the page is loaded
     * @param {Event} e window load event object
     */
-    boot = function (e) {
+    function boot(e) {
         var doc = e.originalTarget,
             scope = {},
             elementer, hupMenu,
@@ -277,9 +274,9 @@
                 ', ' + er.fileName + ', ' + er.toString());
         }
         return site;
-    };
+    }
 
-    init = function () {
+    function init() {
         var appcontent = document.getElementById("appcontent"),
             scope = {},
             sites = [],
@@ -322,7 +319,7 @@
                 });
             });
         }, false);
-    };
+    }
     window.addEventListener('load', function initialize() {
         init();
         window.removeEventListener('load', initialize, false);

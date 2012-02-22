@@ -29,11 +29,14 @@ var Node = function (doc, node) {
     this.id = parseInt(node.id.replace('node-', ''), 10);
     this.header = header;
     Components.utils.import('resource://huppermodules/hupstringer.jsm', scope);
-    this.path = scope.HupStringer.trim(this.elementer.GetFirstTag('a', this.header).getAttribute('href'));
+    this.path = scope.HupStringer
+        .trim(this.elementer.GetFirstTag('a', this.header).getAttribute('href'));
     this.submitData = submitData;
     this.cont = cont;
     this.footer = footer;
-    this.newc = this.elementer.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ? true : false;
+    this.newc = this.elementer.GetByClass(footer, 'comment_new_comments', 'li').length > 0 ?
+        true :
+        false;
     if (taxonomy.length > 0) {
         this.taxonomy = taxonomy[0].innerHTML;
         this.taxonomyNode = taxonomy[0];
@@ -209,10 +212,11 @@ Node.prototype = {
         this.submitData = null;
         this.cont = null;
         this.footer = null;
-        this.newc =null;
+        this.newc = null;
         this.taxonomy = null;
         this.taxonomyNode = null;
         this.sender = null;
+        this.readMarker = null;
     }
 };
 /**
