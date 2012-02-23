@@ -47,8 +47,7 @@ StatusClickHandler.prototype = {
     */
     click: function (e) {
         var currentTab = this.openHUP(),
-            currentSite,
-            newNode;
+            link, currentSite, newNode;
         this.sites.forEach(function (site) {
             if (site && site.doc === currentTab.contentDocument) {
                 currentSite = site;
@@ -70,7 +69,12 @@ StatusClickHandler.prototype = {
                 break;
             }
             if (newNode) {
-                currentTab.contentDocument.location.hash = '#node-' + newNode.id;
+                if (currentSite.hasComments()) {
+                    link = '#' + newNode.id;
+                } else {
+                    link = '#node-' + newNode.id;
+                }
+                currentTab.contentDocument.location.hash = link;
             }
         }
     },

@@ -243,7 +243,7 @@ HupSite.prototype = {
         nodeMenu = new scope.NodeMenus(this.doc, this.menu);
         Components.utils.import('resource://huppermodules/log.jsm', scope);
         if (this.newNodeList.hasItem()) {
-            this.newNodeList.current = 0;
+            this.newNodeList.goToBegin();
             do {
                 current = this.newNodeList.getCurrent();
                 next = this.newNodeList.getNext();
@@ -295,7 +295,63 @@ HupSite.prototype = {
             }
         }
     },
+    getCommentIndexFromId: function (id) {
+        var comments = this.comments.comments,
+            i, nl;
+        for (i = 0, nl = comments.length; i < nl; i += 1) {
+            if (comments[i].id === id) {
+                return comments[i].index;
+            }
+        }
+    },
     getPrevNew: function () {
+        if (this.hasComments()) {
+            return this.getPrevNewComment();
+        } else {
+            return this.getPrevNewNode();
+        }
+    },
+    getNextNew: function () {
+        if (this.hasComments()) {
+            return this.getNextNewComment();
+        } else {
+            return this.getNextNewNode();
+        }
+    },
+    getPrevNewComment: function () {
+        var index,
+            currentIndex,
+            match;
+        match = this.doc.location.hash.match(/#comment-(\d+)/);
+        if (match) {
+            currentIndex = this.getCommentIndexFromId(+match[1]);
+            if (typeof currentIndex === 'number') {
+                this.comments.newCommentsList
+                  .setCurrent(this.comments.newCommentsList.getIndexOf(currentIndex));
+            }
+        }
+        if (this.comments.newCommentsList.previous() === false) {
+            this.comments.newCommentsList.goToEnd();
+        }
+        return this.comments.comments[this.comments.newCommentsList.getCurrent()];
+    },
+    getNextNewComment: function () {
+        var index,
+            currentIndex,
+            match;
+        match = this.doc.location.hash.match(/#node-(\d+)/);
+        if (match) {
+            currentIndex = this.getCommentIndexFromId(+match[1]);
+            if (typeof currentIndex === 'number') {
+                this.comments.newCommentsList.setCurrent(this.comments.newCommentsList.getIndexOf(currentIndex));
+            }
+        }
+        if (this.comments.newCommentsList.next() === false) {
+            this.comments.newCommentsList.goToBegin();
+        }
+        return this.comments.comments[this.comments.newCommentsList.getCurrent()];
+    },
+    getPrevNewNode: function () {
         var index,
             currentIndex,
             match;
@@ -311,7 +367,7 @@ HupSite.prototype = {
         }
         return this.nodes[this.newNodeList.getCurrent()];
     },
-    getNextNew: function () {
+    getNextNewNode: function () {
         var index,
             currentIndex,
             match;

@@ -1,5 +1,6 @@
 var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
-    minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)');
+    minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
+    scope = {};
 /**
 * @constructor
 * @class Comment
@@ -10,7 +11,7 @@ var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 * @param {GetComments} hupComments the general GetHupComments instance
 */
 var Comment = function (doc, commentNode, indentComments, comments, hupComments) {
-    var me = this, scope = {};
+    var me = this;
     this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
     this.elementer = new scope.Elementer(doc);
@@ -318,8 +319,7 @@ Comment.prototype = {
         this.elementer.Add(fragment, replies);
     },
     addReply: function (child) {
-        var scope = {},
-            me = this;
+        var me = this;
 
         this.replies.push(child);
 
@@ -363,7 +363,6 @@ Comment.prototype = {
             */
             togglePoints = function (event) {
                 var _this = this,
-                    scope = {},
                     transform;
                 Components.utils.import('resource://huppermodules/transform.jsm', scope);
                 if (_this.elementer.HasClass(this.parentNode, 'show')) {
@@ -464,7 +463,6 @@ Comment.prototype = {
 * @description A class to handle all of the comments on the page
 */
 var GetComments = function (doc) {
-    var scope = {};
     this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
     this.elementer = new scope.Elementer(this.doc);
@@ -500,6 +498,8 @@ GetComments.prototype = {
         this.comments = [];
         this.indentComments = [];
         this.newComments = [];
+        Components.utils.import('resource://huppermodules/NewNodeList.jsm', scope);
+        this.newCommentsList = new scope.NewNodeList();
         ds.forEach(function (c, i) {
             var comment = new Comment(_this.doc, c, _this.indentComments, _this.comments, _this);
             if (typeof _this.indentComments[comment.indent] === 'undefined') {
@@ -508,7 +508,8 @@ GetComments.prototype = {
             _this.indentComments[comment.indent].push(_this.comments.length);
             _this.comments.push(comment);
             if (comment.newComm) {
-                _this.newComments.push(i);
+                // _this.newComments.push(i);
+                _this.newCommentsList.add(i);
             }
         });
     },
@@ -517,16 +518,14 @@ GetComments.prototype = {
         prevnextlinks = prefs.prevnextlinks,
         trolls = prefs.trolls.split(','),
         filtertrolls = prefs.filtertrolls,
-        huppers = prefs.huppers,
         extraCommentLinks = prefs.extraCommentLinks,
         insertPermalink = prefs.insertPermalink,
         highlightUsers = prefs.highlightUsers.split(','),
         hh = {},
-        scope = {},
         _this = this,
-        bh, builder, ps, spanNode, tmpSpan1, i, ncl;
+        builder, spanNode, tmpSpan1;
         highlightUsers.forEach(function (hluser) {
-            bh = hluser.split(':');
+            var bh = hluser.split(':');
             hh[bh[0]] = bh[1];
         });
         Components.utils.import('resource://huppermodules/nodeheaderbuilder.jsm', scope);
@@ -555,26 +554,33 @@ GetComments.prototype = {
         }
         if (replacenewcommenttext || prevnextlinks) {
             spanNode = _this.elementer.Span();
-            for (i = 0, ncl = this.newComments.length; i < ncl; i += 1) {
-                tmpSpan1 = spanNode.cloneNode(true);
-                this.elementer.AddClass(tmpSpan1, 'hnav');
-                if (prevnextlinks) {
-                    if (i > 0) {
-                        this.elementer.Add(builder.buildPrevLink(this.comments[this.newComments[i - 1]].id), tmpSpan1);
+            if (this.newCommentsList.hasItem()) {
+                this.newCommentsList.goToBegin();
+                do {
+                    var next, current, prev;
+                    next = this.newCommentsList.getNext();
+                    prev = this.newCommentsList.getPrevious();
+                    current = this.newCommentsList.getCurrent();
+                    tmpSpan1 = spanNode.cloneNode(true);
+                    this.elementer.AddClass(tmpSpan1, 'hnav');
+                    if (prev !== null) {
+                        this.elementer.Add(builder.buildPrevLink(this.comments[prev].id), tmpSpan1);
                     } else {
                         this.elementer.Add(builder.buildFirstLink(), tmpSpan1);
                     }
-                    if (i < ncl - 1) {
-                        this.elementer.Add(builder.buildNextLink(this.comments[this.newComments[i + 1]].id), tmpSpan1);
+                    if (next !== null) {
+                        this.elementer.Add(builder.buildNextLink(this.comments[next].id), tmpSpan1);
                     } else {
                         this.elementer.Add(builder.buildLastLink(), tmpSpan1);
                     }
-                    // HUP.w.nextLinks.push(this.comments[this.newComments[i]].id);
-                }
-                if (replacenewcommenttext) {
-                    this.comments[this.newComments[i]].replaceNewCommentText(builder, tmpSpan1);
-                }
-                this.elementer.Insert(tmpSpan1, this.comments[this.newComments[i]].header.firstChild);
+                    if (replacenewcommenttext) {
+                        this.comments[current].replaceNewCommentText(builder, tmpSpan1);
+                    }
+                    this.elementer.Insert(tmpSpan1, this.comments[current].header.firstChild);
+                    if (this.newCommentsList.next() === false) {
+                        break;
+                    }
+                } while (true);
             }
         }
     },
@@ -607,11 +613,6 @@ GetComments.prototype = {
                 });
             });
         });
-      /*
-      } else {
-        this._parseComments();
-      }
-      */
     },
     destroy: function () {
         this.comments.forEach(function (comment) {
@@ -625,6 +626,10 @@ GetComments.prototype = {
                 delete this.newComments[i];
             }
             this.newComments = null;
+        }
+        if (this.newCommentsList) {
+            this.newCommentsList.destroy();
+            this.newCommentsList = null;
         }
         this.builder.destroy();
         this.builder = null;
