@@ -502,6 +502,7 @@ GetComments.prototype = {
         this.newCommentsList = new scope.NewNodeList();
         ds.forEach(function (c, i) {
             var comment = new Comment(_this.doc, c, _this.indentComments, _this.comments, _this);
+            comment.index = i;
             if (typeof _this.indentComments[comment.indent] === 'undefined') {
                 _this.indentComments[comment.indent] = [];
             }

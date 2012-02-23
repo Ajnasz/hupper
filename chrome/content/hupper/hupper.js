@@ -175,10 +175,10 @@
             markAsTroll(false);
         }, false);
         highilghtUser = function (highlight) {
-            var element = document.popupNode;
+            var element = document.popupNode, prefs, user;
             if (element) {
-                var user;
-                Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
+                Components.utils.import('resource://huppermodules/prefs.jsm', scope);
+                prefs = new scope.HP();
                 user = element.innerHTML;
                 prefs.get.huppercolor(function (response) {
                     sites.forEach(function (site) {
@@ -187,6 +187,7 @@
                             Components.utils.reportError('Site not found!');
                             return false;
                         }
+                        Components.utils.import('resource://huppermodules/trollHandler.jsm', scope);
                         if (highlight) {
                             color = response.pref.value || '#B5D7BE';
                             scope.trollHandler.highlightUser(user, color, function () {
@@ -225,8 +226,7 @@
         document.getElementById('HUP-unhighilghtUser').addEventListener('command', function (e) {
             highilghtUser(false);
         }, false);
-
-    };
+    }
 
     /**
     * Initialization function, runs when the page is loaded

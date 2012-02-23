@@ -297,9 +297,10 @@ HupSite.prototype = {
     },
     getCommentIndexFromId: function (id) {
         var comments = this.comments.comments,
-            i, nl;
+            commentId, i, nl;
         for (i = 0, nl = comments.length; i < nl; i += 1) {
-            if (comments[i].id === id) {
+            commentId = +comments[i].id.substr(8);
+            if (commentId === id) {
                 return comments[i].index;
             }
         }
@@ -319,41 +320,40 @@ HupSite.prototype = {
         }
     },
     getPrevNewComment: function () {
-        var index,
+        var commentsList = this.comments.newCommentsList,
             currentIndex,
             match;
         match = this.doc.location.hash.match(/#comment-(\d+)/);
         if (match) {
             currentIndex = this.getCommentIndexFromId(+match[1]);
             if (typeof currentIndex === 'number') {
-                this.comments.newCommentsList
-                  .setCurrent(this.comments.newCommentsList.getIndexOf(currentIndex));
+                commentsList
+                  .setCurrent(commentsList.getIndexOf(currentIndex));
             }
         }
-        if (this.comments.newCommentsList.previous() === false) {
-            this.comments.newCommentsList.goToEnd();
+        if (commentsList.previous() === false) {
+            commentsList.goToEnd();
         }
-        return this.comments.comments[this.comments.newCommentsList.getCurrent()];
+        return this.comments.comments[commentsList.getCurrent()];
     },
     getNextNewComment: function () {
-        var index,
+        var commentsList = this.comments.newCommentsList,
             currentIndex,
             match;
-        match = this.doc.location.hash.match(/#node-(\d+)/);
+        match = this.doc.location.hash.match(/#comment-(\d+)/);
         if (match) {
             currentIndex = this.getCommentIndexFromId(+match[1]);
             if (typeof currentIndex === 'number') {
-                this.comments.newCommentsList.setCurrent(this.comments.newCommentsList.getIndexOf(currentIndex));
+                commentsList.setCurrent(commentsList.getIndexOf(currentIndex));
             }
         }
-        if (this.comments.newCommentsList.next() === false) {
-            this.comments.newCommentsList.goToBegin();
+        if (commentsList.next() === false) {
+            commentsList.goToBegin();
         }
-        return this.comments.comments[this.comments.newCommentsList.getCurrent()];
+        return this.comments.comments[commentsList.getCurrent()];
     },
     getPrevNewNode: function () {
-        var index,
-            currentIndex,
+        var currentIndex,
             match;
         match = this.doc.location.hash.match(/#node-(\d+)/);
         if (match) {
@@ -368,8 +368,7 @@ HupSite.prototype = {
         return this.nodes[this.newNodeList.getCurrent()];
     },
     getNextNewNode: function () {
-        var index,
-            currentIndex,
+        var currentIndex,
             match;
         match = this.doc.location.hash.match(/#node-(\d+)/);
         if (match) {
