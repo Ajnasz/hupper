@@ -241,6 +241,7 @@
         try {
             if (doc && doc.location && typeof doc.location.hostname === 'string' &&
                 (doc.location.hostname === 'hup.hu' || doc.location.hostname === 'doc.hup.hu' ||
+                doc.location.hostname === 'hup.lh' ||
                   /http:\/\/(localhost\/hupper\/hg|hupper|hupperl)\/.+\.html/.test(doc.location.href))) {
 
                 isTestEnv = doc.location.hostname === 'hupperl';

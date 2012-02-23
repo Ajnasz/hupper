@@ -6,7 +6,7 @@ function StatusClickHandler(ob, sites) {
     if (!this.ob) {
         return;
     }
-    this.pageRex = new RegExp('^https?://(?:www\\.)?hup.hu');
+    this.pageRex = new RegExp('^https?://(?:www\\.)?hup\\.(?:hu|lh)');
     this.observe();
     this.sites = sites;
 }

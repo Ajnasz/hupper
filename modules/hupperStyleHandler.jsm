@@ -49,8 +49,9 @@ var hupperStyleHandler = function () {
                                     styles += 'tr.odd:hover td,' +
                                       'tr.even:hover td {background-color: #D8D8C4;}';
                                 }
-                                styles = '/* hupper user styles */@-moz-document' +
-                                ' url-prefix(http://hupperl),url-prefix(http://hup.hu) {' +
+                                styles = '/* hupper user styles */@-moz-document ' +
+                                'url-prefix(http://hup.lh),' +
+                                'url-prefix(http://hup.hu) {' +
                                   styles + '}';
                                 Components.utils.import('resource://huppermodules/log.jsm', scope);
                                 scope.hupperLog('add styles: ', styles);
@@ -66,7 +67,8 @@ var hupperStyleHandler = function () {
     accesibilityStyle = 'chrome://hupper/skin/accesibilitystyles.css';
     widthStyle = function (width) {
         return '' +
-          '/* hupper width */@-moz-document url-prefix(http://hupperl),' +
+          '/* hupper width */@-moz-document url-prefix(http://hup.lh),' +
+          'url-prefix(http://hup.lh)' +
           'url-prefix(http://hup.hu) {' +
             '.sidebar {' +
               'width:' + width + 'px !important;' +
@@ -75,7 +77,8 @@ var hupperStyleHandler = function () {
     };
     minFontsizeStyle = function (fontsize) {
         return '' +
-          '/* min font size */@-moz-document url-prefix(http://hupperl),' +
+          '/* min font size */@-moz-document url-prefix(http://hup.lh),' +
+          'url-prefix(http://www.hup.hu),' +
           'url-prefix(http://hup.hu) {' +
             'body,#all,#top-nav,#top-nav a,.sidebar .block .content,#footer,.node .links {' +
               'font-size:' + fontsize + 'px !important;' +
