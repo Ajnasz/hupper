@@ -3,8 +3,9 @@ var hupperStyleHandler = function () {
     var scope = {},
         stylesToLoad = [],
         addStyle, indentStyle,
-        accesibilityStyle, widthStyle, minFontsizeStyle,
+        accesibilityStyle,
         prefs;
+    Components.utils.import('resource://huppermodules/log.jsm', scope);
     Components.utils.import('resource://huppermodules/prefs.jsm', scope);
     prefs = new scope.HP();
     prefs.get.trollfiltermethod(function (response) {
@@ -53,7 +54,6 @@ var hupperStyleHandler = function () {
                                 'url-prefix(http://hup.lh),' +
                                 'url-prefix(http://hup.hu) {' +
                                   styles + '}';
-                                Components.utils.import('resource://huppermodules/log.jsm', scope);
                                 scope.hupperLog('add styles: ', styles);
                                 stylesToLoad.push(styles);
                             });
@@ -65,17 +65,18 @@ var hupperStyleHandler = function () {
     });
     indentStyle = 'chrome://hupper/skin/indentstyles.css';
     accesibilityStyle = 'chrome://hupper/skin/accesibilitystyles.css';
-    widthStyle = function (width) {
+    function widthStyle(width) {
+        scope.hupperLog('call width style: ', width);
         return '' +
           '/* hupper width */@-moz-document url-prefix(http://hup.lh),' +
-          'url-prefix(http://hup.lh)' +
+          'url-prefix(http://www.hup.hu),' +
           'url-prefix(http://hup.hu) {' +
             '.sidebar {' +
               'width:' + width + 'px !important;' +
           '}' +
         '}';
-    };
-    minFontsizeStyle = function (fontsize) {
+    }
+    function minFontsizeStyle(fontsize) {
         return '' +
           '/* min font size */@-moz-document url-prefix(http://hup.lh),' +
           'url-prefix(http://www.hup.hu),' +
@@ -84,7 +85,7 @@ var hupperStyleHandler = function () {
               'font-size:' + fontsize + 'px !important;' +
           '}' +
         '}';
-    };
+    }
 
     prefs.get.styleIndent(function (response) {
         if (response.pref.value) {
