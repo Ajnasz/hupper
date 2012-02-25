@@ -193,11 +193,10 @@ HupSite.prototype = {
         }
     },
     addNewCommentsNotifier: function () {
-        var newComments = this.comments.newComments,
-            _this = this;
+        var _this = this;
         this.prefs.get.showqnavbox(function (response) {
-            if (newComments.length && response.pref.value) {
-                _this.appendNewNotifier();
+            if (_this.comments.newCommentsList.length && response.pref.value) {
+                _this.appendNewNotifier('#' + _this.comments.comments[_this.comments.newCommentsList.getFirst()].id);
             }
         });
     },
