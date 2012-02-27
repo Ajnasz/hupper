@@ -256,7 +256,6 @@
                     site.destroy();
                     site = null;
                     doc.defaultView.removeEventListener('unload', unl, false);
-                    Components.utils.reportError('unloaddd!!');
                 }, false);
                 site.init();
                 return site;
