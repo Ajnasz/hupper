@@ -358,34 +358,35 @@ Comment.prototype = {
             },
             togglePoints, type, points, fragment,
             sumContainer, minusContainer, plusContainer, pointDetails, pointContainer;
+
+            pointContainer = _this.elementer.Div();
+            sumContainer = _this.elementer.El('h6');
+            pointDetails  = _this.elementer.Div();
+
             /**
             * show/hide the point details of the comment
             */
             togglePoints = function (event) {
-                var _this = this,
-                    transform;
+                var transform;
                 Components.utils.import('resource://huppermodules/transform.jsm', scope);
-                if (_this.elementer.HasClass(this.parentNode, 'show')) {
+                if (_this.elementer.HasClass(pointContainer, 'show')) {
                     transform = new scope.Transform(
-                        _this.elementer.GetByClass(this.parentNode, 'point-details')[0],
+                        _this.elementer.GetByClass(pointContainer, 'point-details')[0],
                         'SlideUp',
                         {
                             onEnd: function () {
-                                _this.elementer.RemoveClass(_this.parentNode, 'show');
+                                _this.elementer.RemoveClass(pointContainer, 'show');
                             }
                         }
                     );
                 } else {
-                    _this.elementer.AddClass(this.parentNode, 'show');
+                    _this.elementer.AddClass(pointContainer, 'show');
                     transform = new scope.Transform(
-                        _this.elementer.GetByClass(this.parentNode, 'point-details')[0],
+                        _this.elementer.GetByClass(pointContainer, 'point-details')[0],
                         'SlideDown'
                     );
                 }
             };
-            pointContainer = _this.elementer.Div();
-            sumContainer = _this.elementer.El('h6');
-            pointDetails  = _this.elementer.Div();
 
             sumContainer.setAttribute('title', 'osszesen');
             _this.elementer.subscribe(sumContainer, 'click', togglePoints, true);
