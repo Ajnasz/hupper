@@ -5,6 +5,7 @@
     <em:id>hupper@ajnasz.hu</em:id>
     <em:name>Hupper</em:name>
     <em:version>___VERSION___</em:version>
+    <em:type>2</em:type>
 
     <!-- Firefox -->
     <em:targetApplication>
