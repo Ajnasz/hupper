@@ -9,7 +9,7 @@ Components.utils.import('resource://huppermodules/timer.jsm', scope);
  * @param {String} type type of the effect
  * @param {Object} [opts] options
  */
-var Transform = function (ob, type, opts) {
+function Transform(ob, type, opts) {
     if (typeof ob === 'object') {
         this.ob = ob;
     } else if (typeof ob === 'string') {
@@ -26,7 +26,7 @@ var Transform = function (ob, type, opts) {
     this.onEnd = opts.onEnd || function () {};
     this.ob.style.display = '';
     this.start(this.type);
-};
+}
 Transform.prototype = {
     /**
     * Starts the transformation
@@ -140,7 +140,7 @@ Transform.prototype = {
             scope.later(function () {
                 _this.SlideDown();
             }, this.frames / this.speed);
-            this.i -= 0;
+            this.i -= 1;
         } else {
             this.ob.style.height = '';
             if (typeof this.onEnd === 'function') {
