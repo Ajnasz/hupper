@@ -154,7 +154,9 @@ Node.prototype = {
             if (taxonomies.indexOf(_this.taxonomy) === -1) {
                 taxonomies.push(_this.taxonomy);
             }
-            _this.prefs.set.hidetaxonomy(taxonomies.join(';'));
+            _this.prefs.set.hidetaxonomy(taxonomies.filter(function (type) {
+                return type !== '';
+            }).join(';'));
         });
     },
     addNodes: function (nodes, nodeMenu) {
