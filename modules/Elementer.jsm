@@ -91,11 +91,32 @@ Elementer.prototype = {
     /**
     * Creates a specified element
     * @param {String} el type of element
-    * @return Li element
+    * @return HTML element
     * @type Element
     */
     El: function (el) {
-        return this.doc.createElement(el);
+        var element;
+        switch (el) {
+        case 'h1':
+            element = this.doc.createElement('h1');
+            break;
+        case 'h2':
+            element = this.doc.createElement('h2');
+            break;
+        case 'h3':
+            element = this.doc.createElement('h3');
+            break;
+        case 'h4':
+            element = this.doc.createElement('h4');
+            break;
+        case 'h5':
+            element = this.doc.createElement('h5');
+            break;
+        case 'h6':
+            element = this.doc.createElement('h6');
+            break;
+        }
+        return element;
     },
     /**
     * Creates a text element
