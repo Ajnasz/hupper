@@ -1,70 +1,36 @@
 /*global Hupper: true, StyleLoader: true*/
-var hupperStyleHandler = function () {
-    var scope = {},
-        stylesToLoad = [],
-        addStyle, indentStyle,
-        accesibilityStyle,
-        prefs;
-    Components.utils.import('resource://huppermodules/log.jsm', scope);
+var scope = {};
+function multiPrefGetter(handlers, onFinish) {
     Components.utils.import('resource://huppermodules/prefs.jsm', scope);
-    prefs = new scope.HP();
-    prefs.get.trollfiltermethod(function (response) {
-        var styles = '',
-            trollfiltermethod = response.pref.value;
-
-        prefs.get.trollCommentClass(function (response) {
-            var trollCommentClass = response.pref.value;
-            prefs.get.hidetrollanswers(function (response) {
-                var hidetrollanswers = response.pref.value;
-
-                prefs.get.trollCommentAnswersClass(function (response) {
-                    var trollCommentAnswersClass = response.pref.value;
-
-                    prefs.get.trollCommentHeaderClass(function (response) {
-                        var trollCommentHeaderClass = response.pref.value;
-
-                        prefs.get.trollcolor(function (response) {
-                            var trollcolor = response.pref.value;
-
-                            prefs.get.hilightforumlinesonhover(function (response) {
-                                var hilightforumlinesonhover = response.pref.value;
-                                switch (trollfiltermethod) {
-                                case 'hide':
-                                    styles += '.' + trollCommentClass +
-                                      ' {display:none !important;}';
-                                    if (hidetrollanswers) {
-                                        styles += '.' + trollCommentAnswersClass +
-                                          ' {display:none !important;}';
-                                    }
-                                    break;
-                                // case 'hilight':
-                                default:
-                                    // styles += '.' + trollCommentHeaderClass +
-                                    //   ' {background-color:' + trollcolor + ' !important;}';
-                                    styles += '.' + trollCommentClass + ' .submitted {' +
-                                        'background-color:' + trollcolor + ' !important;' +
-                                    '}';
-                                    break;
-                                }
-                                if (hilightforumlinesonhover) {
-                                    styles += 'tr.odd:hover td,' +
-                                      'tr.even:hover td {background-color: #D8D8C4;}';
-                                }
-                                styles = '/* hupper user styles */@-moz-document ' +
-                                'url-prefix(http://hup.lh),' +
-                                'url-prefix(http://hup.hu) {' +
-                                  styles + '}';
-                                scope.hupperLog('add styles: ', styles);
-                                stylesToLoad.push(styles);
-                            });
-                        });
-                    });
-                });
-            });
+    var answers = {},
+        len = 0,
+        prefs = new scope.HP();
+    handlers.forEach(function (handler) {
+        prefs.get[handler](function (response) {
+            answers[handler] = response.pref.value;
+            len += 1;
+            if (len === handlers.length) {
+                onFinish(answers);
+            }
         });
     });
-    indentStyle = 'chrome://hupper/skin/indentstyles.css';
-    accesibilityStyle = 'chrome://hupper/skin/accesibilitystyles.css';
+}
+var hupperStyleHandler = function () {
+    var handlers;
+    Components.utils.import('resource://huppermodules/log.jsm', scope);
+    handlers = [
+        'trollfiltermethod',
+        'trollCommentClass',
+        'hidetrollanswers',
+        'trollCommentAnswersClass',
+        'trollCommentHeaderClass',
+        'trollcolor',
+        'hilightforumlinesonhover',
+        'styleIndent',
+        'styleAccessibility',
+        'styleWiderSidebar',
+        'styleMinFontsize'
+    ];
     function widthStyle(width) {
         scope.hupperLog('call width style: ', width);
         return '' +
@@ -86,37 +52,53 @@ var hupperStyleHandler = function () {
           '}' +
         '}';
     }
+    multiPrefGetter(handlers, function (answers) {
+        var rules = [],
+            stylesToLoad = [],
+            styles;
+        if (answers.trollfiltermethod === 'hide') {
+            rules.push('.' + answers.trollCommentClass + ' {display:none !important;}');
+            if (answers.hidetrollanswers) {
+                rules.push('.' + answers.trollCommentAnswersClass + ' {display:none !important;}');
+            }
+        } else {
+            rules.push('.' + answers.trollCommentClass + ' .submitted {' +
+                'background-color:' + answers.trollcolor + ' !important;' +
+            '}');
+        }
+        if (answers.hilightforumlinesonhover) {
+            rules.push('tr.odd:hover td, tr.even:hover td {background-color: #D8D8C4;}');
+        }
 
-    prefs.get.styleIndent(function (response) {
-        if (response.pref.value) {
-            stylesToLoad.push(indentStyle);
-        }
-    });
-    prefs.get.styleAccessibility(function (response) {
-        if (response.pref.value) {
-            stylesToLoad.push(accesibilityStyle);
-        }
-    });
-    prefs.get.styleWiderSidebar(function (response) {
-        var width = response.pref.value;
-        if (width > 0) {
-            stylesToLoad.push(widthStyle(width));
-        }
-    });
-    prefs.get.styleMinFontsize(function (response) {
-        var minFontsize = response.pref.value;
-        if (minFontsize > 0) {
-            stylesToLoad.push(minFontsizeStyle(minFontsize));
-        }
-    });
-    stylesToLoad.push("chrome://hupper/skin/hupper.css");
+        styles = '/* hupper user styles */@-moz-document' +
+          ' url-prefix(http://hup.lh),' +
+          ' url-prefix(http://hup.hu) {' + rules.join('') + '}';
 
-    Components.utils.import('resource://huppermodules/styleLoader.jsm', scope);
-    scope.styleLoader.unloadAll(function () {
-        stylesToLoad.forEach(function (s) {
-            scope.styleLoader.load(s);
-        });
-    }, stylesToLoad);
+        scope.hupperLog('add styles: ', styles);
+
+        stylesToLoad.push(styles);
+        if (answers.styleIndent) {
+            stylesToLoad.push('chrome://hupper/skin/indentstyles.css');
+        }
+        if (answers.styleAccessibility) {
+            stylesToLoad.push('chrome://hupper/skin/accesibilitystyles.css');
+        }
+        if (answers.styleWiderSidebar > 0) {
+            stylesToLoad.push(widthStyle(answers.styleWiderSidebar));
+        }
+        if (answers.styleMinFontsize > 0) {
+            stylesToLoad.push(minFontsizeStyle(answers.styleMinFontsize));
+        }
+        stylesToLoad.push("chrome://hupper/skin/hupper.css");
+        Components.utils.import('resource://huppermodules/styleLoader.jsm', scope);
+
+        scope.styleLoader.unloadAll(function () {
+            stylesToLoad.forEach(function (s) {
+                scope.styleLoader.load(s);
+            });
+        }, stylesToLoad);
+    });
+
 };
 
 var EXPORTED_SYMBOLS = ['hupperStyleHandler'];
