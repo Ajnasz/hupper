@@ -296,11 +296,13 @@ Elementer.prototype = {
         }
     },
     /**
-    * Collects the elements, which has the specified className (cn) and childNodes of the specified node (par)
+    * Collects the elements, which has the specified className (cn) and
+    * childNodes of the specified node (par)
     * @param {Element} par parent element node
     * @param {String} cn The className
     * @param {String} el element type
-    * @param {Boolean} [force] if the par attribute is false|undefined change the parent element to the body if the value of the variable is true
+    * @param {Boolean} [force] if the par attribute is false|undefined change
+    * the parent element to the body if the value of the variable is true
     * @return the elements which are childnodes of the parent and has the specified classname
     * @type {Array}
     */
