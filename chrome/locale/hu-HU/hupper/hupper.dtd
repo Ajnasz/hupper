@@ -1,7 +1,7 @@
 <!ENTITY Hupper.enabletrollfilter "Trollszűrő engedélyezése">
 <!ENTITY Hupper.trolls "Trollok">
-<!ENTITY Hupper.trollcolor "A Trollok hozzászólásainak fejlécének a színe">
-<!ENTITY Hupper.trollfiltermethod "Trollok hozzászólásait eltüntető effekt">
+<!ENTITY Hupper.trollcolor "Troll hozzászólások fejlécének színe">
+<!ENTITY Hupper.trollfiltermethod "Troll hozzászólást eltüntető effekt">
 <!ENTITY Hupper.trollfilter.hide "Elrejtés">
 <!ENTITY Hupper.trollfilter.hilight "Kiemelés">
 <!ENTITY Hupper.trollfilter.hideanswers "Troll hozzászólásra érkezett válaszok elrejtése">
@@ -24,7 +24,7 @@
 <!ENTITY Hupper.tabsyles "Stílusok">
 <!ENTITY Hupper.username "Felhasználói név:">
 <!ENTITY Hupper.password "Jelszó:">
-<!ENTITY Hupper.hidetaxonomy "Elrejtendo cikk típusok">
+<!ENTITY Hupper.hidetaxonomy "Elrejtendő cikk típusok">
 <!ENTITY Hupper.showinstatusbar "Ikon mutatása az állapotsorban">
 <!ENTITY Hupper.parseblocks "Blokkok feldolgozása">
 <!ENTITY Hupper.resetblocks "Blokkok visszaállítása">
