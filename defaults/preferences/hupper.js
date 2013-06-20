@@ -38,6 +38,8 @@ pref("extensions.hupper.style_indent", true);
 pref("extensions.hupper.style_accessibility", true);
 pref("extensions.hupper.style_wider_sidebar", 0);
 pref("extensions.hupper.style_min_fontsize", 0);
+pref("extensions.hupper.style_hide_left_sidebar", false);
+pref("extensions.hupper.style_hide_right_sidebar", false);
 
 pref("extensions.hupper.hideboringcomments", true);
 pref("extensions.hupper.boringcommentcontents", "^([-_]|-1|\\+1)$");

@@ -98,6 +98,8 @@
           <textbox id="HUP-style-sidebar-width" />
           <label control="HUP-style-min-fontsize" value="&Hupper.style.minfontsize;"/>
           <textbox id="HUP-style-min-fontsize" />
+          <checkbox id="HUP-style-hide-left-sidebar" label="&Hupper.style.hideleftsidebar;" />
+          <checkbox id="HUP-style-hide-right-sidebar" label="&Hupper.style.hiderightsidebar;" />
         </groupbox>
       </tabpanel>
       <!--

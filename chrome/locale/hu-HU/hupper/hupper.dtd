@@ -33,6 +33,8 @@
 <!ENTITY Hupper.style.accessibility "Jobb használhatóságot lehetővé tévő stílusok betöltése">
 <!ENTITY Hupper.style.sidebarwidth "Oldallsávok szélessége">
 <!ENTITY Hupper.style.minfontsize "Minimum betűméret">
+<!ENTITY Hupper.style.hideleftsidebar "Bal oldalsáv elrejtése">
+<!ENTITY Hupper.style.hiderightsidebar "Jobb oldalsáv elrejtése">
 
 <!ENTITY Hupper.pref.acceptbutton "Alkalmaz">
 

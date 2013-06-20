@@ -159,6 +159,12 @@ HP.prototype = {
         styleMinFontsize: function (cb) {
             return this.M.getIntPref('extensions.hupper.style_min_fontsize', cb);
         },
+        styleHideLeftSidebar: function (cb) {
+            return this.M.getBoolPref('extensions.hupper.style_hide_left_sidebar', cb);
+        },
+        styleHideRightSidebar: function (cb) {
+            return this.M.getBoolPref('extensions.hupper.style_hide_right_sidebar', cb);
+        },
         hideboringcomments: function (cb) {
             return this.M.getBoolPref('extensions.hupper.hideboringcomments', cb);
         },
@@ -261,6 +267,12 @@ HP.prototype = {
         },
         styleMinFontsize: function (value, cb) {
             return this.M.setIntPref('extensions.hupper.style_min_fontsize', value, cb);
+        },
+        styleHideLeftSidebar: function (value, cb) {
+            return this.M.setBoolPref('extensions.hupper.style_hide_left_sidebar', value, cb);
+        },
+        styleHideRightSidebar: function (value, cb) {
+            return this.M.setBoolPref('extensions.hupper.style_hide_right_sidebar', value, cb);
         },
         hideboringcomments: function (value, cb) {
             return this.M.setBoolPref('extensions.hupper.hideboringcomments', value, cb);

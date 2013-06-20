@@ -28,6 +28,8 @@ Hupper.prefItems = [
     {id: 'HUP-style-accessibility', prefName: 'styleAccessibility'},
     {id: 'HUP-style-sidebar-width', prefName: 'styleWiderSidebar'},
     {id: 'HUP-style-min-fontsize', prefName: 'styleMinFontsize'},
+    {id: 'HUP-style-hide-left-sidebar', prefName: 'styleHideLeftSidebar'},
+    {id: 'HUP-style-hide-right-sidebar', prefName: 'styleHideRightSidebar'},
     {id: 'HUP-set-unlimited-links', prefName: 'setunlimitedlinks'},
     {id: 'HUP-boring-comment-contents', prefName: 'boringcommentcontents'}
     // {id: 'HUP-hupper-password', prefName: 'getPassword'},

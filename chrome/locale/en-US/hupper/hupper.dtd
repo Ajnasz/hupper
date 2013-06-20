@@ -33,6 +33,8 @@
 <!ENTITY Hupper.style.accessibility "Load accessibility styles">
 <!ENTITY Hupper.style.sidebarwidth "Width of sidebars">
 <!ENTITY Hupper.style.minfontsize "Minimum font size">
+<!ENTITY Hupper.style.hideleftsidebar "Hide left sidebar">
+<!ENTITY Hupper.style.hiderightsidebar "Hide right sidebar">
 
 <!ENTITY Hupper.pref.acceptbutton "Apply">
 
