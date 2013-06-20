@@ -52,23 +52,25 @@ Ajax.prototype = {
     * @return The error or load or successhandler state
     */
     handler: function (pars) {
+        var output;
         try {
             if (this.req.readyState === 4) {
                 if (this.req.status !== 'undefined') {
                     if (this.req.status === 200) {
-                        return this.successHandler();
+                        output = this.successHandler();
                     } else {
-                        return this.errorHandler('status code - ' + this.req.status);
+                        output = this.errorHandler('status code - ' + this.req.status);
                     }
                 } else {
-                    return this.errorHandler('no status code');
+                    output = this.errorHandler('no status code');
                 }
             } else {
-                return this.loadHandler();
+                output = this.loadHandler();
             }
         } catch (e) {
-            return this.errorHandler('no readyState', e);
+            output = this.errorHandler('no readyState', e);
         }
+        return output;
     },
     /**
     * runs if the request was success
