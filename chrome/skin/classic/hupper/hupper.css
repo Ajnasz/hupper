@@ -48,6 +48,9 @@
     .block:hover .block-move-button {
         z-index: 1 !important;
     }
+    .block .btn-container {
+      position: relative !important;
+    }
     .hide-button,
     .show-button {
         right: 18px !important;

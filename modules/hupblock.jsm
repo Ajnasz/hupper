@@ -38,12 +38,15 @@ var Block = function (doc, cfg) {
     blockID = cfg.id;
     blockElement = this.elementer.GetId(blockID);
   }
+
   if (blockElement) {
     if (blockID !== blockElement.getAttribute('id')) {
       throw new Error('blockID is not the same as the block elements id!');
     }
   }
+
   Components.utils.import('resource://huppermodules/bundles.jsm', scope);
+
   this.bundles = scope.hupperBundles;
   this.block = blockElement;
   this.blocks = cfg.blocks;
@@ -51,23 +54,30 @@ var Block = function (doc, cfg) {
   this.blockMenus = cfg.blockMenus;
   contents = this.elementer.GetByClass(this.block, 'content', 'div');
   this.contentNode = contents.length ? contents[0] : null;
+
   if (this.block) {
     this.titleNode = this.elementer.GetFirstTag('h2', this.block);
     if (this.titleNode) {
       this.blockTitle = this.titleNode.innerHTML;
     }
   }
+
   this.makeTitle();
+  this.addButtonContainer();
   this.addMoveButtons();
+
   if (this.id !== 'block-hupper-0') { // exception for hup block
     this.addButtons();
   }
+
   this.setSide(cfg.side);
+
   if (cfg.hidden) {
     this.hide();
   } else {
     this.show();
   }
+
   if (cfg.contentHidden) {
     this.hideContent();
   } else {
@@ -199,17 +209,45 @@ Block.prototype = {
     this.blocks.UI.rearrangeBlocks(this.blocks);
     this.blocks.save();
   },
-  addButtons: function () {
-    if (!this.titleNode) {
-      return;
+
+  addButtonContainer: function () {
+    var container;
+
+    if (this.titleNode) {
+      container = this.titleNode;
+    } else {
+      container = this.elementer.Div();
+
+      this.elementer.Add(this.elementer.Txt(''), container);
+      this.elementer.AddClass(container, 'btn-container');
+      this.elementer.Insert(container, this.contentNode);
     }
-    var block = this, titleNode = this.titleNode,
-        delButton = this.elementer.Btn(
-          this.bundles.getString('deleteBlock'), 'hupper-button block-button delete-button'),
-        hideButton = this.elementer.Btn(
-          this.bundles.getString('hideBlockContent'), 'hupper-button block-button hide-button'),
-        showButton = this.elementer.Btn(
-          this.bundles.getString('showBlockContent'), 'hupper-button block-button show-button');
+
+    this.buttonContainer = container;
+  },
+
+  addButtons: function () {
+    var block,
+      buttonContainer,
+      delButton,
+      hideButton,
+      showButton;
+
+    block = this;
+    buttonContainer = this.buttonContainer;
+
+    delButton = this.elementer.Btn(
+      this.bundles.getString('deleteBlock'),
+      'hupper-button block-button delete-button'
+    );
+    hideButton = this.elementer.Btn(
+      this.bundles.getString('hideBlockContent'),
+      'hupper-button block-button hide-button'
+    );
+    showButton = this.elementer.Btn(
+      this.bundles.getString('showBlockContent'),
+      'hupper-button block-button show-button'
+    );
     this.elementer.subscribe(delButton, 'click', function () {
       block.hide();
     });
@@ -220,48 +258,59 @@ Block.prototype = {
       block.showContent();
     });
     this.elementer.Hide(showButton);
-    this.elementer.Insert(showButton, titleNode.firstChild);
-    this.elementer.Insert(hideButton, titleNode.firstChild);
-    this.elementer.Insert(delButton, titleNode.firstChild);
+    this.elementer.Insert(showButton, buttonContainer.firstChild);
+    this.elementer.Insert(hideButton, buttonContainer.firstChild);
+    this.elementer.Insert(delButton, buttonContainer.firstChild);
     this.delButton = delButton;
     this.hideButton = hideButton;
     this.showButton = showButton;
   },
   addMoveButtons: function () {
-    if (!this.titleNode) {
-      return;
-    }
+    var buttonContainer = this.buttonContainer,
+      that = this;
+
     this.upButton = this.elementer.Btn(
-      this.bundles.getString('moveBoxUp'), 'hupper-button up-button block-move-button');
+      this.bundles.getString('moveBoxUp'),
+      'hupper-button up-button block-move-button'
+    );
     this.downButton = this.elementer.Btn(
-      this.bundles.getString('moveBoxDown'), 'hupper-button down-button block-move-button');
+      this.bundles.getString('moveBoxDown'),
+      'hupper-button down-button block-move-button'
+    );
     this.leftButton = this.elementer.Btn(
-      this.bundles.getString('moveBoxLeft'), 'hupper-button left-button block-move-button');
+      this.bundles.getString('moveBoxLeft'),
+      'hupper-button left-button block-move-button'
+    );
     this.rightButton = this.elementer.Btn(
-      this.bundles.getString('moveBoxRight'), 'hupper-button right-button block-move-button');
-    var _this = this;
+      this.bundles.getString('moveBoxRight'),
+      'hupper-button right-button block-move-button'
+    );
     this.elementer.subscribe(this.upButton, 'click', function () {
-      _this.moveUp();
+      that.moveUp();
     });
     this.elementer.subscribe(this.downButton, 'click', function () {
-      _this.moveDown();
+      that.moveDown();
     });
     this.elementer.subscribe(this.leftButton, 'click', function () {
-      _this.moveLeft();
+      that.moveLeft();
     }, false);
     this.elementer.subscribe(this.rightButton, 'click', function () {
-      _this.moveRight();
+      that.moveRight();
     }, false);
-    this.elementer.Insert(this.upButton, this.titleNode.firstChild);
-    this.elementer.Insert(this.downButton, this.titleNode.firstChild);
-    this.elementer.Insert(this.leftButton, this.titleNode.firstChild);
-    this.elementer.Insert(this.rightButton, this.titleNode.firstChild);
+    this.elementer.Insert(this.upButton, buttonContainer.firstChild);
+    this.elementer.Insert(this.downButton, buttonContainer.firstChild);
+    this.elementer.Insert(this.leftButton, buttonContainer.firstChild);
+    this.elementer.Insert(this.rightButton, buttonContainer.firstChild);
   },
   setSide: function (side) {
     if (this.block) {
-      this.side = side ?
-          side :
-          /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ? 'right' : 'left';
+      if (side) {
+        this.side = side;
+      } else {
+        this.side = /sidebar-right/.test(this.block.parentNode.getAttribute('id')) ?
+            'right' :
+            'left';
+      }
     } else if (side) {
       this.side = side;
     } else {
