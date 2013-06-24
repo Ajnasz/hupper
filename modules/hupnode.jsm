@@ -177,7 +177,7 @@ Node.prototype = {
             method: 'get',
             url: 'http://hup.hu' + marker.getAttribute('path').replace(/^\s*(.+)\s*$/, '$1'),
             successHandler: function () {
-                marker.innerHTML = bundles.getString('markingSuccess');
+                marker.textContent = bundles.getString('markingSuccess');
                 if (marker.nextSibling.getAttribute('class') === 'hnew') {
                     this.elementer.Remove(marker.nextSibling, marker.parentNode);
                 }
