@@ -41,8 +41,8 @@ var TreeView = function () {
                 },
                 getParentIndex: function () {},
                 cycleHeader: function (col, elem) {},
-                getRowProperties: function (row, props) {},
-                getCellProperties: function (row, col, props) {},
+                getRowProperties: function (row, props) { return ''; },
+                getCellProperties: function (row, col, props) {return ''; },
                 performAction: function (action) {
                     log.logStringMessage('perform action: ' + action);
                 },
@@ -52,7 +52,7 @@ var TreeView = function () {
                 performActionOnCell: function (action, index, column) {
                     log.logStringMessage('perform action on cell: ' + action, index, column);
                 },
-                getColumnProperties: function (colid, col, props) {},
+                getColumnProperties: function (colid, col, props) { return '' },
                 get isEditing() {
                     log.logStringMessage('editing row: ', this.editingRow);
                     return this.editingRow > -1;
