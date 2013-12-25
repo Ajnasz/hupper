@@ -10,7 +10,7 @@ var plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 * @param {Array} comments all comment of the page
 * @param {GetComments} hupComments the general GetHupComments instance
 */
-var Comment = function (doc, commentNode, indentComments, comments, hupComments) {
+function Comment(doc, commentNode, indentComments, comments, hupComments) {
     var me = this;
     this.doc = doc;
     Components.utils.import('resource://huppermodules/Elementer.jsm', scope);
@@ -188,6 +188,7 @@ Comment.prototype = {
         this.header.style.backgroundColor = '';
     },
     _highlightComment: function () {
+        "use strict";
         this.elementer.AddClass(this.comment, commentClasses.trollCommentClass);
         this.elementer.AddClass(this.header, commentClasses.trollCommentHeaderClass);
         if (this.children !== -1) {
@@ -195,6 +196,7 @@ Comment.prototype = {
         }
     },
     setTroll: function () {
+        "use strict";
         this.troll = true;
         var me = this;
         this.prefs.get.trollCommentClass(function (response) {
@@ -208,8 +210,12 @@ Comment.prototype = {
                 me.elementer.AddClass(me.children, response.pref.value);
             });
         }
+        me.elementer.GetByClass(me.elementer.GetId('comments'), 'hup-replier-user-' + me.user).forEach(function (elem) {
+            me.elementer.AddClass(elem, 'hup-troll');
+        });
     },
     unsetTroll: function () {
+        "use strict";
         this.troll = false;
         var me = this;
         this.prefs.get.trollCommentClass(function (response) {
@@ -223,6 +229,9 @@ Comment.prototype = {
                 me.elementer.RemoveClass(me.children, response.pref.value);
             });
         }
+        me.elementer.GetByClass(me.elementer.GetId('comments'), 'hup-replier-user-' + me.user).forEach(function (elem) {
+            me.elementer.RemoveClass(elem, 'hup-troll');
+        });
     },
     /**
     * highligts the header of the node if the user is a troll
@@ -292,9 +301,11 @@ Comment.prototype = {
         return minusOneRex.test(firstParagraph.textContent);
     },
     renderReplies: function () {
+        "use strict";
         var replies = this.elementer.GetByClass(this.footer, 'hup-replies', 'div'),
             fragment = this.elementer.Fragment(),
-            _this = this;
+            that = this;
+
         if (!replies.length) {
             replies = this.elementer.Div();
             this.elementer.AddClass(replies, 'hup-replies');
@@ -305,16 +316,29 @@ Comment.prototype = {
         }
         this.elementer.Add(this.elementer.Txt('replies: '), fragment);
         this.replies.forEach(function (reply, index) {
+            var container, comma;
+            container = that.elementer.Span();
+            that.elementer.AddClass(container, 'hup-replier-user');
+            that.elementer.AddClass(container, 'hup-replier-user-' + reply.user);
             if (index > 0) {
-                _this.elementer.Add(_this.elementer.Txt(', '), fragment);
+                comma = that.elementer.Span();
+                that.elementer.AddClass(comma, 'reply-separator');
+                that.elementer.Add(that.elementer.Txt(', '), comma);
+                that.elementer.Add(comma, container);
             }
             reply.isBoringComment(function (isBoring) {
-                var link = _this.elementer.CreateLink(reply.user, '#' + reply.id);
+                var link = that.elementer.CreateLink(reply.user, '#' + reply.id);
                 if (isBoring) {
-                    _this.elementer.AddClass(link, 'hup-boring');
+                    that.elementer.AddClass(link, 'hup-boring');
                 }
-                _this.elementer.Add(link, fragment);
+                if (reply.troll) {
+                    that.elementer.AddClass(container, 'hup-troll');
+                }
+                that.elementer.AddClass(link, 'hup-reply-user-link');
+                that.elementer.Add(link, container);
+                that.elementer.Add(container, fragment);
             });
+
         });
         this.elementer.Add(fragment, replies);
     },

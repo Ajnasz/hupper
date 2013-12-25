@@ -21,6 +21,9 @@ var hupperStyleHandler = function () {
     handlers = [
         'trollfiltermethod',
         'trollCommentClass',
+        'trollReplyClass',
+        'hupperReplyUserLinkClass',
+        'trollReplySeparatorClass',
         'hidetrollanswers',
         'trollCommentAnswersClass',
         'trollCommentHeaderClass',
@@ -35,8 +38,7 @@ var hupperStyleHandler = function () {
     ];
     function widthStyle(width) {
         scope.hupperLog('call width style: ', width);
-        return '' +
-            '/* hupper width */@-moz-document url-prefix(http://hup.lh),' +
+        return '/* hupper width */@-moz-document url-prefix(http://hup.lh),' +
             'url-prefix(http://www.hup.hu),' +
             'url-prefix(http://hup.hu) {' +
                 '.sidebar {' +
@@ -45,8 +47,7 @@ var hupperStyleHandler = function () {
             '}';
     }
     function minFontsizeStyle(fontsize) {
-        return '' +
-            '/* min font size */@-moz-document url-prefix(http://hup.lh),' +
+        return '/* min font size */@-moz-document url-prefix(http://hup.lh),' +
             'url-prefix(http://www.hup.hu),' +
             'url-prefix(http://hup.hu) {' +
                 'body,#all,#top-nav,#top-nav a,.sidebar .block .content,#footer,.node .links {' +
@@ -55,8 +56,7 @@ var hupperStyleHandler = function () {
             '}';
     }
     function hideLeftSidebar() {
-        return '' +
-            '/* hide left sidebar */@-moz-document url-prefix(http://hup.lh),' +
+        return '/* hide left sidebar */@-moz-document url-prefix(http://hup.lh),' +
             'url-prefix(http://www.hup.hu),' +
             'url-prefix(http://hup.hu) {' +
                 '#sidebar-left {' +
@@ -65,8 +65,7 @@ var hupperStyleHandler = function () {
             '}';
     }
     function hideRightSidebar() {
-        return '' +
-            '/* hide right sidebar */@-moz-document url-prefix(http://hup.lh),' +
+        return '/* hide right sidebar */@-moz-document url-prefix(http://hup.lh),' +
             'url-prefix(http://www.hup.hu),' +
             'url-prefix(http://hup.hu) {' +
                 '#sidebar-right {' +
@@ -82,13 +81,19 @@ var hupperStyleHandler = function () {
         if (answers.trollfiltermethod === 'hide') {
             rules.push('.' + answers.trollCommentClass + ' {display:none !important;}');
 
+            rules.push('.' + answers.trollReplyClass + ',' +
+                       '.' + answers.trollReplySeparatorClass + ' {display: none !important;}');
+
             if (answers.hidetrollanswers) {
                 rules.push('.' + answers.trollCommentAnswersClass + ' {display:none !important;}');
             }
         } else {
             rules.push('.' + answers.trollCommentClass + ' .submitted {' +
                 'background-color:' + answers.trollcolor + ' !important;' +
-            '}');
+                '}');
+            rules.push('.' + answers.trollReplyClass + ' .' + answers.hupperReplyUserLinkClass + ' {' +
+                'background-color:' + answers.trollcolor + ' !important;' +
+                '}');
         }
 
         if (answers.hilightforumlinesonhover) {

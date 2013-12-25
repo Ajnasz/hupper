@@ -174,8 +174,17 @@ HP.prototype = {
         trollCommentClass: function (cb) {
             cb({success: true, pref: {value: 'trollComment', name: 'trollcommentclass'}});
         },
+        trollReplyClass: function (cb) {
+            cb({success: true, pref: {value: 'hup-troll', name: 'trollreplyclass'}});
+        },
+        trollReplySeparatorClass: function (cb) {
+            cb({success: true, pref: {value: 'reply-separator', name: 'trollreplyseparatorclass'}});
+        },
         trollCommentAnswersClass: function (cb) {
             cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
+        },
+        hupperReplyUserLinkClass: function (cb) {
+            cb({success: true, pref: {value: 'hup-reply-user-link', name: 'hupperReplyUserLink'}});
         },
         boringcommentcontents: function (cb) {
             return this.M.getCharPref('extensions.hupper.boringcommentcontents', cb);
