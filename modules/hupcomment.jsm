@@ -210,7 +210,7 @@ Comment.prototype = {
                 me.elementer.AddClass(me.children, response.pref.value);
             });
         }
-        me.elementer.GetByClass(me.elementer.GetId('comments'), 'hup-replier-user-' + me.user).forEach(function (elem) {
+        me.elementer.GetByClass(me.elementer.GetId('comments').parentNode, 'hup-replier-user-' + me.user).forEach(function (elem) {
             me.elementer.AddClass(elem, 'hup-troll');
         });
     },
@@ -229,7 +229,7 @@ Comment.prototype = {
                 me.elementer.RemoveClass(me.children, response.pref.value);
             });
         }
-        me.elementer.GetByClass(me.elementer.GetId('comments'), 'hup-replier-user-' + me.user).forEach(function (elem) {
+        me.elementer.GetByClass(me.elementer.GetId('comments').parentNode, 'hup-replier-user-' + me.user).forEach(function (elem) {
             me.elementer.RemoveClass(elem, 'hup-troll');
         });
     },
@@ -519,7 +519,8 @@ GetComments.prototype = {
                 _this.elementer.AddClass(coms, 'keep-boring-comments');
             }
         });
-        ds = _this.elementer.GetByClass(coms, 'comment', 'div');
+        ds = _this.elementer.GetByClass(coms.parentNode, 'comment', 'div');
+
         this.comments = [];
         this.indentComments = [];
         this.newComments = [];
