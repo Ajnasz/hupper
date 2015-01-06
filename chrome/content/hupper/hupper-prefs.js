@@ -222,12 +222,15 @@ Hupper.setTrollManager = function (doc) {
 
 Hupper.setUserManager = function (doc) {
     Hupper.treeviewer(doc, {
-        rows: Hupper.HUP.hp.get.highlightusers().split(','),
+        rows: Hupper.HUP.hp.get.highlightusers().split(',').filter(function(item) {
+            var itemArr = item.split(':');
+            return itemArr.length === 2 && itemArr[0].trim() !== '' && itemArr[1].trim() !== '';
+        }),
         treeId: 'HUP-usermanagement',
         treeContainerId: 'HUP-usermanagement-container',
         storageFieldId: 'HUP-hupper-highlightusers',
         isEmpty: function (row) {
-            return row && row.namecol.text === '' && row.colorcol.text === '';
+            return row && row.namecol.text.trim() === '' && row.colorcol.text.trim() === '';
         },
         getEmptyRow: function () {
             return {namecol: {text: '', editable: true}, colorcol: {text: '', editable: true}};
@@ -260,7 +263,9 @@ Hupper.setUserManager = function (doc) {
             return output;
         },
         rowsToVal: function (rows) {
-            return rows.join(',');
+            return rows.filter(function(r) {
+                return r.trim() !== '';
+            }).join(',');
         }
     });
 };
