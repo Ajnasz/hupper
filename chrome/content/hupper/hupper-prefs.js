@@ -186,7 +186,9 @@ Hupper.treeviewer = function (doc, options) {
 
 Hupper.setTrollManager = function (doc) {
     Hupper.treeviewer(doc, {
-        rows: Hupper.HUP.hp.get.trolls().split(','),
+        rows: Hupper.HUP.hp.get.trolls().split(',').filter(function(t) {
+            return t.trim().length > 0;
+        }),
         treeId: 'HUP-trollmanagement',
         treeContainerId: 'HUP-trollmanagement-container',
         storageFieldId: 'HUP-trolls',
@@ -211,7 +213,9 @@ Hupper.setTrollManager = function (doc) {
             return output;
         },
         rowsToVal: function (rows) {
-            return rows.join(',');
+            return rows.filter(function(t) {
+                return t.trim().length > 0;
+            }).join(',');
         }
     });
 };
@@ -285,3 +289,4 @@ Hupper.StartHupperPrefernces = function() {
     Hupper.setUserManager(document);
     Hupper.setTrollManager(document);
 };
+// ex: set expandtab
