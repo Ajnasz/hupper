@@ -245,9 +245,11 @@ Comment.prototype = {
     addExtraLinks: function (builder) {
         this.elementer.Add(builder.buildComExtraTop(), this.footerLinks);
         this.elementer.Add(builder.buildComExtraBack(), this.footerLinks);
-		if (this.indent > 1) {
-			this.elementer.Add(builder.buildComExpand(), this.footerLinks);
-		}
+        this.prefs.get.widenComments(function (response) {
+            if (response.pref.value && this.indent > 1) {
+                this.elementer.Add(builder.buildComExpand(), this.footerLinks);
+            }
+        }.bind(this));
     },
     /**
     * replace the 'uj' text in the header of newly posted comments

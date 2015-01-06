@@ -191,7 +191,10 @@ HP.prototype = {
         },
         setunlimitedlinks: function (cb) {
             return this.M.getBoolPref('extensions.hupper.setunlimitedlinks', cb);
-        }
+        },
+        widenComments: function(cb) {
+            return this.M.getBoolPref('extensions.hupper.widencomments', cb);
+        },
     },
     set: {
         M: this.M,
@@ -291,7 +294,10 @@ HP.prototype = {
         },
         setunlimitedlinks: function (value, cb) {
             return this.M.setBoolPref('extensions.hupper.setunlimitedlinks', value, cb);
-        }
+        },
+        widenComments: function(value, cb) {
+            return this.M.setBoolPref('extensions.hupper.widencomments', value, cb);
+        },
     }
 };
 let EXPORTED_SYMBOLS = ['HP'];

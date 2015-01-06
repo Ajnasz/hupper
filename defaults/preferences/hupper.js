@@ -44,3 +44,4 @@ pref("extensions.hupper.style_hide_right_sidebar", false);
 pref("extensions.hupper.hideboringcomments", true);
 pref("extensions.hupper.boringcommentcontents", "^([-_]|-1|\\+1)$");
 pref("extensions.hupper.setunlimitedlinks", true);
+pref("extensions.hupper.widencomments", true);

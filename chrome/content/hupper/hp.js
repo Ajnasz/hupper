@@ -1,26 +1,26 @@
 HP = function() {
-  this.M = new function() {
-    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch)
+  this.M = (function() {
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
     var isFunction = function(f) {
       return typeof f === 'function';
     };
     return {
       getBoolPref: function(n, cb) {
-        var value = prefs.getBoolPref(n);;
+        var value = prefs.getBoolPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
         return value;
       },
       getCharPref: function(n, cb) {
-        var value = prefs.getCharPref(n);;
+        var value = prefs.getCharPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
         return value;
       },
       getIntPref: function(n, cb) {
-        var value = prefs.getIntPref(n);;
+        var value = prefs.getIntPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
@@ -28,7 +28,7 @@ HP = function() {
       },
       setBoolPref: function(n, v, cb) {
         prefs.setBoolPref(n, v);
-        var value = prefs.getBoolPref(n);;
+        var value = prefs.getBoolPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
@@ -36,7 +36,7 @@ HP = function() {
       },
       setCharPref: function(n, v, cb) {
         prefs.setCharPref(n, v);
-        var value = prefs.getCharPref(n);;
+        var value = prefs.getCharPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
@@ -44,14 +44,14 @@ HP = function() {
       },
       setIntPref: function(n, v, cb) {
         prefs.setIntPref(n, v);
-        var value = prefs.getIntPref(n);;
+        var value = prefs.getIntPref(n);
         if (isFunction(cb)) {
           cb({success: true, pref: {name: n, value: value}});
         }
         return value;
       },
-    }
-  }();
+    };
+  }());
   this.get.M = this.set.M = this.M;
 };
 HP.prototype = {
@@ -159,14 +159,17 @@ HP.prototype = {
       return this.M.getIntPref('extensions.hupper.style_min_fontsize', cb);
     },
     trollCommentHeaderClass: function(cb) {
-      cb({success: true, pref: {value: 'trollHeader', name: 'trollHeader'}})
+      cb({success: true, pref: {value: 'trollHeader', name: 'trollHeader'}});
     },
     trollCommentClass: function(cb) {
-      cb({success: true, pref: {value: 'trollComment', name: 'trollcommentclass'}})
+      cb({success: true, pref: {value: 'trollComment', name: 'trollcommentclass'}});
     },
     trollCommentAnswersClass: function(cb) {
-      cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}})
+      cb({success: true, pref: {value: 'trollCommentAnswer', name: 'trollcommentanswer'}});
     },
+	widenComments: function(cb) {
+		return this.M.getBoolPref('extensions.hupper.widencomments', cb);
+	},
   },
   set: {
     M: this.M,
@@ -256,5 +259,8 @@ HP.prototype = {
     styleMinFontsize: function(value, cb) {
       return this.M.setIntPref('extensions.hupper.style_min_fontsize', value, cb);
     },
+	widenComments: function(value, cb) {
+		return this.M.setBoolPref('extensions.hupper.widencomments', value, cb);
+	},
   }
 };

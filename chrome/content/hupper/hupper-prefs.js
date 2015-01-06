@@ -31,7 +31,8 @@ Hupper.prefItems = [
     {id: 'HUP-style-hide-left-sidebar', prefName: 'styleHideLeftSidebar'},
     {id: 'HUP-style-hide-right-sidebar', prefName: 'styleHideRightSidebar'},
     {id: 'HUP-set-unlimited-links', prefName: 'setunlimitedlinks'},
-    {id: 'HUP-boring-comment-contents', prefName: 'boringcommentcontents'}
+    {id: 'HUP-boring-comment-contents', prefName: 'boringcommentcontents'},
+    {id: 'HUP-widen-comments', prefName: 'widenComments'}
     // {id: 'HUP-hupper-password', prefName: 'getPassword'},
     // {id: 'HUP-hupper-username', prefName: 'username'}
 ];

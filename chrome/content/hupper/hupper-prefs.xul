@@ -73,6 +73,7 @@
             </menulist>
             <checkbox id="HUP-hide-troll-answers" label="&Hupper.trollfilter.hideanswers;" />
             <textbox id="HUP-hupper-highlightusers" style="display:none;"/>
+            <checkbox id="HUP-widen-comments" label="&Hupper.widencomments;" />
           </vbox>
           <vbox id="HUP-usermanagement-container">
             <tree id="HUP-usermanagement" flex="1" class="tree" editable="true" seltype="single" rows="5">

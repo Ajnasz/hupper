@@ -44,3 +44,4 @@
 <!ENTITY Hupper.contextMenu.unhighlightusercomments "Unhighlight user comments">
 
 <!ENTITY Hupper.boring.comment.contents "Regular expression to identify boring comments">
+<!ENTITY Hupper.widencomments "Enable widen comments">
