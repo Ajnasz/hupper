@@ -15,6 +15,7 @@
     background-color: #F6F6EB !important;
     border-color: #000 !important;
     -moz-transition: border-color 2s ease-out, background-color 0.5s ease;
+    transition: border-color 2s ease-out, background-color 0.5s ease;
   }
   a:target + .comment > .submitted,
   a#new:target + a +  .comment > .submitted {
@@ -23,6 +24,14 @@
   }
   .comment {
     background-color:#F6F6EB !important;
+  }
+
+  .indented {
+	transition: margin-left 0.5s;
+  }
+
+  .widen-comment {
+	  margin-left: 0 !important;
   }
 
 }

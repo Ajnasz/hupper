@@ -60,7 +60,7 @@ function Comment(doc, commentNode, indentComments, comments, hupComments) {
     }
     Components.utils.import('resource://huppermodules/bundles.jsm', scope);
     this.bundles = scope.hupperBundles;
-};
+}
 Comment.prototype = {
     /**
     * @returns the childcomment container of a comment or -1
@@ -245,6 +245,9 @@ Comment.prototype = {
     addExtraLinks: function (builder) {
         this.elementer.Add(builder.buildComExtraTop(), this.footerLinks);
         this.elementer.Add(builder.buildComExtraBack(), this.footerLinks);
+		if (this.indent > 1) {
+			this.elementer.Add(builder.buildComExpand(), this.footerLinks);
+		}
     },
     /**
     * replace the 'uj' text in the header of newly posted comments

@@ -45,6 +45,11 @@ var NodeHeaderBuilder = function (doc) {
     */
     this.parentLinkText = bundles.getString('ParentLinkText');
 
+	/**
+	 * @final
+	 */
+	this.expandLinkText = bundles.getString('ExpandLinkText');
+
     // Title text nodes
     this.fit = this.elementer.Txt(this.firstLinkText);
     this.lat = this.elementer.Txt(this.lastLinkText);
@@ -189,6 +194,13 @@ NodeHeaderBuilder.prototype = {
         this.elementer.Add(this.elementer.CreateLink('permalink', '#' + cid), tmpList);
         return tmpList;
     },
+	buildComExpand: function() {
+        var tmpList = this.elementer.Li();
+		var item = this.elementer.CreateLink(this.expandLinkText, '#');
+		this.elementer.AddClass(item, 'expand-comment');
+        this.elementer.Add(item, tmpList);
+		return tmpList;
+	},
     destroy: function () {
         this.elementer.destroy();
         this.elementer = null;

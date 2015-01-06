@@ -277,7 +277,7 @@ Elementer.prototype = {
     * @type {Boolean}
     */
     HasClass: function (el, c) {
-        if (!el || !c) {
+        if (!el || !c || !el.getAttribute) {
             return false;
         }
         var cl = new RegExp('\\b' + c + '\\b');

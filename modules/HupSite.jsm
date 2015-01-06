@@ -240,7 +240,6 @@ HupSite.prototype = {
         var nodeMenu, node, next, prev, current;
         Components.utils.import('resource://huppermodules/hupnode.jsm', scope);
         nodeMenu = new scope.NodeMenus(this.doc, this.menu);
-        Components.utils.import('resource://huppermodules/log.jsm', scope);
         if (this.newNodeList.hasItem()) {
             this.newNodeList.goToBegin();
             do {
@@ -262,9 +261,55 @@ HupSite.prototype = {
             node.addNodes(this.nodes, nodeMenu);
         }, this);
     },
+
+	noWiden: function() {
+		var elements = this.elementer.GetByClass(this.elementer.GetId('comments'), 'widen-comment');
+		elements.forEach(function (el) {
+			this.elementer.RemoveClass(el, 'widen-comment');
+		}.bind(this));
+	},
+
     parseComments: function () {
         Components.utils.import('resource://huppermodules/hupcomment.jsm', scope);
         this.comments = new scope.GetComments(this.doc);
+		var comments = this.elementer.GetId('comments');
+		this.elementer.subscribe(comments, 'click', function (e) {
+			if (this.elementer.HasClass(e.target, 'expand-comment')) {
+				e.preventDefault();
+				this.noWiden();
+
+				var indented = e.target,
+					count = 0;
+				while (indented) {
+					indented = indented.parentNode;
+					if (indented && this.elementer.HasClass(indented, 'indented')) {
+						if (++count > 1) {
+							this.elementer.AddClass(indented, 'widen-comment');
+						}
+					}
+				}
+			}
+		}.bind(this), false);
+		this.elementer.subscribe(this.elementer.GetBody(), 'click', function (e) {
+			if (e.target.nodeName.toUpperCase() === 'A') {
+				return;
+			}
+
+			var c = e.target,
+				isComment = false;
+
+			while (c) {
+				if (c && this.elementer.HasClass(c, 'comment')) {
+					isComment = true;
+					break;
+				}
+				c = c.parentNode;
+			}
+
+			if (!isComment) {
+				this.noWiden();
+			}
+		}.bind(this));
     },
     hasComments: function () {
         return !!this.elementer.GetId('comments');
@@ -382,7 +427,6 @@ HupSite.prototype = {
         return this.nodes[this.newNodeList.getCurrent()];
     },
     destroy: function () {
-        Components.utils.import('resource://huppermodules/log.jsm', scope);
         if (this.comments) {
             this.comments.destroy();
         }
