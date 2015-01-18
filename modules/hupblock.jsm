@@ -371,11 +371,11 @@ BlockMenus.prototype = {
     }
     this.menuitem = this.hupMenu.addMenuItem({
       name: this.bundles.getString('restoreBlocks'),
-      click: function () {
-        this.elementer.ToggleClass(this.parentNode, 'hide-submenu');
-        this.elementer.ToggleClass(this.parentNode, 'collapsed');
-        this.elementer.ToggleClass(this.parentNode, 'expanded');
-      }
+      click: function (e) {
+        this.elementer.ToggleClass(e.target.parentNode, 'hide-submenu');
+        this.elementer.ToggleClass(e.target.parentNode, 'collapsed');
+        this.elementer.ToggleClass(e.target.parentNode, 'expanded');
+      }.bind(this)
     }, null, true);
     this.elementer.RemoveClass(this.menuitem, 'leaf');
     this.elementer.AddClass(this.menuitem, 'hide-submenu collapsed');
