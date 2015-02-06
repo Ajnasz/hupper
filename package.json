@@ -5,5 +5,237 @@
   "description": "a basic add-on",
   "author": "",
   "license": "MPL 2.0",
-  "version": "0.1"
+  "version": "2.0",
+
+  "preferences": [
+	  {
+		  "name": "filtertrolls",
+		  "title": "Enable trollfilter",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "trolls",
+		  "title": "List of trolls",
+		  "type": "string",
+		  "hidden": true,
+		  "value": ""
+	  },
+	  {
+		  "name": "trollfiltermethod",
+		  "title": "Troll filter method",
+		  "type": "radio",
+		  "value": "hilight",
+		  "options": [
+			  {
+				  "value": "hilight",
+				  "label": "Highlight troll comments"
+			  },
+			  {
+				  "value": "hide",
+				  "label": "Hide troll comments"
+			  }
+		  ]
+	  },
+	  {
+		  "name": "hidetrollanswers",
+		  "title": "Hide troll answers",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "trollcolor",
+		  "title": "Troll comment header highlihgt color",
+		  "type": "color",
+		  "value": "#CFB2A7"
+	  },
+
+	  {
+		  "name": "huppers",
+		  "title": "List of hupper users",
+		  "type": "string",
+		  "value": ""
+	  },
+	  {
+		  "name": "filterhuppers",
+		  "title": "Filter hupper comments",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "huppercolor",
+		  "title": "Hupper comment header highlihgt color",
+		  "type": "color",
+		  "value": "#B5D7BE"
+	  },
+	  {
+		  "name": "replacenewcommenttext",
+		  "title": "Replace the \"új\" text of new comments to a better searchable one?",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "newcommenttext",
+		  "title": "The text to show instead of \"új\"",
+		  "type": "string",
+		  "value": "[new]"
+	  },
+
+	  {
+		  "name": "prevnextlinks",
+		  "title": "Show links to previous and next comments",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "tags",
+		  "title": "What is that?",
+		  "type": "string",
+		  "value": "{}"
+	  },
+	  {
+		  "name": "extracommentlinks",
+		  "title": "Add links which help to navigate into comments?",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "hilightforumlinesonhover",
+		  "title": "Higlight forum lines on mouse over",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "insertnewtexttonode",
+		  "title": "Insert \"new\" text to nodes, where you have unread comments",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "fadeparentcomment",
+		  "title": "Fade parent comment",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "showqnavbox",
+		  "title": "Show quick navigation box",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "hideads",
+		  "title": "Hide advertisements",
+		  "type": "bool",
+		  "value": false,
+		  "hidden": true
+	  },
+	  {
+		  "name": "highlightusers",
+		  "title": "Highlight comments of the users",
+		  "type": "string",
+		  "value": "username:#fff999,username2:#999fff"
+	  },
+	  {
+		  "name": "username",
+		  "title": "Hup user name",
+		  "type": "string",
+		  "value": "",
+		  "hidden": true
+	  },
+
+	  {
+		  "name": "hidetaxonomy",
+		  "title": "Hidable article types",
+		  "type": "string",
+		  "value": ""
+	  },
+	  {
+		  "name": "showinstatusbar",
+		  "title": "Show addon icon",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "blocks",
+		  "title": "Block settings",
+		  "type": "string",
+		  "value": "{}",
+		  "hidden": true
+	  },
+	  {
+		  "name": "parseblocks",
+		  "title": "Parse blocks",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "style_indent",
+		  "title": "Show line guide to the parent comment",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "style_accessibility",
+		  "title": "Load accessibility styles",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "style_wider_sidebar",
+		  "title": "Width of sidebars",
+		  "type": "integer",
+		  "value": 0
+	  },
+	  {
+		  "name": "style_min_fontsize",
+		  "title": "Minimum font size",
+		  "type": "integer",
+		  "value": 0
+	  },
+	  {
+		  "name": "style_hide_left_sidebar",
+		  "title": "Hide left sidebar",
+		  "type": "bool",
+		  "value": false
+	  },
+	  {
+		  "name": "style_hide_right_sidebar",
+		  "title": "Hide right sidebar",
+		  "type": "bool",
+		  "value": false
+	  },
+
+	  {
+		  "name": "hideboringcomments",
+		  "title": "Hide boring comments",
+		  "type": "bool",
+		  "value": true,
+		  "hidden": true
+	  },
+	  {
+		  "name": "boringcommentcontents",
+		  "title": "Regular expression to identify boring comments",
+		  "type": "string",
+		  "value": "^([-_]|-1|\\+1)$"
+	  },
+	  {
+		  "name": "setunlimitedlinks",
+		  "title": "Show as many comments as possible on a page",
+		  "type": "bool",
+		  "value": true
+	  },
+	  {
+		  "name": "widencomments",
+		  "title": "Enable widen comments",
+		  "type": "bool",
+		  "value": true
+	  }
+  ]
 }

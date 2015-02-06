@@ -14,10 +14,10 @@ console.log('hupper.js');
 		}));
 
 		self.port.on('setNew', function (newComments) {
-			var obj = newComments.map(modComment.commentDataStructToObj);
-			console.log('new comments', obj, newComments);
-
-			obj.forEach(modComment.setNew);
+			var obj = newComments.comments.map(modComment.commentDataStructToObj);
+			obj.forEach(function (comment) {
+				modComment.setNew(comment, newComments.text);
+			});
 		});
 	});
 }(window.req));
