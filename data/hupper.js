@@ -13,11 +13,21 @@ console.log('hupper.js');
 			return modComment.parseComment(item);
 		}));
 
-		self.port.on('setNew', function (newComments) {
+		self.port.on('comment.setNew', function (newComments) {
 			var obj = newComments.comments.map(modComment.commentDataStructToObj);
 			obj.forEach(function (comment) {
 				modComment.setNew(comment, newComments.text);
 			});
+		});
+
+		self.port.on('comment.addNextPrev', function (item) {
+			if (item.prevId) {
+				modComment.addLinkToPrevComment(item.id, item.prevId);
+			}
+
+			if (item.nextId) {
+				modComment.addLinkToNextComment(item.id, item.nextId);
+			}
 		});
 	});
 }(window.req));
