@@ -8,11 +8,11 @@ console.log('comments.js');
 		const NEW_COMMENT_CLASS = 'comment-new';
 		const COMMENT_CLASS = 'comment-new';
 		const COMMENT_NEW_MARKER_CLASS = 'new';
-	
+
 		const ANONYM_COMMENT_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
-	
+
 		const COMMENT_DATE_REGEXP = new RegExp(/[\s\|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/);
-	
+
 		const COMMENT_MONTH_NAMES = {
 			'január': 0,
 			'február': 1,
@@ -38,9 +38,9 @@ console.log('comments.js');
 			author: '',
 			created: 0,
 			id: ''
-	
+
 		};
-	
+
 		/**
 			* @type commentStruct
 			*   node: jQueryObject
@@ -50,43 +50,42 @@ console.log('comments.js');
 		node: null,
 			header: null
 			};
-	
+
 		/**
 			* @param commentStruct comment
 			* @return string
 			*/
 		function getCommentAuthor(comment) {
 			var output = '';
-	
+
 			output = comment.header.find('a').text().trim();
-	
+
 			if (output === '') {
 				output = comment.header.text().replace(ANONYM_COMMENT_AUTHOR_REGEXP, '$1');
 			}
-	
+
 			return output;
 		}
-	
+
 		/**
 			* @param commentStruct comment
 			* @return Timestamp
 			*/
 		function getCommentCreateDate(comment) {
 			var date, dateMatch;
-	
+
 			dateMatch = comment.header.text().match(COMMENT_DATE_REGEXP);
-	
+
 			date = new Date();
 			date.setYear(dateMatch[1]);
 			date.setMonth(COMMENT_MONTH_NAMES[dateMatch[2]]);
 			date.setDate(dateMatch[3]);
 			date.setHours(dateMatch[5]);
 			date.setMinutes(dateMatch[6]);
-	
+
 			return date.getTime();
 		}
-	
-	
+
 		/**
 			* @param commentStruct comment
 			* @return String
@@ -94,7 +93,7 @@ console.log('comments.js');
 		function getCommentId(comment) {
 			return comment.node.prev('a').attr('id');
 			}
-	
+
 		/**
 			* @param HTMLCommentNode node
 			* @return Object
@@ -103,15 +102,15 @@ console.log('comments.js');
 			*/
 		function getCommentObj(node) {
 			var commentObj = Object.create(commentStruct);
-	
+
 			var $node = $(node);
-	
+
 			commentObj.node = $node;
 			commentObj.header = $node.find('.' + COMMENT_HEADER_CLASS);
-	
+
 			return commentObj;
 		}
-	
+
 		/**
 			* @param HTMLCommentElementNode node
 			* @return commentDataStruct
@@ -119,12 +118,12 @@ console.log('comments.js');
 		function parseComment(node) {
 			var output = Object.create(commentDataStruct);
 			var commentObj = getCommentObj(node);
-	
+
 			output.isNew = commentObj.node.hasClass(NEW_COMMENT_CLASS);
 			output.author = getCommentAuthor(commentObj);
 			output.created = getCommentCreateDate(commentObj);
 			output.id = getCommentId(commentObj);
-	
+
 			return output;
 		}
 
