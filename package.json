@@ -18,8 +18,8 @@
 		  "name": "trolls",
 		  "title": "List of trolls",
 		  "type": "string",
-		  "hidden": true,
-		  "value": ""
+		  "value": "",
+		  "hidden": true
 	  },
 	  {
 		  "name": "trollfiltermethod",
@@ -92,7 +92,8 @@
 		  "name": "tags",
 		  "title": "What is that?",
 		  "type": "string",
-		  "value": "{}"
+		  "value": "{}",
+		  "hidden": true
 	  },
 	  {
 		  "name": "extracommentlinks",
