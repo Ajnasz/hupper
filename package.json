@@ -18,8 +18,7 @@
 		  "name": "trolls",
 		  "title": "List of trolls",
 		  "type": "string",
-		  "value": "",
-		  "hidden": true
+		  "value": ""
 	  },
 	  {
 		  "name": "trollfiltermethod",

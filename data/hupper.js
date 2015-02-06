@@ -29,5 +29,9 @@ console.log('hupper.js');
 				modComment.addLinkToNextComment(item.id, item.nextId);
 			}
 		});
+
+		self.port.on('comment.setTroll', function (trollComments) {
+			modComment.setTrolls(trollComments);
+		});
 	});
 }(window.req));

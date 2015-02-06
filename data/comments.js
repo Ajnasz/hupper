@@ -3,6 +3,8 @@ console.log('comments.js');
 (function ($, def) {
 	'use strict';
 	def('comment', function () {
+		const TROLL_COMMENT_CLASS = 'trollComment';
+		const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
 		const COMMENT_HEADER_CLASS = 'submitted';
 		const NEW_COMMENT_CLASS = 'comment-new';
 		const COMMENT_CLASS = 'comment-new';
@@ -206,16 +208,34 @@ console.log('comments.js');
 		 */
 		function commentDataStructToObj(comment) {
 			var item = getCommentFromId(comment.id);
-			console.log(comment.id, item);
 
 			return getCommentObj(item);
 		}
+
+		function setTroll(comment) {
+			console.log('set troll', comment.node, TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS);
+			comment.node.classList.add(TROLL_COMMENT_CLASS);
+			comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
+		}
+
+		/**
+		 * @param commentStruct[] trollComments
+		 */
+		function setTrolls(trollComments) {
+			console.log('troll comments', trollComments);
+			
+			trollComments.map(function (comment) {
+				return getCommentObj(getCommentFromId(comment.id));
+			}).forEach(setTroll);
+		}
+
 		return {
 			parseComment: parseComment,
 			setNew: setNew,
 			commentDataStructToObj: commentDataStructToObj,
 			addLinkToNextComment: addLinkToNextComment,
-			addLinkToPrevComment: addLinkToPrevComment
+			addLinkToPrevComment: addLinkToPrevComment,
+			setTrolls: setTrolls
 		};
 	});
 }(window.jQuery, window.def));
