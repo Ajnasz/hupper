@@ -1,13 +1,14 @@
 /*jshint moz:true*/
 console.log('comments.js');
-(function ($, def) {
+(function ($, def, req) {
 	'use strict';
 	def('comment', function () {
 		const TROLL_COMMENT_CLASS = 'trollComment';
 		const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
+		const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
 		const COMMENT_HEADER_CLASS = 'submitted';
 		const NEW_COMMENT_CLASS = 'comment-new';
-		const COMMENT_CLASS = 'comment-new';
+		const COMMENT_CLASS = 'comment';
 		const COMMENT_NEW_MARKER_CLASS = 'new';
 		const ANONYM_COMMENT_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
 		const COMMENT_DATE_REGEXP = /[\s\|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/;
@@ -25,6 +26,8 @@ console.log('comments.js');
 			'november': 10,
 			'december': 11
 		};
+
+		var dom = req('dom');
 
 		/**
 		 * @type commentDataStruct
@@ -85,15 +88,7 @@ console.log('comments.js');
 		 * @return String
 		 */
 		function getCommentId(comment) {
-			var element = comment.node;
-
-			while (!element || element.nodeType !== Node.ELEMENT_NODE || element.nodeName !== 'A') {
-				element = element.previousSibling;
-
-				if (!element) {
-					break;
-				}
-			}
+			var element = dom.prev(comment.node, 'a');
 
 			if (element) {
 				return element.getAttribute('id');
@@ -195,11 +190,10 @@ console.log('comments.js');
 		function getCommentFromId(id) {
 			var elem = document.getElementById(id);
 
-			while (elem && (elem.nodeType !== Node.ELEMENT_NODE || !elem.classList.contains(COMMENT_CLASS))) {
-				elem = elem.nextSibling;
-			}
+			console.log('elem', elem, id, COMMENT_CLASS);
+			
 
-			return elem || null;
+			return dom.next(elem, '.' + COMMENT_CLASS);
 		}
 
 		/**
@@ -214,8 +208,19 @@ console.log('comments.js');
 
 		function setTroll(comment) {
 			console.log('set troll', comment.node, TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS);
+			try {
 			comment.node.classList.add(TROLL_COMMENT_CLASS);
 			comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
+
+			var replies = dom.next(comment.node, '.indented');
+
+			if (replies) {
+				replies.classList.add(TROLL_COMMENT_REPLY_CLASS);
+			}
+			} catch (er) {
+				console.error(er);
+				
+			}
 		}
 
 		/**
@@ -238,4 +243,4 @@ console.log('comments.js');
 			setTrolls: setTrolls
 		};
 	});
-}(window.jQuery, window.def));
+}(window.jQuery, window.def, window.req));

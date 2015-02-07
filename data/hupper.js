@@ -6,7 +6,7 @@ console.log('hupper.js');
 	'use strict';
 
 	self.port.on('getComments', function () {
-		var modComment = req('comment')();
+		var modComment = req('comment');
 		var comments = Array.prototype.slice.call(document.querySelectorAll('.comment'));
 
 		self.port.emit('gotComments', comments.map(function (item) {
@@ -31,6 +31,8 @@ console.log('hupper.js');
 		});
 
 		self.port.on('comment.setTroll', function (trollComments) {
+			console.log('troll comments', trollComments);
+			
 			modComment.setTrolls(trollComments);
 		});
 	});
