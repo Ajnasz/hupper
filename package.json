@@ -224,7 +224,7 @@
 		  "name": "boringcommentcontents",
 		  "title": "Regular expression to identify boring comments",
 		  "type": "string",
-		  "value": "^([-_]|-1|\\+1)$"
+		  "value": "^([-_]|-1|\\\\+1)$"
 	  },
 	  {
 		  "name": "setunlimitedlinks",

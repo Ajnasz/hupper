@@ -5,12 +5,14 @@ console.log('hupper.js');
 (function (req) {
 	'use strict';
 
-	self.port.on('getComments', function () {
+	self.port.on('getComments', function (options) {
 		var modComment = req('comment');
 		var comments = Array.prototype.slice.call(document.querySelectorAll('.comment'));
 
 		self.port.emit('gotComments', comments.map(function (item) {
-			return modComment.parseComment(item);
+			return modComment.parseComment(item, {
+				content: options.content
+			});
 		}));
 
 		self.port.on('comment.setNew', function (newComments) {
@@ -31,15 +33,17 @@ console.log('hupper.js');
 		});
 
 		self.port.on('comment.setTrolls', function (trollComments) {
-			console.log('troll comments', trollComments);
-			
 			modComment.setTrolls(trollComments);
 		});
 
 		self.port.on('comment.highlightComments', function (comments) {
-			console.log('highlighted comments', comments);
-			
 			modComment.highlightComments(comments);
+		});
+
+		self.port.on('comment.hideBoringComments', function (comments) {
+			console.log(comments);
+			
+			modComment.hideBoringComments(comments);
 		});
 	});
 }(window.req));

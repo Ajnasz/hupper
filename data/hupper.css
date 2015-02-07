@@ -170,14 +170,14 @@ li:hover .taxonomy-button {
 .hup-replies .hup-boring {
 	color: #999 !important;
 }
-.comment.hup-boring {
+.comment.hup-boring,
+.comment.hup-boring + .indented {
 	display: none !important;
 }
 .comment.hup-boring > .submitted {
 	background-color: #EBEBD5;
 }
 .comment.has-children:not(.trollComment),
-.keep-boring-comments .comment.hup-boring,
 a:target + .comment.hup-boring,
 a#new:target + a + .comment.hup-boring {
 	display: block !important;

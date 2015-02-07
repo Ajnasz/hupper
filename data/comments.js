@@ -7,6 +7,7 @@ console.log('comments.js');
 		const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
 		const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
 		const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
+		const BORING_COMMENT_CLASS = 'hup-boring';
 		const COMMENT_HEADER_CLASS = 'submitted';
 		const NEW_COMMENT_CLASS = 'comment-new';
 		const COMMENT_CLASS = 'comment';
@@ -113,17 +114,25 @@ console.log('comments.js');
 			return commentObj;
 		}
 
+		function getCommentContent(comment) {
+			return comment.node.querySelector('.content').textContent;
+		}
+
 		/**
 		 * @param HTMLCommentElementNode node
 		 * @return commentDataStruct
 		 */
-		function parseComment(node) {
+		function parseComment(node, options) {
 			var output = Object.create(commentDataStruct);
 			var commentObj = getCommentObj(node);
 			output.isNew = commentObj.node.classList.contains(NEW_COMMENT_CLASS);
 			output.author = getCommentAuthor(commentObj);
 			output.created = getCommentCreateDate(commentObj);
 			output.id = getCommentId(commentObj);
+
+			if (options.content) {
+				output.content = getCommentContent(commentObj);
+			}
 			return output;
 		}
 
@@ -293,6 +302,14 @@ console.log('comments.js');
 			});
 		}
 
+		function hideBoringComments(comments) {
+			comments.map(commentDataStructToObj).forEach(function (comment) {
+				comment.node.classList.add(BORING_COMMENT_CLASS);
+				console.log('comment', comment.node.classList.contains(BORING_COMMENT_CLASS));
+
+			});
+		}
+
 		return {
 			parseComment: parseComment,
 			setNew: setNew,
@@ -301,7 +318,8 @@ console.log('comments.js');
 			addLinkToPrevComment: addLinkToPrevComment,
 			setTrolls: setTrolls,
 			unsetTrolls: unsetTrolls,
-			highlightComments: highlightComments
+			highlightComments: highlightComments,
+			hideBoringComments: hideBoringComments
 		};
 	});
 }(window.jQuery, window.def, window.req));
