@@ -35,5 +35,11 @@ console.log('hupper.js');
 			
 			modComment.setTrolls(trollComments);
 		});
+
+		self.port.on('comment.highlightComments', function (comments) {
+			console.log('highlighted comments', comments);
+			
+			modComment.highlightComments(comments);
+		});
 	});
 }(window.req));

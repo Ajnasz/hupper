@@ -6,6 +6,7 @@ console.log('comments.js');
 		const TROLL_COMMENT_CLASS = 'trollComment';
 		const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
 		const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
+		const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
 		const COMMENT_HEADER_CLASS = 'submitted';
 		const NEW_COMMENT_CLASS = 'comment-new';
 		const COMMENT_CLASS = 'comment';
@@ -233,6 +234,13 @@ console.log('comments.js');
 		}
 
 		/**
+		 * @return commentDataStruct[]
+		 */
+		function getHighlightedComments() {
+			return Array.prototype.slice.call(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
+		}
+
+		/**
 		 * @param commentStruct[] trollComments
 		 */
 		function setTrolls(trollComments) {
@@ -262,6 +270,29 @@ console.log('comments.js');
 			});
 		}
 
+		function unhighlightComment(comment) {
+			comment.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
+			comment.header.style.backgroundColor = '';
+		}
+
+		function highlightComments(comments) {
+			getHighlightedComments()
+				.filter(function (comment) {
+					return comments.indexOf(comment.author) === -1;
+				})
+				.map(function (comment) {
+					return getCommentObj(getCommentFromId(comment.id));
+				})
+				.forEach(unhighlightComment);
+
+			comments.forEach(function (comment) {
+				var commentObj = commentDataStructToObj(comment);
+
+				commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
+				commentObj.header.style.backgroundColor = comment.userColor;
+			});
+		}
+
 		return {
 			parseComment: parseComment,
 			setNew: setNew,
@@ -269,7 +300,8 @@ console.log('comments.js');
 			addLinkToNextComment: addLinkToNextComment,
 			addLinkToPrevComment: addLinkToPrevComment,
 			setTrolls: setTrolls,
-			unsetTrolls: unsetTrolls
+			unsetTrolls: unsetTrolls,
+			highlightComments: highlightComments
 		};
 	});
 }(window.jQuery, window.def, window.req));

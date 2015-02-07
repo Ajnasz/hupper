@@ -53,7 +53,8 @@
 		  "name": "huppers",
 		  "title": "List of hupper users",
 		  "type": "string",
-		  "value": ""
+		  "value": "",
+		  "hidden": true
 	  },
 	  {
 		  "name": "filterhuppers",
