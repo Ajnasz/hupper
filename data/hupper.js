@@ -45,5 +45,28 @@ console.log('hupper.js');
 		});
 
 		self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
+		self.port.on('comment.addExpandLink', modComment.addExpandLinkToComments);
+
+		var dom = req('dom');
+		document.querySelector('body').addEventListener('click', function (e) {
+			if (e.target.nodeName === 'A') {
+				return;
+			}
+
+			if (dom.closest(e.target, '.comment')) {
+				return;
+			}
+
+			modComment.unwideComments();
+		}, false);
+
+		document.getElementById('comments').addEventListener('click', function (e) {
+			if (dom.is(e.target, '.expand-comment')) {
+				e.preventDefault();
+				modComment.unwideComments();
+				modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
+
+			}
+		}, false);
 	});
 }(window.req));

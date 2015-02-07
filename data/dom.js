@@ -59,7 +59,8 @@
 		return {
 			next: next,
 			prev: prev,
-			closest: closest
+			closest: closest,
+			is: is
 		};
 	});
 }(window.def));

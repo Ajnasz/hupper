@@ -57,6 +57,10 @@ console.log('comments.js');
 			footer: null
 		};
 
+		function toArray(list) {
+			return Array.prototype.slice.call(list);
+		}
+
 		/**
 		 * @param commentStruct comment
 		 * @return string
@@ -142,6 +146,23 @@ console.log('comments.js');
 		}
 
 		/**
+		 * @return integer
+		 */
+		function findIndentLevel(comment) {
+			var level = 0,
+				elem;
+
+			elem = dom.closest(comment.node, '.indented');
+			while (elem) {
+				++level;
+
+				elem = dom.closest(elem, '.indented');
+			}
+
+			return level;
+		}
+
+		/**
 		 * @param HTMLCommentElementNode node
 		 * @return commentDataStruct
 		 */
@@ -154,6 +175,7 @@ console.log('comments.js');
 			output.created = getCommentCreateDate(commentObj);
 			output.id = getCommentId(commentObj);
 			output.parent = findParentId(commentObj.node);
+			output.indentLevel = findIndentLevel(commentObj);
 
 			if (options.content) {
 				output.content = getCommentContent(commentObj);
@@ -169,7 +191,7 @@ console.log('comments.js');
 		function getNewMarkerElement(comment) {
 			return comment.node.querySelector('.' + COMMENT_NEW_MARKER_CLASS);
 		}
-		
+
 		/**
 		 * @param commentStruct comment
 		 * @param string text
@@ -265,14 +287,14 @@ console.log('comments.js');
 		 * @return commentDataStruct[]
 		 */
 		function getTrollComments() {
-			return Array.prototype.slice.call(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
+			return toArray(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
 		 * @return commentDataStruct[]
 		 */
 		function getHighlightedComments() {
-			return Array.prototype.slice.call(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
+			return toArray(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
@@ -294,7 +316,7 @@ console.log('comments.js');
 		}
 
 		function unsetTrolls() {
-			var trolled = Array.prototype.slice.call(document.querySelectorAll([
+			var trolled = toArray(document.querySelectorAll([
 				'.' + TROLL_COMMENT_CLASS,
 				'.' + TROLL_COMMENT_HEADER_CLASS,
 				'.' + TROLL_COMMENT_REPLY_CLASS
@@ -336,18 +358,63 @@ console.log('comments.js');
 			comments.map(commentDataStructToObj).forEach(markBoring);
 		}
 
+		function createFooterLink(text, href, classList) {
+			var link = document.createElement('a'),
+				listItem = document.createElement('li');
+
+			link.setAttribute('href', href);
+			link.textContent = text;
+			if (classList && classList.length) {
+				classList.forEach(link.classList.add.bind(link.classList));
+			}
+			listItem.appendChild(link);
+
+			return listItem;
+		}
+
 		function addParentLinkToComment(comment) {
 			var commentObj = commentDataStructToObj(comment);
-			
-			var parentLink = document.createElement('a');
 
-			parentLink.setAttribute('href', '#' + comment.parent);
-			parentLink.textContent = 'parent';
-			commentObj.footer.querySelector('.links').appendChild(parentLink);
+			commentObj.footer.querySelector('.links')
+				.appendChild(createFooterLink('parent', '#' + comment.parent));
+		}
+
+		function addExpandLinkToComment(comment) {
+			var commentObj = commentDataStructToObj(comment);
+
+			commentObj.footer.querySelector('.links')
+				.appendChild(createFooterLink('widen', '#', ['expand-comment']));
 		}
 
 		function addParentLinkToComments(comments) {
 			comments.forEach(addParentLinkToComment);
+		}
+
+		function addExpandLinkToComments(comments) {
+			comments.forEach(addExpandLinkToComment);
+		}
+
+		function widenComment(commentId) {
+			var comment = getCommentFromId(commentId);
+			var indented;
+			var skippedOne = false;
+
+			indented = dom.closest(comment, '.indented');
+			while (indented) {
+				if (skippedOne) {
+					indented.classList.add('widen-comment');
+				}
+
+				skippedOne = true;
+
+				indented = dom.closest(indented, '.indented');
+			}
+		}
+
+		function unwideComments() {
+				toArray(document.querySelectorAll('.widen-comment')).forEach(function (elem) {
+					elem.classList.remove('widen-comment');
+				});
 		}
 
 		return {
@@ -360,7 +427,10 @@ console.log('comments.js');
 			unsetTrolls: unsetTrolls,
 			highlightComments: highlightComments,
 			hideBoringComments: hideBoringComments,
-			addParentLinkToComments: addParentLinkToComments
+			addParentLinkToComments: addParentLinkToComments,
+			addExpandLinkToComments: addExpandLinkToComments,
+			widenComment: widenComment,
+			unwideComments: unwideComments
 		};
 	});
 }(window.jQuery, window.def, window.req));

@@ -1,3 +1,14 @@
+@keyframes commenthiglight {
+	from {
+		opacity: 0.5;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+
 #filteredhuppers, #filteredtrolls {display: block !important;}
 #tags {background-color:#F6F6EB !important; }
 #tags h4 {margin: 0 !important;padding: 0 !important; }
@@ -182,6 +193,11 @@ a:target + .comment.hup-boring,
 a#new:target + a + .comment.hup-boring {
 	display: block !important;
 }
+
+a:target + .comment {
+	animation: commenthiglight 0.5s linear;
+}
+
 .comment.has-children {
 	opacity: 0.9;
 }
