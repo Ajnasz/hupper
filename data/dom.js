@@ -56,11 +56,37 @@
 			return elem || null;
 		}
 
+		function remove(element) {
+			element.parentNode.removeChild(element);
+		}
+
+		function createElem(nodeType, attributes, classes, text) {
+			var element = document.createElement(nodeType);
+
+			if (attributes && attributes.length) {
+				attributes.forEach(function (attrib) {
+					element.setAttribute(attrib.name, attrib.value);
+				});
+			}
+
+			if (classes && classes.length) {
+				classes.forEach(element.classList.add.bind(element.classList));
+			}
+
+			if (text) {
+				element.textContent = text;
+			}
+
+			return element;
+		}
+
 		return {
 			next: next,
 			prev: prev,
 			closest: closest,
-			is: is
+			is: is,
+			remove: remove,
+			createElem: createElem
 		};
 	});
 }(window.def));

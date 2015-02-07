@@ -7,7 +7,7 @@ console.log('hupper.js');
 
 	self.port.on('getComments', function (options) {
 		var modComment = req('comment');
-		var comments = Array.prototype.slice.call(document.querySelectorAll('.comment'));
+		var comments = modComment.getComments();
 
 		self.port.emit('gotComments', comments.map(function (item) {
 			return modComment.parseComment(item, {

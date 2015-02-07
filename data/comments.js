@@ -1,16 +1,21 @@
 /*jshint moz:true*/
 console.log('comments.js');
-(function ($, def, req) {
+(function (def, req) {
 	'use strict';
 	def('comment', function () {
 		const TROLL_COMMENT_CLASS = 'trollComment';
 		const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
 		const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
+		const INDENTED_CLASS = 'indented';
 		const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
 		const BORING_COMMENT_CLASS = 'hup-boring';
 		const COMMENT_HEADER_CLASS = 'submitted';
 		const COMMENT_FOOTER_CLASS = 'link';
+		const COMMENT_FOOTER_LINKS_CLASS = 'links';
+		const COMMENT_HNAV_CLASS = 'hnav';
 		const NEW_COMMENT_CLASS = 'comment-new';
+		const EXPAND_COMMENT_CLASS = 'expand-comment';
+		const WIDEN_COMMENT_CLASS = 'widen-comment';
 		const COMMENT_CLASS = 'comment';
 		const COMMENT_NEW_MARKER_CLASS = 'new';
 		const ANONYM_COMMENT_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
@@ -131,11 +136,11 @@ console.log('comments.js');
 		 * @return string
 		 */
 		function findParentId(elem) {
-			var indented = dom.closest(elem, '.indented'),
+			var indented = dom.closest(elem, '.' + INDENTED_CLASS),
 				parentComment;
 
 			if (indented) {
-				parentComment = dom.prev(indented, '.comment');
+				parentComment = dom.prev(indented, '.' + COMMENT_CLASS);
 
 				if (parentComment) {
 					return getCommentId(getCommentObj(parentComment));
@@ -150,13 +155,14 @@ console.log('comments.js');
 		 */
 		function findIndentLevel(comment) {
 			var level = 0,
+				indented  = '.' + INDENTED_CLASS,
 				elem;
 
-			elem = dom.closest(comment.node, '.indented');
+			elem = dom.closest(comment.node, indented);
 			while (elem) {
 				++level;
 
-				elem = dom.closest(elem, '.indented');
+				elem = dom.closest(elem, indented);
 			}
 
 			return level;
@@ -197,7 +203,24 @@ console.log('comments.js');
 		 * @param string text
 		 */
 		function setNew(comment, text) {
-			getNewMarkerElement(comment).textContent = text;
+			addHNav(comment);
+			dom.remove(getNewMarkerElement(comment));
+			var hnav = comment.header.querySelector('.' + COMMENT_HNAV_CLASS);
+			var span = dom.createElem('span', null, ['hnew'], text);
+			hnav.appendChild(span);
+		}
+
+		function insertIntoHnav(comment, item) {
+			var header = comment.header,
+				hnew = header.querySelector('.hnew');
+
+			if (hnew) {
+				header.querySelector('.' + COMMENT_HNAV_CLASS)
+						.insertBefore(item, header.querySelector('.hnew'));
+			} else {
+				header.querySelector('.' + COMMENT_HNAV_CLASS)
+						.appendChild(item);
+			}
 		}
 
 		/**
@@ -208,12 +231,11 @@ console.log('comments.js');
 			var comment = getCommentObj(getCommentFromId(id)),
 				link;
 
-			link = document.createElement('a');
-			link.href = '#' + prevCommentId;
-			link.textContent = 'Prev';
+			link = dom.createElem('a', [{name: 'href', value: '#' + prevCommentId}], null, 'Prev');
 
 			addHNav(comment);
-			comment.header.querySelector('.hnav').appendChild(link);
+			insertIntoHnav(comment, link);
+			// comment.header.querySelector('.' + COMMENT_HNAV_CLASS).appendChild(link);
 		}
 
 		/**
@@ -224,18 +246,15 @@ console.log('comments.js');
 			var comment = getCommentObj(getCommentFromId(id)),
 				link;
 
-			link = document.createElement('a');
-			link.href = '#' + nextCommentId;
-			link.textContent = 'Next';
+			link = dom.createElem('a', [{name: 'href', value: '#' + nextCommentId}], null, 'Next');
 
 			addHNav(comment);
-			comment.header.querySelector('.hnav').appendChild(link);
+			insertIntoHnav(comment, link);
 		}
 
 		function addHNav(comment) {
-			if (!comment.header.querySelector('.hnav')) {
-				var span = document.createElement('span');
-				span.classList.add('hnav');
+			if (!comment.header.querySelector('.' + COMMENT_HNAV_CLASS)) {
+				var span = dom.createElem('span', null, [COMMENT_HNAV_CLASS]);
 
 				comment.header.appendChild(span);
 			}
@@ -265,7 +284,7 @@ console.log('comments.js');
 			comment.node.classList.add(TROLL_COMMENT_CLASS);
 			comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
 
-			var replies = dom.next(comment.node, '.indented');
+			var replies = dom.next(comment.node, '.' + INDENTED_CLASS);
 
 			if (replies) {
 				replies.classList.add(TROLL_COMMENT_REPLY_CLASS);
@@ -276,7 +295,7 @@ console.log('comments.js');
 			comment.node.classList.remove(TROLL_COMMENT_CLASS);
 			comment.header.classList.remove(TROLL_COMMENT_HEADER_CLASS);
 
-			var replies = dom.next(comment.node, '.indented');
+			var replies = dom.next(comment.node, '.' + INDENTED_CLASS);
 
 			if (replies) {
 				replies.classList.remove(TROLL_COMMENT_REPLY_CLASS);
@@ -359,14 +378,10 @@ console.log('comments.js');
 		}
 
 		function createFooterLink(text, href, classList) {
-			var link = document.createElement('a'),
-				listItem = document.createElement('li');
+			var listItem = dom.createElem('li'),
+				link;
 
-			link.setAttribute('href', href);
-			link.textContent = text;
-			if (classList && classList.length) {
-				classList.forEach(link.classList.add.bind(link.classList));
-			}
+			link = dom.createElem('a', [{name: 'href', value: href}], classList, text);
 			listItem.appendChild(link);
 
 			return listItem;
@@ -375,15 +390,15 @@ console.log('comments.js');
 		function addParentLinkToComment(comment) {
 			var commentObj = commentDataStructToObj(comment);
 
-			commentObj.footer.querySelector('.links')
+			commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
 				.appendChild(createFooterLink('parent', '#' + comment.parent));
 		}
 
 		function addExpandLinkToComment(comment) {
 			var commentObj = commentDataStructToObj(comment);
 
-			commentObj.footer.querySelector('.links')
-				.appendChild(createFooterLink('widen', '#', ['expand-comment']));
+			commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
+				.appendChild(createFooterLink('widen', '#', [EXPAND_COMMENT_CLASS]));
 		}
 
 		function addParentLinkToComments(comments) {
@@ -396,28 +411,35 @@ console.log('comments.js');
 
 		function widenComment(commentId) {
 			var comment = getCommentFromId(commentId);
+			var indentedClass = '.' + INDENTED_CLASS;
 			var indented;
 			var skippedOne = false;
 
-			indented = dom.closest(comment, '.indented');
+			indented = dom.closest(comment, indentedClass);
 			while (indented) {
 				if (skippedOne) {
-					indented.classList.add('widen-comment');
+					indented.classList.add(WIDEN_COMMENT_CLASS);
 				}
 
 				skippedOne = true;
 
-				indented = dom.closest(indented, '.indented');
+				indented = dom.closest(indented, indentedClass);
 			}
 		}
 
 		function unwideComments() {
-				toArray(document.querySelectorAll('.widen-comment')).forEach(function (elem) {
-					elem.classList.remove('widen-comment');
+			toArray(document.querySelectorAll('.' + WIDEN_COMMENT_CLASS))
+				.forEach(function (elem) {
+					elem.classList.remove(WIDEN_COMMENT_CLASS);
 				});
 		}
 
+		function getComments() {
+			return toArray(document.querySelectorAll('.' + COMMENT_CLASS));
+		}
+
 		return {
+			getComments: getComments,
 			parseComment: parseComment,
 			setNew: setNew,
 			commentDataStructToObj: commentDataStructToObj,
@@ -433,4 +455,4 @@ console.log('comments.js');
 			unwideComments: unwideComments
 		};
 	});
-}(window.jQuery, window.def, window.req));
+}(window.def, window.req));
