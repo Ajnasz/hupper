@@ -46,9 +46,20 @@
 			return findSibling(element, selector, 'prev');
 		}
 
+		function closest(element, selector) {
+			var elem = element.parentNode;
+
+			while (elem && !is(elem, selector)) {
+				elem = elem.parentNode;
+			}
+
+			return elem || null;
+		}
+
 		return {
 			next: next,
-			prev: prev
+			prev: prev,
+			closest: closest
 		};
 	});
 }(window.def));

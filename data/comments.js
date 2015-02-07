@@ -9,6 +9,7 @@ console.log('comments.js');
 		const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
 		const BORING_COMMENT_CLASS = 'hup-boring';
 		const COMMENT_HEADER_CLASS = 'submitted';
+		const COMMENT_FOOTER_CLASS = 'link';
 		const NEW_COMMENT_CLASS = 'comment-new';
 		const COMMENT_CLASS = 'comment';
 		const COMMENT_NEW_MARKER_CLASS = 'new';
@@ -41,7 +42,8 @@ console.log('comments.js');
 			isNew: false,
 			author: '',
 			created: 0,
-			id: ''
+			id: '',
+			parent: ''
 		};
 
 		/**
@@ -51,7 +53,8 @@ console.log('comments.js');
 		 */
 		var commentStruct = {
 			node: null,
-			header: null
+			header: null,
+			footer: null
 		};
 
 		/**
@@ -110,6 +113,7 @@ console.log('comments.js');
 
 			commentObj.node = node;
 			commentObj.header = node.querySelector('.' + COMMENT_HEADER_CLASS);
+			commentObj.footer = node.querySelector('.' + COMMENT_FOOTER_CLASS);
 
 			return commentObj;
 		}
@@ -119,20 +123,42 @@ console.log('comments.js');
 		}
 
 		/**
+		 * @param HTMLDOMElement elem
+		 * @return string
+		 */
+		function findParentId(elem) {
+			var indented = dom.closest(elem, '.indented'),
+				parentComment;
+
+			if (indented) {
+				parentComment = dom.prev(indented, '.comment');
+
+				if (parentComment) {
+					return getCommentId(getCommentObj(parentComment));
+				}
+			}
+
+			return '';
+		}
+
+		/**
 		 * @param HTMLCommentElementNode node
 		 * @return commentDataStruct
 		 */
 		function parseComment(node, options) {
 			var output = Object.create(commentDataStruct);
 			var commentObj = getCommentObj(node);
+
 			output.isNew = commentObj.node.classList.contains(NEW_COMMENT_CLASS);
 			output.author = getCommentAuthor(commentObj);
 			output.created = getCommentCreateDate(commentObj);
 			output.id = getCommentId(commentObj);
+			output.parent = findParentId(commentObj.node);
 
 			if (options.content) {
 				output.content = getCommentContent(commentObj);
 			}
+
 			return output;
 		}
 
@@ -284,6 +310,11 @@ console.log('comments.js');
 			comment.header.style.backgroundColor = '';
 		}
 
+		function highlightComment(comment) {
+			comment.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
+			comment.header.style.backgroundColor = comment.userColor;
+		}
+
 		function highlightComments(comments) {
 			getHighlightedComments()
 				.filter(function (comment) {
@@ -294,20 +325,29 @@ console.log('comments.js');
 				})
 				.forEach(unhighlightComment);
 
-			comments.forEach(function (comment) {
-				var commentObj = commentDataStructToObj(comment);
+			comments.map(commentDataStructToObj).forEach(highlightComment);
+		}
 
-				commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
-				commentObj.header.style.backgroundColor = comment.userColor;
-			});
+		function markBoring(comment) {
+			comment.node.classList.add(BORING_COMMENT_CLASS);
 		}
 
 		function hideBoringComments(comments) {
-			comments.map(commentDataStructToObj).forEach(function (comment) {
-				comment.node.classList.add(BORING_COMMENT_CLASS);
-				console.log('comment', comment.node.classList.contains(BORING_COMMENT_CLASS));
+			comments.map(commentDataStructToObj).forEach(markBoring);
+		}
 
-			});
+		function addParentLinkToComment(comment) {
+			var commentObj = commentDataStructToObj(comment);
+			
+			var parentLink = document.createElement('a');
+
+			parentLink.setAttribute('href', '#' + comment.parent);
+			parentLink.textContent = 'parent';
+			commentObj.footer.querySelector('.links').appendChild(parentLink);
+		}
+
+		function addParentLinkToComments(comments) {
+			comments.forEach(addParentLinkToComment);
 		}
 
 		return {
@@ -319,7 +359,8 @@ console.log('comments.js');
 			setTrolls: setTrolls,
 			unsetTrolls: unsetTrolls,
 			highlightComments: highlightComments,
-			hideBoringComments: hideBoringComments
+			hideBoringComments: hideBoringComments,
+			addParentLinkToComments: addParentLinkToComments
 		};
 	});
 }(window.jQuery, window.def, window.req));

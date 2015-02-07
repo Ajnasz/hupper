@@ -41,9 +41,9 @@ console.log('hupper.js');
 		});
 
 		self.port.on('comment.hideBoringComments', function (comments) {
-			console.log(comments);
-			
 			modComment.hideBoringComments(comments);
 		});
+
+		self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
 	});
 }(window.req));
