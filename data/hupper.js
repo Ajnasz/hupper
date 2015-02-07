@@ -30,7 +30,7 @@ console.log('hupper.js');
 			}
 		});
 
-		self.port.on('comment.setTroll', function (trollComments) {
+		self.port.on('comment.setTrolls', function (trollComments) {
 			console.log('troll comments', trollComments);
 			
 			modComment.setTrolls(trollComments);

@@ -190,9 +190,6 @@ console.log('comments.js');
 		function getCommentFromId(id) {
 			var elem = document.getElementById(id);
 
-			console.log('elem', elem, id, COMMENT_CLASS);
-			
-
 			return dom.next(elem, '.' + COMMENT_CLASS);
 		}
 
@@ -207,8 +204,6 @@ console.log('comments.js');
 		}
 
 		function setTroll(comment) {
-			console.log('set troll', comment.node, TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS);
-			try {
 			comment.node.classList.add(TROLL_COMMENT_CLASS);
 			comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
 
@@ -217,21 +212,54 @@ console.log('comments.js');
 			if (replies) {
 				replies.classList.add(TROLL_COMMENT_REPLY_CLASS);
 			}
-			} catch (er) {
-				console.error(er);
-				
+		}
+
+		function unsetTroll(comment) {
+			comment.node.classList.remove(TROLL_COMMENT_CLASS);
+			comment.header.classList.remove(TROLL_COMMENT_HEADER_CLASS);
+
+			var replies = dom.next(comment.node, '.indented');
+
+			if (replies) {
+				replies.classList.remove(TROLL_COMMENT_REPLY_CLASS);
 			}
+		}
+
+		/**
+		 * @return commentDataStruct[]
+		 */
+		function getTrollComments() {
+			return Array.prototype.slice.call(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
 		 * @param commentStruct[] trollComments
 		 */
 		function setTrolls(trollComments) {
-			console.log('troll comments', trollComments);
-			
+			getTrollComments()
+				.filter(function (comment) {
+					return trollComments.indexOf(comment.author) === -1;
+				})
+				.map(function (comment) {
+					return getCommentObj(getCommentFromId(comment.id));
+				})
+				.forEach(unsetTroll);
+
 			trollComments.map(function (comment) {
 				return getCommentObj(getCommentFromId(comment.id));
 			}).forEach(setTroll);
+		}
+
+		function unsetTrolls() {
+			var trolled = Array.prototype.slice.call(document.querySelectorAll([
+				'.' + TROLL_COMMENT_CLASS,
+				'.' + TROLL_COMMENT_HEADER_CLASS,
+				'.' + TROLL_COMMENT_REPLY_CLASS
+			].join(',')));
+
+			trolled.forEach(function (element) {
+				element.classList.remove(TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS, TROLL_COMMENT_REPLY_CLASS);
+			});
 		}
 
 		return {
@@ -240,7 +268,8 @@ console.log('comments.js');
 			commentDataStructToObj: commentDataStructToObj,
 			addLinkToNextComment: addLinkToNextComment,
 			addLinkToPrevComment: addLinkToPrevComment,
-			setTrolls: setTrolls
+			setTrolls: setTrolls,
+			unsetTrolls: unsetTrolls
 		};
 	});
 }(window.jQuery, window.def, window.req));
