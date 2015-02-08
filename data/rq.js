@@ -3,24 +3,24 @@ console.log('rq.js');
 (function (win) {
 	'use strict';
 
-	var modules = {};
+	var modules = new Map();
 
-	var moduleOutput = {};
+	var moduleOutput = new Map();
 
 	function def(name, factory) {
 		console.log('define', name);
 
-		modules[name] = factory;
+		modules.set(name, factory);
 	}
 
 	function req(name) {
 		console.log('request', name);
 
-		if (!moduleOutput[name]) {
-			moduleOutput[name] = modules[name]();
+		if (!moduleOutput.has(name)) {
+			moduleOutput.set(name, modules.get(name)());
 		}
 
-		return moduleOutput[name];
+		return moduleOutput.get(name);
 	}
 
 	win.def = def;
