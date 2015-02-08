@@ -17,6 +17,9 @@ console.log('rq.js');
 		console.log('request', name);
 
 		if (!moduleOutput.has(name)) {
+			if (!modules.has(name)) {
+				throw new Error('No module defined with name: ' + name);
+			}
 			moduleOutput.set(name, modules.get(name)());
 		}
 

@@ -5,6 +5,14 @@ console.log('hupper.js');
 	'use strict';
 	var dom = req('dom');
 
+	var modBlocks = req('blocks');
+
+	var blockActionStruct = {
+		id: '',
+		action: '',
+		column: ''
+	};
+
 	self.port.on('getComments', function (options) {
 		var modComment, comments;
 		var commentsContainer = document.getElementById('comments');
@@ -76,4 +84,24 @@ console.log('hupper.js');
 		}, false);
 	});
 
+	self.port.on('enableBlockControls', function (blocks) {
+		modBlocks.decorateBlocks(blocks);
+		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+		commonParent.addEventListener('click', function (e) {
+			if (dom.is(e.target, '.block-button')) {
+				var block = dom.closest(e.target, '.block'),
+					action = e.target.dataset.action,
+					event = Object.create(blockActionStruct);
+
+				event.id = block.getAttribute('id');
+				event.action = action;
+				event.column = modBlocks.getBlockColumn(block);
+				self.port.emit('block.action', event);
+			}
+		}, false);
+	});
+
+	self.port.on('getBlocks', function () {
+		self.port.emit('gotBlocks', modBlocks.getBlocks());
+	});
 }(window.req));

@@ -60,6 +60,34 @@
 			element.parentNode.removeChild(element);
 		}
 
+		function findCommonParent(elements) {
+			var index, parent, maxIndex;
+
+			maxIndex = elements.length - 1;
+			index = 0;
+			parent = elements[index].parentNode;
+
+			while (true) {
+				if (index < maxIndex) {
+					if (!parent.contains(elements[index + 1])) {
+						parent = parent.parentNode;
+
+						if (!parent) {
+							parent = null;
+							break;
+						}
+					} else {
+						index += 1;
+					}
+				} else {
+					break;
+				}
+
+			}
+
+			return parent;
+		}
+
 		function createElem(nodeType, attributes, classes, text) {
 			var element = document.createElement(nodeType);
 
@@ -70,7 +98,7 @@
 			}
 
 			if (classes && classes.length) {
-				classes.forEach(element.classList.add.bind(element.classList));
+				element.classList.add.apply(element.classList, classes);
 			}
 
 			if (text) {
@@ -86,7 +114,8 @@
 			closest: closest,
 			is: is,
 			remove: remove,
-			createElem: createElem
+			createElem: createElem,
+			findCommonParent: findCommonParent
 		};
 	});
 }(window.def));
