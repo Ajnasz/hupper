@@ -42,6 +42,8 @@ console.log('comments.js');
 		 *   isNew Boolean
 		 *   author String
 		 *   created Timestamp
+		 *   id string comment id
+		 *   parent string parent id
 		 */
 		var commentDataStruct = {
 			isNew: false,
@@ -53,8 +55,9 @@ console.log('comments.js');
 
 		/**
 		 * @type commentStruct
-		 *   node: jQueryObject
-		 *   header: jQueryObject
+		 *   node: HTMLCommentNode
+		 *   header: HTMLDOMElement
+		 *   footer: HTMLDOMElement
 		 */
 		var commentStruct = {
 			node: null,
@@ -62,6 +65,10 @@ console.log('comments.js');
 			footer: null
 		};
 
+		/**
+		 * @param NodeList list
+		 * @return {HTMLDOMElement[]}
+		 */
 		function toArray(list) {
 			return Array.prototype.slice.call(list);
 		}
@@ -114,8 +121,9 @@ console.log('comments.js');
 		/**
 		 * @param HTMLCommentNode node
 		 * @return Object
-		 *   node: jQueryObject
-		 *   header: jQueryObject
+		 *   node: HTMLCommentNode
+		 *   header: HTMLDOMElement
+		 *   footer: HTMLDOMElement
 		 */
 		function getCommentObj(node) {
 			var commentObj = Object.create(commentStruct);
@@ -151,6 +159,7 @@ console.log('comments.js');
 		}
 
 		/**
+		 * @param commentStruct comment
 		 * @return integer
 		 */
 		function findIndentLevel(comment) {
@@ -169,7 +178,9 @@ console.log('comments.js');
 		}
 
 		/**
-		 * @param HTMLCommentElementNode node
+		 * @param HTMLCommentNode node
+		 * @param Object options
+		 *   @param options.content boolean // get comment content too
 		 * @return commentDataStruct
 		 */
 		function parseComment(node, options) {
@@ -252,6 +263,9 @@ console.log('comments.js');
 			insertIntoHnav(comment, link);
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function addHNav(comment) {
 			if (!comment.header.querySelector('.' + COMMENT_HNAV_CLASS)) {
 				var span = dom.createElem('span', null, [COMMENT_HNAV_CLASS]);
@@ -262,7 +276,7 @@ console.log('comments.js');
 
 		/**
 		 * @param string id Comment id
-		 * @return jQueryObject Comment element
+		 * @return HTMLDOMElement Comment element
 		 */
 		function getCommentFromId(id) {
 			var elem = document.getElementById(id);
@@ -280,6 +294,9 @@ console.log('comments.js');
 			return getCommentObj(item);
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function setTroll(comment) {
 			comment.node.classList.add(TROLL_COMMENT_CLASS);
 			comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
@@ -291,6 +308,9 @@ console.log('comments.js');
 			}
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function unsetTroll(comment) {
 			comment.node.classList.remove(TROLL_COMMENT_CLASS);
 			comment.header.classList.remove(TROLL_COMMENT_HEADER_CLASS);
@@ -303,21 +323,21 @@ console.log('comments.js');
 		}
 
 		/**
-		 * @return commentDataStruct[]
+		 * @return {commentDataStruct[]}
 		 */
 		function getTrollComments() {
 			return toArray(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
-		 * @return commentDataStruct[]
+		 * @return {commentDataStruct[]}
 		 */
 		function getHighlightedComments() {
 			return toArray(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
-		 * @param commentStruct[] trollComments
+		 * @param {commentDataStruct[]} trollComments
 		 */
 		function setTrolls(trollComments) {
 			getTrollComments()
@@ -346,16 +366,25 @@ console.log('comments.js');
 			});
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function unhighlightComment(comment) {
 			comment.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
 			comment.header.style.backgroundColor = '';
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function highlightComment(comment) {
 			comment.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
 			comment.header.style.backgroundColor = comment.userColor;
 		}
 
+		/**
+		 * @param {commentDataStruct[]} comments
+		 */
 		function highlightComments(comments) {
 			getHighlightedComments()
 				.filter(function (comment) {
@@ -369,14 +398,25 @@ console.log('comments.js');
 			comments.map(commentDataStructToObj).forEach(highlightComment);
 		}
 
+		/**
+		 * @param commentStruct comment
+		 */
 		function markBoring(comment) {
 			comment.node.classList.add(BORING_COMMENT_CLASS);
 		}
 
+		/**
+		 * @param {commentDataStruct[]} comments
+		 */
 		function hideBoringComments(comments) {
 			comments.map(commentDataStructToObj).forEach(markBoring);
 		}
 
+		/**
+		 * @param string text
+		 * @param href text
+		 * @param {string[]} classList
+		 */
 		function createFooterLink(text, href, classList) {
 			var listItem = dom.createElem('li'),
 				link;
@@ -387,6 +427,9 @@ console.log('comments.js');
 			return listItem;
 		}
 
+		/**
+		 * @param commentDataStruct comment
+		 */
 		function addParentLinkToComment(comment) {
 			var commentObj = commentDataStructToObj(comment);
 
@@ -394,6 +437,9 @@ console.log('comments.js');
 				.appendChild(createFooterLink('parent', '#' + comment.parent));
 		}
 
+		/**
+		 * @param commentDataStruct comment
+		 */
 		function addExpandLinkToComment(comment) {
 			var commentObj = commentDataStructToObj(comment);
 
@@ -401,14 +447,23 @@ console.log('comments.js');
 				.appendChild(createFooterLink('widen', '#', [EXPAND_COMMENT_CLASS]));
 		}
 
+		/**
+		 * @param {commentDataStruct[]} comments
+		 */
 		function addParentLinkToComments(comments) {
 			comments.forEach(addParentLinkToComment);
 		}
 
+		/**
+		 * @param {commentDataStruct[]} comments
+		 */
 		function addExpandLinkToComments(comments) {
 			comments.forEach(addExpandLinkToComment);
 		}
 
+		/**
+		 * @param string commentId
+		 */
 		function widenComment(commentId) {
 			var comment = getCommentFromId(commentId);
 			var indentedClass = '.' + INDENTED_CLASS;
@@ -434,6 +489,9 @@ console.log('comments.js');
 				});
 		}
 
+		/**
+		 * @return {HTMLDOMElement[]}
+		 */
 		function getComments() {
 			return toArray(document.querySelectorAll('.' + COMMENT_CLASS));
 		}
