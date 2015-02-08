@@ -1,13 +1,20 @@
 /*jshint moz:true*/
 /*global self*/
 console.log('hupper.js');
-
 (function (req) {
 	'use strict';
+	var dom = req('dom');
 
 	self.port.on('getComments', function (options) {
-		var modComment = req('comment');
-		var comments = modComment.getComments();
+		var modComment, comments;
+		var commentsContainer = document.getElementById('comments');
+
+		if (!commentsContainer) {
+			return;
+		}
+
+		modComment = req('comment');
+		comments = modComment.getComments();
 
 		self.port.emit('gotComments', comments.map(function (item) {
 			return modComment.parseComment(item, {
@@ -47,7 +54,6 @@ console.log('hupper.js');
 		self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
 		self.port.on('comment.addExpandLink', modComment.addExpandLinkToComments);
 
-		var dom = req('dom');
 		document.querySelector('body').addEventListener('click', function (e) {
 			if (e.target.nodeName === 'A') {
 				return;
@@ -60,7 +66,7 @@ console.log('hupper.js');
 			modComment.unwideComments();
 		}, false);
 
-		document.getElementById('comments').addEventListener('click', function (e) {
+		commentsContainer.addEventListener('click', function (e) {
 			if (dom.is(e.target, '.expand-comment')) {
 				e.preventDefault();
 				modComment.unwideComments();
@@ -69,4 +75,5 @@ console.log('hupper.js');
 			}
 		}, false);
 	});
+
 }(window.req));
