@@ -378,14 +378,16 @@ console.log('comments.js');
 		 * @param commentStruct comment
 		 */
 		function highlightComment(comment) {
-			comment.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
-			comment.header.style.backgroundColor = comment.userColor;
+			var commentObj = commentDataStructToObj(comment);
+			commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
+			commentObj.header.style.backgroundColor = comment.userColor;
 		}
 
 		/**
 		 * @param {commentDataStruct[]} comments
 		 */
 		function highlightComments(comments) {
+			// unhighlight the comments which not in the comments
 			getHighlightedComments()
 				.filter(function (comment) {
 					return comments.indexOf(comment.author) === -1;
@@ -395,7 +397,7 @@ console.log('comments.js');
 				})
 				.forEach(unhighlightComment);
 
-			comments.map(commentDataStructToObj).forEach(highlightComment);
+			comments.forEach(highlightComment);
 		}
 
 		/**
