@@ -58,8 +58,8 @@
 .block .btn-container {
 	position: relative !important;
 }
-.hide-button,
-.show-button {
+.hide-content-button,
+.show-content-button {
 	right: 18px !important;
 }
 .delete-button {
@@ -69,17 +69,26 @@
 .delete-button:hover {
 	background-position: -16px -48px !important;
 }
-.hide-button {
+.hide-content-button {
 	background-position: -16px 0 !important;
 }
-.hide-button:hover {
+.hide-content-button:hover {
 	background-position: -16px -16px !important;
 }
-.show-button {
+.show-content-button {
 	background-position: -32px -0px !important;
 }
-.show-button:hover {
+.show-content-button:hover {
 	background-position: -32px -16px !important;
+}
+.show-content-button {
+	display: none !important;
+}
+.content-hidden .hide-content-button {
+	display: none !important;
+}
+.content-hidden .show-content-button {
+	display: block !important;
 }
 .up-button {
 	background-position: 0 -64px !important;

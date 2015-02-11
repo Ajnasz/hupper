@@ -89,7 +89,7 @@ console.log('hupper.js');
 		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
 		commonParent.addEventListener('click', function (e) {
 			if (dom.is(e.target, '.block-button')) {
-				var block = dom.closest(e.target, '.block'),
+				let block = dom.closest(e.target, '.block'),
 					action = e.target.dataset.action,
 					event = Object.create(blockActionStruct);
 
@@ -103,5 +103,10 @@ console.log('hupper.js');
 
 	self.port.on('getBlocks', function () {
 		self.port.emit('gotBlocks', modBlocks.getBlocks());
+
+		self.port.on('block.hide', modBlocks.hide);
+
+		self.port.on('block.hide-content', modBlocks.hideContent);
+		self.port.on('block.show-content', modBlocks.showContent);
 	});
 }(window.req));

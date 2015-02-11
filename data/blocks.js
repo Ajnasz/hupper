@@ -28,6 +28,7 @@
 
 			output.node = node;
 			output.header = node.querySelector('h2');
+			output.content = node.querySelector('.content');
 
 			return output;
 		}
@@ -92,7 +93,7 @@
 			var blockStruct = blockDataStructToBlockSturct(block);
 
 			if (blockStruct.header) {
-				['delete', 'hide', 'show', 'right', 'left', 'down', 'up']
+				['delete', 'hide-content', 'show-content', 'right', 'left', 'down', 'up']
 					.map(createBlockButton).forEach(function (btn) {
 						blockStruct.header.appendChild(btn);
 					});
@@ -104,12 +105,27 @@
 			blocks.forEach(decorateBlock);
 		}
 
+		function hideBlock(block) {
+			blockDataStructToBlockElement(block).classList.add('hup-hidden');
+		}
+
+		function hideBlockContent(block) {
+			blockDataStructToBlockElement(block).classList.add('content-hidden');
+		}
+
+		function showBlockContent(block) {
+			blockDataStructToBlockElement(block).classList.remove('content-hidden');
+		}
+
 		return {
 			getBlocks: getBlocks,
 			decorateBlocks: decorateBlocks,
 			blockDataStructToBlockElement: blockDataStructToBlockElement,
 			blockElemToBlockDataStruct: blockElemToBlockDataStruct,
-			getBlockColumn: getBlockColumn
+			getBlockColumn: getBlockColumn,
+			hide: hideBlock,
+			hideContent: hideBlockContent,
+			showContent: showBlockContent
 		};
 	});
 }(window.def, window.req));
