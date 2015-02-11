@@ -28,7 +28,7 @@
 
 			output.node = node;
 			output.header = node.querySelector('h2');
-			output.content = node.querySelector('.content');
+			// output.content = node.querySelector('.content');
 
 			return output;
 		}
@@ -106,15 +106,24 @@
 		}
 
 		function hideBlock(block) {
-			blockDataStructToBlockElement(block).classList.add('hup-hidden');
+			let blockElem = blockDataStructToBlockElement(block);
+			if (blockElem) {
+				blockDataStructToBlockElement(block).classList.add('hup-hidden');
+			}
 		}
 
 		function hideBlockContent(block) {
-			blockDataStructToBlockElement(block).classList.add('content-hidden');
+			let blockElem = blockDataStructToBlockElement(block);
+			if (blockElem) {
+				block.classList.add('content-hidden');
+			}
 		}
 
 		function showBlockContent(block) {
-			blockDataStructToBlockElement(block).classList.remove('content-hidden');
+			let blockElem = blockDataStructToBlockElement(block);
+			if (blockElem) {
+				blockDataStructToBlockElement(block).classList.remove('content-hidden');
+			}
 		}
 
 		return {
