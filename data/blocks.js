@@ -136,16 +136,7 @@
 			}
 		}
 
-		function setBlockOrder(sidebar, blocks) {
-			let sidebarElem = document.getElementById(sidebar);
-
-			let blockElements = getBlockElements(sidebarElem),
-				elementList = [];
-
-			blockElements.forEach(function (element) {
-				elementList.push(dom.remove(element));
-			});
-
+		function renderSidebar(sidebar, blocks, elementList) {
 			blocks.forEach(function (block) {
 				let index = func.index(elementList, function (blockElem) {
 					return blockElem.id === block.id;
@@ -153,9 +144,37 @@
 
 				if (index > -1) {
 					let  elem = elementList.splice(index, 1)[0];
-					sidebarElem.appendChild(elem);
+					sidebar.appendChild(elem);
 				}
 			});
+		}
+
+		function setBlockOrder(sidebar, blocks) {
+			let sidebarElem = document.getElementById(sidebar);
+
+			let blockElements = getBlockElements(sidebarElem),
+				elementList = [];
+
+
+			elementList = blockElements.map(function (element) {
+				return dom.remove(element);
+			});
+
+			renderSidebar(sidebarElem, blocks, elementList);
+		}
+
+		function reorderBlocks(blocks) {
+			console.log('reorder blocks', blocks);
+			
+			let sidebarLeft = document.getElementById('sidebar-left');
+			let sidebarRight = document.getElementById('sidebar-right');
+
+			let elementList = getBlockElements(sidebarLeft).concat(getBlockElements(sidebarRight));
+
+			console.log('reorder blocks please');
+
+			renderSidebar(sidebarLeft, blocks.left, elementList);
+			renderSidebar(sidebarRight, blocks.right, elementList);
 		}
 
 		return {
@@ -168,7 +187,8 @@
 			show: showBlock,
 			hideContent: hideBlockContent,
 			showContent: showBlockContent,
-			setBlockOrder: setBlockOrder
+			setBlockOrder: setBlockOrder,
+			reorderBlocks: reorderBlocks
 		};
 	});
 }(window.def, window.req));
