@@ -6,6 +6,7 @@ console.log('hupper.js');
 	var dom = req('dom');
 
 	var modBlocks = req('blocks');
+	var modHupperBlock = req('hupper-block');
 
 	var blockActionStruct = {
 		id: '',
@@ -13,110 +14,119 @@ console.log('hupper.js');
 		column: ''
 	};
 
-	self.port.on('getComments', function (options) {
-		var modComment, comments;
-		var commentsContainer = document.getElementById('comments');
-
-		if (!commentsContainer) {
-			return;
-		}
-
-		modComment = req('comment');
-		comments = modComment.getComments();
-
-		self.port.emit('gotComments', comments.map(function (item) {
-			return modComment.parseComment(item, {
-				content: options.content
-			});
-		}));
-
-		self.port.on('comment.setNew', function (newComments) {
-			var obj = newComments.comments.map(modComment.commentDataStructToObj);
-			obj.forEach(function (comment) {
-				modComment.setNew(comment, newComments.text);
-			});
+	function addHupperBlock() {
+		return new Promise(function (resolve) {
+			modHupperBlock.addHupperBlock();
+			self.port.on('hupper-block.add-menu', modHupperBlock.addMenuItem);
+			resolve();
 		});
+	}
 
-		self.port.on('comment.addNextPrev', function (item) {
-			if (item.prevId) {
-				modComment.addLinkToPrevComment(item.id, item.prevId);
-			}
+	addHupperBlock().then(function () {
+		self.port.on('getComments', function (options) {
+			var modComment, comments;
+			var commentsContainer = document.getElementById('comments');
 
-			if (item.nextId) {
-				modComment.addLinkToNextComment(item.id, item.nextId);
-			}
-		});
-
-		self.port.on('comment.setTrolls', function (trollComments) {
-			modComment.setTrolls(trollComments);
-		});
-
-		self.port.on('comment.highlightComments', function (comments) {
-			modComment.highlightComments(comments);
-		});
-
-		self.port.on('comment.hideBoringComments', function (comments) {
-			modComment.hideBoringComments(comments);
-		});
-
-		self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
-		self.port.on('comment.addExpandLink', modComment.addExpandLinkToComments);
-
-		document.querySelector('body').addEventListener('click', function (e) {
-			if (e.target.nodeName === 'A') {
+			if (!commentsContainer) {
 				return;
 			}
 
-			if (dom.closest(e.target, '.comment')) {
-				return;
-			}
+			modComment = req('comment');
+			comments = modComment.getComments();
 
-			modComment.unwideComments();
-		}, false);
+			self.port.emit('gotComments', comments.map(function (item) {
+				return modComment.parseComment(item, {
+					content: options.content
+				});
+			}));
 
-		commentsContainer.addEventListener('click', function (e) {
-			if (dom.is(e.target, '.expand-comment')) {
-				e.preventDefault();
+			self.port.on('comment.setNew', function (newComments) {
+				var obj = newComments.comments.map(modComment.commentDataStructToObj);
+				obj.forEach(function (comment) {
+					modComment.setNew(comment, newComments.text);
+				});
+			});
+
+			self.port.on('comment.addNextPrev', function (item) {
+				if (item.prevId) {
+					modComment.addLinkToPrevComment(item.id, item.prevId);
+				}
+
+				if (item.nextId) {
+					modComment.addLinkToNextComment(item.id, item.nextId);
+				}
+			});
+
+			self.port.on('comment.setTrolls', function (trollComments) {
+				modComment.setTrolls(trollComments);
+			});
+
+			self.port.on('comment.highlightComments', function (comments) {
+				modComment.highlightComments(comments);
+			});
+
+			self.port.on('comment.hideBoringComments', function (comments) {
+				modComment.hideBoringComments(comments);
+			});
+
+			self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
+			self.port.on('comment.addExpandLink', modComment.addExpandLinkToComments);
+
+			document.querySelector('body').addEventListener('click', function (e) {
+				if (e.target.nodeName === 'A') {
+					return;
+				}
+
+				if (dom.closest(e.target, '.comment')) {
+					return;
+				}
+
 				modComment.unwideComments();
-				modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
+			}, false);
 
-			}
-		}, false);
-	});
+			commentsContainer.addEventListener('click', function (e) {
+				if (dom.is(e.target, '.expand-comment')) {
+					e.preventDefault();
+					modComment.unwideComments();
+					modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
 
-	self.port.on('enableBlockControls', function (blocks) {
-		modBlocks.decorateBlocks(blocks);
-		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
-		commonParent.addEventListener('click', function (e) {
-			if (dom.is(e.target, '.block-button')) {
-				let block = dom.closest(e.target, '.block'),
+				}
+			}, false);
+		});
+
+		self.port.on('enableBlockControls', function (blocks) {
+			modBlocks.decorateBlocks(blocks);
+			var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+			commonParent.addEventListener('click', function (e) {
+				if (dom.is(e.target, '.block-button')) {
+					let block = dom.closest(e.target, '.block'),
 					action = e.target.dataset.action,
 					event = Object.create(blockActionStruct);
 
-				event.id = block.getAttribute('id');
-				event.action = action;
-				event.column = modBlocks.getBlockColumn(block);
-				self.port.emit('block.action', event);
-			}
-		}, false);
-	});
-
-	self.port.on('getBlocks', function () {
-		modBlocks.addHupperBlock();
-
-		self.port.on('block.hide', modBlocks.hide);
-
-		self.port.on('block.hide-content', modBlocks.hideContent);
-		self.port.on('block.show-content', modBlocks.showContent);
-		self.port.on('blocks.change-order-all', function (blocks) {
-			modBlocks.setBlockOrder('sidebar-left', blocks.left);
-			modBlocks.setBlockOrder('sidebar-right', blocks.right);
-			self.port.emit('blocks.change-order-all-done');
+					event.id = block.getAttribute('id');
+					event.action = action;
+					event.column = modBlocks.getBlockColumn(block);
+					self.port.emit('block.action', event);
+				}
+			}, false);
 		});
-		self.port.on('block.change-order', function (event) {
-			console.log('change order', event.sidebar, event.blocks);
-			modBlocks.setBlockOrder(event.sidebar, event.blocks);
+
+		self.port.on('getBlocks', function () {
+			self.port.on('block.hide', modBlocks.hide);
+
+			self.port.on('block.hide-content', modBlocks.hideContent);
+			self.port.on('block.show-content', modBlocks.showContent);
+			self.port.on('blocks.change-order-all', function (blocks) {
+				modBlocks.setBlockOrder('sidebar-left', blocks.left);
+				modBlocks.setBlockOrder('sidebar-right', blocks.right);
+				self.port.emit('blocks.change-order-all-done');
+			});
+			self.port.on('block.change-order', function (event) {
+				console.log('change order', event.sidebar, event.blocks);
+				modBlocks.setBlockOrder(event.sidebar, event.blocks);
+			});
+
+			self.port.emit('gotBlocks', modBlocks.getBlocks());
 		});
-		self.port.emit('gotBlocks', modBlocks.getBlocks());
 	});
 }(window.req));

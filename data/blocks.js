@@ -74,6 +74,8 @@
 			let leftBlocks = getBlockElements(document.getElementById('sidebar-left')).map(blockElemToBlockDataStruct);
 			let rightBlocks = getBlockElements(document.getElementById('sidebar-right')).map(blockElemToBlockDataStruct);
 
+			console.log(rightBlocks);
+
 			return {
 				left: leftBlocks,
 				right: rightBlocks
@@ -157,32 +159,6 @@
 			});
 		}
 
-		function addHupperBlock() {
-			if (document.getElementById('block-hupper')) {
-				return;
-			}
-
-			let block = dom.createElem('div', [{
-				name: 'id',
-				value: 'block-hupper'
-			}], ['block', 'block-block']);
-
-			let h2 = dom.createElem('h2', null, null, 'Hupper');
-			let content = dom.createElem('div', null, ['content']);
-			let itemList = dom.createElem('div', null, ['item-list']);
-			let ul = dom.createElem('ul');
-
-			itemList.appendChild(ul);
-			content.appendChild(itemList);
-
-			block.appendChild(h2);
-			block.appendChild(content);
-
-			let sidebar = document.getElementById('sidebar-right');
-
-			sidebar.insertBefore(block, sidebar.firstChild);
-		}
-
 		return {
 			getBlocks: getBlocks,
 			decorateBlocks: decorateBlocks,
@@ -192,8 +168,7 @@
 			hide: hideBlock,
 			hideContent: hideBlockContent,
 			showContent: showBlockContent,
-			setBlockOrder: setBlockOrder,
-			addHupperBlock: addHupperBlock
+			setBlockOrder: setBlockOrder
 		};
 	});
 }(window.def, window.req));
