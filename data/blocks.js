@@ -3,6 +3,7 @@
 	'use strict';
 
 	var dom = req('dom');
+	var func = req('func');
 
 	def('blocks', function () {
 		const BLOCK_CLASS = 'block';
@@ -114,6 +115,13 @@
 			}
 		}
 
+		function showBlock(block) {
+			let blockElem = blockDataStructToBlockElement(block);
+			if (blockElem) {
+				blockElem.classList.remove('hup-hidden');
+			}
+		}
+
 		function hideBlockContent(block) {
 			let blockElem = blockDataStructToBlockElement(block);
 			if (blockElem) {
@@ -128,16 +136,6 @@
 			}
 		}
 
-		function first(array, cb) {
-			for (let i = 0, al = array.length; i < al; i++) {
-				if (cb(array[i])) {
-					return array[i];
-				}
-			}
-
-			return null;
-		}
-
 		function setBlockOrder(sidebar, blocks) {
 			let sidebarElem = document.getElementById(sidebar);
 
@@ -149,11 +147,12 @@
 			});
 
 			blocks.forEach(function (block) {
-				let  elem = first(elementList, function (blockElem) {
+				let index = func.index(elementList, function (blockElem) {
 					return blockElem.id === block.id;
 				});
 
-				if (elem !== null) {
+				if (index > -1) {
+					let  elem = elementList.splice(index, 1)[0];
 					sidebarElem.appendChild(elem);
 				}
 			});
@@ -166,6 +165,7 @@
 			blockElemToBlockDataStruct: blockElemToBlockDataStruct,
 			getBlockColumn: getBlockColumn,
 			hide: hideBlock,
+			show: showBlock,
 			hideContent: hideBlockContent,
 			showContent: showBlockContent,
 			setBlockOrder: setBlockOrder

@@ -18,6 +18,29 @@ console.log('hupper.js');
 		return new Promise(function (resolve) {
 			modHupperBlock.addHupperBlock();
 			self.port.on('hupper-block.add-menu', modHupperBlock.addMenuItem);
+			self.port.on('hupper-block.hide-block', modHupperBlock.addHiddenBlock);
+			self.port.on('hupper-block.show-block', modHupperBlock.removeHiddenBlock);
+
+			document.getElementById('block-hupper').addEventListener('click', function (e) {
+				var target = e.target;
+				let dataSet = target.dataset;
+
+				if (dataSet.action === 'restore-block') {
+					e.preventDefault();
+					console.log('restore block', dataSet);
+
+					let event = Object.create(blockActionStruct);
+
+					let blockId = dataSet.blockid;
+
+					let block = document.getElementById(blockId);
+
+					event.id = blockId;
+					event.action = 'restore';
+					event.column = modBlocks.getBlockColumn(block);
+					self.port.emit('block.action', event);
+				}
+			}, false);
 			resolve();
 		});
 	}
@@ -113,6 +136,7 @@ console.log('hupper.js');
 
 		self.port.on('getBlocks', function () {
 			self.port.on('block.hide', modBlocks.hide);
+			self.port.on('block.show', modBlocks.show);
 
 			self.port.on('block.hide-content', modBlocks.hideContent);
 			self.port.on('block.show-content', modBlocks.showContent);
