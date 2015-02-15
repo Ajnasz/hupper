@@ -102,7 +102,7 @@ console.log('hupper.js');
 	});
 
 	self.port.on('getBlocks', function () {
-		self.port.emit('gotBlocks', modBlocks.getBlocks());
+		modBlocks.addHupperBlock();
 
 		self.port.on('block.hide', modBlocks.hide);
 
@@ -117,5 +117,6 @@ console.log('hupper.js');
 			console.log('change order', event.sidebar, event.blocks);
 			modBlocks.setBlockOrder(event.sidebar, event.blocks);
 		});
+		self.port.emit('gotBlocks', modBlocks.getBlocks());
 	});
 }(window.req));
