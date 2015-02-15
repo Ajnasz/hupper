@@ -153,6 +153,8 @@ console.log('hupper.js');
 				modBlocks.reorderBlocks(blocks);
 			});
 
+			self.port.on('blocks.set-titles', modBlocks.setTitles);
+
 			self.port.emit('gotBlocks', modBlocks.getBlocks());
 		});
 	});

@@ -109,6 +109,12 @@
 			return element;
 		}
 
+		function empty(element) {
+			while(element.firstChild) {
+				element.removeChild(element.firstChild);
+			}
+		}
+
 		return {
 			next: next,
 			prev: prev,
@@ -116,7 +122,8 @@
 			is: is,
 			remove: remove,
 			createElem: createElem,
-			findCommonParent: findCommonParent
+			findCommonParent: findCommonParent,
+			empty: empty
 		};
 	});
 }(window.def));

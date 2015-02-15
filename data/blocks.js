@@ -179,6 +179,27 @@
 			renderSidebar(sidebarRight, blocks.right, elementList);
 		}
 
+		function setBlockTitleLink(blockId, href) {
+			let block = document.getElementById(blockId);
+
+			if (block) {
+				let h2 = block.querySelector('h2');
+				if (h2) {
+					let title = h2.textContent;
+
+					dom.empty(h2);
+
+					h2.appendChild(dom.createElem('a', [{name: 'href', value: href}], null, title));
+				}
+			}
+		}
+
+		function setTitles(titles) {
+			Object.keys(titles).forEach(function (id) {
+				setBlockTitleLink(id, titles[id]);
+			});
+		}
+
 		return {
 			getBlocks: getBlocks,
 			decorateBlocks: decorateBlocks,
@@ -190,7 +211,9 @@
 			hideContent: hideBlockContent,
 			showContent: showBlockContent,
 			setBlockOrder: setBlockOrder,
-			reorderBlocks: reorderBlocks
+			reorderBlocks: reorderBlocks,
+			setTitles: setTitles
+			
 		};
 	});
 }(window.def, window.req));
