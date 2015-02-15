@@ -1,7 +1,8 @@
 /*jshint moz:true*/
-(function (def) {
+(function (def, req) {
 	'use strict';
 	def('dom', function () {
+		var func = req('func');
 		/**
 		 * @param HTMLDOMElement element
 		 * @param CSSSelector what
@@ -115,6 +116,12 @@
 			}
 		}
 
+		function emptyText(element) {
+			func.toArray(element.childNodes).filter(function (node) {
+				return node.nodeType === Node.TEXT_NODE;
+			}).forEach(remove);
+		}
+
 		return {
 			next: next,
 			prev: prev,
@@ -123,7 +130,8 @@
 			remove: remove,
 			createElem: createElem,
 			findCommonParent: findCommonParent,
-			empty: empty
+			empty: empty,
+			emptyText: emptyText
 		};
 	});
-}(window.def));
+}(window.def, window.req));

@@ -23,9 +23,18 @@
 			return null;
 		}
 
+		/*
+		 * @param NodeList list
+		 * @return {HTMLDOMElement[]}
+		 */
+		function toArray(list) {
+			return Array.prototype.slice.call(list);
+		}
+
 		return {
 			first: first,
-			index: index
+			index: index,
+			toArray: toArray
 		};
 	});
 }(window.def));

@@ -40,12 +40,8 @@
 			return document.getElementById(blockObj.id);
 		}
 
-		function toArray(list) {
-			return Array.prototype.slice.call(list);
-		}
-
 		function getBlockElements(sidebar) {
-			return toArray(sidebar.querySelectorAll('.' + BLOCK_CLASS));
+			return func.toArray(sidebar.querySelectorAll('.' + BLOCK_CLASS));
 		}
 
 		/**
@@ -186,9 +182,7 @@
 				let h2 = block.querySelector('h2');
 				if (h2) {
 					let title = h2.textContent;
-
-					dom.empty(h2);
-
+					dom.emptyText(h2);
 					h2.appendChild(dom.createElem('a', [{name: 'href', value: href}], null, title));
 				}
 			}

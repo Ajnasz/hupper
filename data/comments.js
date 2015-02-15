@@ -36,6 +36,7 @@ console.log('comments.js');
 		};
 
 		var dom = req('dom');
+		var func = req('func');
 
 		/**
 		 * @type commentDataStruct
@@ -64,14 +65,6 @@ console.log('comments.js');
 			header: null,
 			footer: null
 		};
-
-		/**
-		 * @param NodeList list
-		 * @return {HTMLDOMElement[]}
-		 */
-		function toArray(list) {
-			return Array.prototype.slice.call(list);
-		}
 
 		/**
 		 * @param commentStruct comment
@@ -326,14 +319,14 @@ console.log('comments.js');
 		 * @return {commentDataStruct[]}
 		 */
 		function getTrollComments() {
-			return toArray(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
+			return func.toArray(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
 		 * @return {commentDataStruct[]}
 		 */
 		function getHighlightedComments() {
-			return toArray(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
+			return func.toArray(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
 		}
 
 		/**
@@ -355,7 +348,7 @@ console.log('comments.js');
 		}
 
 		function unsetTrolls() {
-			var trolled = toArray(document.querySelectorAll([
+			var trolled = func.toArray(document.querySelectorAll([
 				'.' + TROLL_COMMENT_CLASS,
 				'.' + TROLL_COMMENT_HEADER_CLASS,
 				'.' + TROLL_COMMENT_REPLY_CLASS
@@ -485,7 +478,7 @@ console.log('comments.js');
 		}
 
 		function unwideComments() {
-			toArray(document.querySelectorAll('.' + WIDEN_COMMENT_CLASS))
+			func.toArray(document.querySelectorAll('.' + WIDEN_COMMENT_CLASS))
 				.forEach(function (elem) {
 					elem.classList.remove(WIDEN_COMMENT_CLASS);
 				});
@@ -495,7 +488,7 @@ console.log('comments.js');
 		 * @return {HTMLDOMElement[]}
 		 */
 		function getComments() {
-			return toArray(document.querySelectorAll('.' + COMMENT_CLASS));
+			return func.toArray(document.querySelectorAll('.' + COMMENT_CLASS));
 		}
 
 		return {
