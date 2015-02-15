@@ -108,5 +108,14 @@ console.log('hupper.js');
 
 		self.port.on('block.hide-content', modBlocks.hideContent);
 		self.port.on('block.show-content', modBlocks.showContent);
+		self.port.on('blocks.change-order-all', function (blocks) {
+			modBlocks.setBlockOrder('sidebar-left', blocks.left);
+			modBlocks.setBlockOrder('sidebar-right', blocks.right);
+			self.port.emit('blocks.change-order-all-done');
+		});
+		self.port.on('block.change-order', function (event) {
+			console.log('change order', event.sidebar, event.blocks);
+			modBlocks.setBlockOrder(event.sidebar, event.blocks);
+		});
 	});
 }(window.req));

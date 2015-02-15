@@ -23,7 +23,7 @@
 		 * @return blockSturct
 		 */
 		function blockDataStructToBlockSturct(block) {
-			var output = Object.create(blockSturct),
+			let output = Object.create(blockSturct),
 				node = blockDataStructToBlockElement(block);
 
 			output.node = node;
@@ -50,7 +50,7 @@
 		 * @return string
 		 */
 		function getBlockColumn(block) {
-			var sidebar = dom.closest(block, '.' + SIDEBAR_CLASS);
+			let sidebar = dom.closest(block, '.' + SIDEBAR_CLASS);
 
 			return sidebar.getAttribute('id');
 		}
@@ -62,7 +62,7 @@
 		 *	column string
 		 */
 		function blockElemToBlockDataStruct(block) {
-			var output = Object.create(blockDataStruct);
+			let output = Object.create(blockDataStruct);
 
 			output.id = block.getAttribute('id');
 			output.column = getBlockColumn(block);
@@ -71,8 +71,8 @@
 		}
 
 		function getBlocks() {
-			var leftBlocks = getBlockElements(document.getElementById('sidebar-left')).map(blockElemToBlockDataStruct);
-			var rightBlocks = getBlockElements(document.getElementById('sidebar-right')).map(blockElemToBlockDataStruct);
+			let leftBlocks = getBlockElements(document.getElementById('sidebar-left')).map(blockElemToBlockDataStruct);
+			let rightBlocks = getBlockElements(document.getElementById('sidebar-right')).map(blockElemToBlockDataStruct);
 
 			return {
 				left: leftBlocks,
@@ -81,7 +81,7 @@
 		}
 
 		function createBlockButton(action) {
-			var btn = dom.createElem('button',
+			let btn = dom.createElem('button',
 				[{ name: 'data-action', value: action }],
 				['hupper-button', 'block-button', action + '-button']
 			);
@@ -90,7 +90,7 @@
 		}
 
 		function decorateBlock(block) {
-			var blockStruct = blockDataStructToBlockSturct(block);
+			let blockStruct = blockDataStructToBlockSturct(block);
 
 			if (blockStruct.header) {
 				['delete', 'hide-content', 'show-content', 'right', 'left', 'down', 'up']
@@ -108,22 +108,55 @@
 		function hideBlock(block) {
 			let blockElem = blockDataStructToBlockElement(block);
 			if (blockElem) {
-				blockDataStructToBlockElement(block).classList.add('hup-hidden');
+				blockElem.classList.add('hup-hidden');
 			}
 		}
 
 		function hideBlockContent(block) {
 			let blockElem = blockDataStructToBlockElement(block);
 			if (blockElem) {
-				block.classList.add('content-hidden');
+				blockElem.classList.add('content-hidden');
 			}
 		}
 
 		function showBlockContent(block) {
 			let blockElem = blockDataStructToBlockElement(block);
 			if (blockElem) {
-				blockDataStructToBlockElement(block).classList.remove('content-hidden');
+				blockElem.classList.remove('content-hidden');
 			}
+		}
+
+		function first(array, cb) {
+			for (let i = 0, al = array.length; i < al; i++) {
+				if (cb(array[i])) {
+					return array[i];
+				}
+			}
+
+			return null;
+		}
+
+		function setBlockOrder(sidebar, blocks) {
+			console.log('set block order', sidebar);
+
+			let sidebarElem = document.getElementById(sidebar);
+
+			let blockElements = getBlockElements(sidebarElem),
+				elementList = [];
+
+			blockElements.forEach(function (element) {
+				elementList.push(dom.remove(element));
+			});
+
+			blocks.forEach(function (block) {
+				let  elem = first(elementList, function (blockElem) {
+					return blockElem.id === block.id;
+				});
+
+				if (elem !== null) {
+					sidebarElem.appendChild(elem);
+				}
+			});
 		}
 
 		return {
@@ -134,7 +167,8 @@
 			getBlockColumn: getBlockColumn,
 			hide: hideBlock,
 			hideContent: hideBlockContent,
-			showContent: showBlockContent
+			showContent: showBlockContent,
+			setBlockOrder: setBlockOrder
 		};
 	});
 }(window.def, window.req));

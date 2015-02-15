@@ -1,3 +1,4 @@
+/*jshint moz:true*/
 (function (def) {
 	'use strict';
 	def('dom', function () {
@@ -57,7 +58,7 @@
 		}
 
 		function remove(element) {
-			element.parentNode.removeChild(element);
+			return element.parentNode.removeChild(element);
 		}
 
 		function findCommonParent(elements) {
