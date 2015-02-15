@@ -142,10 +142,6 @@ console.log('hupper.js');
 			self.port.on('block.show-content', modBlocks.showContent);
 			self.port.on('blocks.change-order-all', function (blocks) {
 				modBlocks.reorderBlocks(blocks);
-				/*
-				modBlocks.setBlockOrder('sidebar-left', blocks.left);
-				modBlocks.setBlockOrder('sidebar-right', blocks.right);
-				*/
 				self.port.emit('blocks.change-order-all-done');
 			});
 			self.port.on('block.change-order', function (event) {

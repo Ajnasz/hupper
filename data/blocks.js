@@ -8,6 +8,8 @@
 	def('blocks', function () {
 		const BLOCK_CLASS = 'block';
 		const SIDEBAR_CLASS = 'sidebar';
+		const SIDEBAR_LEFT_CLASS = 'sidebar-left';
+		const SIDEBAR_RIGHT_CLASS = 'sidebar-right';
 
 		var blockDataStruct = {
 			id: '',
@@ -72,8 +74,10 @@
 		}
 
 		function getBlocks() {
-			let leftBlocks = getBlockElements(document.getElementById('sidebar-left')).map(blockElemToBlockDataStruct);
-			let rightBlocks = getBlockElements(document.getElementById('sidebar-right')).map(blockElemToBlockDataStruct);
+			let leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
+					.map(blockElemToBlockDataStruct);
+			let rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
+					.map(blockElemToBlockDataStruct);
 
 			console.log(rightBlocks);
 
@@ -108,32 +112,32 @@
 			blocks.forEach(decorateBlock);
 		}
 
-		function hideBlock(block) {
+		function toggleBlockClass(block, cls, add) {
 			let blockElem = blockDataStructToBlockElement(block);
+
 			if (blockElem) {
-				blockElem.classList.add('hup-hidden');
+				if (add) {
+					blockElem.classList.add(cls);
+				} else {
+					blockElem.classList.remove(cls);
+				}
 			}
+		}
+
+		function hideBlock(block) {
+			toggleBlockClass(block, 'hup-hidden', true);
 		}
 
 		function showBlock(block) {
-			let blockElem = blockDataStructToBlockElement(block);
-			if (blockElem) {
-				blockElem.classList.remove('hup-hidden');
-			}
+			toggleBlockClass(block, 'hup-hidden', false);
 		}
 
 		function hideBlockContent(block) {
-			let blockElem = blockDataStructToBlockElement(block);
-			if (blockElem) {
-				blockElem.classList.add('content-hidden');
-			}
+			toggleBlockClass(block, 'content-hidden', true);
 		}
 
 		function showBlockContent(block) {
-			let blockElem = blockDataStructToBlockElement(block);
-			if (blockElem) {
-				blockElem.classList.remove('content-hidden');
-			}
+			toggleBlockClass(block, 'content-hidden', false);
 		}
 
 		function renderSidebar(sidebar, blocks, elementList) {
@@ -152,26 +156,24 @@
 		function setBlockOrder(sidebar, blocks) {
 			let sidebarElem = document.getElementById(sidebar);
 
-			let blockElements = getBlockElements(sidebarElem),
-				elementList = [];
+			let blockElements = getBlockElements(sidebarElem);
 
 
-			elementList = blockElements.map(function (element) {
-				return dom.remove(element);
+			blockElements.forEach(function (element) {
+				dom.remove(element);
 			});
 
-			renderSidebar(sidebarElem, blocks, elementList);
+			renderSidebar(sidebarElem, blocks, blockElements);
 		}
 
 		function reorderBlocks(blocks) {
 			console.log('reorder blocks', blocks);
 			
-			let sidebarLeft = document.getElementById('sidebar-left');
-			let sidebarRight = document.getElementById('sidebar-right');
+			let sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
+			let sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
 
-			let elementList = getBlockElements(sidebarLeft).concat(getBlockElements(sidebarRight));
-
-			console.log('reorder blocks please');
+			let elementList = getBlockElements(sidebarLeft)
+					.concat(getBlockElements(sidebarRight));
 
 			renderSidebar(sidebarLeft, blocks.left, elementList);
 			renderSidebar(sidebarRight, blocks.right, elementList);
