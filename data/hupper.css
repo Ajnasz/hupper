@@ -210,3 +210,13 @@ a:target + .comment {
 .comment.has-children {
 	opacity: 0.9;
 }
+
+.hup-collapsed > ul {
+	display: none !important;
+}
+
+/*
+.node .content iframe {
+	display: none;
+}
+*/

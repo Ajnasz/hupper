@@ -17,11 +17,9 @@
 
 			let h2 = dom.createElem('h2', null, null, 'Hupper');
 			let content = dom.createElem('div', null, ['content']);
-			let itemList = dom.createElem('div', null, ['item-list']);
-			let ul = dom.createElem('ul');
+			let ul = dom.createElem('ul', null, ['menu']);
 
-			itemList.appendChild(ul);
-			content.appendChild(itemList);
+			content.appendChild(ul);
 
 			block.appendChild(h2);
 			block.appendChild(content);
@@ -29,17 +27,38 @@
 			let sidebar = document.getElementById('sidebar-right');
 
 			sidebar.insertBefore(block, sidebar.firstChild);
+
+			ul.addEventListener('click', function (e) {
+				let target = e.target.parentNode;
+				let classList = target.classList;
+
+				let collapsed = classList.contains('collapsed');
+
+				let expanded = !collapsed && classList.contains('expanded');
+
+				if (collapsed || expanded) {
+					e.preventDefault();
+
+					if (collapsed) {
+						classList.remove('collapsed', 'hup-collapsed');
+						classList.add('expanded', 'hup-expanded');
+					} else {
+						classList.remove('expanded', 'hup-expanded');
+						classList.add('collapsed', 'hup-collapsed');
+					}
+				}
+			}, false);
 		}
 
 		function getItemList() {
 			let block = document.getElementById('block-hupper');
-			return block.querySelector('.item-list > ul');
+			return block.querySelector('.menu');
 
 		}
 
 		function addMenuItem(item, parent) {
 			parent = parent || getItemList();
-			let li = dom.createElem('li');
+			let li = dom.createElem('li', null, ['leaf']);
 			let a = dom.createElem('a', [
 				{name: 'href', value: item.href}
 			], null, item.text);
@@ -59,6 +78,9 @@
 					text: 'Hidden blocks',
 					href: '#'
 				});
+
+				li.classList.remove('leaf');
+				li.classList.add('collapsed', 'hup-collapsed');
 
 				let hiddenBlocks = dom.createElem('ul', null, ['hidden-blocks']);
 
