@@ -157,5 +157,16 @@ console.log('hupper.js');
 
 			self.port.emit('gotBlocks', modBlocks.getBlocks());
 		});
+		self.port.on('getArticles', function () {
+			console.log('on get articles');
+
+			let modArticles = req('articles');
+			let articles = modArticles.parseArticles();
+
+			if (articles.length > 0) {
+				self.port.emit('gotArticles', articles);
+			}
+		});
+
 	});
 }(window.req));

@@ -8,13 +8,13 @@ console.log('rq.js');
 	var moduleOutput = new Map();
 
 	function def(name, factory) {
-		console.log('define', name);
+		// console.log('define', name);
 
 		modules.set(name, factory);
 	}
 
 	function req(name) {
-		console.log('request', name);
+		// console.log('request', name);
 
 		if (!moduleOutput.has(name)) {
 			if (!modules.has(name)) {
