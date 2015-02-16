@@ -31,9 +31,18 @@
 			return Array.prototype.slice.call(list);
 		}
 
+		function partial(func) {
+			let pArgs = toArray(arguments).slice(1);
+
+			return function() {
+				func.apply(this, pArgs.concat(toArray(arguments)));
+			};
+		}
+
 		return {
 			first: first,
 			index: index,
+			partial: partial,
 			toArray: toArray
 		};
 	});

@@ -3,12 +3,14 @@
 console.log('hupper.js');
 (function (req) {
 	'use strict';
-	var dom = req('dom');
+	let dom = req('dom');
 
-	var modBlocks = req('blocks');
-	var modHupperBlock = req('hupper-block');
+	let modBlocks = req('blocks');
+	let modHupperBlock = req('hupper-block');
 
-	var blockActionStruct = {
+	let func = req('func');
+
+	let blockActionStruct = {
 		id: '',
 		action: '',
 		column: ''
@@ -165,6 +167,10 @@ console.log('hupper.js');
 
 			if (articles.length > 0) {
 				self.port.emit('gotArticles', articles);
+				self.port.on('articles.mark-new', function (data) {
+					data.articles.map(modArticles.articleStructToArticleNodeStruct)
+							.forEach(func.partial(modArticles.markNewArticle, data.text));
+				});
 			}
 		});
 
