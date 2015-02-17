@@ -220,7 +220,7 @@ console.log('comments.js');
 
 			if (hnew) {
 				header.querySelector('.' + COMMENT_HNAV_CLASS)
-						.insertBefore(item, header.querySelector('.hnew'));
+						.insertBefore(item, hnew);
 			} else {
 				header.querySelector('.' + COMMENT_HNAV_CLASS)
 						.appendChild(item);

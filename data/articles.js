@@ -33,8 +33,6 @@ console.log('articles.js');
 		}
 
 		function articleStructToArticleNodeStruct(article) {
-			console.log('artttt', article);
-			
 			let elem = document.getElementById(article.id);
 			let output = Object.create(articleNodeStruct);
 
@@ -52,12 +50,48 @@ console.log('articles.js');
 			}
 		}
 
+		function insertIntoHnav(article, item) {
+			let header = article.header,
+				hnav = header.querySelector('.' + ARTICLE_HNAV_CLASS),
+				hnew = hnav.querySelector('.hnew');
+
+			if (hnew) {
+				hnav.insertBefore(item, hnew);
+			} else {
+				hnav.appendChild(item);
+			}
+		}
+
+		function addPrevNextArticleLink(id, relId, text) {
+			var article = articleStructToArticleNodeStruct({id: id}),
+				link;
+
+			link = dom.createElem('a', [{name: 'href', value: '#' + relId}], null, text);
+
+			addHNav(article);
+			insertIntoHnav(article, link);
+		}
+
+		/**
+		 * @param string id Article id
+		 * @param string nextArticleId
+		 */
+		function addLinkToPrevArticle(id, prevArticleId) {
+			addPrevNextArticleLink(id, prevArticleId, 'Prev');
+		}
+
+		/**
+		 * @param string id Comment id
+		 * @param string nextCommentId
+		 */
+		function addLinkToNextArticle(id, nextArticleId) {
+			addPrevNextArticleLink(id, nextArticleId, 'Next');
+		}
+
 		/**
 		 * @param articleNodeStruct article
 		 */
 		function markNewArticle(newArticleText, article) {
-			console.log('mark new article', arguments);
-			
 			addHNav(article);
 			let newText = dom.createElem('span', [], ['hnew', 'nnew'], newArticleText);
 			article.header.querySelector('.' + ARTICLE_HNAV_CLASS).appendChild(newText);
@@ -71,7 +105,9 @@ console.log('articles.js');
 		return {
 			parseArticles: parseArticles,
 			markNewArticle: markNewArticle,
-			articleStructToArticleNodeStruct: articleStructToArticleNodeStruct
+			articleStructToArticleNodeStruct: articleStructToArticleNodeStruct,
+			addLinkToPrevArticle: addLinkToPrevArticle,
+			addLinkToNextArticle: addLinkToNextArticle
 		};
 	});
 }(window.def, window.req));

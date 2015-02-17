@@ -172,6 +172,15 @@ console.log('hupper.js');
 							.forEach(func.partial(modArticles.markNewArticle, data.text));
 				});
 			}
+			self.port.on('articles.addNextPrev', function (item) {
+				if (item.prevId) {
+					modArticles.addLinkToPrevArticle(item.id, item.prevId);
+				}
+
+				if (item.nextId) {
+					modArticles.addLinkToNextArticle(item.id, item.nextId);
+				}
+			});
 		});
 
 	});

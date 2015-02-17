@@ -15,11 +15,15 @@
 #tags ul {list-style: none !important;padding: 0 !important;margin: 0 !important;}
 #tags li {padding-left: 5px !important;margin: 0 !important;}
 .hnew { color: red !important; font-weight: bold !important; }
-.nnew { float: right !important; }
-.nnew, .nnew a { font-size: 10px !important; font-weight: normal !important;}
-.nnew * { margin-left: 2px !important; margin-right: 2px !important; }
 .hnav { float: right !important; padding-right: 5px !important; }
 .hnav * { margin-left: 2px !important; margin-right: 2px !important; }
+.hnav .nnew,
+.hnav a {
+	font-size: 10px !important;
+}
+.hnav a {
+	font-weight: normal !important;
+}
 .submitted { padding: 2px !important; }
 .mark { cursor: pointer !important; color: #000 !important; }
 .hup-hidden {display: none !important;}
