@@ -88,6 +88,17 @@ console.log('articles.js');
 			addPrevNextArticleLink(id, nextArticleId, 'Next');
 		}
 
+		function addCategoryHideButton(article) {
+			let categoryContainer = article.node.querySelector('.links.inline > .first.last');
+			let button = dom.createElem('button', [{name: 'type', value: 'button'}], [
+				'hupper-button',
+				'taxonomy-button',
+				'delete-button',
+			]);
+
+			categoryContainer.appendChild(button);
+		}
+
 		/**
 		 * @param articleNodeStruct article
 		 */
@@ -107,7 +118,9 @@ console.log('articles.js');
 			markNewArticle: markNewArticle,
 			articleStructToArticleNodeStruct: articleStructToArticleNodeStruct,
 			addLinkToPrevArticle: addLinkToPrevArticle,
-			addLinkToNextArticle: addLinkToNextArticle
+			addLinkToNextArticle: addLinkToNextArticle,
+			addCategoryHideButton: addCategoryHideButton,
+			articleElementToStruct: articleElementToStruct
 		};
 	});
 }(window.def, window.req));

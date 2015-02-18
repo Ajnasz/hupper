@@ -181,6 +181,25 @@ console.log('hupper.js');
 					modArticles.addLinkToNextArticle(item.id, item.nextId);
 				}
 			});
+
+			self.port.on('articles.add-category-hide-button', function (items) {
+				items.map(modArticles.articleStructToArticleNodeStruct).forEach(modArticles.addCategoryHideButton);
+			});
+
+			self.port.on('articles.hide', function (articles) {
+				articles.map(modArticles.articleStructToArticleNodeStruct).forEach(function (a) {
+					a.node.classList.add('hup-hidden');
+
+				});
+			});
+
+			document.getElementById('content-both').addEventListener('click', function (e) {
+				if (e.target.classList.contains('taxonomy-button')) {
+					let articleStruct = modArticles.articleElementToStruct(dom.closest(e.target, '.node'));
+
+					self.port.emit('article.hide-taxonomy', articleStruct);
+				}
+			}, false);
 		});
 
 	});
