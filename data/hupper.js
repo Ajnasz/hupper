@@ -201,6 +201,12 @@ console.log('hupper.js');
 				}
 			}, false);
 		});
+	});
 
+	self.port.on('setUnlimitedLinks', function () {
+		let modUnlimitedlinks = req('unlimitedlinks');
+		func.toArray(document.getElementsByTagName('a'))
+				.filter(modUnlimitedlinks.isExtendableLink)
+				.forEach(modUnlimitedlinks.makeExtendable);
 	});
 }(window.req));
