@@ -29,7 +29,6 @@ console.log('hupper.js');
 
 				if (dataSet.action === 'restore-block') {
 					e.preventDefault();
-					console.log('restore block', dataSet);
 
 					let event = Object.create(blockActionStruct);
 
@@ -147,7 +146,6 @@ console.log('hupper.js');
 				self.port.emit('blocks.change-order-all-done');
 			});
 			self.port.on('block.change-order', function (event) {
-				console.log('change order', event.sidebar, event.blocks);
 				modBlocks.setBlockOrder(event.sidebar, event.blocks);
 			});
 
@@ -160,8 +158,6 @@ console.log('hupper.js');
 			self.port.emit('gotBlocks', modBlocks.getBlocks());
 		});
 		self.port.on('getArticles', function () {
-			console.log('on get articles');
-
 			let modArticles = req('articles');
 			let articles = modArticles.parseArticles();
 
