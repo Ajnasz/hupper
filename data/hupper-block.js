@@ -97,6 +97,10 @@
 
 			let element = document.getElementById(block.id);
 
+			if (!element) {
+				return;
+			}
+
 			let menuItem = addMenuItem({
 				href: '#restore-' + block.id,
 				text: element.querySelector('h2').textContent.trim()
