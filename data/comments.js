@@ -514,6 +514,7 @@ console.log('comments.js');
 			setTrolls: setTrolls,
 			unsetTrolls: unsetTrolls,
 			highlightComments: highlightComments,
+			highlightComment: highlightComment,
 			hideBoringComments: hideBoringComments,
 			addParentLinkToComments: addParentLinkToComments,
 			addExpandLinkToComments: addExpandLinkToComments,

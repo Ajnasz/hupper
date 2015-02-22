@@ -58,19 +58,21 @@ console.log('hupper.js');
 			let modCommentTree = req('commenttree');
 
 			console.log('subscribe');
-			
+
 			self.port.on('comments.update', function (comments) {
 				comments.forEach(function (comment) {
 					if (comment.hide) {
 						modComment.hide(comment);
-					}
 
-					if (comment.boring) {
-						modComment.setProp(comment, 'boring', true);
-					}
+						if (comment.boring) {
+							modComment.setProp(comment, 'boring', true);
+						}
 
-					if (comment.troll) {
-						modComment.setProp(comment, 'troll', true);
+						if (comment.troll) {
+							modComment.setProp(comment, 'troll', true);
+						}
+					} else if (comment.userColor) {
+						modComment.highlightComment(comment);
 					}
 				});
 			});
@@ -142,9 +144,6 @@ console.log('hupper.js');
 					return output;
 				});
 			}
-
-			console.log('mod comment tree', modCommentTree.getCommentTree());
-			
 
 			self.port.emit('gotComments', convertComments(modCommentTree.getCommentTree()));
 		});
