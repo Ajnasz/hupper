@@ -98,11 +98,11 @@ console.log('hupper.js');
 			self.port.on('comment.setTrolls', function (trollComments) {
 				modComment.setTrolls(trollComments);
 			});
+			*/
 
-			self.port.on('comment.highlightComments', function (comments) {
+			self.port.on('comment.highlight-comments', function (comments) {
 				modComment.highlightComments(comments);
 			});
-			*/
 
 			self.port.on('comment.hideBoringComments', function (comments) {
 				modComment.hideBoringComments(comments);
