@@ -145,48 +145,15 @@
 li:hover .taxonomy-button {
 	display: block !important;
 }
-.points {
-	-moz-box-shadow: rgba(0,0,0,0.5) 0px 3px 4px !important;
-	-webkit-box-shadow: rgba(0,0,0,0.5) 0px 3px 4px !important;
-	border: 1px solid #B7B78B !important;
-	float: right !important;
-	margin-bottom: 10px !important;
-	margin: 5px !important;
-	padding: 0 !important;
+
+.scores {
+	float: right;
+	padding: 5px;
+	background-color: #000;
+	color: #ededed;
+	margin-top: 5px;
 }
-.points h6 {
-	background-color:#D8D8C4 !important;
-	cursor: pointer !important;
-	margin: 0 !important;
-	padding: 0 5px !important;
-	text-align: right !important;
-}
-.points > .point-details {
-	background-color: #F6F6EB !important;
-	display: none !important;
-	margin: 0 !important;
-	padding: 0 5px 5px !important;
-}
-.points ul {
-	margin: 0 !important;
-	padding: 0 !important;
-}
-.points li {
-	list-style-type: none !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-.points.show {
-	width: 140px !important;
-}
-.points.show > .point-details {
-	border-top: 1px solid #B7B78B !important;
-	display: block !important;
-	width: 128px !important;
-}
-.points ul li.type {
-	font-weight: bold !important;
-}
+
 .hup-replies {
 	float: left !important;
 	padding-left: 2px !important;

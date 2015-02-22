@@ -501,6 +501,14 @@ console.log('comments.js');
 			}
 		}
 
+		function showScore(comment) {
+			let elem = commentDataStructToObj(comment);
+			let content = elem.node.querySelector('.content');
+
+			let scores = dom.createElem('div', null, ['scores'], comment.score);
+			elem.node.insertBefore(scores, content);
+		}
+
 		return {
 			getComments: getComments,
 			parseComment: parseComment,
@@ -521,7 +529,8 @@ console.log('comments.js');
 			show: show,
 			setProp: setProp,
 			getProp: getProp,
-			getCommentFromId: getCommentFromId
+			getCommentFromId: getCommentFromId,
+			showScore: showScore
 		};
 	});
 }(window.def, window.req));

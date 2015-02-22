@@ -85,6 +85,10 @@ console.log('hupper.js');
 						} else {
 							modComment.unhighlightComment(comment);
 						}
+
+						if (comment.score !== 0) {
+							modComment.showScore(comment);
+						}
 					}
 
 				});
