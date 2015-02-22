@@ -8,25 +8,6 @@
   "version": "2.0",
 
   "preferences": [
-	  {
-		  "name": "filtertrolls",
-		  "title": "Enable trollfilter",
-		  "type": "bool",
-		  "value": true
-	  },
-	  {
-		  "name": "trolls",
-		  "title": "List of trolls",
-		  "type": "string",
-		  "value": ""
-	  },
-
-	  {
-		  "name": "huppercolor",
-		  "title": "Hupper comment header highlihgt color",
-		  "type": "color",
-		  "value": "#B5D7BE"
-	  },
 
 	  {
 		  "name": "replacenewcommenttext",
@@ -40,6 +21,35 @@
 		  "title": "The text to show instead of \"új\"",
 		  "type": "string",
 		  "value": "[new]"
+	  },
+
+	  {
+		  "name": "filtertrolls",
+		  "title": "Enable trollfilter",
+		  "type": "bool",
+		  "value": true
+	  },
+
+	  {
+		  "name": "edittrolls",
+		  "title": "Edit trolls",
+		  "label": "Click to edit trolls",
+		  "type": "control"
+	  },
+
+	  {
+		  "name": "trolls",
+		  "title": "List of trolls",
+		  "type": "string",
+		  "value": "",
+		  "hidden": true
+	  },
+
+	  {
+		  "name": "huppercolor",
+		  "title": "Default highlighted user's comment header color",
+		  "type": "color",
+		  "value": "#B5D7BE"
 	  },
 
 	  {

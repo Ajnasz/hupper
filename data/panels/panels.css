@@ -1,0 +1,28 @@
+body {
+	background-color: #fff;
+	color: #333;
+}
+
+input {
+	box-sizing: border-box;
+	padding: 2px;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+label {
+	display: block;
+	font-weight: bold;
+	margin: 5px 0;
+}
+
+form .error {
+	color: red;
+	display: block;
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+
+form .field-group {
+	margin: 5px 0;
+}
