@@ -3,6 +3,10 @@ body {
 	color: #333;
 }
 
+h1 {
+	font-size: 18px;
+}
+
 input {
 	box-sizing: border-box;
 	padding: 2px;
@@ -14,6 +18,10 @@ label {
 	display: block;
 	font-weight: bold;
 	margin: 5px 0;
+}
+
+form {
+	margin-bottom: 10px;
 }
 
 form .error {
