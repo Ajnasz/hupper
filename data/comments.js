@@ -323,13 +323,6 @@ console.log('comments.js');
 		}
 
 		/**
-		 * @return {commentDataStruct[]}
-		 */
-		function getHighlightedComments() {
-			return func.toArray(document.querySelectorAll('.' + HIGHLIGHTED_COMMENT_CLASS)).map(parseComment);
-		}
-
-		/**
 		 * @param {commentDataStruct[]} trollComments
 		 */
 		function setTrolls(trollComments) {
@@ -363,8 +356,9 @@ console.log('comments.js');
 		 * @param commentStruct comment
 		 */
 		function unhighlightComment(comment) {
-			comment.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
-			comment.header.style.backgroundColor = '';
+			var commentObj = commentDataStructToObj(comment);
+			commentObj.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
+			commentObj.header.style.backgroundColor = '';
 		}
 
 		/**
@@ -374,23 +368,6 @@ console.log('comments.js');
 			var commentObj = commentDataStructToObj(comment);
 			commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
 			commentObj.header.style.backgroundColor = comment.userColor;
-		}
-
-		/**
-		 * @param {commentDataStruct[]} comments
-		 */
-		function highlightComments(comments) {
-			// unhighlight the comments which not in the comments
-			getHighlightedComments()
-				.filter(function (comment) {
-					return comments.indexOf(comment.author) === -1;
-				})
-				.map(function (comment) {
-					return getCommentObj(getCommentFromId(comment.id));
-				})
-				.forEach(unhighlightComment);
-
-			comments.forEach(highlightComment);
 		}
 
 		/**
@@ -533,8 +510,8 @@ console.log('comments.js');
 			addLinkToPrevComment: addLinkToPrevComment,
 			setTrolls: setTrolls,
 			unsetTrolls: unsetTrolls,
-			highlightComments: highlightComments,
 			highlightComment: highlightComment,
+			unhighlightComment: unhighlightComment,
 			hideBoringComments: hideBoringComments,
 			addParentLinkToComments: addParentLinkToComments,
 			addExpandLinkToComments: addExpandLinkToComments,

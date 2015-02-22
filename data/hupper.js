@@ -79,11 +79,14 @@ console.log('hupper.js');
 						}
 
 						modComment.show(comment);
+
+						if (comment.userColor) {
+							modComment.highlightComment(comment);
+						} else {
+							modComment.unhighlightComment(comment);
+						}
 					}
 
-					if (!comment.hide && comment.userColor) {
-						modComment.highlightComment(comment);
-					}
 				});
 			});
 
@@ -102,14 +105,6 @@ console.log('hupper.js');
 				if (item.nextId) {
 					modComment.addLinkToNextComment(item.id, item.nextId);
 				}
-			});
-
-			self.port.on('comment.highlight-comments', function (comments) {
-				modComment.highlightComments(comments);
-			});
-
-			self.port.on('comment.hideBoringComments', function (comments) {
-				modComment.hideBoringComments(comments);
 			});
 
 			self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
