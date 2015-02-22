@@ -20,28 +20,6 @@
 		  "type": "string",
 		  "value": ""
 	  },
-	  {
-		  "name": "trollfiltermethod",
-		  "title": "Troll filter method",
-		  "type": "radio",
-		  "value": "hilight",
-		  "options": [
-			  {
-				  "value": "hilight",
-				  "label": "Highlight troll comments"
-			  },
-			  {
-				  "value": "hide",
-				  "label": "Hide troll comments"
-			  }
-		  ]
-	  },
-	  {
-		  "name": "hidetrollanswers",
-		  "title": "Hide troll answers",
-		  "type": "bool",
-		  "value": true
-	  },
 
 	  {
 		  "name": "huppers",
@@ -49,12 +27,6 @@
 		  "type": "string",
 		  "value": "",
 		  "hidden": true
-	  },
-	  {
-		  "name": "filterhuppers",
-		  "title": "Filter hupper comments",
-		  "type": "bool",
-		  "value": true
 	  },
 	  {
 		  "name": "huppercolor",
