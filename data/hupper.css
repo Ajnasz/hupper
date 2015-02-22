@@ -194,6 +194,9 @@ li:hover .taxonomy-button {
 .hup-replies .hup-boring {
 	color: #999 !important;
 }
+
+.comment.hup-hidden,
+.comment.hup-hidden + .indented,
 .comment.hup-boring,
 .comment.hup-boring + .indented {
 	display: none !important;

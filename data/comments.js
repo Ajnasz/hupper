@@ -491,6 +491,19 @@ console.log('comments.js');
 			return func.toArray(document.querySelectorAll('.' + COMMENT_CLASS));
 		}
 
+		function hide(comment) {
+			console.log('hide comment', comment);
+			
+			getCommentFromId(comment.id).classList.add('hup-hidden');
+		}
+
+		function setProp(comment, prop, value) {
+			let elem = getCommentFromId(comment.id);
+
+			elem.dataset[prop] = value;
+			elem.dataset[prop + 'Type'] = typeof value;
+		}
+
 		return {
 			getComments: getComments,
 			parseComment: parseComment,
@@ -505,7 +518,10 @@ console.log('comments.js');
 			addParentLinkToComments: addParentLinkToComments,
 			addExpandLinkToComments: addExpandLinkToComments,
 			widenComment: widenComment,
-			unwideComments: unwideComments
+			unwideComments: unwideComments,
+			hide: hide,
+			setProp: setProp,
+			getCommentFromId: getCommentFromId
 		};
 	});
 }(window.def, window.req));

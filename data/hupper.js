@@ -48,21 +48,32 @@ console.log('hupper.js');
 
 	addHupperBlock().then(function () {
 		self.port.on('getComments', function (options) {
-			var modComment, comments;
-			var commentsContainer = document.getElementById('comments');
+			let commentsContainer = document.getElementById('comments');
 
 			if (!commentsContainer) {
 				return;
 			}
 
-			modComment = req('comment');
-			comments = modComment.getComments();
+			let modComment = req('comment');
+			let modCommentTree = req('commenttree');
 
-			self.port.emit('gotComments', comments.map(function (item) {
-				return modComment.parseComment(item, {
-					content: options.content
+			console.log('subscribe');
+			
+			self.port.on('comments.update', function (comments) {
+				comments.forEach(function (comment) {
+					if (comment.hide) {
+						modComment.hide(comment);
+					}
+
+					if (comment.boring) {
+						modComment.setProp(comment, 'boring', true);
+					}
+
+					if (comment.troll) {
+						modComment.setProp(comment, 'troll', true);
+					}
 				});
-			}));
+			});
 
 			self.port.on('comment.setNew', function (newComments) {
 				var obj = newComments.comments.map(modComment.commentDataStructToObj);
@@ -81,6 +92,7 @@ console.log('hupper.js');
 				}
 			});
 
+			/*
 			self.port.on('comment.setTrolls', function (trollComments) {
 				modComment.setTrolls(trollComments);
 			});
@@ -88,6 +100,7 @@ console.log('hupper.js');
 			self.port.on('comment.highlightComments', function (comments) {
 				modComment.highlightComments(comments);
 			});
+			*/
 
 			self.port.on('comment.hideBoringComments', function (comments) {
 				modComment.hideBoringComments(comments);
@@ -116,6 +129,24 @@ console.log('hupper.js');
 
 				}
 			}, false);
+
+
+			function convertComments(comments) {
+				return comments.map(function (comment) {
+					let output = modComment.parseComment(modComment.getCommentFromId(comment.id), {
+						content: options.content
+					});
+
+					output.children = convertComments(comment.children);
+
+					return output;
+				});
+			}
+
+			console.log('mod comment tree', modCommentTree.getCommentTree());
+			
+
+			self.port.emit('gotComments', convertComments(modCommentTree.getCommentTree()));
 		});
 
 		self.port.on('enableBlockControls', function (blocks) {
