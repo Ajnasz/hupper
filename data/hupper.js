@@ -71,7 +71,17 @@ console.log('hupper.js');
 						if (comment.troll) {
 							modComment.setProp(comment, 'troll', true);
 						}
-					} else if (comment.userColor) {
+					} else {
+						if (modComment.getProp(comment, 'boring')) {
+							modComment.setProp(comment, 'boring', false);
+						} else if (modComment.getProp(comment, 'troll')) {
+							modComment.setProp(comment, 'troll', false);
+						}
+
+						modComment.show(comment);
+					}
+
+					if (!comment.hide && comment.userColor) {
 						modComment.highlightComment(comment);
 					}
 				});
@@ -93,12 +103,6 @@ console.log('hupper.js');
 					modComment.addLinkToNextComment(item.id, item.nextId);
 				}
 			});
-
-			/*
-			self.port.on('comment.setTrolls', function (trollComments) {
-				modComment.setTrolls(trollComments);
-			});
-			*/
 
 			self.port.on('comment.highlight-comments', function (comments) {
 				modComment.highlightComments(comments);

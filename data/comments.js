@@ -495,11 +495,33 @@ console.log('comments.js');
 			getCommentFromId(comment.id).classList.add('hup-hidden');
 		}
 
+		function show(comment) {
+			getCommentFromId(comment.id).classList.remove('hup-hidden');
+		}
+
 		function setProp(comment, prop, value) {
 			let elem = getCommentFromId(comment.id);
 
 			elem.dataset[prop] = value;
 			elem.dataset[prop + 'Type'] = typeof value;
+		}
+
+		function getProp(comment, prop) {
+			let elem = getCommentFromId(comment.id);
+
+			let value = elem.dataset[prop];
+			let type = elem.dataset[prop + 'Type'];
+
+			switch (type) {
+				case 'boolean':
+					return Boolean(value);
+				case 'number':
+					return +value;
+				case 'undefined':
+					return;
+				default:
+					return value;
+			}
 		}
 
 		return {
@@ -519,7 +541,9 @@ console.log('comments.js');
 			widenComment: widenComment,
 			unwideComments: unwideComments,
 			hide: hide,
+			show: show,
 			setProp: setProp,
+			getProp: getProp,
 			getCommentFromId: getCommentFromId
 		};
 	});
