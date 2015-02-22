@@ -105,8 +105,7 @@
 		  "name": "hideboringcomments",
 		  "title": "Hide boring comments",
 		  "type": "bool",
-		  "value": true,
-		  "hidden": true
+		  "value": true
 	  },
 
 	  {
