@@ -152,6 +152,8 @@ li:hover .taxonomy-button {
 	background-color: #000;
 	color: #ededed;
 	margin-top: 5px;
+
+	border-radius: 2px 0 0 2px;
 }
 
 .hup-replies {

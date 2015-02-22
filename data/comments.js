@@ -501,11 +501,24 @@ console.log('comments.js');
 			}
 		}
 
+		function getScoreTitle(score) {
+			if (score === 1 || score === -1) {
+				return score + ' user +1\'d this comment';
+			} else {
+				return score + ' users +1\'d this comment';
+			}
+		}
+
 		function showScore(comment) {
 			let elem = commentDataStructToObj(comment);
 			let content = elem.node.querySelector('.content');
 
-			let scores = dom.createElem('div', null, ['scores'], comment.score);
+			let scores = dom.createElem('div', [
+				{
+					name: 'title',
+					value: getScoreTitle(comment.score)
+				}
+			], ['scores'], comment.score);
 			elem.node.insertBefore(scores, content);
 		}
 
