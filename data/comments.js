@@ -492,8 +492,6 @@ console.log('comments.js');
 		}
 
 		function hide(comment) {
-			console.log('hide comment', comment);
-			
 			getCommentFromId(comment.id).classList.add('hup-hidden');
 		}
 
