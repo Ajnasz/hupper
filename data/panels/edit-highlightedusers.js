@@ -70,13 +70,17 @@
 		}
 	}
 
+	function setDefaultColor(color) {
+		getUserColorField().value = color;
+	}
+
 	self.port.on('showHighlightedUsers', function (users) {
 		dom.empty(getList());
-		console.log('show highlighted users', users);
-		
+
 		users.forEach(addHighlightedUser);
 	});
 
+	self.port.on('setDefaultColor', setDefaultColor);
 	getList().addEventListener('click', function (e) {
 		let target = e.target;
 
@@ -94,11 +98,14 @@
 		});
 	});
 
+	getUserColorField().addEventListener('click', function (e) {
+		e.stopPropagation();
+	});
+
 	self.port.on('addHighlightedUserError', showError);
 
 	self.port.on('addHighlightedUserSuccess', function () {
 		getUserNameField().value = '';
-		getUserColorField().value = '';
 	});
 
 	self.port.emit('getHighlightedUsers');
