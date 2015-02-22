@@ -22,13 +22,6 @@
 	  },
 
 	  {
-		  "name": "huppers",
-		  "title": "List of hupper users",
-		  "type": "string",
-		  "value": "",
-		  "hidden": true
-	  },
-	  {
 		  "name": "huppercolor",
 		  "title": "Hupper comment header highlihgt color",
 		  "type": "color",
@@ -55,21 +48,8 @@
 	  },
 
 	  {
-		  "name": "tags",
-		  "title": "What is that?",
-		  "type": "string",
-		  "value": "{}",
-		  "hidden": true
-	  },
-	  {
 		  "name": "extracommentlinks",
 		  "title": "Add links which help to navigate into comments?",
-		  "type": "bool",
-		  "value": true
-	  },
-	  {
-		  "name": "hilightforumlinesonhover",
-		  "title": "Higlight forum lines on mouse over",
 		  "type": "bool",
 		  "value": true
 	  },
@@ -77,12 +57,6 @@
 	  {
 		  "name": "insertnewtexttonode",
 		  "title": "Insert \"new\" text to nodes, where you have unread comments",
-		  "type": "bool",
-		  "value": true
-	  },
-	  {
-		  "name": "fadeparentcomment",
-		  "title": "Fade parent comment",
 		  "type": "bool",
 		  "value": true
 	  },
