@@ -42,12 +42,6 @@
 		  "type": "bool",
 		  "value": true
 	  },
-	  {
-		  "name": "trollcolor",
-		  "title": "Troll comment header highlihgt color",
-		  "type": "color",
-		  "value": "#CFB2A7"
-	  },
 
 	  {
 		  "name": "huppers",
