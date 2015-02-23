@@ -23,6 +23,7 @@
 }
 .hnav a {
 	font-weight: normal !important;
+	margin-left: 5px !important;
 }
 .submitted { padding: 2px !important; }
 .mark { cursor: pointer !important; color: #000 !important; }

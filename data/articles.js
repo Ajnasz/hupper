@@ -5,6 +5,12 @@ console.log('articles.js');
 
 	def('articles', function () {
 		const ARTICLE_HNAV_CLASS = 'hnav';
+
+		const TEXT_NEXT = 'következő';
+		const TEXT_PREV = 'előző';
+		const TEXT_HIDE_ARTICLE_TITLE = 'Cikk kategória elrejtése';
+
+
 		let func = req('func');
 		let dom = req('dom');
 
@@ -77,7 +83,7 @@ console.log('articles.js');
 		 * @param string nextArticleId
 		 */
 		function addLinkToPrevArticle(id, prevArticleId) {
-			addPrevNextArticleLink(id, prevArticleId, 'Prev');
+			addPrevNextArticleLink(id, prevArticleId, TEXT_PREV);
 		}
 
 		/**
@@ -85,12 +91,15 @@ console.log('articles.js');
 		 * @param string nextCommentId
 		 */
 		function addLinkToNextArticle(id, nextArticleId) {
-			addPrevNextArticleLink(id, nextArticleId, 'Next');
+			addPrevNextArticleLink(id, nextArticleId, TEXT_NEXT);
 		}
 
 		function addCategoryHideButton(article) {
 			let categoryContainer = article.node.querySelector('.links.inline > .first.last');
-			let button = dom.createElem('button', [{name: 'type', value: 'button'}], [
+			let button = dom.createElem('button', [
+				{name: 'type', value: 'button'},
+				{name: 'title', value: TEXT_HIDE_ARTICLE_TITLE}
+			], [
 				'hupper-button',
 				'taxonomy-button',
 				'delete-button',

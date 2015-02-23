@@ -5,6 +5,7 @@
 	var dom = req('dom');
 
 	def('hupper-block', function () {
+		const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 		function addHupperBlock() {
 			if (document.getElementById('block-hupper')) {
 				return;
@@ -75,7 +76,7 @@
 
 			if (!container) {
 				let li = addMenuItem({
-					text: 'Hidden blocks',
+					text: TEXT_HIDDEN_BLOCKS,
 					href: '#'
 				});
 

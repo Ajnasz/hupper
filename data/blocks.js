@@ -10,6 +10,7 @@
 		const SIDEBAR_CLASS = 'sidebar';
 		const SIDEBAR_LEFT_CLASS = 'sidebar-left';
 		const SIDEBAR_RIGHT_CLASS = 'sidebar-right';
+		const BLOCK_HEADER_ELEMENT = 'h2';
 
 		var blockDataStruct = {
 			id: '',
@@ -30,7 +31,7 @@
 				node = blockDataStructToBlockElement(block);
 
 			output.node = node;
-			output.header = node.querySelector('h2');
+			output.header = node.querySelector(BLOCK_HEADER_ELEMENT);
 			// output.content = node.querySelector('.content');
 
 			return output;
@@ -74,8 +75,6 @@
 					.map(blockElemToBlockDataStruct);
 			let rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
 					.map(blockElemToBlockDataStruct);
-
-			console.log(rightBlocks);
 
 			return {
 				left: leftBlocks,
@@ -164,7 +163,7 @@
 
 		function reorderBlocks(blocks) {
 			console.log('reorder blocks', blocks);
-			
+
 			let sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
 			let sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
 
@@ -179,7 +178,7 @@
 			let block = document.getElementById(blockId);
 
 			if (block) {
-				let h2 = block.querySelector('h2');
+				let h2 = block.querySelector(BLOCK_HEADER_ELEMENT);
 				if (h2) {
 					let title = h2.textContent;
 					dom.emptyText(h2);
@@ -207,7 +206,6 @@
 			setBlockOrder: setBlockOrder,
 			reorderBlocks: reorderBlocks,
 			setTitles: setTitles
-			
 		};
 	});
 }(window.def, window.req));

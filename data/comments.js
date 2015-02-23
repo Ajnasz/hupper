@@ -35,6 +35,11 @@ console.log('comments.js');
 			'december': 11
 		};
 
+		const TEXT_WIDEN = 'szélesítés';
+		const TEXT_PARENT = 'szülő';
+		const TEXT_NEXT = 'következő';
+		const TEXT_PREV = 'előző';
+
 		var dom = req('dom');
 		var func = req('func');
 
@@ -157,7 +162,7 @@ console.log('comments.js');
 		 */
 		function findIndentLevel(comment) {
 			var level = 0,
-				indented  = '.' + INDENTED_CLASS,
+				indented = '.' + INDENTED_CLASS,
 				elem;
 
 			elem = dom.closest(comment.node, indented);
@@ -235,7 +240,7 @@ console.log('comments.js');
 			var comment = getCommentObj(getCommentFromId(id)),
 				link;
 
-			link = dom.createElem('a', [{name: 'href', value: '#' + prevCommentId}], null, 'Prev');
+			link = dom.createElem('a', [{name: 'href', value: '#' + prevCommentId}], null, TEXT_PREV);
 
 			addHNav(comment);
 			insertIntoHnav(comment, link);
@@ -250,7 +255,7 @@ console.log('comments.js');
 			var comment = getCommentObj(getCommentFromId(id)),
 				link;
 
-			link = dom.createElem('a', [{name: 'href', value: '#' + nextCommentId}], null, 'Next');
+			link = dom.createElem('a', [{name: 'href', value: '#' + nextCommentId}], null, TEXT_NEXT);
 
 			addHNav(comment);
 			insertIntoHnav(comment, link);
@@ -406,7 +411,7 @@ console.log('comments.js');
 			var commentObj = commentDataStructToObj(comment);
 
 			commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
-				.appendChild(createFooterLink('parent', '#' + comment.parent));
+				.appendChild(createFooterLink(TEXT_PARENT, '#' + comment.parent));
 		}
 
 		/**
@@ -416,7 +421,7 @@ console.log('comments.js');
 			var commentObj = commentDataStructToObj(comment);
 
 			commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
-				.appendChild(createFooterLink('widen', '#', [EXPAND_COMMENT_CLASS]));
+				.appendChild(createFooterLink(TEXT_WIDEN, '#', [EXPAND_COMMENT_CLASS]));
 		}
 
 		/**
@@ -488,6 +493,7 @@ console.log('comments.js');
 
 			let value = elem.dataset[prop];
 			let type = elem.dataset[prop + 'Type'];
+			let undef;
 
 			switch (type) {
 				case 'boolean':
@@ -495,18 +501,14 @@ console.log('comments.js');
 				case 'number':
 					return +value;
 				case 'undefined':
-					return;
+					return undef;
 				default:
 					return value;
 			}
 		}
 
 		function getScoreTitle(score) {
-			if (score === 1 || score === -1) {
-				return score + ' user +1\'d this comment';
-			} else {
-				return score + ' users +1\'d this comment';
-			}
+			return score + ' user addott +1 pontot';
 		}
 
 		function showScore(comment) {
