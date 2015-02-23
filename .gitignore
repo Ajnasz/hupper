@@ -1,5 +1,5 @@
 *.xpi
 *.swp
 firefox/data/core
-firefox/data/built.js
+chrome/data/built.js
 chrome/data/built-es6.js
