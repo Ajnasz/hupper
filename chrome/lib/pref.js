@@ -138,6 +138,7 @@
 
 	function validateType(prefType, value) {
 		let isValid = false;
+
 		switch (prefType) {
 			case 'string':
 				isValid = typeof value === 'string';
@@ -150,7 +151,7 @@
 			break;
 			default:
 				isValid = true;
-			console.info('Unknown type');
+				console.info('Unknown type %s', prefType);
 			break;
 		}
 
@@ -171,27 +172,31 @@
 	function savePref(pref, value) {
 		let prefs = JSON.parse(localStorage.prefs);
 		let prefObj = null;
+
 		for (let i = 0, pl = prefs.length; i < pl; i++) {
-			if (prefs[i].name === pref) {
+			let name = prefs[i].name;
+			if (name === pref) {
 				prefObj = prefs[i];
 				break;
 			}
 		}
 
 		if (prefObj) {
-			if (validateType(pref.type, value)) {
+			if (validateType(prefObj.type, value)) {
 				prefObj.value = value;
 				localStorage.prefs = JSON.stringify(prefs);
+				return;
 			} else {
-				throw new Error(pref + ' value is not valid type for: ' + pref.type);
+				throw new Error('Pref: ' + pref + ' value is not valid type for: ' + pref.type);
 			}
 		}
 
-		throw new Error(pref + ' not found');
+		throw new Error('Pref: ' + pref + ' not found');
 	}
 
 	function getPref(pref) {
 		let prefObj = findPref(pref);
+
 		if (prefObj) {
 			return prefObj.value;
 		}

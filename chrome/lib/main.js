@@ -17,7 +17,7 @@ var eventEmitter = (function () {
 		let tabId = sender.tab.id;
 
 		let event = request.event;
-		
+
 		if (event === 'unload') {
 			tabs[tabId] = null;
 		} else {
