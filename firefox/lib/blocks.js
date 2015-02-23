@@ -1,7 +1,8 @@
 /*jshint moz:true*/
 /*global require, exports*/
 let pref = require('./pref');
-let func = require('./func');
+let func = require('./core/func');
+
 function createBlockPref(block) {
 	'use strict';
 	return {

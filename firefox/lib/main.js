@@ -4,7 +4,7 @@ var pageMod = require('sdk/page-mod');
 var self = require('sdk/self');
 var pref = require('./pref');
 var pagestyles = require('./pagestyles');
-let func = require('./func');
+let func = require('./core/func');
 
 require('./context-menu').setContextMenu();
 require('sdk/simple-prefs').on('edittrolls', function () {

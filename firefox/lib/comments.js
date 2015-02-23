@@ -2,7 +2,7 @@
 /*global require, exports*/
 
 let pref = require('./pref');
-let func = require('./func');
+let func = require('./core/func');
 
 let plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
     minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)');
