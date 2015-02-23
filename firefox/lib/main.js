@@ -86,22 +86,24 @@ pageMod.PageMod({
 			worker.port.on('block.action', partial(modBlocks.onBlockAction, worker));
 		}
 
-		if (pref.getPref('parseblocks')) {
-			worker.port.on('gotBlocks', function (blocks) {
-				let modBlocks = require('blocks'),
-				blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks);
+		function onGotBlocks(blocks) {
+			let modBlocks = require('blocks'),
+			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks);
 
-				pref.setPref('blocks', JSON.stringify(blocksPref));
+			pref.setPref('blocks', JSON.stringify(blocksPref));
 
-				worker.port.on('blocks.change-order-all-done', function () {
-					finishBlockSetup(blocks, blocksPref);
+			worker.port.on('blocks.change-order-all-done', function () {
+				finishBlockSetup(blocks, blocksPref);
 
-					parseComments();
-					parseArticles();
-				});
-
-				worker.port.emit('blocks.change-order-all', blocksPref);
+				parseComments();
+				parseArticles();
 			});
+
+			worker.port.emit('blocks.change-order-all', blocksPref);
+		}
+
+		if (pref.getPref('parseblocks')) {
+			worker.port.on('gotBlocks', onGotBlocks);
 
 			worker.port.emit('getBlocks');
 		} else {
