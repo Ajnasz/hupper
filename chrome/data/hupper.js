@@ -1,14 +1,22 @@
 /*jshint esnext:true*/
+/*global chrome*/
 (function (req) {
 	'use strict';
 	window.addEventListener('DOMContentLoaded', function () {
-		let modCommentTree = req('commenttree');
+		let modBlocks = req('blocks');
 
-		console.log('send message to: ', chrome.runtime);
-
-		chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-			console.log('message request', request);
+		chrome.runtime.onMessage.addListener(function (request, sender) {
+			if (request.event === 'getBlocks') {
+				chrome.runtime.sendMessage({'event': 'gotBlocks', data: modBlocks.getBlocks()});
+			}
+			console.log('message request', request, sender);
 		});
-		chrome.runtime.sendMessage({'foo': 'bar'});
+
+		console.log('dom content loaded');
+		chrome.runtime.sendMessage({'event': 'DOMContentLoaded'});
 	}, false);
+
+	window.addEventListener('unload', function () {
+		chrome.runtime.sendMessage({'event': 'unload'});
+	});
 }(window.req));
