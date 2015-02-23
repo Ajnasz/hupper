@@ -11,9 +11,9 @@ function start() {
 			self.data.url('panels/css/edit-highlightedusers.css'),
 		],
 		contentScriptFile: [
-			self.data.url('rq.js'),
-			self.data.url('dom.js'),
-			self.data.url('func.js'),
+			self.data.url('core/rq.js'),
+			self.data.url('core/dom.js'),
+			self.data.url('core/func.js'),
 			self.data.url('panels/edit-highlightedusers.js'),
 		]
 	});
