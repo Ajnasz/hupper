@@ -22,5 +22,24 @@ function first(array, cb) {
 	return null;
 }
 
+/*
+ * @param NodeList list
+ * @return {HTMLDOMElement[]}
+ */
+function toArray(list) {
+	'use strict';
+	return Array.prototype.slice.call(list);
+}
+
+function partial(func) {
+	'use strict';
+	let pArgs = toArray(arguments).slice(1);
+
+	return function() {
+		func.apply(this, pArgs.concat(toArray(arguments)));
+	};
+}
+
 exports.index = index;
 exports.first = first;
+exports.partial = partial;
