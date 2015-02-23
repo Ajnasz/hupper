@@ -24,9 +24,6 @@
 	function articleAddNextPrev(item) {
 		let modArticles = req('articles');
 
-		console.log('adddd next prev');
-		
-
 		if (item.prevId) {
 			modArticles.addLinkToPrevArticle(item.id, item.prevId);
 		}

@@ -86,20 +86,17 @@ function manageArticles(events) {
 		events.emit('articles.add-category-hide-button', articles);
 
 		events.on('article.hide-taxonomy', function (article) {
-			let taxonomies = pref.getPref('hidetaxonomy').split(',').filter(function (i) {
-				return i !== '';
-
-			});
+			let taxonomies = pref.getCleanTaxonomies();
 
 			if (taxonomies.indexOf(articles.cateogry) === -1) {
 				taxonomies.push(article.category);
 				pref.setPref('hidetaxonomy', taxonomies.join(','));
 
-				let hideableArticles = modArticles.filterHideableArticles(articles);
+				let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
 				events.emit('articles.hide', hideableArticles);
 			}
 		});
-		let hideableArticles = modArticles.filterHideableArticles(articles);
+		let hideableArticles = modArticles.filterHideableArticles(articles, pref.getCleanTaxonomies());
 		events.emit('articles.hide', hideableArticles);
 	});
 	events.emit('getArticles');
