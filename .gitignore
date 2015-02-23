@@ -3,3 +3,4 @@
 firefox/data/core
 chrome/data/built.js
 chrome/data/built-es6.js
+chrome/lib/built.js
