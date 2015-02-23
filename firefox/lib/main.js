@@ -15,7 +15,9 @@ require('sdk/simple-prefs').on('edithighlightusers', function () {
 	'use strict';
 	require('./edit-highlightedusers').start();
 });
+
 const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
+
 pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
 	onAttach: function (worker) {
