@@ -26,7 +26,8 @@ console.log('articles.js');
 		};
 
 		function articleElementToStruct(element) {
-			let category = element.querySelector('.links.inline > .first.last > a').textContent;
+			let categoryElem = element.querySelector('.links.inline > .first.last > a');
+			let category = categoryElem ? categoryElem.textContent : '';
 			let isNew = element.querySelector('.comment_new_comments') !== null;
 
 			let output = Object.create(articleStruct);
@@ -96,6 +97,9 @@ console.log('articles.js');
 
 		function addCategoryHideButton(article) {
 			let categoryContainer = article.node.querySelector('.links.inline > .first.last');
+			if (!categoryContainer) {
+				return;
+			}
 			let button = dom.createElem('button', [
 				{name: 'type', value: 'button'},
 				{name: 'title', value: TEXT_HIDE_ARTICLE_TITLE}
