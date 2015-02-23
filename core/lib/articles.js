@@ -1,9 +1,8 @@
 /*jshint moz: true*/
-/*global exports, require, define*/
+/*global exports, define*/
 
 (function () {
 	'use strict';
-	let pref = require('./pref');
 	function filterNewArticles(article) {
 		return article.isNew;
 	}
@@ -29,9 +28,7 @@
 		}
 	}
 
-	function filterHideableArticles(articles) {
-		let taxonomies = pref.getPref('hidetaxonomy').split(',');
-
+	function filterHideableArticles(articles, taxonomies) {
 		return articles.filter(function (art) {
 			return taxonomies.indexOf(art.category) > -1;
 		});

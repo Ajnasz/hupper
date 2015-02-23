@@ -27,6 +27,15 @@ function getCleanHighlightedUsers() {
 		});
 }
 
+function getCleanTaxonomies() {
+	'use strict';
+	let taxonomies = getPref('hidetaxonomy').split(',');
+
+	return taxonomies.filter(function (taxonomy) {
+		return taxonomy.trim() !== '';
+	});
+}
+
 function getCleanTrolls() {
 	'use strict';
 	return getPref('trolls').split(',').filter(function (troll) {
@@ -38,3 +47,4 @@ exports.getPref = getPref;
 exports.setPref = setPref;
 exports.getCleanHighlightedUsers = getCleanHighlightedUsers;
 exports.getCleanTrolls = getCleanTrolls;
+exports.getCleanTaxonomies = getCleanTaxonomies;
