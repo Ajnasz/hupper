@@ -9,8 +9,6 @@ let plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 
 const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
 
-// let { partial } = require('sdk/lang/functional');
-
 function setPrevNextLinks(newComments, events) {
 	'use strict';
 	let newCommentsLength = newComments.length;

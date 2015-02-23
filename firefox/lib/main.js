@@ -4,7 +4,7 @@ var pageMod = require('sdk/page-mod');
 var self = require('sdk/self');
 var pref = require('./pref');
 var pagestyles = require('./pagestyles');
-let { partial } = require('sdk/lang/functional');
+let func = require('./func');
 
 require('./context-menu').setContextMenu();
 require('sdk/simple-prefs').on('edittrolls', function () {
@@ -101,7 +101,7 @@ pageMod.PageMod({
 
 			modBlocks.parseBlocks(events, blocksPref);
 
-			events.on('block.action', partial(modBlocks.onBlockAction, events));
+			events.on('block.action', func.partial(modBlocks.onBlockAction, events));
 		}
 
 		function onGotBlocks(blocks) {

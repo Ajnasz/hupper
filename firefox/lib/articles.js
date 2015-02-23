@@ -1,6 +1,6 @@
 /*jshint moz: true*/
-/*global exports*/
-let pref = require('pref');
+/*global exports, require*/
+let pref = require('./pref');
 function filterNewArticles(article) {
 	'use strict';
 	return article.isNew;

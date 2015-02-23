@@ -1,7 +1,7 @@
 /*jshint moz:true*/
 /*global require, exports*/
-var pref = require('./pref');
-let { partial } = require('sdk/lang/functional');
+let pref = require('./pref');
+let func = require('./func');
 function createBlockPref(block) {
 	'use strict';
 	return {
@@ -291,11 +291,11 @@ function parseBlocks(events, blocksPref) {
 	'use strict';
 	blocksPref.left.concat(blocksPref.right)
 			.filter(filterHidden)
-			.forEach(partial(requestBlockHide, events));
+			.forEach(func.partial(requestBlockHide, events));
 
 	blocksPref.left.concat(blocksPref.right)
 			.filter(filterContentHidden)
-			.forEach(partial(requestBlockContentHide, events));
+			.forEach(func.partial(requestBlockContentHide, events));
 }
 
 exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
