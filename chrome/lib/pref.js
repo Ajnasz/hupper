@@ -239,8 +239,6 @@
 		});
 	}
 
-
-
 	define('./pref', function (exports) {
 		exports.getPref = getPref;
 		exports.setPref = setPref;

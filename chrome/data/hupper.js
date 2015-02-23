@@ -71,6 +71,10 @@
 				case 'articles.hide':
 					onArticlesHide(request.data);
 				break;
+
+				default:
+					console.info('Missing event handler for %s', event);
+				break;
 			}
 			console.log('message request', request, sender);
 		});
