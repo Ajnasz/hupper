@@ -55,7 +55,7 @@ pageMod.PageMod({
 		function parseArticles() {
 			console.log('get articles');
 
-			let modArticles = require('./articles');
+			let modArticles = require('./core/articles');
 
 			events.emit('getArticles');
 			events.on('gotArticles', function (articles) {
