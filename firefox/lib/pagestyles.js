@@ -54,12 +54,12 @@ function getPageStyle() {
 function getPageStyleFiles() {
 	'use strict';
 	var output = [
-		self.data.url('indentstyles.css'),
-		self.data.url('hupper.css')
+		self.data.url('css/indentstyles.css'),
+		self.data.url('css/hupper.css')
 	];
 
 	if (pref.getPref('style_accessibility')) {
-		output.push(self.data.url('accesibilitystyles.css'));
+		output.push(self.data.url('css/accesibilitystyles.css'));
 	}
 
 	return output;

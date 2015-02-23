@@ -7,8 +7,8 @@ function start() {
 	let panel = require('sdk/panel').Panel({
 		contentURL: self.data.url('panels/edit-trolls.html'),
 		contentStyleFile: [
-			self.data.url('panels/panels.css'),
-			self.data.url('panels/edit-trolls.css'),
+			self.data.url('panels/css/panels.css'),
+			self.data.url('panels/css/edit-trolls.css'),
 		],
 		contentScriptFile: [
 			self.data.url('rq.js'),
