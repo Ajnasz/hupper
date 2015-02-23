@@ -513,13 +513,20 @@ console.log('comments.js');
 			let elem = commentDataStructToObj(comment);
 			let content = elem.node.querySelector('.content');
 
-			let scores = dom.createElem('div', [
-				{
-					name: 'title',
-					value: getScoreTitle(comment.score)
-				}
-			], ['scores'], comment.score);
-			elem.node.insertBefore(scores, content);
+			let scores = elem.node.querySelector('.scores');
+
+			if (!scores) {
+				let scores = dom.createElem('div', [
+					{
+						name: 'title',
+						value: getScoreTitle(comment.score)
+					}
+				], ['scores'], comment.score);
+				elem.node.insertBefore(scores, content);
+			} else {
+				scores.textContent = comment.score;
+				scores.setAttribute('title', getScoreTitle(comment.score));
+			}
 		}
 
 		return {
