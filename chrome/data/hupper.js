@@ -2,12 +2,55 @@
 /*global chrome*/
 (function (req) {
 	'use strict';
-	window.addEventListener('DOMContentLoaded', function () {
-		let modBlocks = req('blocks');
 
+	let func = req('func');
+
+	function onGetArticles() {
+		let modArticles = req('articles');
+		let articles = modArticles.parseArticles();
+
+		if (articles.length > 0) {
+			chrome.runtime.sendMessage({'event': 'gotArticles', data: articles});
+		}
+	}
+
+	function onArticlesMarkNew(data) {
+		let modArticles = req('articles');
+		data.articles.map(modArticles.articleStructToArticleNodeStruct)
+				.forEach(func.partial(modArticles.markNewArticle, data.text));
+
+	}
+
+	function articleAddNextPrev(item) {
+		let modArticles = req('articles');
+
+		console.log('adddd next prev');
+		
+
+		if (item.prevId) {
+			modArticles.addLinkToPrevArticle(item.id, item.prevId);
+		}
+
+		if (item.nextId) {
+			modArticles.addLinkToNextArticle(item.id, item.nextId);
+		}
+	}
+
+	window.addEventListener('DOMContentLoaded', function () {
 		chrome.runtime.onMessage.addListener(function (request, sender) {
-			if (request.event === 'getBlocks') {
-				chrome.runtime.sendMessage({'event': 'gotBlocks', data: modBlocks.getBlocks()});
+			let event = request.event;
+			switch (event) {
+				case 'getArticles':
+					onGetArticles(request.data);
+				break;
+
+				case 'articles.mark-new':
+					onArticlesMarkNew(request.data);
+				break;
+
+				case 'articles.addNextPrev':
+					articleAddNextPrev(request.data);
+				break;
 			}
 			console.log('message request', request, sender);
 		});
