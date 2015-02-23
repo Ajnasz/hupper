@@ -116,15 +116,15 @@ pageMod.PageMod({
 	contentStyle: pagestyles.getPageStyle(),
 	contentStyleFile: pagestyles.getPageStyleFiles(),
 	contentScriptFile: [
-		self.data.url('rq.js'),
-		self.data.url('dom.js'),
-		self.data.url('func.js'),
-		self.data.url('commenttree.js'),
-		self.data.url('comments.js'),
-		self.data.url('articles.js'),
-		self.data.url('blocks.js'),
-		self.data.url('hupper-block.js'),
-		self.data.url('unlimitedlinks.js'),
+		self.data.url('core/rq.js'),
+		self.data.url('core/dom.js'),
+		self.data.url('core/func.js'),
+		self.data.url('core/commenttree.js'),
+		self.data.url('core/comments.js'),
+		self.data.url('core/articles.js'),
+		self.data.url('core/blocks.js'),
+		self.data.url('core/hupper-block.js'),
+		self.data.url('core/unlimitedlinks.js'),
 		self.data.url('hupper.js')
 	]
 });
