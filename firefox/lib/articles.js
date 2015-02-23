@@ -6,7 +6,7 @@ function filterNewArticles(article) {
 	return article.isNew;
 }
 
-function setNewArticles(newArticles, worker) {
+function setNewArticles(newArticles, events) {
 	'use strict';
 	var newArticlesLength = newArticles.length;
 
@@ -23,14 +23,14 @@ function setNewArticles(newArticles, worker) {
 				nextPrev.prevId = newArticles[index - 1].id;
 			}
 
-			worker.port.emit('articles.addNextPrev', nextPrev);
+			events.emit('articles.addNextPrev', nextPrev);
 		});
 	}
 }
 
-function hideCategoryArticles(categories, worker) {
+function hideCategoryArticles(categories, events) {
 	'use strict';
-	worker.port.emit('articles.hide', categories);
+	events.emit('articles.hide', categories);
 }
 
 function filterHideableArticles(articles) {

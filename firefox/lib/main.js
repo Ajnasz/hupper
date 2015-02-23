@@ -18,21 +18,37 @@ require('sdk/simple-prefs').on('edithighlightusers', function () {
 
 const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
 
+function eventEmitter(worker) {
+	'use strict';
+	function on(event, cb) {
+		worker.port.on(event, cb);
+	}
+
+	function emit(event, args) {
+		worker.port.emit(event, args);
+	}
+	return {
+		on: on,
+		emit: emit
+	};
+}
+
 pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
 	onAttach: function (worker) {
 		'use strict';
+		let events = eventEmitter(worker);
 		console.log('on attach');
 
 		function parseComments() {
 			console.log('parse comments');
 
-			worker.port.emit('getComments', {
+			events.emit('getComments', {
 				// get content only if filtering boring comments
 				content: pref.getPref('hideboringcomments')
 			});
-			worker.port.on('gotComments', function (comments) {
-				require('./comments').parseComments(worker, comments);
+			events.on('gotComments', function (comments) {
+				require('./comments').parseComments(events, comments);
 			});
 		}
 
@@ -41,26 +57,26 @@ pageMod.PageMod({
 
 			let modArticles = require('./articles');
 
-			worker.port.emit('getArticles');
-			worker.port.on('gotArticles', function (articles) {
+			events.emit('getArticles');
+			events.on('gotArticles', function (articles) {
 				let newArticles = articles.filter(modArticles.filterNewArticles);
 				console.log('articles', articles);
-				worker.port.emit('articles.mark-new', {
+				events.emit('articles.mark-new', {
 					text: pref.getPref('newcommenttext'),
 					articles: newArticles
 				});
 				if (newArticles.length > 0) {
-					worker.port.emit('hupper-block.add-menu', {
+					events.emit('hupper-block.add-menu', {
 						href: '#' + newArticles[0].id,
 						text: TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS
 					});
 
-					modArticles.setNewArticles(newArticles, worker);
+					modArticles.setNewArticles(newArticles, events);
 				}
 
-				worker.port.emit('articles.add-category-hide-button', articles);
+				events.emit('articles.add-category-hide-button', articles);
 
-				worker.port.on('article.hide-taxonomy', function (article) {
+				events.on('article.hide-taxonomy', function (article) {
 					let taxonomies = pref.getPref('hidetaxonomy').split(',').filter(function (i) {
 						return i !== '';
 
@@ -70,22 +86,22 @@ pageMod.PageMod({
 						taxonomies.push(article.category);
 						pref.setPref('hidetaxonomy', taxonomies.join(','));
 
-						modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), worker);
+						modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), events);
 					}
 				});
-				modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), worker);
+				modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), events);
 			});
 		}
 
 		function finishBlockSetup(blocks, blocksPref) {
 			let modBlocks = require('blocks');
-			worker.port.emit('enableBlockControls', blocks.left);
-			worker.port.emit('enableBlockControls', blocks.right);
-			worker.port.emit('blocks.set-titles', modBlocks.getBlockTitles());
+			events.emit('enableBlockControls', blocks.left);
+			events.emit('enableBlockControls', blocks.right);
+			events.emit('blocks.set-titles', modBlocks.getBlockTitles());
 
-			modBlocks.parseBlocks(worker, blocksPref);
+			modBlocks.parseBlocks(events, blocksPref);
 
-			worker.port.on('block.action', partial(modBlocks.onBlockAction, worker));
+			events.on('block.action', partial(modBlocks.onBlockAction, events));
 		}
 
 		function onGotBlocks(blocks) {
@@ -94,27 +110,27 @@ pageMod.PageMod({
 
 			pref.setPref('blocks', JSON.stringify(blocksPref));
 
-			worker.port.on('blocks.change-order-all-done', function () {
+			events.on('blocks.change-order-all-done', function () {
 				finishBlockSetup(blocks, blocksPref);
 
 				parseComments();
 				parseArticles();
 			});
 
-			worker.port.emit('blocks.change-order-all', blocksPref);
+			events.emit('blocks.change-order-all', blocksPref);
 		}
 
 		if (pref.getPref('parseblocks')) {
-			worker.port.on('gotBlocks', onGotBlocks);
+			events.on('gotBlocks', onGotBlocks);
 
-			worker.port.emit('getBlocks');
+			events.emit('getBlocks');
 		} else {
 			parseComments();
 			parseArticles();
 		}
 
 		if (pref.getPref('setunlimitedlinks')) {
-			worker.port.emit('setUnlimitedLinks');
+			events.emit('setUnlimitedLinks');
 		}
 	},
 	contentStyle: pagestyles.getPageStyle(),

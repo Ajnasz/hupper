@@ -11,7 +11,7 @@ const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
 
 // let { partial } = require('sdk/lang/functional');
 
-function setPrevNextLinks(newComments, worker) {
+function setPrevNextLinks(newComments, events) {
 	'use strict';
 	let newCommentsLength = newComments.length;
 
@@ -28,7 +28,7 @@ function setPrevNextLinks(newComments, worker) {
 				nextPrev.prevId = newComments[index - 1].id;
 			}
 
-			worker.port.emit('comment.addNextPrev', nextPrev);
+			events.emit('comment.addNextPrev', nextPrev);
 		});
 	}
 }
@@ -168,7 +168,7 @@ function setScores(comments) {
 	});
 }
 
-function parseComments(worker, comments) {
+function parseComments(events, comments) {
 	'use strict';
 
 	let newComments, childComments;
@@ -194,41 +194,41 @@ function parseComments(worker, comments) {
 
 	let flatCommentList = flatComments(comments);
 
-	worker.port.emit('comments.update', flatCommentList);
+	events.emit('comments.update', flatCommentList);
 
 	newComments = findNewComments(comments);
 
 	if (pref.getPref('replacenewcommenttext')) {
-		worker.port.emit('comment.setNew', {
+		events.emit('comment.setNew', {
 			comments: newComments,
 			text: pref.getPref('newcommenttext')
 		});
 	}
 
-	setPrevNextLinks(newComments, worker);
+	setPrevNextLinks(newComments, events);
 
 	require('sdk/simple-prefs').on('highlightusers', function () {
 		let highlightedUsers = pref.getCleanHighlightedUsers();
 		setHighlightedComments(highlightedUsers, comments);
-		worker.port.emit('comments.update', flatCommentList);
+		events.emit('comments.update', flatCommentList);
 	});
 	require('sdk/simple-prefs').on('trolls', function () {
 		let trolls = pref.getCleanTrolls();
 		updateTrolls(trolls, comments);
-		worker.port.emit('comments.update', flatCommentList);
+		events.emit('comments.update', flatCommentList);
 	});
 
 	childComments = flatCommentList.filter(function (comment) {
 		return comment.parent !== '';
 	});
 
-	worker.port.emit('comment.addParentLink', childComments);
-	worker.port.emit('comment.addExpandLink', childComments.filter(function (comment) {
+	events.emit('comment.addParentLink', childComments);
+	events.emit('comment.addExpandLink', childComments.filter(function (comment) {
 		return comment.indentLevel > 1;
 	}));
 
 	if (newComments.length > 0) {
-		worker.port.emit('hupper-block.add-menu', {
+		events.emit('hupper-block.add-menu', {
 			href: '#new',
 			text: TEXT_FIRST_NEW_COMMENT
 		});

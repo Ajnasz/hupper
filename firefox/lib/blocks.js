@@ -47,21 +47,21 @@ function filterContentHidden(block) {
 	return block.contentHidden;
 }
 
-function requestBlockHide(worker, block) {
+function requestBlockHide(events, block) {
 	'use strict';
-	emitBlockEvent(worker, 'block.hide', block);
-	emitBlockEvent(worker, 'hupper-block.hide-block', block);
+	emitBlockEvent(events, 'block.hide', block);
+	emitBlockEvent(events, 'hupper-block.hide-block', block);
 }
 
-function requestBlockContentHide(worker, block) {
+function requestBlockContentHide(events, block) {
 	'use strict';
-	emitBlockEvent(worker, 'block.hide-content', block);
-	emitBlockEvent(worker, 'hupper-block.show-block', block);
+	emitBlockEvent(events, 'block.hide-content', block);
+	emitBlockEvent(events, 'hupper-block.show-block', block);
 }
 
-function emitBlockEvent(worker, event, block) {
+function emitBlockEvent(events, event, block) {
 	'use strict';
-	worker.port.emit(event, {
+	events.emit(event, {
 		id: block.id,
 		column: block.column
 	});
@@ -85,16 +85,16 @@ function updateBlock(details, prefName, value) {
 	return block;
 }
 
-function onBlockDelete(worker, details) {
+function onBlockDelete(events, details) {
 	'use strict';
 
 	let block = updateBlock(details, 'hidden', true);
 
-	emitBlockEvent(worker, 'block.hide', block);
-	emitBlockEvent(worker, 'hupper-block.hide-block', block);
+	emitBlockEvent(events, 'block.hide', block);
+	emitBlockEvent(events, 'hupper-block.hide-block', block);
 }
 
-function onBlockRestore(worker, details) {
+function onBlockRestore(events, details) {
 	'use strict';
 
 	console.log('on block restore', details);
@@ -102,24 +102,24 @@ function onBlockRestore(worker, details) {
 
 	let block = updateBlock(details, 'hidden', false);
 
-	emitBlockEvent(worker, 'block.show', block);
-	emitBlockEvent(worker, 'hupper-block.show-block', block);
+	emitBlockEvent(events, 'block.show', block);
+	emitBlockEvent(events, 'hupper-block.show-block', block);
 }
 
-function onBlockHideContent(worker, details) {
+function onBlockHideContent(events, details) {
 	'use strict';
 
 	let block = updateBlock(details, 'contentHidden', true);
 
-	emitBlockEvent(worker, 'block.hide-content', block);
+	emitBlockEvent(events, 'block.hide-content', block);
 }
 
-function onBlockShowContent(worker, details) {
+function onBlockShowContent(events, details) {
 	'use strict';
 
 	let block = updateBlock(details, 'contentHidden', false);
 
-	emitBlockEvent(worker, 'block.show-content', block);
+	emitBlockEvent(events, 'block.show-content', block);
 }
 
 function index(array, cb) {
@@ -159,7 +159,7 @@ function findNotHiddenIndex(blocks, start, direction) {
 	return -1;
 }
 
-function onBlockChangeOrder(worker, details) {
+function onBlockChangeOrder(events, details) {
 	'use strict';
 	let blockPrefs = JSON.parse(pref.getPref('blocks')),
 		columnBlocks = details.column === 'sidebar-right' ?
@@ -183,7 +183,7 @@ function onBlockChangeOrder(worker, details) {
 		columnBlocks.splice(newIndex, 0, tmpBlock[0]);
 		pref.setPref('blocks', JSON.stringify(blockPrefs));
 
-		worker.port.emit('block.change-order', {
+		events.emit('block.change-order', {
 			sidebar: details.column,
 			blocks: columnBlocks
 		});
@@ -191,7 +191,7 @@ function onBlockChangeOrder(worker, details) {
 
 }
 
-function onBlockChangeColumn(worker, details) {
+function onBlockChangeColumn(events, details) {
 	'use strict';
 	let blockPrefs = JSON.parse(pref.getPref('blocks')),
 		columnBlocks = details.column === 'sidebar-right' ?
@@ -213,7 +213,7 @@ function onBlockChangeColumn(worker, details) {
 
 		pref.setPref('blocks', JSON.stringify(blockPrefs));
 
-		worker.port.emit('block.change-column', blockPrefs);
+		events.emit('block.change-column', blockPrefs);
 	}
 
 }
@@ -221,34 +221,34 @@ function onBlockChangeColumn(worker, details) {
 /**
  * @param blockActionStruct action
  */
-function onBlockAction(worker, details) {
+function onBlockAction(events, details) {
 	'use strict';
 
 	switch (details.action) {
 		case 'delete':
-			onBlockDelete(worker, details);
+			onBlockDelete(events, details);
 		break;
 
 		case 'restore':
-			onBlockRestore(worker, details);
+			onBlockRestore(events, details);
 		break;
 
 		case 'hide-content':
-			onBlockHideContent(worker, details);
+			onBlockHideContent(events, details);
 		break;
 
 		case 'show-content':
-			onBlockShowContent(worker, details);
+			onBlockShowContent(events, details);
 		break;
 
 		case 'up':
 		case 'down':
-			onBlockChangeOrder(worker, details);
+			onBlockChangeOrder(events, details);
 		break;
 
 		case 'right':
 		case 'left':
-			onBlockChangeColumn(worker, details);
+			onBlockChangeColumn(events, details);
 		break;
 	}
 }
@@ -287,15 +287,15 @@ function getBlockTitles() {
 	};
 }
 
-function parseBlocks(worker, blocksPref) {
+function parseBlocks(events, blocksPref) {
 	'use strict';
 	blocksPref.left.concat(blocksPref.right)
 			.filter(filterHidden)
-			.forEach(partial(requestBlockHide, worker));
+			.forEach(partial(requestBlockHide, events));
 
 	blocksPref.left.concat(blocksPref.right)
 			.filter(filterContentHidden)
-			.forEach(partial(requestBlockContentHide, worker));
+			.forEach(partial(requestBlockContentHide, events));
 }
 
 exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
