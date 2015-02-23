@@ -71,7 +71,13 @@ pageMod.PageMod({
 						text: TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS
 					});
 
-					modArticles.setNewArticles(newArticles, events);
+					let nextPrev = modArticles.setNewArticles(newArticles, events);
+
+					if (nextPrev) {
+						nextPrev.forEach(function (item) {
+							events.emit('articles.addNextPrev', item);
+						});
+					}
 				}
 
 				events.emit('articles.add-category-hide-button', articles);
@@ -86,10 +92,12 @@ pageMod.PageMod({
 						taxonomies.push(article.category);
 						pref.setPref('hidetaxonomy', taxonomies.join(','));
 
-						modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), events);
+						let hideableArticles = modArticles.filterHideableArticles(articles);
+						events.emit('articles.hide', hideableArticles);
 					}
 				});
-				modArticles.hideCategoryArticles(modArticles.filterHideableArticles(articles), events);
+				let hideableArticles = modArticles.filterHideableArticles(articles);
+				events.emit('articles.hide', hideableArticles);
 			});
 		}
 

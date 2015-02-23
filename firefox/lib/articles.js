@@ -6,12 +6,12 @@ function filterNewArticles(article) {
 	return article.isNew;
 }
 
-function setNewArticles(newArticles, events) {
+function setNewArticles(newArticles) {
 	'use strict';
 	var newArticlesLength = newArticles.length;
 
 	if (newArticlesLength > 1) {
-		newArticles.forEach(function (article, index) {
+		return newArticles.map(function (article, index) {
 			var nextPrev = {
 				id: article.id
 			};
@@ -23,14 +23,9 @@ function setNewArticles(newArticles, events) {
 				nextPrev.prevId = newArticles[index - 1].id;
 			}
 
-			events.emit('articles.addNextPrev', nextPrev);
+			return nextPrev;
 		});
 	}
-}
-
-function hideCategoryArticles(categories, events) {
-	'use strict';
-	events.emit('articles.hide', categories);
 }
 
 function filterHideableArticles(articles) {
@@ -45,5 +40,4 @@ function filterHideableArticles(articles) {
 
 exports.filterNewArticles = filterNewArticles;
 exports.setNewArticles = setNewArticles;
-exports.hideCategoryArticles = hideCategoryArticles;
 exports.filterHideableArticles = filterHideableArticles;
