@@ -12,7 +12,7 @@
       "run_at": "document_start",
       "matches": ["http://hup.lh/*", "http://hup.lh:3000/*", "http://hup.hu/*"],
       "js": [
-        "data/hupper.js"
+        "data/built.js"
       ]
     }
   ],
