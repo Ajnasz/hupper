@@ -7,28 +7,24 @@ let func = require('./core/func');
 let plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
     minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)');
 
-const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
-
-function setPrevNextLinks(newComments, events) {
+function setPrevNextLinks(newComments) {
 	'use strict';
 	let newCommentsLength = newComments.length;
 
-	if (newCommentsLength > 1) {
-		newComments.forEach(function (comment, index) {
-			let nextPrev = {
-				id: comment.id
-			};
-			if (index + 1 < newCommentsLength) {
-				nextPrev.nextId = newComments[index + 1].id;
-			}
+	return newComments.map(function (comment, index) {
+		let nextPrev = {
+			id: comment.id
+		};
+		if (index + 1 < newCommentsLength) {
+			nextPrev.nextId = newComments[index + 1].id;
+		}
 
-			if (index > 0) {
-				nextPrev.prevId = newComments[index - 1].id;
-			}
+		if (index > 0) {
+			nextPrev.prevId = newComments[index - 1].id;
+		}
 
-			events.emit('comment.addNextPrev', nextPrev);
-		});
-	}
+		return nextPrev;
+	});
 }
 
 function updateTrolls(trolls, comments) {
@@ -166,10 +162,8 @@ function setScores(comments) {
 	});
 }
 
-function parseComments(events, comments) {
+function parseComments(comments) {
 	'use strict';
-
-	let newComments, childComments;
 
 	if (pref.getPref('hideboringcomments')) {
 		let boringRex = new RegExp(pref.getPref('boringcommentcontents'));
@@ -184,53 +178,20 @@ function parseComments(events, comments) {
 	setScores(comments);
 
 	let highlightedUsers = pref.getCleanHighlightedUsers();
+
 	if (highlightedUsers.length) {
 		setHighlightedComments(highlightedUsers, comments);
 	}
 
-	console.log('our updated comments', comments.length, comments);
-
 	let flatCommentList = flatComments(comments);
 
-	events.emit('comments.update', flatCommentList);
+	return flatCommentList;
 
-	newComments = findNewComments(comments);
-
-	if (pref.getPref('replacenewcommenttext')) {
-		events.emit('comment.setNew', {
-			comments: newComments,
-			text: pref.getPref('newcommenttext')
-		});
-	}
-
-	setPrevNextLinks(newComments, events);
-
-	require('sdk/simple-prefs').on('highlightusers', function () {
-		let highlightedUsers = pref.getCleanHighlightedUsers();
-		setHighlightedComments(highlightedUsers, comments);
-		events.emit('comments.update', flatCommentList);
-	});
-	require('sdk/simple-prefs').on('trolls', function () {
-		let trolls = pref.getCleanTrolls();
-		updateTrolls(trolls, comments);
-		events.emit('comments.update', flatCommentList);
-	});
-
-	childComments = flatCommentList.filter(function (comment) {
-		return comment.parent !== '';
-	});
-
-	events.emit('comment.addParentLink', childComments);
-	events.emit('comment.addExpandLink', childComments.filter(function (comment) {
-		return comment.indentLevel > 1;
-	}));
-
-	if (newComments.length > 0) {
-		events.emit('hupper-block.add-menu', {
-			href: '#new',
-			text: TEXT_FIRST_NEW_COMMENT
-		});
-	}
 }
 
 exports.parseComments = parseComments;
+exports.getFlatCommentList = flatComments;
+exports.getNewComments = findNewComments;
+exports.setPrevNextLinks = setPrevNextLinks;
+exports.updateTrolls = updateTrolls;
+exports.setHighlightedComments = setHighlightedComments;

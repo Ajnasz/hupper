@@ -18,6 +18,8 @@ require('sdk/simple-prefs').on('edithighlightusers', function () {
 
 const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
 
+const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
+
 function eventEmitter(worker) {
 	'use strict';
 	function on(event, cb) {
@@ -48,7 +50,50 @@ pageMod.PageMod({
 				content: pref.getPref('hideboringcomments')
 			});
 			events.on('gotComments', function (comments) {
-				require('./comments').parseComments(events, comments);
+				let modComments = require('./comments');
+				let flatCommentList = modComments.parseComments(comments);
+
+				let childComments = flatCommentList.filter(function (comment) {
+					return comment.parent !== '';
+				});
+
+				events.emit('comment.addParentLink', childComments);
+				events.emit('comment.addExpandLink', childComments.filter(function (comment) {
+					return comment.indentLevel > 1;
+				}));
+
+				events.emit('comments.update', flatCommentList);
+
+				let newComments = modComments.getNewComments(comments);
+
+				if (pref.getPref('replacenewcommenttext')) {
+					events.emit('comment.setNew', {
+						comments: newComments,
+						text: pref.getPref('newcommenttext')
+					});
+				}
+				modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
+					events.emit('comment.addNextPrev', nextPrev);
+				});
+
+				if (newComments.length > 0) {
+					events.emit('hupper-block.add-menu', {
+						href: '#new',
+						text: TEXT_FIRST_NEW_COMMENT
+					});
+				}
+
+				require('sdk/simple-prefs').on('highlightusers', function () {
+					let highlightedUsers = pref.getCleanHighlightedUsers();
+					modComments.setHighlightedComments(highlightedUsers, comments);
+					events.emit('comments.update', flatCommentList);
+				});
+				require('sdk/simple-prefs').on('trolls', function () {
+					let trolls = pref.getCleanTrolls();
+					modComments.updateTrolls(trolls, comments);
+					events.emit('comments.update', flatCommentList);
+				});
+
 			});
 		}
 
