@@ -50,8 +50,27 @@ pageMod.PageMod({
 				content: pref.getPref('hideboringcomments')
 			});
 			events.on('gotComments', function (comments) {
-				let modComments = require('./comments');
-				let flatCommentList = modComments.parseComments(comments);
+				let modComments = require('./core/comments');
+
+				modComments.setScores(comments);
+
+				if (pref.getPref('hideboringcomments')) {
+					let boringRex = new RegExp(pref.getPref('boringcommentcontents'));
+					modComments.markBoringComments(comments, boringRex);
+				}
+
+				if (pref.getPref('filtertrolls')) {
+					let trolls = pref.getCleanTrolls();
+					modComments.markTrollComments(comments, trolls);
+				}
+
+				let highlightedUsers = pref.getCleanHighlightedUsers();
+
+				if (highlightedUsers.length) {
+					modComments.setHighlightedComments(highlightedUsers, comments);
+				}
+
+				let flatCommentList = modComments.flatComments(comments);
 
 				let childComments = flatCommentList.filter(function (comment) {
 					return comment.parent !== '';
