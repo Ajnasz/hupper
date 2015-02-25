@@ -3,11 +3,13 @@ cat data/core/rq.js data/core/dom.js data/core/func.js data/core/commenttree.js 
 babel data/built-es6.js > data/built.js
 
 mkdir -p data/core
+mkdir -p data/core/css
 mkdir -p lib/core
 cp -ar ../core/data/* data/core
+cp -ar ../core/data/css/* data/core/css/
 cp -ar ../core/lib/* lib/core
 
-cat lib/require.js lib/pref.js lib/core/func.js lib/core/articles.js lib/main.js > lib/built-es6.js
+cat lib/require.js lib/pref.js lib/core/func.js lib/core/articles.js lib/core/comments.js lib/main.js > lib/built-es6.js
 babel --compact=false lib/built-es6.js > lib/built.js
 
 echo "built" `date`

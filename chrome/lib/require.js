@@ -4,7 +4,7 @@ var hupperModules = {};
 function require(name) {
 	'use strict';
 	if (!hupperModules[name]) {
-		throw new Error('unknown block: ' + name);
+		throw new Error('unknown module: ' + name);
 	}
 	return hupperModules[name];
 }

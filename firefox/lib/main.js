@@ -47,7 +47,7 @@ pageMod.PageMod({
 
 			events.emit('getComments', {
 				// get content only if filtering boring comments
-				content: pref.getPref('hideboringcomments')
+				content: true
 			});
 			events.on('gotComments', function (comments) {
 				let modComments = require('./core/comments');

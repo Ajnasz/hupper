@@ -11,7 +11,8 @@
 		"run_at": "document_start",
 		"matches": ["http://hup.lh/*", "http://hup.lh:3000/*", "http://hup.hu/*"],
 		"css": [
-			"data/core/css/hupper.css"
+			"data/core/css/hupper.css",
+			"data/core/css/indentstyles.css"
 		],
 		"js": [
 			"data/built.js"

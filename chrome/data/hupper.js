@@ -48,12 +48,144 @@
 			});
 	}
 
+	function onGetComments(options) {
+		let commentsContainer = document.getElementById('comments');
+
+		if (!commentsContainer) {
+			return;
+		}
+
+		let modComment = req('comment');
+		let modCommentTree = req('commenttree');
+
+		console.log('subscribe');
+		document.querySelector('body').addEventListener('click', function (e) {
+			if (e.target.nodeName === 'A') {
+				return;
+			}
+
+			let dom = req('dom');
+			if (dom.closest(e.target, '.comment')) {
+				return;
+			}
+
+			modComment.unwideComments();
+		}, false);
+
+		commentsContainer.addEventListener('click', function (e) {
+			let dom = req('dom');
+			console.log('click somewhere', e.target);
+			
+			if (dom.is(e.target, '.expand-comment')) {
+				e.preventDefault();
+				modComment.unwideComments();
+				modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
+
+			}
+		}, false);
+
+		function convertComments(comments) {
+			return comments.map((comment) => {
+				let output = modComment.parseComment(modComment.getCommentFromId(comment.id), {
+					content: options.content
+				});
+
+				output.children = convertComments(comment.children);
+
+				return output;
+			});
+		}
+
+		chrome.runtime.sendMessage({
+			event: 'gotComments',
+			data: convertComments(modCommentTree.getCommentTree())
+		});
+
+	}
+
+	function onCommentSetNew(newComments) {
+		let modComment = req('comment');
+		var obj = newComments.comments.map(modComment.commentDataStructToObj);
+		obj.forEach((comment) => modComment.setNew(comment, newComments.text));
+	}
+
+	function onCommentsUpdate(comments) {
+		comments.forEach(function (comment) {
+			let modComment = req('comment');
+			if (comment.hide) {
+				modComment.hide(comment);
+
+				if (comment.boring) {
+					modComment.setProp(comment, 'boring', true);
+				}
+
+				if (comment.troll) {
+					modComment.setProp(comment, 'troll', true);
+				}
+			} else {
+				if (modComment.getProp(comment, 'boring')) {
+					modComment.setProp(comment, 'boring', false);
+				} else if (modComment.getProp(comment, 'troll')) {
+					modComment.setProp(comment, 'troll', false);
+				}
+
+				modComment.show(comment);
+
+				if (comment.userColor) {
+					modComment.highlightComment(comment);
+				} else {
+					modComment.unhighlightComment(comment);
+				}
+
+				if (comment.score !== 0) {
+					modComment.showScore(comment);
+				}
+			}
+
+		});
+	}
+
+	function onCommentAddNextPrev(item) {
+		let modComment = req('comment');
+		if (item.prevId) {
+			modComment.addLinkToPrevComment(item.id, item.prevId);
+		}
+
+		if (item.nextId) {
+			modComment.addLinkToNextComment(item.id, item.nextId);
+		}
+	}
+
 	window.addEventListener('DOMContentLoaded', function () {
 		chrome.runtime.onMessage.addListener(function (request, sender) {
 			let event = request.event;
 			switch (event) {
 				case 'getArticles':
 					onGetArticles(request.data);
+				break;
+
+				case 'getComments':
+					onGetComments(request.data);
+				break;
+
+				case 'comments.update':
+					onCommentsUpdate(request.data);
+				break;
+
+				case 'comment.setNew':
+					onCommentSetNew(request.data);
+				break;
+
+				case 'comment.addNextPrev':
+					onCommentAddNextPrev(request.data);
+				break;
+
+				case 'comment.addParentLink':
+					req('comment').addParentLinkToComments(request.data);
+				break;
+
+				case 'comment.addExpandLink':
+					req('comment').addExpandLinkToComments(request.data);
 				break;
 
 				case 'articles.mark-new':

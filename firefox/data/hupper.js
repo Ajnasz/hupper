@@ -1,4 +1,4 @@
-/*jshint moz:true*/
+/*jshint esnext: true*/
 /*global self*/
 console.log('hupper.js');
 (function (req) {
@@ -96,9 +96,7 @@ console.log('hupper.js');
 
 			self.port.on('comment.setNew', function (newComments) {
 				var obj = newComments.comments.map(modComment.commentDataStructToObj);
-				obj.forEach(function (comment) {
-					modComment.setNew(comment, newComments.text);
-				});
+				obj.forEach((comment) => modComment.setNew(comment, newComments.text));
 			});
 
 			self.port.on('comment.addNextPrev', function (item) {
@@ -135,9 +133,8 @@ console.log('hupper.js');
 				}
 			}, false);
 
-
 			function convertComments(comments) {
-				return comments.map(function (comment) {
+				return comments.map((comment) => {
 					let output = modComment.parseComment(modComment.getCommentFromId(comment.id), {
 						content: options.content
 					});
@@ -178,13 +175,9 @@ console.log('hupper.js');
 				modBlocks.reorderBlocks(blocks);
 				self.port.emit('blocks.change-order-all-done');
 			});
-			self.port.on('block.change-order', function (event) {
-				modBlocks.setBlockOrder(event.sidebar, event.blocks);
-			});
+			self.port.on('block.change-order', (event) => modBlocks.setBlockOrder(event.sidebar, event.blocks));
 
-			self.port.on('block.change-column', function (blocks) {
-				modBlocks.reorderBlocks(blocks);
-			});
+			self.port.on('block.change-column', (blocks) => modBlocks.reorderBlocks(blocks));
 
 			self.port.on('blocks.set-titles', modBlocks.setTitles);
 
