@@ -104,6 +104,7 @@ function manageArticles(events) {
 }
 
 function manageComments(events) {
+	'use strict';
 	console.log('parse comments');
 	events.on('gotComments', function (comments) {
 		let modComments = require('./core/comments');

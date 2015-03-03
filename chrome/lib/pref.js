@@ -1,7 +1,8 @@
-/*jshint moz:true*/
+/*jshint esnext:true*/
 /*global define*/
 (function () {
 	'use strict';
+
 	if (!localStorage.prefs) {
 		localStorage.prefs = JSON.stringify([
 											{
@@ -136,6 +137,34 @@
 		]);
 	}
 
+	let events = (function () {
+		let listeners = {};
+
+		function on(name, cb) {
+			if (!listeners[name]) {
+				listeners[name] = [];
+			}
+
+			listeners[name].push(cb);
+		}
+
+		function off(name, cb) {
+			if (listeners[name]) {
+				for (let i = 0, ll = listeners.length; i < ll; i++) {
+					if (listeners[name][i] === cb) {
+						listeners[name][i] = null;
+					}
+				}
+
+				listeners[name] = listeners[name].filter((listener) => listener !== null);
+			}
+		}
+		return {
+			on: on,
+			off: off
+		};
+	});
+
 	function validateType(prefType, value) {
 		let isValid = false;
 
@@ -245,5 +274,6 @@
 		exports.getCleanHighlightedUsers = getCleanHighlightedUsers;
 		exports.getCleanTrolls = getCleanTrolls;
 		exports.getCleanTaxonomies = getCleanTaxonomies;
+		exports.events = events;
 	});
 }());
