@@ -188,7 +188,14 @@
 	}
 
 	function findPref(pref) {
-		let prefs = JSON.parse(localStorage.prefs);
+		let prefs;
+
+		try {
+			prefs = JSON.parse(localStorage.prefs);
+		} catch (er) {
+			prefs = [];
+		}
+
 		for (let i = 0, pl = prefs.length; i < pl; i++) {
 			if (prefs[i].name === pref) {
 				return prefs[i];
@@ -199,7 +206,14 @@
 	}
 
 	function savePref(pref, value) {
-		let prefs = JSON.parse(localStorage.prefs);
+		let prefs;
+
+		try {
+			prefs = JSON.parse(localStorage.prefs);
+		} catch (er) {
+			prefs = [];
+		}
+
 		let prefObj = null;
 
 		for (let i = 0, pl = prefs.length; i < pl; i++) {
@@ -238,32 +252,48 @@
 	}
 
 	function getCleanHighlightedUsers() {
-		return getPref('highlightusers').split(',')
-		.filter(function (user) {
-			return user.trim() !== '';
-		}).map(function (user) {
-			return user.split(':');
-		}).filter(function (user) {
-			return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-		}).map(function (user) {
-			return {
-				name: user[0],
-				color: user[1]
-			};
-		});
+		let highlightusers = getPref('highlightusers');
+
+		if (highlightusers === null) {
+			return [];
+		}
+
+		return highlightusers.split(',')
+				.filter(function (user) {
+					return user.trim() !== '';
+				}).map(function (user) {
+					return user.split(':');
+				}).filter(function (user) {
+					return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
+				}).map(function (user) {
+					return {
+						name: user[0],
+						color: user[1]
+					};
+				});
 	}
 
 	function getCleanTrolls() {
-		return getPref('trolls').split(',').filter(function (troll) {
+		let trolls = getPref('trolls');
+
+		if (trolls === null) {
+			return [];
+		}
+
+		return trolls.split(',').filter(function (troll) {
 			return troll.trim() !== '';
 		});
 
 	}
 
 	function getCleanTaxonomies() {
-		let taxonomies = getPref('hidetaxonomy').split(',');
+		let taxonomies = getPref('hidetaxonomy');
 
-		return taxonomies.filter(function (taxonomy) {
+		if (taxonomies === null) {
+			return [];
+		}
+
+		return taxonomies.split(',').filter(function (taxonomy) {
 			return taxonomy.trim() !== '';
 		});
 	}

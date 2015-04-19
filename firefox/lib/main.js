@@ -229,7 +229,8 @@ pageMod.PageMod({
 
 		function onLeftRightAction(events, details) {
 			let blockPrefs = JSON.parse(pref.getPref('blocks'));
-			let allBlocks = require('./core/blocks').onBlockChangeColumn(events, details, blockPrefs);
+			let allBlocks = require('./core/blocks')
+					.onBlockChangeColumn(events, details, blockPrefs);
 
 			if (allBlocks) {
 				pref.setPref('blocks', JSON.stringify(blockPrefs));

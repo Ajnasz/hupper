@@ -1,6 +1,7 @@
 /*jshint node: true, esnext: true*/
 
 var fs = require('fs');
+var path = require('path');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
 

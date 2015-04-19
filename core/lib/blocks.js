@@ -62,6 +62,7 @@ function findNotHiddenIndex(blocks, start, direction) {
 	if (!blocks[start].hidden) {
 		return start;
 	}
+
 	if (direction === 'down') {
 		for (let i = start, bl = blocks.length; i < bl; i++) {
 			if (blocks[i].hidden) {
@@ -98,17 +99,16 @@ function onBlockChangeOrder(events, details, blockPrefs) {
 			oldIndex + 1, details.action);
 
 
-		let tmpBlock = columnBlocks.splice(oldIndex, 1, columnBlocks[newIndex]);
-		columnBlocks.splice(newIndex, 1, tmpBlock[0]);
+		let tmpBlock = columnBlocks.splice(newIndex, 1, columnBlocks[oldIndex]);
+		columnBlocks.splice(oldIndex, 1, tmpBlock[0]);
 		return columnBlocks;
 	}
 
 }
 
 function onBlockChangeColumn(events, details, blockPrefs) {
-	let columnBlocks = details.column === 'sidebar-right' ?
-			blockPrefs.right :
-			blockPrefs.left;
+	let isOnRightSide = details.column === 'sidebar-right';
+	let columnBlocks =  isOnRightSide ? blockPrefs.right : blockPrefs.left;
 
 	let blockIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
@@ -117,9 +117,7 @@ function onBlockChangeColumn(events, details, blockPrefs) {
 	if (blockIndex > -1) {
 		let tmpBlock = columnBlocks.splice(blockIndex, 1);
 
-		let otherColumn = details.column === 'sidebar-right' ?
-			blockPrefs.left :
-			blockPrefs.right;
+		let otherColumn = isOnRightSide ? blockPrefs.left : blockPrefs.right;
 
 		otherColumn.unshift(tmpBlock[0]);
 

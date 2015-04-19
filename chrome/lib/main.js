@@ -179,6 +179,10 @@ function manageComments(events) {
 		content: true
 	});
 
+}
+
+function manageBlocks(events) {
+	'use strict';
 	function emitBlockEvent(events, event, block) {
 		events.emit(event, {
 			id: block.id,
@@ -207,8 +211,6 @@ function manageComments(events) {
 	function finishBlockSetup(blocks, blocksPref) {
 		let modBlocks = require('./core/blocks');
 		let func = require('./core/func');
-		events.emit('enableBlockControls', blocks.left);
-		events.emit('enableBlockControls', blocks.right);
 		events.emit('blocks.set-titles', modBlocks.getBlockTitles());
 
 		blocksPref.left.concat(blocksPref.right)
@@ -220,6 +222,9 @@ function manageComments(events) {
 				.forEach(func.partial(requestBlockContentHide, events));
 
 		events.on('block.action', func.partial(onBlockAction, events));
+
+		events.emit('enableBlockControls', blocksPref.left);
+		events.emit('enableBlockControls', blocksPref.right);
 	}
 
 	function onBlockDelete(events, details) {
@@ -262,7 +267,8 @@ function manageComments(events) {
 
 	function onLeftRightAction(events, details) {
 		let blockPrefs = JSON.parse(pref.getPref('blocks'));
-		let allBlocks = require('./core/blocks').onBlockChangeColumn(events, details, blockPrefs);
+		let allBlocks = require('./core/blocks')
+				.onBlockChangeColumn(events, details, blockPrefs);
 
 		if (allBlocks) {
 			pref.setPref('blocks', JSON.stringify(blockPrefs));
@@ -307,9 +313,7 @@ function manageComments(events) {
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
 		pref.setPref('blocks', JSON.stringify(blocksPref));
 		events.on('blocks.change-order-all-done', function () {
-			let func = require('./core/func');
 			finishBlockSetup(blocks, blocksPref);
-			events.on('block.action', func.partial(onBlockAction, events));
 
 			// parseComments();
 			// parseArticles();
@@ -334,6 +338,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
 		manageArticles(events);
 		manageComments(events);
+		manageBlocks(events);
 
 		/*
 		events.on('gotBlocks', function (data) {
