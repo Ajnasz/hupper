@@ -68,7 +68,7 @@ function findNotHiddenIndex(blocks, start, direction) {
 				continue;
 			}
 
-			return i + 1;
+			return i;
 		}
 	} else if (direction === 'up') {
 		for (let i = start, bl = blocks.length; i < bl; i--) {
@@ -88,19 +88,18 @@ function onBlockChangeOrder(events, details, blockPrefs) {
 			blockPrefs.right :
 			blockPrefs.left;
 
-	let blockIndex = func.index(columnBlocks, function (block) {
+	let oldIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
 	});
 
-	if (blockIndex > -1) {
-		let tmpBlock = columnBlocks.splice(blockIndex, 1);
-
+	if (oldIndex > -1) {
 		let newIndex = findNotHiddenIndex(columnBlocks, details.action === 'up' ?
-			blockIndex - 1 :
-			blockIndex + 1, details.action);
+			oldIndex - 1:
+			oldIndex + 1, details.action);
 
 
-		columnBlocks.splice(newIndex, 0, tmpBlock[0]);
+		let tmpBlock = columnBlocks.splice(oldIndex, 1, columnBlocks[newIndex]);
+		columnBlocks.splice(newIndex, 1, tmpBlock[0]);
 		return columnBlocks;
 	}
 
