@@ -4,7 +4,7 @@
 (function () {
 	'use strict';
 
-	let func = require('./core/func');
+	let func = require('./func');
 
 	let plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 	minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)');

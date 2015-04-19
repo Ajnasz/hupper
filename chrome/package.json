@@ -1,0 +1,26 @@
+{
+  "name": "hupper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ajnasz/hupper.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ajnasz/hupper/issues"
+  },
+  "homepage": "https://github.com/Ajnasz/hupper",
+  "devDependencies": {
+    "escodegen": "^1.6.1",
+    "esprima": "^2.2.0"
+  }
+}

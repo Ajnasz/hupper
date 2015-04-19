@@ -9,6 +9,8 @@ cp -ar ../core/data/* data/core
 cp -ar ../core/data/css/* data/core/css/
 cp -ar ../core/lib/* lib/core
 
+node modulenamefixer.js
+
 cat lib/require.js lib/pref.js lib/core/func.js lib/core/articles.js lib/core/comments.js lib/main.js > lib/built-es6.js
 babel --compact=false lib/built-es6.js > lib/built.js
 
