@@ -1,10 +1,11 @@
 /*jshint moz:true*/
-/*global require, exports*/
+/*global require, exports, define */
 // let pref = require('./pref');
-let func = require('./core/func');
+(function () {
+	'use strict';
+let func = require('./func');
 
 function createBlockPref(block) {
-	'use strict';
 	return {
 		id: block.id,
 		hidden: false,
@@ -13,7 +14,6 @@ function createBlockPref(block) {
 }
 
 function mergeBlockPrefsWithBlocks(blocks, blocksPref) {
-	'use strict';
 	if (!blocksPref.left) {
 		blocksPref.left = blocks.left.map(createBlockPref);
 	} else {
@@ -37,17 +37,14 @@ function mergeBlockPrefsWithBlocks(blocks, blocksPref) {
 }
 
 function filterHidden(block) {
-	'use strict';
 	return block.hidden;
 }
 
 function filterContentHidden(block) {
-	'use strict';
 	return block.contentHidden;
 }
 
 function updateBlock(details, prefName, value, blockPrefs) {
-	'use strict';
 	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
@@ -62,7 +59,6 @@ function updateBlock(details, prefName, value, blockPrefs) {
 }
 
 function findNotHiddenIndex(blocks, start, direction) {
-	'use strict';
 	if (!blocks[start].hidden) {
 		return start;
 	}
@@ -88,7 +84,6 @@ function findNotHiddenIndex(blocks, start, direction) {
 }
 
 function onBlockChangeOrder(events, details, blockPrefs) {
-	'use strict';
 	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
@@ -112,7 +107,6 @@ function onBlockChangeOrder(events, details, blockPrefs) {
 }
 
 function onBlockChangeColumn(events, details, blockPrefs) {
-	'use strict';
 	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
@@ -129,12 +123,13 @@ function onBlockChangeColumn(events, details, blockPrefs) {
 			blockPrefs.right;
 
 		otherColumn.unshift(tmpBlock[0]);
+
+		return blockPrefs;
 	}
 
 }
 
 function getBlockTitles() {
-	'use strict';
 	return {
       'block-aggregator-feed-13': 'http://distrowatch.com',
       'block-aggregator-feed-19': 'http://www.freebsd.org',
@@ -167,10 +162,23 @@ function getBlockTitles() {
 	};
 }
 
-exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
-exports.filterHidden = filterHidden;
-exports.filterContentHidden = filterContentHidden;
-exports.getBlockTitles = getBlockTitles;
-exports.onBlockChangeOrder = onBlockChangeOrder;
-exports.onBlockChangeColumn = onBlockChangeColumn;
-exports.updateBlock = updateBlock;
+if (typeof exports !== 'undefined') {
+	exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
+	exports.filterHidden = filterHidden;
+	exports.filterContentHidden = filterContentHidden;
+	exports.getBlockTitles = getBlockTitles;
+	exports.onBlockChangeOrder = onBlockChangeOrder;
+	exports.onBlockChangeColumn = onBlockChangeColumn;
+	exports.updateBlock = updateBlock;
+} else {
+	define('./core/blocks', function (exports) {
+		exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
+		exports.filterHidden = filterHidden;
+		exports.filterContentHidden = filterContentHidden;
+		exports.getBlockTitles = getBlockTitles;
+		exports.onBlockChangeOrder = onBlockChangeOrder;
+		exports.onBlockChangeColumn = onBlockChangeColumn;
+		exports.updateBlock = updateBlock;
+	});
+}
+}());

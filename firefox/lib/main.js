@@ -183,7 +183,7 @@ pageMod.PageMod({
 
 		function updateBlock(details, prefName, value) {
 			let blockPrefs = JSON.parse(pref.getPref('blocks'));
-			let modBlocks = require('./blocks');
+			let modBlocks = require('./core/blocks');
 			let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
 			pref.setPref('blocks', JSON.stringify(blockPrefs));
 			return output;
@@ -216,8 +216,8 @@ pageMod.PageMod({
 		}
 
 		function onUpDownAction(events, details) {
-			let blockPrefs = pref.getPref('blocks');
-			let columnBlocks = require('./blocks').onBlockChangeOrder(events, details, blockPrefs);
+			let blockPrefs = JSON.parse(pref.getPref('blocks'));
+			let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
 			if (columnBlocks) {
 				pref.setPref('blocks', JSON.stringify(blockPrefs));
 				events.emit('block.change-order', {
@@ -228,12 +228,14 @@ pageMod.PageMod({
 		}
 
 		function onLeftRightAction(events, details) {
-			let blockPrefs = pref.getPref('blocks');
-			require('./blocks').onBlockChangeColumn(events, details, blockPrefs);
+			let blockPrefs = JSON.parse(pref.getPref('blocks'));
+			let allBlocks = require('./core/blocks').onBlockChangeColumn(events, details, blockPrefs);
 
-			pref.setPref('blocks', JSON.stringify(blockPrefs));
+			if (allBlocks) {
+				pref.setPref('blocks', JSON.stringify(blockPrefs));
 
-			events.emit('block.change-column', blockPrefs);
+				events.emit('block.change-column', blockPrefs);
+			}
 		}
 
 		/**
@@ -271,7 +273,7 @@ pageMod.PageMod({
 		}
 
 		function finishBlockSetup(blocks, blocksPref) {
-			let modBlocks = require('./blocks');
+			let modBlocks = require('./core/blocks');
 			events.emit('enableBlockControls', blocks.left);
 			events.emit('enableBlockControls', blocks.right);
 			events.emit('blocks.set-titles', modBlocks.getBlockTitles());
@@ -288,7 +290,7 @@ pageMod.PageMod({
 		}
 
 		function onGotBlocks(blocks) {
-			let modBlocks = require('./blocks'),
+			let modBlocks = require('./core/blocks'),
 			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
 
 			pref.setPref('blocks', JSON.stringify(blocksPref));
