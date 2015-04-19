@@ -178,6 +178,31 @@ function manageComments(events) {
 		// get content only if filtering boring comments
 		content: true
 	});
+
+	function finishBlockSetup(blocks, blocksPref) {
+		let modBlocks = require('./core/blocks');
+		// events.emit('enableBlockControls', blocks.left);
+		// events.emit('enableBlockControls', blocks.right);
+		events.emit('blocks.set-titles', modBlocks.getBlockTitles());
+	}
+
+	function onGotBlocks(blocks) {
+		let modBlocks = require('./core/blocks'),
+		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
+		pref.setPref('blocks', JSON.stringify(blocksPref));
+		events.on('blocks.change-order-all-done', function () {
+			finishBlockSetup(blocks, blocksPref);
+
+			// parseComments();
+			// parseArticles();
+		});
+
+		events.emit('blocks.change-order-all', blocksPref);
+		console.log('GOT BLOCKS', blocks);
+	}
+
+	events.on('gotBlocks', onGotBlocks);
+	events.emit('getBlocks');
 }
 
 

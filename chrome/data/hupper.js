@@ -103,6 +103,15 @@
 
 	}
 
+	function onGetBlocks() {
+		let modBlocks = req('blocks');
+		chrome.runtime.sendMessage({
+			event: 'gotBlocks',
+			data: modBlocks.getBlocks()
+		});
+
+	}
+
 	function onCommentSetNew(newComments) {
 		let modComment = req('comment');
 		var obj = newComments.comments.map(modComment.commentDataStructToObj);
@@ -156,6 +165,22 @@
 		}
 	}
 
+	function onBlocakChangeOrderAll(data) {
+		let modBlocks = req('blocks');
+		modBlocks.reorderBlocks(data);
+		chrome.runtime.sendMessage({event: 'blocks.change-order-all-done'});
+	}
+
+	function onBlockHide(data) {
+		let modBlocks = req('blocks');
+		modBlocks.hide(data);
+	}
+
+	function onBlockSetTitles(data) {
+		let modBlocks = req('blocks');
+		modBlocks.setTitles(data);
+	}
+
 	window.addEventListener('DOMContentLoaded', function () {
 		chrome.runtime.onMessage.addListener(function (request, sender) {
 			let event = request.event;
@@ -166,6 +191,10 @@
 
 				case 'getComments':
 					onGetComments(request.data);
+				break;
+
+				case 'getBlocks':
+					onGetBlocks(request.data);
 				break;
 
 				case 'comments.update':
@@ -202,6 +231,35 @@
 
 				case 'articles.hide':
 					onArticlesHide(request.data);
+				break;
+
+				case 'block.hide':
+					onBlockHide(request.data);
+				break;
+
+				// case 'block.show':
+				// 	modBlocks.show(request.data);
+				// break;
+
+				// case 'block.hide-content':
+				// 	modBlocks.hideContent(request.data);
+				// break;
+				// case 'block.show-content':
+				// 	modBlocks.showContent(request.data);
+				// break;
+				case 'blocks.change-order-all':
+					onBlocakChangeOrderAll(request.data);
+				break;
+				// case 'block.change-order':
+				// 	// (event) => modBlocks.setBlockOrder(event.sidebar, event.blocks)();
+				// break;
+
+				// case 'block.change-column':
+				// 	// (blocks) => modBlocks.reorderBlocks(blocks)();
+				// break;
+
+				case 'blocks.set-titles':
+					onBlockSetTitles(request.data);
 				break;
 
 				default:
