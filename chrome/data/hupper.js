@@ -171,6 +171,31 @@
 		chrome.runtime.sendMessage({event: 'blocks.change-order-all-done'});
 	}
 
+	function onBlockChangeOrder(data) {
+		let modBlocks = req('blocks');
+		modBlocks.setBlockOrder(data.sidebar, data.blocks);
+	}
+
+	function onBlockChangeColunn(data) {
+		let modBlocks = req('blocks');
+		modBlocks.reorderBlocks(data);
+	}
+
+	function onBlockShow(data) {
+		let modBlocks = req('blocks');
+		modBlocks.show(data);
+	}
+
+	function onBlockHideContent(data) {
+		let modBlocks = req('blocks');
+		modBlocks.hideContent(data);
+	}
+
+	function onBlockShowContent(data) {
+		let modBlocks = req('blocks');
+		modBlocks.showContent(data);
+	}
+
 	function onBlockHide(data) {
 		let modBlocks = req('blocks');
 		modBlocks.hide(data);
@@ -179,6 +204,31 @@
 	function onBlockSetTitles(data) {
 		let modBlocks = req('blocks');
 		modBlocks.setTitles(data);
+	}
+
+	let blockActionStruct = {
+		id: '',
+		action: '',
+		column: ''
+	};
+
+	function onEnableBlockControls(blocks) {
+		let modBlocks = req('blocks');
+		let dom = req('dom');
+		modBlocks.decorateBlocks(blocks);
+		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+		commonParent.addEventListener('click', function (e) {
+			if (dom.is(e.target, '.block-button')) {
+				let block = dom.closest(e.target, '.block'),
+				action = e.target.dataset.action,
+				event = Object.create(blockActionStruct);
+
+				event.id = block.getAttribute('id');
+				event.action = action;
+				event.column = modBlocks.getBlockColumn(block);
+				chrome.runtime.sendMessage({event: 'block.action', data: event});
+			}
+		}, false);
 	}
 
 	window.addEventListener('DOMContentLoaded', function () {
@@ -237,26 +287,34 @@
 					onBlockHide(request.data);
 				break;
 
-				// case 'block.show':
-				// 	modBlocks.show(request.data);
-				// break;
+				case 'enableBlockControls':
+					onEnableBlockControls(request.data);
+				break;
+				
 
-				// case 'block.hide-content':
-				// 	modBlocks.hideContent(request.data);
-				// break;
-				// case 'block.show-content':
-				// 	modBlocks.showContent(request.data);
-				// break;
+				case 'block.show':
+					onBlockShow(request.data);
+				break;
+
+				case 'block.hide-content':
+				 	onBlockHideContent(request.data);
+				break;
+
+				case 'block.show-content':
+					onBlockShowContent(request.data);
+				break;
+
 				case 'blocks.change-order-all':
 					onBlocakChangeOrderAll(request.data);
 				break;
-				// case 'block.change-order':
-				// 	// (event) => modBlocks.setBlockOrder(event.sidebar, event.blocks)();
-				// break;
 
-				// case 'block.change-column':
-				// 	// (blocks) => modBlocks.reorderBlocks(blocks)();
-				// break;
+				case 'block.change-order':
+					onBlockChangeOrder(request.data);
+				break;
+
+				case 'block.change-column':
+					onBlockChangeColunn(request.data);
+				break;
 
 				case 'blocks.set-titles':
 					onBlockSetTitles(request.data);

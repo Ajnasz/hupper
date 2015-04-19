@@ -20,7 +20,7 @@ console.log('rq.js');
 			if (!modules.has(name)) {
 				throw new Error('No module defined with name: ' + name);
 			}
-			moduleOutput.set(name, modules.get(name)());
+			moduleOutput.set(name, Object.freeze(modules.get(name)()));
 		}
 
 		return moduleOutput.get(name);

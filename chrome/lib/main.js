@@ -179,11 +179,127 @@ function manageComments(events) {
 		content: true
 	});
 
+	function emitBlockEvent(events, event, block) {
+		events.emit(event, {
+			id: block.id,
+			column: block.column
+		});
+	}
+
+	function requestBlockHide(events, block) {
+		emitBlockEvent(events, 'block.hide', block);
+		emitBlockEvent(events, 'hupper-block.hide-block', block);
+	}
+
+	function requestBlockContentHide(events, block) {
+		emitBlockEvent(events, 'block.hide-content', block);
+		emitBlockEvent(events, 'hupper-block.show-block', block);
+	}
+
+	function updateBlock(details, prefName, value) {
+		let blockPrefs = JSON.parse(pref.getPref('blocks'));
+		let modBlocks = require('./core/blocks');
+		let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
+		pref.setPref('blocks', JSON.stringify(blockPrefs));
+		return output;
+	}
+
 	function finishBlockSetup(blocks, blocksPref) {
 		let modBlocks = require('./core/blocks');
-		// events.emit('enableBlockControls', blocks.left);
-		// events.emit('enableBlockControls', blocks.right);
+		let func = require('./core/func');
+		events.emit('enableBlockControls', blocks.left);
+		events.emit('enableBlockControls', blocks.right);
 		events.emit('blocks.set-titles', modBlocks.getBlockTitles());
+
+		blocksPref.left.concat(blocksPref.right)
+				.filter(modBlocks.filterHidden)
+				.forEach(func.partial(requestBlockHide, events));
+
+		blocksPref.left.concat(blocksPref.right)
+				.filter(modBlocks.filterContentHidden)
+				.forEach(func.partial(requestBlockContentHide, events));
+
+		events.on('block.action', func.partial(onBlockAction, events));
+	}
+
+	function onBlockDelete(events, details) {
+		let block = updateBlock(details, 'hidden', true);
+
+		emitBlockEvent(events, 'block.hide', block);
+		emitBlockEvent(events, 'hupper-block.hide-block', block);
+	}
+
+	function onBlockRestore(events, details) {
+		let block = updateBlock(details, 'hidden', false);
+
+		emitBlockEvent(events, 'block.show', block);
+		emitBlockEvent(events, 'hupper-block.show-block', block);
+	}
+
+	function onBlockHideContent(events, details) {
+		let block = updateBlock(details, 'contentHidden', true);
+
+		emitBlockEvent(events, 'block.hide-content', block);
+	}
+
+	function onBlockShowContent(events, details) {
+		let block = updateBlock(details, 'contentHidden', false);
+
+		emitBlockEvent(events, 'block.show-content', block);
+	}
+
+	function onUpDownAction(events, details) {
+		let blockPrefs = JSON.parse(pref.getPref('blocks'));
+		let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
+		if (columnBlocks) {
+			pref.setPref('blocks', JSON.stringify(blockPrefs));
+			events.emit('block.change-order', {
+				sidebar: details.column,
+				blocks: columnBlocks
+			});
+		}
+	}
+
+	function onLeftRightAction(events, details) {
+		let blockPrefs = JSON.parse(pref.getPref('blocks'));
+		let allBlocks = require('./core/blocks').onBlockChangeColumn(events, details, blockPrefs);
+
+		if (allBlocks) {
+			pref.setPref('blocks', JSON.stringify(blockPrefs));
+
+			events.emit('block.change-column', blockPrefs);
+		}
+	}
+
+	function onBlockAction(events, details) {
+
+		switch (details.action) {
+			case 'delete':
+				onBlockDelete(events, details);
+			break;
+
+			case 'restore':
+				onBlockRestore(events, details);
+			break;
+
+			case 'hide-content':
+				onBlockHideContent(events, details);
+			break;
+
+			case 'show-content':
+				onBlockShowContent(events, details);
+			break;
+
+			case 'up':
+			case 'down':
+				onUpDownAction(events, details);
+			break;
+
+			case 'left':
+			case 'right':
+				onLeftRightAction(events, details);
+			break;
+		}
 	}
 
 	function onGotBlocks(blocks) {
@@ -191,7 +307,9 @@ function manageComments(events) {
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
 		pref.setPref('blocks', JSON.stringify(blocksPref));
 		events.on('blocks.change-order-all-done', function () {
+			let func = require('./core/func');
 			finishBlockSetup(blocks, blocksPref);
+			events.on('block.action', func.partial(onBlockAction, events));
 
 			// parseComments();
 			// parseArticles();
