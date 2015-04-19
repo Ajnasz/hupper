@@ -1,6 +1,6 @@
 /*jshint moz:true*/
 /*global require, exports*/
-let pref = require('./pref');
+// let pref = require('./pref');
 let func = require('./core/func');
 
 function createBlockPref(block) {
@@ -12,10 +12,8 @@ function createBlockPref(block) {
 	};
 }
 
-function mergeBlockPrefsWithBlocks(blocks) {
+function mergeBlockPrefsWithBlocks(blocks, blocksPref) {
 	'use strict';
-	let blocksPref = JSON.parse(pref.getPref('blocks'));
-
 	if (!blocksPref.left) {
 		blocksPref.left = blocks.left.map(createBlockPref);
 	} else {
@@ -48,30 +46,9 @@ function filterContentHidden(block) {
 	return block.contentHidden;
 }
 
-function requestBlockHide(events, block) {
+function updateBlock(details, prefName, value, blockPrefs) {
 	'use strict';
-	emitBlockEvent(events, 'block.hide', block);
-	emitBlockEvent(events, 'hupper-block.hide-block', block);
-}
-
-function requestBlockContentHide(events, block) {
-	'use strict';
-	emitBlockEvent(events, 'block.hide-content', block);
-	emitBlockEvent(events, 'hupper-block.show-block', block);
-}
-
-function emitBlockEvent(events, event, block) {
-	'use strict';
-	events.emit(event, {
-		id: block.id,
-		column: block.column
-	});
-}
-
-function updateBlock(details, prefName, value) {
-	'use strict';
-	let blockPrefs = JSON.parse(pref.getPref('blocks')),
-		columnBlocks = details.column === 'sidebar-right' ?
+	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
 
@@ -81,57 +58,7 @@ function updateBlock(details, prefName, value) {
 
 	block[prefName] = value;
 
-	pref.setPref('blocks', JSON.stringify(blockPrefs));
-
 	return block;
-}
-
-function onBlockDelete(events, details) {
-	'use strict';
-
-	let block = updateBlock(details, 'hidden', true);
-
-	emitBlockEvent(events, 'block.hide', block);
-	emitBlockEvent(events, 'hupper-block.hide-block', block);
-}
-
-function onBlockRestore(events, details) {
-	'use strict';
-
-	console.log('on block restore', details);
-	
-
-	let block = updateBlock(details, 'hidden', false);
-
-	emitBlockEvent(events, 'block.show', block);
-	emitBlockEvent(events, 'hupper-block.show-block', block);
-}
-
-function onBlockHideContent(events, details) {
-	'use strict';
-
-	let block = updateBlock(details, 'contentHidden', true);
-
-	emitBlockEvent(events, 'block.hide-content', block);
-}
-
-function onBlockShowContent(events, details) {
-	'use strict';
-
-	let block = updateBlock(details, 'contentHidden', false);
-
-	emitBlockEvent(events, 'block.show-content', block);
-}
-
-function index(array, cb) {
-	'use strict';
-	for (let i = 0, al = array.length; i < al; i++) {
-		if (cb(array[i])) {
-			return i;
-		}
-	}
-
-	return -1;
 }
 
 function findNotHiddenIndex(blocks, start, direction) {
@@ -160,14 +87,13 @@ function findNotHiddenIndex(blocks, start, direction) {
 	return -1;
 }
 
-function onBlockChangeOrder(events, details) {
+function onBlockChangeOrder(events, details, blockPrefs) {
 	'use strict';
-	let blockPrefs = JSON.parse(pref.getPref('blocks')),
-		columnBlocks = details.column === 'sidebar-right' ?
+	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
 
-	let blockIndex = index(columnBlocks, function (block) {
+	let blockIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
 	});
 
@@ -179,27 +105,19 @@ function onBlockChangeOrder(events, details) {
 			blockIndex + 1, details.action);
 
 
-		console.log('new index', newIndex);
-
 		columnBlocks.splice(newIndex, 0, tmpBlock[0]);
-		pref.setPref('blocks', JSON.stringify(blockPrefs));
-
-		events.emit('block.change-order', {
-			sidebar: details.column,
-			blocks: columnBlocks
-		});
+		return columnBlocks;
 	}
 
 }
 
-function onBlockChangeColumn(events, details) {
+function onBlockChangeColumn(events, details, blockPrefs) {
 	'use strict';
-	let blockPrefs = JSON.parse(pref.getPref('blocks')),
-		columnBlocks = details.column === 'sidebar-right' ?
+	let columnBlocks = details.column === 'sidebar-right' ?
 			blockPrefs.right :
 			blockPrefs.left;
 
-	let blockIndex = index(columnBlocks, function (block) {
+	let blockIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
 	});
 
@@ -211,47 +129,8 @@ function onBlockChangeColumn(events, details) {
 			blockPrefs.right;
 
 		otherColumn.unshift(tmpBlock[0]);
-
-		pref.setPref('blocks', JSON.stringify(blockPrefs));
-
-		events.emit('block.change-column', blockPrefs);
 	}
 
-}
-
-/**
- * @param blockActionStruct action
- */
-function onBlockAction(events, details) {
-	'use strict';
-
-	switch (details.action) {
-		case 'delete':
-			onBlockDelete(events, details);
-		break;
-
-		case 'restore':
-			onBlockRestore(events, details);
-		break;
-
-		case 'hide-content':
-			onBlockHideContent(events, details);
-		break;
-
-		case 'show-content':
-			onBlockShowContent(events, details);
-		break;
-
-		case 'up':
-		case 'down':
-			onBlockChangeOrder(events, details);
-		break;
-
-		case 'right':
-		case 'left':
-			onBlockChangeColumn(events, details);
-		break;
-	}
 }
 
 function getBlockTitles() {
@@ -288,22 +167,10 @@ function getBlockTitles() {
 	};
 }
 
-function parseBlocks(events, blocksPref) {
-	'use strict';
-	blocksPref.left.concat(blocksPref.right)
-			.filter(filterHidden)
-			.forEach(func.partial(requestBlockHide, events));
-
-	blocksPref.left.concat(blocksPref.right)
-			.filter(filterContentHidden)
-			.forEach(func.partial(requestBlockContentHide, events));
-}
-
 exports.mergeBlockPrefsWithBlocks = mergeBlockPrefsWithBlocks;
 exports.filterHidden = filterHidden;
 exports.filterContentHidden = filterContentHidden;
-exports.requestBlockHide = requestBlockHide;
-exports.requestBlockContentHide = requestBlockContentHide;
-exports.onBlockAction = onBlockAction;
 exports.getBlockTitles = getBlockTitles;
-exports.parseBlocks = parseBlocks;
+exports.onBlockChangeOrder = onBlockChangeOrder;
+exports.onBlockChangeColumn = onBlockChangeColumn;
+exports.updateBlock = updateBlock;

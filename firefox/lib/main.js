@@ -37,6 +37,7 @@ function eventEmitter(worker) {
 
 pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
+	attachTo: ['top', 'existing'],
 	onAttach: function (worker) {
 		'use strict';
 		let events = eventEmitter(worker);
@@ -163,20 +164,132 @@ pageMod.PageMod({
 			});
 		}
 
+		function requestBlockHide(events, block) {
+			emitBlockEvent(events, 'block.hide', block);
+			emitBlockEvent(events, 'hupper-block.hide-block', block);
+		}
+
+		function requestBlockContentHide(events, block) {
+			emitBlockEvent(events, 'block.hide-content', block);
+			emitBlockEvent(events, 'hupper-block.show-block', block);
+		}
+
+		function emitBlockEvent(events, event, block) {
+			events.emit(event, {
+				id: block.id,
+				column: block.column
+			});
+		}
+
+		function updateBlock(details, prefName, value) {
+			let blockPrefs = JSON.parse(pref.getPref('blocks'));
+			let modBlocks = require('./blocks');
+			let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
+			pref.setPref('blocks', JSON.stringify(blockPrefs));
+			return output;
+		}
+
+		function onBlockDelete(events, details) {
+			let block = updateBlock(details, 'hidden', true);
+
+			emitBlockEvent(events, 'block.hide', block);
+			emitBlockEvent(events, 'hupper-block.hide-block', block);
+		}
+
+		function onBlockRestore(events, details) {
+			let block = updateBlock(details, 'hidden', false);
+
+			emitBlockEvent(events, 'block.show', block);
+			emitBlockEvent(events, 'hupper-block.show-block', block);
+		}
+
+		function onBlockHideContent(events, details) {
+			let block = updateBlock(details, 'contentHidden', true);
+
+			emitBlockEvent(events, 'block.hide-content', block);
+		}
+
+		function onBlockShowContent(events, details) {
+			let block = updateBlock(details, 'contentHidden', false);
+
+			emitBlockEvent(events, 'block.show-content', block);
+		}
+
+		function onUpDownAction(events, details) {
+			let blockPrefs = pref.getPref('blocks');
+			let columnBlocks = require('./blocks').onBlockChangeOrder(events, details, blockPrefs);
+			if (columnBlocks) {
+				pref.setPref('blocks', JSON.stringify(blockPrefs));
+				events.emit('block.change-order', {
+					sidebar: details.column,
+					blocks: columnBlocks
+				});
+			}
+		}
+
+		function onLeftRightAction(events, details) {
+			let blockPrefs = pref.getPref('blocks');
+			require('./blocks').onBlockChangeColumn(events, details, blockPrefs);
+
+			pref.setPref('blocks', JSON.stringify(blockPrefs));
+
+			events.emit('block.change-column', blockPrefs);
+		}
+
+		/**
+		* @param blockActionStruct action
+		*/
+		function onBlockAction(events, details) {
+
+			switch (details.action) {
+				case 'delete':
+					onBlockDelete(events, details);
+				break;
+
+				case 'restore':
+					onBlockRestore(events, details);
+				break;
+
+				case 'hide-content':
+					onBlockHideContent(events, details);
+				break;
+
+				case 'show-content':
+					onBlockShowContent(events, details);
+				break;
+
+				case 'up':
+				case 'down':
+					onUpDownAction(events, details);
+				break;
+
+				case 'left':
+				case 'right':
+					onLeftRightAction(events, details);
+				break;
+			}
+		}
+
 		function finishBlockSetup(blocks, blocksPref) {
-			let modBlocks = require('blocks');
+			let modBlocks = require('./blocks');
 			events.emit('enableBlockControls', blocks.left);
 			events.emit('enableBlockControls', blocks.right);
 			events.emit('blocks.set-titles', modBlocks.getBlockTitles());
 
-			modBlocks.parseBlocks(events, blocksPref);
+			blocksPref.left.concat(blocksPref.right)
+					.filter(modBlocks.filterHidden)
+					.forEach(func.partial(requestBlockHide, events));
 
-			events.on('block.action', func.partial(modBlocks.onBlockAction, events));
+			blocksPref.left.concat(blocksPref.right)
+					.filter(modBlocks.filterContentHidden)
+					.forEach(func.partial(requestBlockContentHide, events));
+
+			events.on('block.action', func.partial(onBlockAction, events));
 		}
 
 		function onGotBlocks(blocks) {
-			let modBlocks = require('blocks'),
-			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks);
+			let modBlocks = require('./blocks'),
+			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
 
 			pref.setPref('blocks', JSON.stringify(blocksPref));
 
