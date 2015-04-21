@@ -349,3 +349,37 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		*/
 	}
 });
+
+var onContextClick = function (type) {
+	'use strict';
+    return function (e) {
+        chrome.tabs.getSelected(null, function (tab) {
+            chrome.tabs.sendMessage(tab.id, {
+                event: type,
+                data: e
+            }, function () {
+                // console.log(cb)
+            });
+        });
+    };
+};
+var contextConf = {
+    contexts: ['link'],
+    targetUrlPatterns: [
+        'http://www.hup.hu/user/*',
+        'https://www.hup.hu/user/*',
+        'http://hup.hu/user/*',
+        'https://hup.hu/user/*'
+    ]
+};
+['trolluser', 'untrolluser', 'highlightuser', 'unhighlightuser'].forEach(function (title) {
+	'use strict';
+
+    let conf = {
+        title: title,
+        contexts: contextConf.contexts,
+        targetUrlPatterns: contextConf.targetUrlPatterns,
+        onclick: onContextClick(title)
+    };
+    chrome.contextMenus.create(conf);
+});

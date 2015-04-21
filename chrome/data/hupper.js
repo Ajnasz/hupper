@@ -168,7 +168,9 @@
 	function onBlocakChangeOrderAll(data) {
 		let modBlocks = req('blocks');
 		modBlocks.reorderBlocks(data);
-		chrome.runtime.sendMessage({event: 'blocks.change-order-all-done'});
+		setTimeout(function () {
+			chrome.runtime.sendMessage({event: 'blocks.change-order-all-done'});
+		}, 5);
 	}
 
 	function onBlockChangeOrder(data) {
@@ -206,6 +208,22 @@
 		modBlocks.setTitles(data);
 	}
 
+	function onHighlightUser(data) {
+		return data;
+	}
+
+	function onUnhighlightUser(data) {
+		return data;
+	}
+
+	function onTrollUser(data) {
+		return data;
+	}
+
+	function onUntrollUser(data) {
+		return data;
+	}
+
 	let blockActionStruct = {
 		id: '',
 		action: '',
@@ -219,6 +237,7 @@
 		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
 		commonParent.addEventListener('click', function (e) {
 			if (dom.is(e.target, '.block-button')) {
+				// e.stopPropagation();
 				let block = dom.closest(e.target, '.block'),
 				action = e.target.dataset.action,
 				event = Object.create(blockActionStruct);
@@ -290,7 +309,6 @@
 				case 'enableBlockControls':
 					onEnableBlockControls(request.data);
 				break;
-				
 
 				case 'block.show':
 					onBlockShow(request.data);
@@ -318,6 +336,22 @@
 
 				case 'blocks.set-titles':
 					onBlockSetTitles(request.data);
+				break;
+
+				case 'trolluser':
+					onTrollUser(request.data);
+				break;
+
+				case 'untrolluser':
+					onUntrollUser(request.data);
+				break;
+
+				case 'highlightuser':
+					onHighlightUser(request.data);
+				break;
+
+				case 'unhighlightuser':
+					onUnhighlightUser(request.data);
 				break;
 
 				default:
