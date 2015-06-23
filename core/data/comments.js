@@ -76,9 +76,14 @@ console.log('comments.js');
 		 * @return string
 		 */
 		function getCommentAuthor(comment) {
-			var output = '';
+			var output = '',
+				nameLink;
 
-			output = comment.header.querySelector('a').textContent.trim();
+			nameLink = comment.header.querySelector('a');
+
+			if (nameLink) {
+				output = nameLink.textContent.trim();
+			}
 
 			if (output === '') {
 				output = comment.header.textContent.replace(ANONYM_COMMENT_AUTHOR_REGEXP, '$1');

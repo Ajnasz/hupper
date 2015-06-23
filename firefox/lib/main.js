@@ -86,7 +86,7 @@ pageMod.PageMod({
 
 				let newComments = modComments.getNewComments(comments);
 
-				if (pref.getPref('replacenewcommenttext')) {
+				if (pref.getPref('replacenewcommenttext') && newComments.length > 0) {
 					events.emit('comment.setNew', {
 						comments: newComments,
 						text: pref.getPref('newcommenttext')

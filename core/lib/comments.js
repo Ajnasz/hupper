@@ -51,7 +51,7 @@
 			return p.trim() !== '';
 		});
 
-		return paragraphs.length <= 1 && boringRegexp.test(paragraphs[0].trim());
+		return paragraphs.length === 1 && boringRegexp.test(paragraphs[0].trim());
 	}
 
 	function isTrollComment(trolls, comment) {
