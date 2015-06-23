@@ -31,7 +31,7 @@
 				node = blockDataStructToBlockElement(block);
 
 			output.node = node;
-			output.header = node.querySelector(BLOCK_HEADER_ELEMENT);
+			output.header = node ? node.querySelector(BLOCK_HEADER_ELEMENT) : null;
 			// output.content = node.querySelector('.content');
 
 			return output;
