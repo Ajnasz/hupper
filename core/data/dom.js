@@ -65,6 +65,8 @@
 		function findCommonParent(elements) {
 			var index, parent, maxIndex;
 
+			elements = elements.filter((x) => x !== null);
+
 			maxIndex = elements.length - 1;
 			index = 0;
 			parent = elements[index].parentNode;
@@ -75,7 +77,7 @@
 						parent = parent.parentNode;
 
 						if (!parent) {
-							parent = null;
+							// parent = null;
 							break;
 						}
 					} else {
