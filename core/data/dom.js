@@ -1,4 +1,4 @@
-/*jshint moz:true*/
+/*jshint moz:true, esnext: true*/
 (function (def, req) {
 	'use strict';
 	def('dom', function () {
