@@ -12,3 +12,5 @@ chrome/data/built-es6.js
 
 chrome/lib/built.js
 chrome/lib/built-es6.js
+
+chrome/node_modules
