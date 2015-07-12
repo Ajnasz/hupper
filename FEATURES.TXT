@@ -1,0 +1,42 @@
+# General
+
+Feature                 | F | C | Bug
+------------------------|---|---|------------------------------------------------------
+Custom style for pager  | Y | N |
+Custom font size        | Y | N |
+Custom block width      | Y | N |
+Unlimited comments      | Y | N |
+
+# Blocks, sidebars
+
+Feature                 | F | C | Bug
+------------------------|---|---|------------------------------------------------------
+Hide block content      | Y | Y |
+Hide block              | Y | Y |
+Move block up/down      | Y | Y |
+Move block left/right   | Y | Y |
+Hupper block            | Y | N |
+Hide left/right sidebar | Y | N |
+
+# Front page:
+
+Feature                  | F | C | Bug
+-------------------------|---|---|------------------------------------------------------
+Replace [new] text       | Y | Y |
+Next/Prev links articles | Y | Y | Prev appears if the first article (eg. ads) is hidden
+Hide article             | Y | Y |
+Custom style for pager   | Y | N |
+Custom font size         | Y | N |
+Custom block width       | Y | N |
+
+# Article page (comments)
+
+Feature                  | F | C | Bug
+-------------------------|---|---|--------------------------------------------------------
+Next/Prev links          | Y | Y |
+Link to parent comment   | Y | Y |
+Widen parent comment     | Y | Y |
+Show "+1" for comments   | Y | Y |
+Highlight user comment   | Y | N |
+Mark troll user comment  | Y | N |
+Highlight linked comment | Y | Y | Hidden comment and answer to hidden comment not visible
