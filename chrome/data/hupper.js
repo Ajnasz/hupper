@@ -234,10 +234,10 @@
 		let modBlocks = req('blocks');
 		let dom = req('dom');
 		modBlocks.decorateBlocks(blocks);
-		var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+
+		let commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
 		commonParent.addEventListener('click', function (e) {
 			if (dom.is(e.target, '.block-button')) {
-				// e.stopPropagation();
 				let block = dom.closest(e.target, '.block'),
 				action = e.target.dataset.action,
 				event = Object.create(blockActionStruct);

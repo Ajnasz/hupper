@@ -275,16 +275,15 @@ pageMod.PageMod({
 
 		function finishBlockSetup(blocks, blocksPref) {
 			let modBlocks = require('./core/blocks');
-			events.emit('enableBlockControls', blocks.left);
-			events.emit('enableBlockControls', blocks.right);
+
 			events.emit('blocks.set-titles', modBlocks.getBlockTitles());
 
-			blocksPref.left.concat(blocksPref.right)
-					.filter(modBlocks.filterHidden)
+			let allBlocks = blocksPref.left.concat(blocksPref.right);
+
+			allBlocks.filter(modBlocks.filterHidden)
 					.forEach(func.partial(requestBlockHide, events));
 
-			blocksPref.left.concat(blocksPref.right)
-					.filter(modBlocks.filterContentHidden)
+			allBlocks.filter(modBlocks.filterContentHidden)
 					.forEach(func.partial(requestBlockContentHide, events));
 
 			events.on('block.action', func.partial(onBlockAction, events));
@@ -292,9 +291,14 @@ pageMod.PageMod({
 
 		function onGotBlocks(blocks) {
 			let modBlocks = require('./core/blocks'),
-			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, JSON.parse(pref.getPref('blocks')));
+				blocksPref = JSON.parse(pref.getPref('blocks'));
+
+			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
 
 			pref.setPref('blocks', JSON.stringify(blocksPref));
+
+			events.emit('enableBlockControls', blocks.left);
+			events.emit('enableBlockControls', blocks.right);
 
 			events.on('blocks.change-order-all-done', function () {
 				finishBlockSetup(blocks, blocksPref);

@@ -135,6 +135,12 @@
 			toggleBlockClass(block, 'content-hidden', false);
 		}
 
+		/**
+		 * @param {HTMLTDElement} sidebar The sidebar where the blocks will be placed
+		 * @param {blockPref[]} blocks Array of blockpref objects (See
+		 * lib/blocks.js, has properties: id, hidden, contentHidden)
+		 * @param {elementList} elementList List of block elements (ALL)
+		 */
 		function renderSidebar(sidebar, blocks, elementList) {
 			blocks.forEach(function (block) {
 				let index = func.index(elementList, function (blockElem) {

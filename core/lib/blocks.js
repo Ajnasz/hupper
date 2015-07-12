@@ -14,22 +14,30 @@ function createBlockPref(block) {
 }
 
 function mergeBlockPrefsWithBlocks(blocks, blocksPref) {
+	if (!blocksPref) {
+		blocksPref = {};
+	}
+
 	if (!blocksPref.left) {
 		blocksPref.left = blocks.left.map(createBlockPref);
 	} else {
 		blocksPref.left = blocksPref.left.concat(blocks.left.filter(function (block) {
 			return !blocksPref.left.some(function (b) {
 				return b.id === block.id;
-			});
+			}) && !blocksPref.right.some(function (b) {
+				return b.id === block.id;
+			}) ;
 		}));
 	}
 	if (!blocksPref.right) {
 		blocksPref.right = blocks.right.map(createBlockPref);
 	} else {
 		blocksPref.right = blocksPref.right.concat(blocks.right.filter(function (block) {
-			return !blocksPref.right.some(function (b) {
+			return !blocksPref.left.some(function (b) {
 				return b.id === block.id;
-			});
+			}) && !blocksPref.right.some(function (b) {
+				return b.id === block.id;
+			}) ;
 		}));
 	}
 
@@ -45,9 +53,15 @@ function filterContentHidden(block) {
 }
 
 function updateBlock(details, prefName, value, blockPrefs) {
-	let columnBlocks = details.column === 'sidebar-right' ?
-			blockPrefs.right :
-			blockPrefs.left;
+	let columnBlocks;
+
+	if (details.column === 'sidebar-right') {
+		columnBlocks = blockPrefs.right;
+	} else if (details.column === 'sidebar-left') {
+		columnBlocks = blockPrefs.left;
+	} else {
+		throw new Error('Unknown sidebar');
+	}
 
 	let block = columnBlocks.filter(function (b) {
 		return b.id === details.id;
@@ -103,7 +117,6 @@ function onBlockChangeOrder(events, details, blockPrefs) {
 		columnBlocks.splice(oldIndex, 1, tmpBlock[0]);
 		return columnBlocks;
 	}
-
 }
 
 function onBlockChangeColumn(events, details, blockPrefs) {

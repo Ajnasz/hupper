@@ -10,11 +10,15 @@ console.log('hupper.js');
 
 	let func = req('func');
 
-	let blockActionStruct = {
-		id: '',
-		action: '',
-		column: ''
-	};
+	let blockActionStruct = (function () {
+		let obj = Object.create(null);
+
+		obj.id = '';
+		obj.action = '';
+		obj.column = '';
+
+		return obj;
+	});
 
 	function addHupperBlock() {
 		return new Promise(function (resolve) {
@@ -150,7 +154,11 @@ console.log('hupper.js');
 
 		self.port.on('enableBlockControls', function (blocks) {
 			modBlocks.decorateBlocks(blocks);
-			var commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+
+			let commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
+
+			console.log('enabel block controls', commonParent.id, blocks);
+			
 			commonParent.addEventListener('click', function (e) {
 				if (dom.is(e.target, '.block-button')) {
 					let block = dom.closest(e.target, '.block'),
