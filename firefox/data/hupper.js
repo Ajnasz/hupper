@@ -63,40 +63,7 @@ console.log('hupper.js');
 
 			console.log('subscribe');
 
-			self.port.on('comments.update', function (comments) {
-				comments.forEach(function (comment) {
-					if (comment.hide) {
-						modComment.hide(comment);
-
-						if (comment.boring) {
-							modComment.setProp(comment, 'boring', true);
-						}
-
-						if (comment.troll) {
-							modComment.setProp(comment, 'troll', true);
-						}
-					} else {
-						if (modComment.getProp(comment, 'boring')) {
-							modComment.setProp(comment, 'boring', false);
-						} else if (modComment.getProp(comment, 'troll')) {
-							modComment.setProp(comment, 'troll', false);
-						}
-
-						modComment.show(comment);
-
-						if (comment.userColor) {
-							modComment.highlightComment(comment);
-						} else {
-							modComment.unhighlightComment(comment);
-						}
-
-						if (comment.score !== 0) {
-							modComment.showScore(comment);
-						}
-					}
-
-				});
-			});
+			self.port.on('comments.update', modComment.onCommentUpdate);
 
 			self.port.on('comment.setNew', function (newComments) {
 				var obj = newComments.comments.map(modComment.commentDataStructToObj);

@@ -303,7 +303,7 @@
 				break;
 
 				case 'comments.update':
-					onCommentsUpdate(data);
+					req('comment').onCommentUpdate(data);
 				break;
 
 				case 'comment.setNew':

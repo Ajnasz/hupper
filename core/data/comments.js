@@ -1,4 +1,4 @@
-/*jshint moz:true*/
+/*jshint esnext:true*/
 console.log('comments.js');
 (function (def, req) {
 	'use strict';
@@ -536,6 +536,41 @@ console.log('comments.js');
 			}
 		}
 
+		function onCommentUpdate(comments) {
+			comments.forEach((comment) => {
+				if (comment.hide) {
+					hide(comment);
+
+					if (comment.boring) {
+						setProp(comment, 'boring', true);
+					}
+
+					if (comment.troll) {
+						setProp(comment, 'troll', true);
+					}
+				} else {
+					if (getProp(comment, 'boring')) {
+						setProp(comment, 'boring', false);
+					} else if (getProp(comment, 'troll')) {
+						setProp(comment, 'troll', false);
+					}
+
+					show(comment);
+
+					if (comment.userColor) {
+						highlightComment(comment);
+					} else {
+						unhighlightComment(comment);
+					}
+
+					if (comment.score !== 0) {
+						showScore(comment);
+					}
+				}
+
+			});
+		}
+
 		return {
 			getComments: getComments,
 			parseComment: parseComment,
@@ -557,7 +592,8 @@ console.log('comments.js');
 			setProp: setProp,
 			getProp: getProp,
 			getCommentFromId: getCommentFromId,
-			showScore: showScore
+			showScore: showScore,
+			onCommentUpdate: onCommentUpdate
 		};
 	});
 }(window.def, window.req));
