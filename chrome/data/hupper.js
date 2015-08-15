@@ -8,38 +8,13 @@
 	let modBlocks = req('blocks');
 	let modHupperBlock = req('hupper-block');
 
-	let blockActionStruct = (function () {
-		let obj = Object.create(null);
-
-		obj.id = '';
-		obj.action = '';
-		obj.column = '';
-
-		return obj;
-	});
-
-
 	function addHupperBlock() {
 		return new Promise(function (resolve) {
-			console.log('Add hupper block');;
 			modHupperBlock.addHupperBlock();
 
 			document.getElementById('block-hupper').addEventListener('click', function (e) {
-				var target = e.target;
-				let dataSet = target.dataset;
-
-				if (dataSet.action === 'restore-block') {
-					e.preventDefault();
-
-					let event = Object.create(blockActionStruct);
-
-					let blockId = dataSet.blockid;
-
-					let block = document.getElementById(blockId);
-
-					event.id = blockId;
-					event.action = 'restore';
-					event.column = modBlocks.getBlockColumn(block);
+				let event = modBlocks.onBlockControlClick(e);
+				if (event) {
 					chrome.runtime.sendMessage({'event': 'block.action', data: event});
 				}
 			}, false);
@@ -76,18 +51,11 @@
 	}
 
 	function onAddCategoryHideButton(items) {
-		let modArticles = req('articles');
-
-		items.map(modArticles.articleStructToArticleNodeStruct).forEach(modArticles.addCategoryHideButton);
+		req('articles').onAddCategoryHideButton(items);
 	}
 
 	function onArticlesHide(articles) {
-		let modArticles = req('articles');
-		articles
-			.map(modArticles.articleStructToArticleNodeStruct)
-			.forEach(function (a) {
-				a.node.classList.add('hup-hidden');
-			});
+		req('articles').hideArticles(articles);
 	}
 
 	function onGetComments(options) {
@@ -157,42 +125,6 @@
 		let modComment = req('comment');
 		var obj = newComments.comments.map(modComment.commentDataStructToObj);
 		obj.forEach((comment) => modComment.setNew(comment, newComments.text));
-	}
-
-	function onCommentsUpdate(comments) {
-		comments.forEach(function (comment) {
-			let modComment = req('comment');
-			if (comment.hide) {
-				modComment.hide(comment);
-
-				if (comment.boring) {
-					modComment.setProp(comment, 'boring', true);
-				}
-
-				if (comment.troll) {
-					modComment.setProp(comment, 'troll', true);
-				}
-			} else {
-				if (modComment.getProp(comment, 'boring')) {
-					modComment.setProp(comment, 'boring', false);
-				} else if (modComment.getProp(comment, 'troll')) {
-					modComment.setProp(comment, 'troll', false);
-				}
-
-				modComment.show(comment);
-
-				if (comment.userColor) {
-					modComment.highlightComment(comment);
-				} else {
-					modComment.unhighlightComment(comment);
-				}
-
-				if (comment.score !== 0) {
-					modComment.showScore(comment);
-				}
-			}
-
-		});
 	}
 
 	function onCommentAddNextPrev(item) {
@@ -272,14 +204,9 @@
 
 		let commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
 		commonParent.addEventListener('click', function (e) {
-			if (dom.is(e.target, '.block-button')) {
-				let block = dom.closest(e.target, '.block'),
-				action = e.target.dataset.action,
-				event = Object.create(blockActionStruct);
+			let event = modBlocks.onBlockButtonClick(e);
 
-				event.id = block.getAttribute('id');
-				event.action = action;
-				event.column = modBlocks.getBlockColumn(block);
+			if (event) {
 				chrome.runtime.sendMessage({event: 'block.action', data: event});
 			}
 		}, false);
@@ -303,7 +230,7 @@
 				break;
 
 				case 'comments.update':
-					onCommentsUpdate(data);
+					req('comment').onCommentUpdate(data);
 				break;
 
 				case 'comment.setNew':
@@ -430,6 +357,4 @@
 	window.addEventListener('unload', function () {
 		chrome.runtime.sendMessage({'event': 'unload'});
 	});
-
-	console.log('aSDFASF');
 }(window.req));

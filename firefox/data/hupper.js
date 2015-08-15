@@ -10,16 +10,6 @@ console.log('hupper.js');
 
 	let func = req('func');
 
-	let blockActionStruct = (function () {
-		let obj = Object.create(null);
-
-		obj.id = '';
-		obj.action = '';
-		obj.column = '';
-
-		return obj;
-	});
-
 	function addHupperBlock() {
 		return new Promise(function (resolve) {
 			modHupperBlock.addHupperBlock();
@@ -28,21 +18,8 @@ console.log('hupper.js');
 			self.port.on('hupper-block.show-block', modHupperBlock.removeHiddenBlock);
 
 			document.getElementById('block-hupper').addEventListener('click', function (e) {
-				var target = e.target;
-				let dataSet = target.dataset;
-
-				if (dataSet.action === 'restore-block') {
-					e.preventDefault();
-
-					let event = Object.create(blockActionStruct);
-
-					let blockId = dataSet.blockid;
-
-					let block = document.getElementById(blockId);
-
-					event.id = blockId;
-					event.action = 'restore';
-					event.column = modBlocks.getBlockColumn(block);
+				let event = modBlocks.onBlockControlClick(e);
+				if (event) {
 					self.port.emit('block.action', event);
 				}
 			}, false);
@@ -63,40 +40,7 @@ console.log('hupper.js');
 
 			console.log('subscribe');
 
-			self.port.on('comments.update', function (comments) {
-				comments.forEach(function (comment) {
-					if (comment.hide) {
-						modComment.hide(comment);
-
-						if (comment.boring) {
-							modComment.setProp(comment, 'boring', true);
-						}
-
-						if (comment.troll) {
-							modComment.setProp(comment, 'troll', true);
-						}
-					} else {
-						if (modComment.getProp(comment, 'boring')) {
-							modComment.setProp(comment, 'boring', false);
-						} else if (modComment.getProp(comment, 'troll')) {
-							modComment.setProp(comment, 'troll', false);
-						}
-
-						modComment.show(comment);
-
-						if (comment.userColor) {
-							modComment.highlightComment(comment);
-						} else {
-							modComment.unhighlightComment(comment);
-						}
-
-						if (comment.score !== 0) {
-							modComment.showScore(comment);
-						}
-					}
-
-				});
-			});
+			self.port.on('comments.update', modComment.onCommentUpdate);
 
 			self.port.on('comment.setNew', function (newComments) {
 				var obj = newComments.comments.map(modComment.commentDataStructToObj);
@@ -160,14 +104,8 @@ console.log('hupper.js');
 			console.log('enabel block controls', commonParent.id, blocks);
 			
 			commonParent.addEventListener('click', function (e) {
-				if (dom.is(e.target, '.block-button')) {
-					let block = dom.closest(e.target, '.block'),
-					action = e.target.dataset.action,
-					event = Object.create(blockActionStruct);
-
-					event.id = block.getAttribute('id');
-					event.action = action;
-					event.column = modBlocks.getBlockColumn(block);
+				let event = modBlocks.onBlockButtonClick(e);
+				if (event) {
 					self.port.emit('block.action', event);
 				}
 			}, false);
@@ -212,16 +150,9 @@ console.log('hupper.js');
 				}
 			});
 
-			self.port.on('articles.add-category-hide-button', function (items) {
-				items.map(modArticles.articleStructToArticleNodeStruct).forEach(modArticles.addCategoryHideButton);
-			});
+			self.port.on('articles.add-category-hide-button', modArticles.addCategoryHideButton);
 
-			self.port.on('articles.hide', function (articles) {
-				articles.map(modArticles.articleStructToArticleNodeStruct).forEach(function (a) {
-					a.node.classList.add('hup-hidden');
-
-				});
-			});
+			self.port.on('articles.hide', modArticles.hideArticles);
 
 			document.getElementById('content-both').addEventListener('click', function (e) {
 				if (e.target.classList.contains('taxonomy-button')) {

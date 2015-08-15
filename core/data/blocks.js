@@ -199,6 +199,48 @@
 			});
 		}
 
+		let blockActionStruct = (function () {
+			let obj = Object.create(null);
+
+			obj.id = '';
+			obj.action = '';
+			obj.column = '';
+
+			return obj;
+		});
+
+		function onBlockControlClick(e) {
+			if (dom.is(e.target, '.block-button')) {
+				let block = dom.closest(e.target, '.block'),
+				action = e.target.dataset.action,
+				event = Object.create(blockActionStruct);
+
+				event.id = block.getAttribute('id');
+				event.action = action;
+				event.column = getBlockColumn(block);
+
+				return event;
+			}
+
+			return false;
+		}
+
+		function onBlockButtonClick(e) {
+			if (dom.is(e.target, '.block-button')) {
+				let block = dom.closest(e.target, '.block'),
+				action = e.target.dataset.action,
+				event = Object.create(blockActionStruct);
+
+				event.id = block.getAttribute('id');
+				event.action = action;
+				event.column = getBlockColumn(block);
+
+				return event;
+			}
+
+			return false;
+		}
+
 		return {
 			getBlocks: getBlocks,
 			decorateBlocks: decorateBlocks,
@@ -211,7 +253,9 @@
 			showContent: showBlockContent,
 			setBlockOrder: setBlockOrder,
 			reorderBlocks: reorderBlocks,
-			setTitles: setTitles
+			setTitles: setTitles,
+			onBlockControlClick: onBlockControlClick,
+			onBlockButtonClick: onBlockButtonClick
 		};
 	});
 }(window.def, window.req));

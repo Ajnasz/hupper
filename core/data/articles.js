@@ -126,6 +126,20 @@ console.log('articles.js');
 			return func.toArray(elements).map(articleElementToStruct);
 		}
 
+		function hideArticles(articles) {
+			articles
+				.map(articleStructToArticleNodeStruct)
+				.forEach(function (a) {
+					a.node.classList.add('hup-hidden');
+				});
+		}
+
+		function onAddCategoryHideButton(items) {
+			items
+				.map(articleStructToArticleNodeStruct)
+				.forEach(addCategoryHideButton);
+		}
+
 		return {
 			parseArticles: parseArticles,
 			markNewArticle: markNewArticle,
@@ -133,7 +147,9 @@ console.log('articles.js');
 			addLinkToPrevArticle: addLinkToPrevArticle,
 			addLinkToNextArticle: addLinkToNextArticle,
 			addCategoryHideButton: addCategoryHideButton,
-			articleElementToStruct: articleElementToStruct
+			articleElementToStruct: articleElementToStruct,
+			hideArticles: hideArticles,
+			onAddCategoryHideButton: onAddCategoryHideButton
 		};
 	});
 }(window.def, window.req));
