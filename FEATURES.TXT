@@ -15,8 +15,8 @@ Hide block content      | Y | Y |
 Hide block              | Y | Y |
 Move block up/down      | Y | Y |
 Move block left/right   | Y | Y |
-Hupper block            | Y | N |
-Hide left/right sidebar | Y | N |
+Hupper block            | Y | Y |
+Hide left/right sidebar | Y | N | In FF need to restart browser
 
 # Front page:
 
@@ -25,9 +25,6 @@ Feature                  | F | C | Bug
 Replace [new] text       | Y | Y |
 Next/Prev links articles | Y | Y | Prev appears if the first article (eg. ads) is hidden
 Hide article             | Y | Y |
-Custom style for pager   | Y | N |
-Custom font size         | Y | N |
-Custom block width       | Y | N |
 
 # Article page (comments)
 
