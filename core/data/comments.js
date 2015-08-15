@@ -571,6 +571,55 @@ console.log('comments.js');
 			});
 		}
 
+		function onCommentAddNextPrev(item) {
+			if (item.prevId) {
+				addLinkToPrevComment(item.id, item.prevId);
+			}
+
+			if (item.nextId) {
+				addLinkToNextComment(item.id, item.nextId);
+			}
+		}
+
+		function onCommentSetNew(newComments) {
+			var obj = newComments.comments.map(commentDataStructToObj);
+			obj.forEach((comment) => setNew(comment, newComments.text));
+		}
+
+		function onCommentsContainerClick(e) {
+			if (dom.is(e.target, '.expand-comment')) {
+				e.preventDefault();
+				unwideComments();
+				let id = dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id');
+				widenComment(id);
+
+			}
+		}
+
+		function onBodyClick(e) {
+			if (e.target.nodeName === 'A') {
+				return;
+			}
+
+			if (dom.closest(e.target, '.comment')) {
+				return;
+			}
+
+			unwideComments();
+		}
+
+		function convertComments(comments, opts) {
+			return comments.map(function (opts, comment) {
+				let output = parseComment(getCommentFromId(comment.id), {
+					content: opts && opts.content
+				});
+
+				output.children = convertComments(comment.children, opts);
+
+				return output;
+			}.bind(null, opts));
+		}
+
 		return {
 			getComments: getComments,
 			parseComment: parseComment,
@@ -593,7 +642,12 @@ console.log('comments.js');
 			getProp: getProp,
 			getCommentFromId: getCommentFromId,
 			showScore: showScore,
-			onCommentUpdate: onCommentUpdate
+			onCommentUpdate: onCommentUpdate,
+			onCommentAddNextPrev: onCommentAddNextPrev,
+			onCommentSetNew: onCommentSetNew,
+			onCommentsContainerClick: onCommentsContainerClick,
+			onBodyClick: onBodyClick,
+			convertComments: convertComments
 		};
 	});
 }(window.def, window.req));

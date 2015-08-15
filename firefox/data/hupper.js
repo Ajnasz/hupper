@@ -10,17 +10,33 @@ console.log('hupper.js');
 
 	let func = req('func');
 
+	var events = (function (){
+		return {
+			on: function on(name, cb) {
+				console.log('LISTEN TO', name);
+
+				self.port.on(name, cb);
+			},
+			emit: function emit(name, args) {
+				console.log('EMIT', name);
+				self.port.emit(name, args);
+			}
+
+
+		};
+	}());
+
 	function addHupperBlock() {
 		return new Promise(function (resolve) {
 			modHupperBlock.addHupperBlock();
-			self.port.on('hupper-block.add-menu', modHupperBlock.addMenuItem);
-			self.port.on('hupper-block.hide-block', modHupperBlock.addHiddenBlock);
-			self.port.on('hupper-block.show-block', modHupperBlock.removeHiddenBlock);
+			events.on('hupper-block.add-menu', modHupperBlock.addMenuItem);
+			events.on('hupper-block.hide-block', modHupperBlock.addHiddenBlock);
+			events.on('hupper-block.show-block', modHupperBlock.removeHiddenBlock);
 
 			document.getElementById('block-hupper').addEventListener('click', function (e) {
 				let event = modBlocks.onBlockControlClick(e);
 				if (event) {
-					self.port.emit('block.action', event);
+					events.emit('block.action', event);
 				}
 			}, false);
 			resolve();
@@ -28,119 +44,76 @@ console.log('hupper.js');
 	}
 
 	addHupperBlock().then(function () {
-		self.port.on('getComments', function (options) {
+		console.log('hupper block added');
+
+		events.on('getComments', function (opts) {
 			let commentsContainer = document.getElementById('comments');
 
 			if (!commentsContainer) {
+				console.log('No comments container found');
 				return;
 			}
 
 			let modComment = req('comment');
 			let modCommentTree = req('commenttree');
 
-			console.log('subscribe');
+			events.on('comments.update', modComment.onCommentUpdate);
 
-			self.port.on('comments.update', modComment.onCommentUpdate);
+			events.on('comment.setNew', modComment.onCommentSetNew);
 
-			self.port.on('comment.setNew', function (newComments) {
-				var obj = newComments.comments.map(modComment.commentDataStructToObj);
-				obj.forEach((comment) => modComment.setNew(comment, newComments.text));
-			});
+			events.on('comment.addNextPrev', modComment.onCommentAddNextPrev);
 
-			self.port.on('comment.addNextPrev', function (item) {
-				if (item.prevId) {
-					modComment.addLinkToPrevComment(item.id, item.prevId);
-				}
+			events.on('comment.addParentLink', modComment.addParentLinkToComments);
+			events.on('comment.addExpandLink', modComment.addExpandLinkToComments);
 
-				if (item.nextId) {
-					modComment.addLinkToNextComment(item.id, item.nextId);
-				}
-			});
+			document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
 
-			self.port.on('comment.addParentLink', modComment.addParentLinkToComments);
-			self.port.on('comment.addExpandLink', modComment.addExpandLinkToComments);
+			commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
 
-			document.querySelector('body').addEventListener('click', function (e) {
-				if (e.target.nodeName === 'A') {
-					return;
-				}
-
-				if (dom.closest(e.target, '.comment')) {
-					return;
-				}
-
-				modComment.unwideComments();
-			}, false);
-
-			commentsContainer.addEventListener('click', function (e) {
-				if (dom.is(e.target, '.expand-comment')) {
-					e.preventDefault();
-					modComment.unwideComments();
-					modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
-
-				}
-			}, false);
-
-			function convertComments(comments) {
-				return comments.map((comment) => {
-					let output = modComment.parseComment(modComment.getCommentFromId(comment.id), {
-						content: options.content
-					});
-
-					output.children = convertComments(comment.children);
-
-					return output;
-				});
-			}
-
-			self.port.emit('gotComments', convertComments(modCommentTree.getCommentTree()));
+			let convertedCommends = modComment.convertComments(modCommentTree.getCommentTree(), opts);
+			events.emit('gotComments', convertedCommends);
 		});
 
-		self.port.on('enableBlockControls', function (blocks) {
-			modBlocks.decorateBlocks(blocks);
-
-			let commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
-
-			console.log('enabel block controls', commonParent.id, blocks);
-			
-			commonParent.addEventListener('click', function (e) {
-				let event = modBlocks.onBlockButtonClick(e);
-				if (event) {
-					self.port.emit('block.action', event);
-				}
-			}, false);
+		events.on('enableBlockControls', function (blocks) {
+			modBlocks.onEnableBlockControls(blocks, function (event) {
+				events.emit('block.action', event);
+			});
 		});
 
-		self.port.on('getBlocks', function () {
-			self.port.on('block.hide', modBlocks.hide);
-			self.port.on('block.show', modBlocks.show);
+		events.on('getBlocks', function () {
+			events.on('block.hide', modBlocks.hide);
+			events.on('block.show', modBlocks.show);
 
-			self.port.on('block.hide-content', modBlocks.hideContent);
-			self.port.on('block.show-content', modBlocks.showContent);
-			self.port.on('blocks.change-order-all', function (blocks) {
+			events.on('block.hide-content', modBlocks.hideContent);
+			events.on('block.show-content', modBlocks.showContent);
+			events.on('blocks.change-order-all', function (blocks) {
 				modBlocks.reorderBlocks(blocks);
-				self.port.emit('blocks.change-order-all-done');
+				events.emit('blocks.change-order-all-done');
 			});
-			self.port.on('block.change-order', (event) => modBlocks.setBlockOrder(event.sidebar, event.blocks));
+			events.on('block.change-order', (event) => {
+				modBlocks.setBlockOrder(event.sidebar, event.blocks);
+			});
 
-			self.port.on('block.change-column', (blocks) => modBlocks.reorderBlocks(blocks));
+			events.on('block.change-column', (blocks) => {
+				modBlocks.reorderBlocks(blocks);
+			});
 
-			self.port.on('blocks.set-titles', modBlocks.setTitles);
+			events.on('blocks.set-titles', modBlocks.setTitles);
 
-			self.port.emit('gotBlocks', modBlocks.getBlocks());
+			events.emit('gotBlocks', modBlocks.getBlocks());
 		});
-		self.port.on('getArticles', function () {
+		events.on('getArticles', function () {
 			let modArticles = req('articles');
 			let articles = modArticles.parseArticles();
 
 			if (articles.length > 0) {
-				self.port.emit('gotArticles', articles);
-				self.port.on('articles.mark-new', function (data) {
+				events.emit('gotArticles', articles);
+				events.on('articles.mark-new', function (data) {
 					data.articles.map(modArticles.articleStructToArticleNodeStruct)
 							.forEach(func.partial(modArticles.markNewArticle, data.text));
 				});
 			}
-			self.port.on('articles.addNextPrev', function (item) {
+			events.on('articles.addNextPrev', function (item) {
 				if (item.prevId) {
 					modArticles.addLinkToPrevArticle(item.id, item.prevId);
 				}
@@ -150,21 +123,21 @@ console.log('hupper.js');
 				}
 			});
 
-			self.port.on('articles.add-category-hide-button', modArticles.addCategoryHideButton);
+			events.on('articles.add-category-hide-button', modArticles.addCategoryHideButton);
 
-			self.port.on('articles.hide', modArticles.hideArticles);
+			events.on('articles.hide', modArticles.hideArticles);
 
 			document.getElementById('content-both').addEventListener('click', function (e) {
 				if (e.target.classList.contains('taxonomy-button')) {
 					let articleStruct = modArticles.articleElementToStruct(dom.closest(e.target, '.node'));
 
-					self.port.emit('article.hide-taxonomy', articleStruct);
+					events.emit('article.hide-taxonomy', articleStruct);
 				}
 			}, false);
 		});
 	});
 
-	self.port.on('setUnlimitedLinks', function () {
+	events.on('setUnlimitedLinks', function () {
 		let modUnlimitedlinks = req('unlimitedlinks');
 		func.toArray(document.getElementsByTagName('a'))
 				.filter(modUnlimitedlinks.isExtendableLink)

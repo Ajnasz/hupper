@@ -241,6 +241,19 @@
 			return false;
 		}
 
+		function onEnableBlockControls(blocks, dispatch) {
+			decorateBlocks(blocks);
+
+			let commonParent = dom.findCommonParent(blocks.map(blockDataStructToBlockElement));
+			commonParent.addEventListener('click', function (e) {
+				let event = onBlockButtonClick(e);
+
+				if (event) {
+					dispatch(event);
+				}
+			}, false);
+		}
+
 		return {
 			getBlocks: getBlocks,
 			decorateBlocks: decorateBlocks,
@@ -255,7 +268,8 @@
 			reorderBlocks: reorderBlocks,
 			setTitles: setTitles,
 			onBlockControlClick: onBlockControlClick,
-			onBlockButtonClick: onBlockButtonClick
+			onBlockButtonClick: onBlockButtonClick,
+			onEnableBlockControls: onEnableBlockControls
 		};
 	});
 }(window.def, window.req));

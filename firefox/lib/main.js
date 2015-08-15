@@ -44,13 +44,10 @@ pageMod.PageMod({
 		console.log('on attach');
 
 		function parseComments() {
-			console.log('parse comments');
-
-			events.emit('getComments', {
-				// get content only if filtering boring comments
-				content: true
-			});
-			events.on('gotComments', function (comments) {
+			console.log('parse comments!');
+			events.on('gotComments', function onGotComments(comments) {
+				console.log('GOT COMMENTS~!!!');
+				
 				let modComments = require('./core/comments');
 
 				modComments.setScores(comments);
@@ -114,6 +111,11 @@ pageMod.PageMod({
 					events.emit('comments.update', flatCommentList);
 				});
 
+			});
+
+			events.emit('getComments', {
+				// get content only if filtering boring comments
+				content: true
 			});
 		}
 

@@ -69,45 +69,12 @@
 		let modCommentTree = req('commenttree');
 
 		console.log('subscribe');
-		document.querySelector('body').addEventListener('click', function (e) {
-			if (e.target.nodeName === 'A') {
-				return;
-			}
+		document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
 
-			let dom = req('dom');
-			if (dom.closest(e.target, '.comment')) {
-				return;
-			}
-
-			modComment.unwideComments();
-		}, false);
-
-		commentsContainer.addEventListener('click', function (e) {
-			let dom = req('dom');
-
-			if (dom.is(e.target, '.expand-comment')) {
-				e.preventDefault();
-				modComment.unwideComments();
-				modComment.widenComment(dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id'));
-
-			}
-		}, false);
-
-		function convertComments(comments) {
-			return comments.map((comment) => {
-				let output = modComment.parseComment(modComment.getCommentFromId(comment.id), {
-					content: options.content
-				});
-
-				output.children = convertComments(comment.children);
-
-				return output;
-			});
-		}
-
+		commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
 		chrome.runtime.sendMessage({
 			event: 'gotComments',
-			data: convertComments(modCommentTree.getCommentTree())
+			data: modComment.convertComments(modCommentTree.getCommentTree(), options)
 		});
 
 	}
@@ -122,20 +89,11 @@
 	}
 
 	function onCommentSetNew(newComments) {
-		let modComment = req('comment');
-		var obj = newComments.comments.map(modComment.commentDataStructToObj);
-		obj.forEach((comment) => modComment.setNew(comment, newComments.text));
+		req('comment').onCommentSetNew(newComments);
 	}
 
 	function onCommentAddNextPrev(item) {
-		let modComment = req('comment');
-		if (item.prevId) {
-			modComment.addLinkToPrevComment(item.id, item.prevId);
-		}
-
-		if (item.nextId) {
-			modComment.addLinkToNextComment(item.id, item.nextId);
-		}
+		req('comment').onCommentAddNextPrev(item);
 	}
 
 	function onBlocakChangeOrderAll(data) {
@@ -198,18 +156,9 @@
 	}
 
 	function onEnableBlockControls(blocks) {
-		let modBlocks = req('blocks');
-		let dom = req('dom');
-		modBlocks.decorateBlocks(blocks);
-
-		let commonParent = dom.findCommonParent(blocks.map(modBlocks.blockDataStructToBlockElement));
-		commonParent.addEventListener('click', function (e) {
-			let event = modBlocks.onBlockButtonClick(e);
-
-			if (event) {
-				chrome.runtime.sendMessage({event: 'block.action', data: event});
-			}
-		}, false);
+		modBlocks.onEnableBlockControls(blocks, function (event) {
+			chrome.runtime.sendMessage({event: 'block.action', data: event});
+		});
 	}
 
 	window.addEventListener('DOMContentLoaded', function () {
