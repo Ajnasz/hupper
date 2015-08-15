@@ -1,13 +1,13 @@
 #!/bin/sh
-cat data/core/rq.js data/core/dom.js data/core/func.js data/core/commenttree.js data/core/comments.js data/core/articles.js data/core/blocks.js data/core/hupper-block.js data/core/unlimitedlinks.js data/hupper.js > data/built-es6.js
-babel data/built-es6.js > data/built.js
-
 mkdir -p data/core
 mkdir -p data/core/css
 mkdir -p lib/core
 cp -ar ../core/data/* data/core
 cp -ar ../core/data/css/* data/core/css/
 cp -ar ../core/lib/* lib/core
+
+cat data/core/rq.js data/core/dom.js data/core/func.js data/core/commenttree.js data/core/comments.js data/core/articles.js data/core/blocks.js data/core/hupper-block.js data/core/unlimitedlinks.js data/hupper.js > data/built-es6.js
+babel data/built-es6.js > data/built.js
 
 node modulenamefixer.js
 
