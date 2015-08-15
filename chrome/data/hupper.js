@@ -5,6 +5,48 @@
 
 	let func = req('func');
 
+	let modBlocks = req('blocks');
+	let modHupperBlock = req('hupper-block');
+
+	let blockActionStruct = (function () {
+		let obj = Object.create(null);
+
+		obj.id = '';
+		obj.action = '';
+		obj.column = '';
+
+		return obj;
+	});
+
+
+	function addHupperBlock() {
+		return new Promise(function (resolve) {
+			console.log('Add hupper block');;
+			modHupperBlock.addHupperBlock();
+
+			document.getElementById('block-hupper').addEventListener('click', function (e) {
+				var target = e.target;
+				let dataSet = target.dataset;
+
+				if (dataSet.action === 'restore-block') {
+					e.preventDefault();
+
+					let event = Object.create(blockActionStruct);
+
+					let blockId = dataSet.blockid;
+
+					let block = document.getElementById(blockId);
+
+					event.id = blockId;
+					event.action = 'restore';
+					event.column = modBlocks.getBlockColumn(block);
+					chrome.runtime.sendMessage({'event': 'block.action', data: event});
+				}
+			}, false);
+			resolve();
+		});
+	}
+
 	function onGetArticles() {
 		let modArticles = req('articles');
 		let articles = modArticles.parseArticles();
@@ -74,8 +116,7 @@
 
 		commentsContainer.addEventListener('click', function (e) {
 			let dom = req('dom');
-			console.log('click somewhere', e.target);
-			
+
 			if (dom.is(e.target, '.expand-comment')) {
 				e.preventDefault();
 				modComment.unwideComments();
@@ -224,12 +265,6 @@
 		return data;
 	}
 
-	let blockActionStruct = {
-		id: '',
-		action: '',
-		column: ''
-	};
-
 	function onEnableBlockControls(blocks) {
 		let modBlocks = req('blocks');
 		let dom = req('dom');
@@ -253,105 +288,118 @@
 	window.addEventListener('DOMContentLoaded', function () {
 		chrome.runtime.onMessage.addListener(function (request, sender) {
 			let event = request.event;
+			let data = request.data;
 			switch (event) {
 				case 'getArticles':
-					onGetArticles(request.data);
+					onGetArticles(data);
 				break;
 
 				case 'getComments':
-					onGetComments(request.data);
+					onGetComments(data);
 				break;
 
 				case 'getBlocks':
-					onGetBlocks(request.data);
+					onGetBlocks(data);
 				break;
 
 				case 'comments.update':
-					onCommentsUpdate(request.data);
+					onCommentsUpdate(data);
 				break;
 
 				case 'comment.setNew':
-					onCommentSetNew(request.data);
+					onCommentSetNew(data);
 				break;
 
 				case 'comment.addNextPrev':
-					onCommentAddNextPrev(request.data);
+					onCommentAddNextPrev(data);
 				break;
 
 				case 'comment.addParentLink':
-					req('comment').addParentLinkToComments(request.data);
+					req('comment').addParentLinkToComments(data);
 				break;
 
 				case 'comment.addExpandLink':
-					req('comment').addExpandLinkToComments(request.data);
+					req('comment').addExpandLinkToComments(data);
 				break;
 
 				case 'articles.mark-new':
-					onArticlesMarkNew(request.data);
+					onArticlesMarkNew(data);
 				break;
 
 				case 'articles.addNextPrev':
-					onArticleAddNextPrev(request.data);
+					onArticleAddNextPrev(data);
 				break;
 
 				case 'articles.add-category-hide-button':
-					onAddCategoryHideButton(request.data);
+					onAddCategoryHideButton(data);
 				break;
 
 				case 'articles.hide':
-					onArticlesHide(request.data);
+					onArticlesHide(data);
 				break;
 
 				case 'block.hide':
-					onBlockHide(request.data);
+					onBlockHide(data);
 				break;
 
 				case 'enableBlockControls':
-					onEnableBlockControls(request.data);
+					onEnableBlockControls(data);
 				break;
 
 				case 'block.show':
-					onBlockShow(request.data);
+					onBlockShow(data);
 				break;
 
 				case 'block.hide-content':
-				 	onBlockHideContent(request.data);
+					onBlockHideContent(data);
 				break;
 
 				case 'block.show-content':
-					onBlockShowContent(request.data);
+					onBlockShowContent(data);
 				break;
 
 				case 'blocks.change-order-all':
-					onBlocakChangeOrderAll(request.data);
+					onBlocakChangeOrderAll(data);
 				break;
 
 				case 'block.change-order':
-					onBlockChangeOrder(request.data);
+					onBlockChangeOrder(data);
 				break;
 
 				case 'block.change-column':
-					onBlockChangeColunn(request.data);
+					onBlockChangeColunn(data);
 				break;
 
 				case 'blocks.set-titles':
-					onBlockSetTitles(request.data);
+					onBlockSetTitles(data);
 				break;
 
 				case 'trolluser':
-					onTrollUser(request.data);
+					onTrollUser(data);
 				break;
 
 				case 'untrolluser':
-					onUntrollUser(request.data);
+					onUntrollUser(data);
 				break;
 
 				case 'highlightuser':
-					onHighlightUser(request.data);
+					onHighlightUser(data);
 				break;
 
 				case 'unhighlightuser':
-					onUnhighlightUser(request.data);
+					onUnhighlightUser(data);
+				break;
+
+				case 'hupper-block.add-menu':
+					modHupperBlock.addMenuItem(data);
+				break;
+
+				case 'hupper-block.hide-block':
+					modHupperBlock.addHiddenBlock(data);
+				break;
+
+				case 'hupper-block.show-block':
+					modHupperBlock.removeHiddenBlock(data);
 				break;
 
 				default:
@@ -371,6 +419,10 @@
 			}
 		}, false);
 
+		addHupperBlock().then(function () {
+			console.log('huper block added');
+		});
+
 		console.log('dom content loaded');
 		chrome.runtime.sendMessage({'event': 'DOMContentLoaded'});
 	}, false);
@@ -378,4 +430,6 @@
 	window.addEventListener('unload', function () {
 		chrome.runtime.sendMessage({'event': 'unload'});
 	});
+
+	console.log('aSDFASF');
 }(window.req));

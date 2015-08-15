@@ -9,7 +9,12 @@
 	"options_page": "options.html",
 	"content_scripts": [{
 		"run_at": "document_start",
-		"matches": ["http://hup.lh/*", "http://hup.lh:3000/*", "http://hup.hu/*"],
+		"matches": [
+			"http://hup.lh/*",
+			"http://hup.lh:3000/*",
+			"http://hup.hu/*",
+			"https://hup.lh/*"
+		],
 		"css": [
 			"data/core/css/hupper.css",
 			"data/core/css/indentstyles.css"
