@@ -266,6 +266,10 @@
 					modHupperBlock.removeHiddenBlock(data);
 				break;
 
+				case 'setUnlimitedLinks':
+					req('unlimitedlinks').setUnlimitedLinks();
+				break;
+
 				default:
 					console.info('Missing event handler for %s', event);
 				break;

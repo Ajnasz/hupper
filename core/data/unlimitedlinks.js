@@ -1,7 +1,8 @@
 /*jshint moz:true*/
-(function (def) {
+(function (def, req) {
 	'use strict';
 	def('unlimitedlinks', function () {
+		let func = req('func');
 		let pathNames = [
 			'/cikkek',
 			'/node',
@@ -28,9 +29,16 @@
 			link.search = search[0] === '?' ? '&comments_per_page=9999' : '?comments_per_page=9999';
 		}
 
+		function setUnlimitedLinks() {
+			func.toArray(document.getElementsByTagName('a'))
+					.filter(isExtendableLink)
+					.forEach(makeExtendable);
+		}
+
 		return {
 			isExtendableLink: isExtendableLink,
-			makeExtendable: makeExtendable
+			makeExtendable: makeExtendable,
+			setUnlimitedLinks: setUnlimitedLinks
 		};
 	});
-}(window.def));
+}(window.def, window.req));

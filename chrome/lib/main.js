@@ -345,6 +345,10 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		manageComments(events);
 		manageBlocks(events);
 
+		if (pref.getPref('setunlimitedlinks')) {
+			events.emit('setUnlimitedLinks');
+		}
+
 		/*
 		events.on('gotBlocks', function (data) {
 			onGotBlocks(data);

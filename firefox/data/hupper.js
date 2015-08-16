@@ -137,10 +137,5 @@ console.log('hupper.js');
 		});
 	});
 
-	events.on('setUnlimitedLinks', function () {
-		let modUnlimitedlinks = req('unlimitedlinks');
-		func.toArray(document.getElementsByTagName('a'))
-				.filter(modUnlimitedlinks.isExtendableLink)
-				.forEach(modUnlimitedlinks.makeExtendable);
-	});
+	events.on('setUnlimitedLinks', req('unlimitedlinks').setUnlimitedLinks);
 }(window.req));
