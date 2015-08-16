@@ -2,9 +2,9 @@
 
 Feature                 | F | C | Bug
 ------------------------|---|---|------------------------------------------------------
-Custom style for pager  | Y | N |
-Custom font size        | Y | N |
-Custom block width      | Y | N |
+Custom style for pager  | Y | Y |
+Custom font size        | Y | Y |
+Custom block width      | Y | Y |
 Unlimited comments      | Y | Y |
 Settings panel          | Y | N |
 
@@ -17,7 +17,7 @@ Hide block              | Y | Y |
 Move block up/down      | Y | Y |
 Move block left/right   | Y | Y |
 Hupper block            | Y | Y |
-Hide left/right sidebar | Y | N | In FF need to restart browser
+Hide left/right sidebar | Y | Y | In FF need to restart browser
 
 # Front page:
 
