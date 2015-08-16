@@ -5,7 +5,8 @@ Feature                 | F | C | Bug
 Custom style for pager  | Y | N |
 Custom font size        | Y | N |
 Custom block width      | Y | N |
-Unlimited comments      | Y | N |
+Unlimited comments      | Y | Y |
+Settings panel          | Y | N |
 
 # Blocks, sidebars
 
