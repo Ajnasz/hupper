@@ -1,7 +1,7 @@
 /*jshint moz:true*/
 /*global require*/
 var pageMod = require('sdk/page-mod');
-var self = require('sdk/self');
+var sdkSelf = require('sdk/self');
 var pref = require('./pref');
 var pagestyles = require('./pagestyles');
 let func = require('./core/func');
@@ -23,10 +23,12 @@ const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
 function eventEmitter(worker) {
 	'use strict';
 	function on(event, cb) {
+		console.log('listen to', event);
 		worker.port.on(event, cb);
 	}
 
 	function emit(event, args) {
+		console.log('EMIT', event);
 		worker.port.emit(event, args);
 	}
 	return {
@@ -35,11 +37,12 @@ function eventEmitter(worker) {
 	};
 }
 
-pageMod.PageMod({
+(function () {
+	'use strict';
+return new pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
 	attachTo: ['top', 'existing'],
 	onAttach: function (worker) {
-		'use strict';
 		let events = eventEmitter(worker);
 		console.log('on attach');
 
@@ -47,7 +50,7 @@ pageMod.PageMod({
 			console.log('parse comments!');
 			events.on('gotComments', function onGotComments(comments) {
 				console.log('GOT COMMENTS~!!!');
-				
+
 				let modComments = require('./core/comments');
 
 				modComments.setScores(comments);
@@ -166,6 +169,13 @@ pageMod.PageMod({
 			});
 		}
 
+		function emitBlockEvent(events, event, block) {
+			events.emit(event, {
+				id: block.id,
+				column: block.column
+			});
+		}
+
 		function requestBlockHide(events, block) {
 			emitBlockEvent(events, 'block.hide', block);
 			emitBlockEvent(events, 'hupper-block.hide-block', block);
@@ -174,13 +184,6 @@ pageMod.PageMod({
 		function requestBlockContentHide(events, block) {
 			emitBlockEvent(events, 'block.hide-content', block);
 			emitBlockEvent(events, 'hupper-block.show-block', block);
-		}
-
-		function emitBlockEvent(events, event, block) {
-			events.emit(event, {
-				id: block.id,
-				column: block.column
-			});
 		}
 
 		function updateBlock(details, prefName, value) {
@@ -328,15 +331,16 @@ pageMod.PageMod({
 	contentStyle: pagestyles.getPageStyle(),
 	contentStyleFile: pagestyles.getPageStyleFiles(),
 	contentScriptFile: [
-		self.data.url('core/rq.js'),
-		self.data.url('core/dom.js'),
-		self.data.url('core/func.js'),
-		self.data.url('core/commenttree.js'),
-		self.data.url('core/comments.js'),
-		self.data.url('core/articles.js'),
-		self.data.url('core/blocks.js'),
-		self.data.url('core/hupper-block.js'),
-		self.data.url('core/unlimitedlinks.js'),
-		self.data.url('hupper.js')
+		sdkSelf.data.url('core/rq.js'),
+		sdkSelf.data.url('core/dom.js'),
+		sdkSelf.data.url('core/func.js'),
+		sdkSelf.data.url('core/commenttree.js'),
+		sdkSelf.data.url('core/comments.js'),
+		sdkSelf.data.url('core/articles.js'),
+		sdkSelf.data.url('core/blocks.js'),
+		sdkSelf.data.url('core/hupper-block.js'),
+		sdkSelf.data.url('core/unlimitedlinks.js'),
+		sdkSelf.data.url('hupper.js')
 	]
 });
+}());
