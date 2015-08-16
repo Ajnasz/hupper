@@ -148,20 +148,37 @@
 		modBlocks.setTitles(data);
 	}
 
+	function getContextUser(data) {
+		let elem = document.querySelector('.comment .submitted > a[href="' + data.linkUrl + '"]');
+		return elem ? elem.textContent : null;
+	}
+
 	function onHighlightUser(data) {
-		return data;
+		let user = getContextUser(data);
+		if (user) {
+			events.emit('highlightuser', user);
+		}
 	}
 
 	function onUnhighlightUser(data) {
-		return data;
+		let user = getContextUser(data);
+		if (user) {
+			events.emit('unhighlightuser', user);
+		}
 	}
 
 	function onTrollUser(data) {
-		return data;
+		let user = getContextUser(data);
+		if (user) {
+			events.emit('trolluser', user);
+		}
 	}
 
 	function onUntrollUser(data) {
-		return data;
+		let user = getContextUser(data);
+		if (user) {
+			events.emit('untrolluser', user);
+		}
 	}
 
 	function onEnableBlockControls(blocks) {

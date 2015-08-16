@@ -6,168 +6,173 @@
 	function createDefaultPrefs() {
 		if (!localStorage.getItem('prefs')) {
 			console.log('CREATE LOCALSTORAGE ITEMS');
-			
+
 			localStorage.setItem('prefs', JSON.stringify([
 												{
-				"name": "replacenewcommenttext",
-				"title": "Replace the \"új\" text of new comments to a better searchable one",
-				"type": "bool",
-				"value": true
+				'name': 'replacenewcommenttext',
+				'title': 'Replace the \"új\" text of new comments to a better searchable one',
+				'type': 'bool',
+				'value': true
 			},
 
 			{
-				"name": "newcommenttext",
-				"title": "The text to show instead of \"új\"",
-				"type": "string",
-				"value": "[new]"
+				'name': 'newcommenttext',
+				'title': 'The text to show instead of \"új\"',
+				'type': 'string',
+				'value': '[new]'
 			},
 
 			{
-				"name": "filtertrolls",
-				"title": "Enable trollfilter",
-				"type": "bool",
-				"value": true
+				'name': 'filtertrolls',
+				'title': 'Enable trollfilter',
+				'type': 'bool',
+				'value': true
 			},
 
 			{
-				"name": "edittrolls",
-				"title": "Edit trolls",
-				"label": "Click to edit trolls",
-				"type": "control"
+				'name': 'edittrolls',
+				'title': 'Edit trolls',
+				'label': 'Click to edit trolls',
+				'type': 'control'
 			},
 
 			{
-				"name": "trolls",
-				"title": "List of trolls",
-				"type": "string",
-				"value": "",
-				"hidden": true
+				'name': 'trolls',
+				'title': 'List of trolls',
+				'type': 'string',
+				'value': '',
+				'hidden': true
 			},
 
 			{
-				"name": "huppercolor",
-				"title": "Default highlighted user's comment header color",
-				"type": "color",
-				"value": "#B5D7BE"
+				'name': 'huppercolor',
+				'title': 'Default highlighted user\'s comment header color',
+				'type': 'color',
+				'value': '#B5D7BE'
 			},
 
 			{
-				"name": "edithighlightusers",
-				"title": "Edit highlighted users",
-				"label": "Click to edit highlighted users",
-				"type": "control"
+				'name': 'edithighlightusers',
+				'title': 'Edit highlighted users',
+				'label': 'Click to edit highlighted users',
+				'type': 'control'
 			},
 
 			{
-				"name": "highlightusers",
-				"title": "Highlight comments of the users",
-				"type": "string",
-				"value": "username:#fff999,username2:#999fff",
-				"hidden": true
+				'name': 'highlightusers',
+				'title': 'Highlight comments of the users',
+				'type': 'string',
+				'value': 'username:#fff999,username2:#999fff',
+				'hidden': true
 			},
 
 			{
-				"name": "hidetaxonomy",
-				"title": "Hidable article types",
-				"type": "string",
-				"value": ""
+				'name': 'hidetaxonomy',
+				'title': 'Hidable article types',
+				'type': 'string',
+				'value': ''
 			},
 
 			{
-				"name": "blocks",
-				"title": "Block settings",
-				"type": "string",
-				"value": "{}",
-				"hidden": true
+				'name': 'blocks',
+				'title': 'Block settings',
+				'type': 'string',
+				'value': '{}',
+				'hidden': true
 			},
 			{
-				"name": "parseblocks",
-				"title": "Parse blocks",
-				"type": "bool",
-				"value": true
-			},
-
-			{
-				"name": "style_accessibility",
-				"title": "Load accessibility styles",
-				"type": "bool",
-				"value": true
-			},
-			{
-				"name": "style_wider_sidebar",
-				"title": "Width of sidebars",
-				"type": "integer",
-				"value": 0
-			},
-			{
-				"name": "style_min_fontsize",
-				"title": "Minimum font size",
-				"type": "integer",
-				"value": 0
-			},
-			{
-				"name": "style_hide_left_sidebar",
-				"title": "Hide left sidebar",
-				"type": "bool",
-				"value": false
-			},
-			{
-				"name": "style_hide_right_sidebar",
-				"title": "Hide right sidebar",
-				"type": "bool",
-				"value": false
+				'name': 'parseblocks',
+				'title': 'Parse blocks',
+				'type': 'bool',
+				'value': true
 			},
 
 			{
-				"name": "hideboringcomments",
-				"title": "Hide boring comments",
-				"type": "bool",
-				"value": true
+				'name': 'style_accessibility',
+				'title': 'Load accessibility styles',
+				'type': 'bool',
+				'value': true
+			},
+			{
+				'name': 'style_wider_sidebar',
+				'title': 'Width of sidebars',
+				'type': 'integer',
+				'value': 0
+			},
+			{
+				'name': 'style_min_fontsize',
+				'title': 'Minimum font size',
+				'type': 'integer',
+				'value': 0
+			},
+			{
+				'name': 'style_hide_left_sidebar',
+				'title': 'Hide left sidebar',
+				'type': 'bool',
+				'value': false
+			},
+			{
+				'name': 'style_hide_right_sidebar',
+				'title': 'Hide right sidebar',
+				'type': 'bool',
+				'value': false
 			},
 
 			{
-				"name": "boringcommentcontents",
-				"title": "Regular expression to identify boring comments",
-				"type": "string",
-				"value": "^([-_]|-1|\\\\+1)$"
+				'name': 'hideboringcomments',
+				'title': 'Hide boring comments',
+				'type': 'bool',
+				'value': true
+			},
+
+			{
+				'name': 'boringcommentcontents',
+				'title': 'Regular expression to identify boring comments',
+				'type': 'string',
+				'value': '^([-_]|-1|\\\\+1)$'
 			},
 			{
-				"name": "setunlimitedlinks",
-				"title": "Show as many comments as possible on a page",
-				"type": "bool",
-				"value": true
+				'name': 'setunlimitedlinks',
+				'title': 'Show as many comments as possible on a page',
+				'type': 'bool',
+				'value': true
 			}
 			]));
 		}
 	}
 
 	let events = (function () {
-		let listeners = {};
-
-		function on(name, cb) {
-			if (!listeners[name]) {
-				listeners[name] = [];
-			}
-
-			listeners[name].push(cb);
-		}
-
-		function off(name, cb) {
-			if (listeners[name]) {
-				for (let i = 0, ll = listeners.length; i < ll; i++) {
-					if (listeners[name][i] === cb) {
-						listeners[name][i] = null;
-					}
+		let listeners = new Map();
+		return {
+			on(name, cb) {
+				if (!listeners.has(name)) {
+					listeners.set(name, []);
 				}
 
-				listeners[name] = listeners[name].filter((listener) => listener !== null);
+				listeners.get(name).push(cb);
+			},
+
+			off(name, cb) {
+				if (listeners.get(name)) {
+					for (let i = 0, ll = listeners.get(name).length; i < ll; i++) {
+						if (listeners.get(name)[i] === cb) {
+							listeners.get(name)[i] = null;
+						}
+					}
+
+					listeners.set(name, listeners[name].filter((listener) => listener !== null));
+				}
+			},
+
+			emit(name, args) {
+				if (listeners.get(name)) {
+					listeners.get(name).forEach((cb) => {
+						cb(args);
+					});
+				}
 			}
-		}
-		return {
-			on: on,
-			off: off
 		};
-	});
+	}());
 
 	function validateType(prefType, value) {
 		let isValid = false;
@@ -232,8 +237,11 @@
 
 		if (prefObj) {
 			if (validateType(prefObj.type, value)) {
-				prefObj.value = value;
-				localStorage.prefs = JSON.stringify(prefs);
+				if (prefObj.value !== value) {
+					prefObj.value = value;
+					localStorage.prefs = JSON.stringify(prefs);
+					events.emit(pref);
+				}
 				return;
 			} else {
 				throw new Error('Pref: ' + pref + ' value is not valid type for: ' + pref.type);
@@ -310,6 +318,7 @@
 		exports.getCleanHighlightedUsers = getCleanHighlightedUsers;
 		exports.getCleanTrolls = getCleanTrolls;
 		exports.getCleanTaxonomies = getCleanTaxonomies;
-		exports.events = events;
+		exports.on = events.on;
+		exports.off = events.off;
 	});
 }());

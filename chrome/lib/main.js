@@ -159,18 +159,16 @@ function manageComments(events) {
 			});
 		}
 
-		/*
-		require('sdk/simple-prefs').on('highlightusers', function () {
+		pref.on('highlightusers', function () {
 			let highlightedUsers = pref.getCleanHighlightedUsers();
 			modComments.setHighlightedComments(highlightedUsers, comments);
 			events.emit('comments.update', flatCommentList);
 		});
-		require('sdk/simple-prefs').on('trolls', function () {
+		pref.on('trolls', function () {
 			let trolls = pref.getCleanTrolls();
 			modComments.updateTrolls(trolls, comments);
 			events.emit('comments.update', flatCommentList);
 		});
-		*/
 
 	});
 
@@ -361,6 +359,52 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		manageComments(events);
 		manageBlocks(events);
 		manageStyles(sender.tab.id);
+
+		events.on('trolluser', function (username) {
+			var trolls = pref.getCleanTrolls();
+
+			if (trolls.indexOf(username) === -1) {
+				trolls.push(username);
+			}
+
+			pref.setPref('trolls', trolls.join(','));
+		});
+
+		events.on('untrolluser', function (username) {
+			username = username.trim();
+			var trolls = pref.getCleanTrolls().filter(function (troll) {
+				return troll.trim() !== username;
+			});
+
+			pref.setPref('trolls', trolls.join(','));
+		});
+
+		events.on('unhighlightuser', function (username) {
+			var users = pref.getCleanHighlightedUsers().filter(function (user) {
+				return user.name !== username;
+			});
+
+			pref.setPref('highlightusers', users.map(function (user) {
+				return user.name + ':' + user.color;
+			}).join(','));
+		});
+
+		events.on('highlightuser', function (username) {
+			var users = pref.getCleanHighlightedUsers();
+
+			if (!users.some(function (user) {
+				return user.name === username;
+			})) {
+				users.push({
+					name: username,
+					color: pref.getPref('huppercolor')
+				});
+			}
+
+			pref.setPref('highlightusers', users.map(function (user) {
+				return user.name + ':' + user.color;
+			}).join(','));
+		});
 
 		if (pref.getPref('setunlimitedlinks')) {
 			events.emit('setUnlimitedLinks');
