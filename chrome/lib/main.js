@@ -210,6 +210,37 @@ function manageBlocks(events) {
 
 	let func = require('./core/func');
 
+	function onBlockAction(events, details) {
+
+		switch (details.action) {
+			case 'delete':
+				onBlockDelete(events, details);
+			break;
+
+			case 'restore':
+				onBlockRestore(events, details);
+			break;
+
+			case 'hide-content':
+				onBlockHideContent(events, details);
+			break;
+
+			case 'show-content':
+				onBlockShowContent(events, details);
+			break;
+
+			case 'up':
+			case 'down':
+				onUpDownAction(events, details);
+			break;
+
+			case 'left':
+			case 'right':
+				onLeftRightAction(events, details);
+			break;
+		}
+	}
+
 	function finishBlockSetup(blocks, blocksPref) {
 		let modBlocks = require('./core/blocks');
 
@@ -276,37 +307,6 @@ function manageBlocks(events) {
 		}
 	}
 
-	function onBlockAction(events, details) {
-
-		switch (details.action) {
-			case 'delete':
-				onBlockDelete(events, details);
-			break;
-
-			case 'restore':
-				onBlockRestore(events, details);
-			break;
-
-			case 'hide-content':
-				onBlockHideContent(events, details);
-			break;
-
-			case 'show-content':
-				onBlockShowContent(events, details);
-			break;
-
-			case 'up':
-			case 'down':
-				onUpDownAction(events, details);
-			break;
-
-			case 'left':
-			case 'right':
-				onLeftRightAction(events, details);
-			break;
-		}
-	}
-
 	function onGotBlocks(blocks) {
 		let modBlocks = require('./core/blocks'),
 			blocksPref = JSON.parse(pref.getPref('blocks'));
@@ -332,6 +332,22 @@ function manageBlocks(events) {
 	events.emit('getBlocks');
 }
 
+function manageStyles(tabId) {
+	'use strict';
+	let pageStyles = require('./core/pagestyles');
+	let styles = pageStyles.getPageStyle({
+		minFontSize: pref.getPref('style_min_fontsize'),
+		minWidth: pref.getPref('style_wider_sidebar'),
+		hideLeftSidebar: pref.getPref('style_hide_left_sidebar'),
+		hideRightSidebar: pref.getPref('style_hide_right_sidebar')
+	});
+	if (styles.length) {
+		chrome.tabs.insertCSS(tabId, {
+			code: styles.join('')
+		});
+	}
+}
+
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
 	'use strict';
@@ -344,6 +360,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		manageArticles(events);
 		manageComments(events);
 		manageBlocks(events);
+		manageStyles(sender.tab.id);
 
 		if (pref.getPref('setunlimitedlinks')) {
 			events.emit('setUnlimitedLinks');
