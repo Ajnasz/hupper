@@ -26,6 +26,7 @@
 	"permissions": [
 		"contextMenus",
 		"tabs",
+		"storage",
 		"http://hup.hu/",
 		"https://hup.hu/",
 		"http://hup.lh/",

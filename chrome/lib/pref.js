@@ -3,142 +3,173 @@
 (function () {
 	'use strict';
 
+	let defaultPrefs = [
+		{
+			'name': 'replacenewcommenttext',
+			'title': 'Replace the \"új\" text of new comments to a better searchable one',
+			'type': 'bool',
+			'value': true
+		},
+
+		{
+			'name': 'newcommenttext',
+			'title': 'The text to show instead of \"új\"',
+			'type': 'string',
+			'value': '[new]'
+		},
+
+		{
+			'name': 'filtertrolls',
+			'title': 'Enable trollfilter',
+			'type': 'bool',
+			'value': true
+		},
+
+		{
+			'name': 'edittrolls',
+			'title': 'Edit trolls',
+			'label': 'Click to edit trolls',
+			'type': 'control'
+		},
+
+		{
+			'name': 'trolls',
+			'title': 'List of trolls',
+			'type': 'string',
+			'value': '',
+			'hidden': true
+		},
+
+		{
+			'name': 'huppercolor',
+			'title': 'Default highlighted user\'s comment header color',
+			'type': 'color',
+			'value': '#B5D7BE'
+		},
+
+		{
+			'name': 'edithighlightusers',
+			'title': 'Edit highlighted users',
+			'label': 'Click to edit highlighted users',
+			'type': 'control'
+		},
+
+		{
+			'name': 'highlightusers',
+			'title': 'Highlight comments of the users',
+			'type': 'string',
+			'value': 'username:#fff999,username2:#999fff',
+			'hidden': true
+		},
+
+		{
+			'name': 'hidetaxonomy',
+			'title': 'Hidable article types',
+			'type': 'string',
+			'value': ''
+		},
+
+		{
+			'name': 'blocks',
+			'title': 'Block settings',
+			'type': 'string',
+			'value': '{}',
+			'hidden': true
+		},
+		{
+			'name': 'parseblocks',
+			'title': 'Parse blocks',
+			'type': 'bool',
+			'value': true
+		},
+
+		{
+			'name': 'style_accessibility',
+			'title': 'Load accessibility styles',
+			'type': 'bool',
+			'value': true
+		},
+		{
+			'name': 'style_wider_sidebar',
+			'title': 'Width of sidebars',
+			'type': 'integer',
+			'value': 0
+		},
+		{
+			'name': 'style_min_fontsize',
+			'title': 'Minimum font size',
+			'type': 'integer',
+			'value': 0
+		},
+		{
+			'name': 'style_hide_left_sidebar',
+			'title': 'Hide left sidebar',
+			'type': 'bool',
+			'value': false
+		},
+		{
+			'name': 'style_hide_right_sidebar',
+			'title': 'Hide right sidebar',
+			'type': 'bool',
+			'value': false
+		},
+
+		{
+			'name': 'hideboringcomments',
+			'title': 'Hide boring comments',
+			'type': 'bool',
+			'value': true
+		},
+
+		{
+			'name': 'boringcommentcontents',
+			'title': 'Regular expression to identify boring comments',
+			'type': 'string',
+			'value': '^([-_]|-1|\\\\+1)$'
+		},
+		{
+			'name': 'setunlimitedlinks',
+			'title': 'Show as many comments as possible on a page',
+			'type': 'bool',
+			'value': true
+		}
+	];
+
 	function createDefaultPrefs() {
 		if (!localStorage.getItem('prefs')) {
-			console.log('CREATE LOCALSTORAGE ITEMS');
-
-			localStorage.setItem('prefs', JSON.stringify([
-												{
-				'name': 'replacenewcommenttext',
-				'title': 'Replace the \"új\" text of new comments to a better searchable one',
-				'type': 'bool',
-				'value': true
-			},
-
-			{
-				'name': 'newcommenttext',
-				'title': 'The text to show instead of \"új\"',
-				'type': 'string',
-				'value': '[new]'
-			},
-
-			{
-				'name': 'filtertrolls',
-				'title': 'Enable trollfilter',
-				'type': 'bool',
-				'value': true
-			},
-
-			{
-				'name': 'edittrolls',
-				'title': 'Edit trolls',
-				'label': 'Click to edit trolls',
-				'type': 'control'
-			},
-
-			{
-				'name': 'trolls',
-				'title': 'List of trolls',
-				'type': 'string',
-				'value': '',
-				'hidden': true
-			},
-
-			{
-				'name': 'huppercolor',
-				'title': 'Default highlighted user\'s comment header color',
-				'type': 'color',
-				'value': '#B5D7BE'
-			},
-
-			{
-				'name': 'edithighlightusers',
-				'title': 'Edit highlighted users',
-				'label': 'Click to edit highlighted users',
-				'type': 'control'
-			},
-
-			{
-				'name': 'highlightusers',
-				'title': 'Highlight comments of the users',
-				'type': 'string',
-				'value': 'username:#fff999,username2:#999fff',
-				'hidden': true
-			},
-
-			{
-				'name': 'hidetaxonomy',
-				'title': 'Hidable article types',
-				'type': 'string',
-				'value': ''
-			},
-
-			{
-				'name': 'blocks',
-				'title': 'Block settings',
-				'type': 'string',
-				'value': '{}',
-				'hidden': true
-			},
-			{
-				'name': 'parseblocks',
-				'title': 'Parse blocks',
-				'type': 'bool',
-				'value': true
-			},
-
-			{
-				'name': 'style_accessibility',
-				'title': 'Load accessibility styles',
-				'type': 'bool',
-				'value': true
-			},
-			{
-				'name': 'style_wider_sidebar',
-				'title': 'Width of sidebars',
-				'type': 'integer',
-				'value': 0
-			},
-			{
-				'name': 'style_min_fontsize',
-				'title': 'Minimum font size',
-				'type': 'integer',
-				'value': 0
-			},
-			{
-				'name': 'style_hide_left_sidebar',
-				'title': 'Hide left sidebar',
-				'type': 'bool',
-				'value': false
-			},
-			{
-				'name': 'style_hide_right_sidebar',
-				'title': 'Hide right sidebar',
-				'type': 'bool',
-				'value': false
-			},
-
-			{
-				'name': 'hideboringcomments',
-				'title': 'Hide boring comments',
-				'type': 'bool',
-				'value': true
-			},
-
-			{
-				'name': 'boringcommentcontents',
-				'title': 'Regular expression to identify boring comments',
-				'type': 'string',
-				'value': '^([-_]|-1|\\\\+1)$'
-			},
-			{
-				'name': 'setunlimitedlinks',
-				'title': 'Show as many comments as possible on a page',
-				'type': 'bool',
-				'value': true
-			}
-			]));
+			localStorage.setItem('prefs', JSON.stringify(defaultPrefs));
 		}
+		/* use chrome.storage
+		return Promise.all(defaultPrefs.map((pref) => {
+			return new Promise(function (resolve) {
+				chrome.storage.sync.get(pref.name, function (result) {
+					if (typeof result[pref.name] === 'undefined') {
+						// chrome.storage.sync.set(value);
+						resolve([pref.name, pref.value]);
+					} else {
+						resolve(null);
+					}
+				});
+			});
+		})).then(function (values) {
+			let saveObj = values.reduce((prev, curr) => {
+				if (curr !== null) {
+					let [name, value] = curr;
+					if (typeof value === 'undefined') {
+						value = ':noSuchValue';
+					}
+					prev[name] = value;
+				}
+				return prev;
+			}, {});
+
+			return new Promise(function (resolve) {
+				chrome.storage.sync.set(saveObj, function () {
+					resolve();
+				});
+			});
+		});
+		*/
 	}
 
 	let events = (function () {
@@ -252,13 +283,16 @@
 	}
 
 	function getPref(pref) {
-		let prefObj = findPref(pref);
+		return new Promise(function (resolve) {
+			let prefObj = findPref(pref);
 
-		if (prefObj) {
-			return prefObj.value;
-		}
+			if (prefObj) {
+				resolve(prefObj.value);
+			} else {
+				resolve(null);
+			}
 
-		return null;
+		});
 	}
 
 	function setPref(pref, value) {
@@ -266,50 +300,67 @@
 	}
 
 	function getCleanHighlightedUsers() {
-		let highlightusers = getPref('highlightusers');
+		return getPref('highlightusers').then((highlightusers) => {
+			return new Promise((resolve) => {
+				let value;
+				if (highlightusers === null) {
+					value = [];
+				} else {
+					value = highlightusers.split(',')
+						.filter(function (user) {
+							return user.trim() !== '';
+						}).map(function (user) {
+							return user.split(':');
+						}).filter(function (user) {
+							return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
+						}).map(function (user) {
+							return {
+								name: user[0],
+								color: user[1]
+							};
+						});
+				}
 
-		if (highlightusers === null) {
-			return [];
-		}
-
-		return highlightusers.split(',')
-				.filter(function (user) {
-					return user.trim() !== '';
-				}).map(function (user) {
-					return user.split(':');
-				}).filter(function (user) {
-					return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-				}).map(function (user) {
-					return {
-						name: user[0],
-						color: user[1]
-					};
-				});
+				resolve(value);
+			});
+		});
 	}
 
 	function getCleanTrolls() {
-		let trolls = getPref('trolls');
+		return getPref('trolls').then((trolls) => {
+			return new Promise((resolve) => {
+				let value;
+				if (trolls === null) {
+					value = [];
+				} else {
+					value = trolls.split(',').filter((troll) => {
+						return troll.trim() !== '';
+					});
+				}
 
-		if (trolls === null) {
-			return [];
-		}
-
-		return trolls.split(',').filter(function (troll) {
-			return troll.trim() !== '';
+				resolve(value);
+			});
 		});
+
 
 	}
 
 	function getCleanTaxonomies() {
-		let taxonomies = getPref('hidetaxonomy');
+		return getPref('hidetaxonomy').then((taxonomies) => {
+			return new Promise((resolve) => {
+				let value;
+				if (taxonomies === null) {
+					value = [];
+				} else {
+					value = taxonomies.split(',').filter(function (taxonomy) {
+						return taxonomy.trim() !== '';
+					});
+				}
 
-		if (taxonomies === null) {
-			return [];
-		}
-
-		return taxonomies.split(',').filter(function (taxonomy) {
-			return taxonomy.trim() !== '';
+				resolve(value);
+			});
 		});
+
 	}
 
 	define('./pref', function (exports) {
