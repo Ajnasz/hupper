@@ -1,11 +1,12 @@
 {
   "name": "hupper",
   "title": "hupper",
-  "id": "jid1-EqUex0HW7WnBHA",
+  "id": "hupper@ajnasz.hu",
   "description": "Adds some feature to http://hup.hu website",
   "author": "Lajos Koszti <ajnasz@ajnasz.hu>",
   "license": "MIT",
-  "version": "2.0",
+  "version": "2.0.0",
+  "main": "lib/main.js",
 
   "preferences": [
 
