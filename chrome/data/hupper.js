@@ -6,6 +6,7 @@
 	let func = req('func');
 
 	let modBlocks = req('blocks');
+	let modArticles = req('articles');
 	let modHupperBlock = req('hupper-block');
 
 	function addHupperBlock() {
@@ -23,7 +24,6 @@
 	}
 
 	function onGetArticles() {
-		let modArticles = req('articles');
 		let articles = modArticles.parseArticles();
 
 		if (articles.length > 0) {
@@ -32,15 +32,12 @@
 	}
 
 	function onArticlesMarkNew(data) {
-		let modArticles = req('articles');
 		data.articles.map(modArticles.articleStructToArticleNodeStruct)
 				.forEach(func.partial(modArticles.markNewArticle, data.text));
 
 	}
 
 	function onArticleAddNextPrev(item) {
-		let modArticles = req('articles');
-
 		if (item.prevId) {
 			modArticles.addLinkToPrevArticle(item.id, item.prevId);
 		}
@@ -51,11 +48,11 @@
 	}
 
 	function onAddCategoryHideButton(items) {
-		req('articles').onAddCategoryHideButton(items);
+		modArticles.onAddCategoryHideButton(items);
 	}
 
 	function onArticlesHide(articles) {
-		req('articles').hideArticles(articles);
+		modArticles.hideArticles(articles);
 	}
 
 	function onGetComments(options) {
@@ -80,7 +77,6 @@
 	}
 
 	function onGetBlocks() {
-		let modBlocks = req('blocks');
 		chrome.runtime.sendMessage({
 			event: 'gotBlocks',
 			data: modBlocks.getBlocks()
@@ -97,7 +93,6 @@
 	}
 
 	function onBlocakChangeOrderAll(data) {
-		let modBlocks = req('blocks');
 		modBlocks.reorderBlocks(data);
 		setTimeout(function () {
 			chrome.runtime.sendMessage({event: 'blocks.change-order-all-done'});
@@ -105,37 +100,30 @@
 	}
 
 	function onBlockChangeOrder(data) {
-		let modBlocks = req('blocks');
 		modBlocks.setBlockOrder(data.sidebar, data.blocks);
 	}
 
 	function onBlockChangeColunn(data) {
-		let modBlocks = req('blocks');
 		modBlocks.reorderBlocks(data);
 	}
 
 	function onBlockShow(data) {
-		let modBlocks = req('blocks');
 		modBlocks.show(data);
 	}
 
 	function onBlockHideContent(data) {
-		let modBlocks = req('blocks');
 		modBlocks.hideContent(data);
 	}
 
 	function onBlockShowContent(data) {
-		let modBlocks = req('blocks');
 		modBlocks.showContent(data);
 	}
 
 	function onBlockHide(data) {
-		let modBlocks = req('blocks');
 		modBlocks.hide(data);
 	}
 
 	function onBlockSetTitles(data) {
-		let modBlocks = req('blocks');
 		modBlocks.setTitles(data);
 	}
 
@@ -287,7 +275,6 @@
 
 		document.getElementById('content-both').addEventListener('click', function (e) {
 			if (e.target.classList.contains('taxonomy-button')) {
-				let modArticles = req('articles');
 				let dom = req('dom');
 				let articleStruct = modArticles.articleElementToStruct(dom.closest(e.target, '.node'));
 
