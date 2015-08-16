@@ -1,7 +1,7 @@
 /*jshint esnext: true*/
 /*global chrome, require*/
 
-let pref = require('./pref');
+let pref = require('./pref').pref;
 
 const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
 const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
@@ -114,23 +114,26 @@ function manageComments(events) {
 		let modComments = require('./core/comments');
 
 		modComments.setScores(comments);
-		pref.getPref('hideboringcomments').then((hide) => {
-			if (hide) {
+
+		Promise.all([
+			pref.getPref('hideboringcomments'),
+			pref.getPref('filtertrolls'),
+			pref.getCleanTrolls(),
+			pref.getCleanHighlightedUsers(),
+			pref.getPref('replacenewcommenttext')
+		]).then((results) => {
+			let [hideBoring, hideTrolls, trolls, highlightedUsers, replaceNew] = results;
+
+			if (hideBoring) {
 				pref.getPref('boringcommentcontents').then((regexp) => {
 					let boringRex = new RegExp(regexp);
 					modComments.markBoringComments(comments, boringRex);
 				});
 			}
-		});
-		pref.getPref('filtertrolls').then((hide) => {
-			if (hide) {
-				pref.getCleanTrolls().then((trolls) => {
-					modComments.markTrollComments(comments, trolls);
-				});
+			if (hideTrolls) {
+				modComments.markTrollComments(comments, trolls);
 			}
-		});
 
-		pref.getCleanHighlightedUsers().then((highlightedUsers) => {
 
 			if (highlightedUsers.length) {
 				modComments.setHighlightedComments(highlightedUsers, comments);
@@ -151,16 +154,14 @@ function manageComments(events) {
 
 			let newComments = modComments.getNewComments(comments);
 
-			pref.getPref('replacenewcommenttext').then((replace) => {
-				if (replace && newComments.length > 0) {
-					pref.getPref('newcommenttext').then((text) => {
-						events.emit('comment.setNew', {
-							comments: newComments,
-							text: text
-						});
+			if (replaceNew && newComments.length > 0) {
+				pref.getPref('newcommenttext').then((text) => {
+					events.emit('comment.setNew', {
+						comments: newComments,
+						text: text
 					});
-				}
-			});
+				});
+			}
 			modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
 				events.emit('comment.addNextPrev', nextPrev);
 			});
@@ -431,7 +432,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 			Promise.all([
 				pref.getCleanHighlightedUsers(),
 				pref.getPref('huppercolor')
-			]).then((users, color) => {
+			]).then((results) => {
+				let [users, color] = results;
 				if (!users.some(function (user) {
 					return user.name === username;
 				})) {

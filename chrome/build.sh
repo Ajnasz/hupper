@@ -12,6 +12,7 @@ babel data/built-es6.js > data/built.js
 node modulenamefixer.js
 
 cat lib/require.js \
+	lib/core/pref.js \
 	lib/pref.js \
 	lib/core/func.js \
 	lib/core/pagestyles.js \

@@ -1,5 +1,5 @@
 /*jshint esnext:true*/
-/*global define*/
+/*global define, require*/
 (function () {
 	'use strict';
 
@@ -282,94 +282,32 @@
 		throw new Error('Pref: ' + pref + ' not found');
 	}
 
-	function getPref(pref) {
-		return new Promise(function (resolve) {
-			let prefObj = findPref(pref);
-
-			if (prefObj) {
-				resolve(prefObj.value);
-			} else {
-				resolve(null);
-			}
-
-		});
-	}
-
-	function setPref(pref, value) {
-		savePref(pref, value);
-	}
-
-	function getCleanHighlightedUsers() {
-		return getPref('highlightusers').then((highlightusers) => {
-			return new Promise((resolve) => {
-				let value;
-				if (highlightusers === null) {
-					value = [];
-				} else {
-					value = highlightusers.split(',')
-						.filter(function (user) {
-							return user.trim() !== '';
-						}).map(function (user) {
-							return user.split(':');
-						}).filter(function (user) {
-							return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-						}).map(function (user) {
-							return {
-								name: user[0],
-								color: user[1]
-							};
-						});
-				}
-
-				resolve(value);
-			});
-		});
-	}
-
-	function getCleanTrolls() {
-		return getPref('trolls').then((trolls) => {
-			return new Promise((resolve) => {
-				let value;
-				if (trolls === null) {
-					value = [];
-				} else {
-					value = trolls.split(',').filter((troll) => {
-						return troll.trim() !== '';
-					});
-				}
-
-				resolve(value);
-			});
-		});
-
-
-	}
-
-	function getCleanTaxonomies() {
-		return getPref('hidetaxonomy').then((taxonomies) => {
-			return new Promise((resolve) => {
-				let value;
-				if (taxonomies === null) {
-					value = [];
-				} else {
-					value = taxonomies.split(',').filter(function (taxonomy) {
-						return taxonomy.trim() !== '';
-					});
-				}
-
-				resolve(value);
-			});
-		});
-
-	}
 
 	define('./pref', function (exports) {
-		exports.getPref = getPref;
-		exports.setPref = setPref;
-		exports.getCleanHighlightedUsers = getCleanHighlightedUsers;
-		exports.getCleanTrolls = getCleanTrolls;
-		exports.getCleanTaxonomies = getCleanTaxonomies;
-		exports.on = events.on;
-		exports.off = events.off;
+		let Prefs = require('./core/prefs').Prefs;
+		class ChromePrefs extends Prefs {
+			setPref(pref, value) {
+				savePref(pref, value);
+			}
+
+			getPref(pref) {
+				return new Promise(function (resolve) {
+					let prefObj = findPref(pref);
+
+					if (prefObj) {
+						resolve(prefObj.value);
+					} else {
+						resolve(null);
+					}
+
+				});
+			}
+		}
+
+		let output = new ChromePrefs();
+
+		output.on = events.on;
+
+		exports.pref = output;
 	});
 }());
