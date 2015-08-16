@@ -1,9 +1,7 @@
-/*jshint esnext:true*/
+/*jshint esnext:true, moz:true*/
 /*global chrome*/
 (function (req) {
 	'use strict';
-
-	let func = req('func');
 
 	let modBlocks = req('blocks');
 	let modArticles = req('articles');
@@ -28,22 +26,6 @@
 
 		if (articles.length > 0) {
 			chrome.runtime.sendMessage({'event': 'gotArticles', data: articles});
-		}
-	}
-
-	function onArticlesMarkNew(data) {
-		data.articles.map(modArticles.articleStructToArticleNodeStruct)
-				.forEach(func.partial(modArticles.markNewArticle, data.text));
-
-	}
-
-	function onArticleAddNextPrev(item) {
-		if (item.prevId) {
-			modArticles.addLinkToPrevArticle(item.id, item.prevId);
-		}
-
-		if (item.nextId) {
-			modArticles.addLinkToNextArticle(item.id, item.nextId);
 		}
 	}
 
@@ -187,11 +169,11 @@
 				break;
 
 				case 'articles.mark-new':
-					onArticlesMarkNew(data);
+					modArticles.onMarkNew(data);
 				break;
 
 				case 'articles.addNextPrev':
-					onArticleAddNextPrev(data);
+					modArticles.onArticleAddNextPrev(data);
 				break;
 
 				case 'articles.add-category-hide-button':
@@ -277,14 +259,10 @@
 			console.log('message request', request, sender);
 		});
 
-		document.getElementById('content-both').addEventListener('click', function (e) {
-			if (e.target.classList.contains('taxonomy-button')) {
-				let dom = req('dom');
-				let articleStruct = modArticles.articleElementToStruct(dom.closest(e.target, '.node'));
+		modArticles.listenToTaxonomyButtonClick((articleStruct) => {
 
-				chrome.runtime.sendMessage({event: 'article.hide-taxonomy', data: articleStruct});
-			}
-		}, false);
+			chrome.runtime.sendMessage({event: 'article.hide-taxonomy', data: articleStruct});
+		});
 
 		addHupperBlock().then(function () {
 			console.log('huper block added');

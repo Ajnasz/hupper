@@ -108,32 +108,17 @@ console.log('hupper.js');
 
 			if (articles.length > 0) {
 				events.emit('gotArticles', articles);
-				events.on('articles.mark-new', function (data) {
-					data.articles.map(modArticles.articleStructToArticleNodeStruct)
-							.forEach(func.partial(modArticles.markNewArticle, data.text));
-				});
+				events.on('articles.mark-new', modArticles.onMarkNew);
 			}
-			events.on('articles.addNextPrev', function (item) {
-				if (item.prevId) {
-					modArticles.addLinkToPrevArticle(item.id, item.prevId);
-				}
+			events.on('articles.addNextPrev', modArticles.onArticleAddNextPrev);
 
-				if (item.nextId) {
-					modArticles.addLinkToNextArticle(item.id, item.nextId);
-				}
-			});
-
-			events.on('articles.add-category-hide-button', modArticles.addCategoryHideButton);
+			events.on('articles.add-category-hide-button', modArticles.onAddCategoryHideButton);
 
 			events.on('articles.hide', modArticles.hideArticles);
 
-			document.getElementById('content-both').addEventListener('click', function (e) {
-				if (e.target.classList.contains('taxonomy-button')) {
-					let articleStruct = modArticles.articleElementToStruct(dom.closest(e.target, '.node'));
-
-					events.emit('article.hide-taxonomy', articleStruct);
-				}
-			}, false);
+			modArticles.listenToTaxonomyButtonClick((articleStruct) => {
+				events.emit('article.hide-taxonomy', articleStruct);
+			});
 		});
 	});
 

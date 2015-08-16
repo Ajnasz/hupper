@@ -106,7 +106,7 @@ console.log('articles.js');
 			], [
 				'hupper-button',
 				'taxonomy-button',
-				'delete-button',
+				'delete-button'
 			]);
 
 			categoryContainer.appendChild(button);
@@ -140,6 +140,33 @@ console.log('articles.js');
 				.forEach(addCategoryHideButton);
 		}
 
+		function onMarkNew(data) {
+			data.articles.map(articleStructToArticleNodeStruct)
+					.forEach(func.partial(markNewArticle, data.text));
+		}
+
+		function onArticleAddNextPrev(item) {
+			if (item.prevId) {
+				addLinkToPrevArticle(item.id, item.prevId);
+			}
+
+			if (item.nextId) {
+				addLinkToNextArticle(item.id, item.nextId);
+			}
+		}
+
+		function listenToTaxonomyButtonClick(cb) {
+			document.getElementById('content-both').addEventListener('click', function (e) {
+				if (e.target.classList.contains('taxonomy-button')) {
+					let articleStruct = articleElementToStruct(dom.closest(e.target, '.node'));
+
+					cb(articleStruct);
+
+				}
+			}, false);
+
+		}
+
 		return {
 			parseArticles: parseArticles,
 			markNewArticle: markNewArticle,
@@ -149,7 +176,10 @@ console.log('articles.js');
 			addCategoryHideButton: addCategoryHideButton,
 			articleElementToStruct: articleElementToStruct,
 			hideArticles: hideArticles,
-			onAddCategoryHideButton: onAddCategoryHideButton
+			onAddCategoryHideButton: onAddCategoryHideButton,
+			onMarkNew: onMarkNew,
+			onArticleAddNextPrev: onArticleAddNextPrev,
+			listenToTaxonomyButtonClick: listenToTaxonomyButtonClick
 		};
 	});
 }(window.def, window.req));
