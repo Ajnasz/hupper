@@ -284,30 +284,32 @@
 
 
 	define('./pref', function (exports) {
-		let Prefs = require('./core/prefs').Prefs;
-		class ChromePrefs extends Prefs {
-			setPref(pref, value) {
-				savePref(pref, value);
+		let prefs = require('./core/prefs').prefs;
+		var chromePrefs = Object.create(prefs, {
+			setPref: {
+				value: function (pref, value) {
+					savePref(pref, value);
+				}
+			},
+
+			getPref: {
+				value: function (pref) {
+					return new Promise(function (resolve) {
+						let prefObj = findPref(pref);
+
+						if (prefObj) {
+							resolve(prefObj.value);
+						} else {
+							resolve(null);
+						}
+
+					});
+				}
 			}
+		});
 
-			getPref(pref) {
-				return new Promise(function (resolve) {
-					let prefObj = findPref(pref);
+		chromePrefs.on = events.on;
 
-					if (prefObj) {
-						resolve(prefObj.value);
-					} else {
-						resolve(null);
-					}
-
-				});
-			}
-		}
-
-		let output = new ChromePrefs();
-
-		output.on = events.on;
-
-		exports.pref = output;
+		exports.pref = chromePrefs;
 	});
 }());

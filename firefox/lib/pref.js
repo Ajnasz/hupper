@@ -1,50 +1,30 @@
-/*jshint moz:true*/
+/*jshint esnext:true*/
 /*global require, exports*/
-function getPref(pref) {
+
+let prefs = require('./core/pref').prefs;
+console.log(Object.keys(require('./core/pref')));
+
+var firefoxPrefs = Object.create(prefs, {
+	setPref: {
+		value: function (pref, value) {
+			'use strict';
+			require('sdk/simple-prefs').prefs[pref] = value;
+		}
+	},
+
+	getPref: {
+		value: function (pref) {
+			'use strict';
+			return new Promise((resolve) => {
+				resolve(require('sdk/simple-prefs').prefs[pref]);
+			});
+		}
+	}
+
+});
+
+firefoxPrefs.on = (name, cb) => {
 	'use strict';
-	return require('sdk/simple-prefs').prefs[pref];
-}
-
-function setPref(pref, value) {
-	'use strict';
-	require('sdk/simple-prefs').prefs[pref] = value;
-}
-
-function getCleanHighlightedUsers() {
-	'use strict';
-	return getPref('highlightusers').split(',')
-		.filter(function (user) {
-			return user.trim() !== '';
-		}).map(function (user) {
-			return user.split(':');
-		}).filter(function (user) {
-			return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-		}).map(function (user) {
-			return {
-				name: user[0],
-				color: user[1]
-			};
-		});
-}
-
-function getCleanTaxonomies() {
-	'use strict';
-	let taxonomies = getPref('hidetaxonomy').split(',');
-
-	return taxonomies.filter(function (taxonomy) {
-		return taxonomy.trim() !== '';
-	});
-}
-
-function getCleanTrolls() {
-	'use strict';
-	return getPref('trolls').split(',').filter(function (troll) {
-		return troll.trim() !== '';
-	});
-
-}
-exports.getPref = getPref;
-exports.setPref = setPref;
-exports.getCleanHighlightedUsers = getCleanHighlightedUsers;
-exports.getCleanTrolls = getCleanTrolls;
-exports.getCleanTaxonomies = getCleanTaxonomies;
+	require('sdk/simple-prefs').on(name, cb);
+};
+exports.pref = firefoxPrefs;

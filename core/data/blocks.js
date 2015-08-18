@@ -22,6 +22,10 @@
 			header: null
 		};
 
+		function blockDataStructToBlockElement(blockObj) {
+			return document.getElementById(blockObj.id);
+		}
+
 		/**
 		 * @param blockDataStruct
 		 * @return blockSturct
@@ -35,10 +39,6 @@
 			// output.content = node.querySelector('.content');
 
 			return output;
-		}
-
-		function blockDataStructToBlockElement(blockObj) {
-			return document.getElementById(blockObj.id);
 		}
 
 		function getBlockElements(sidebar) {
@@ -148,7 +148,7 @@
 				});
 
 				if (index > -1) {
-					let  elem = elementList.splice(index, 1)[0];
+					let elem = elementList.splice(index, 1)[0];
 					sidebar.appendChild(elem);
 				}
 			});
@@ -207,15 +207,15 @@
 			obj.column = '';
 
 			return obj;
-		});
+		}());
 
 		function onBlockControlClick(e) {
-			if (dom.is(e.target, '.block-button')) {
+			if (e.target.dataset.action === 'restore-block') {
 				let block = dom.closest(e.target, '.block'),
-				action = e.target.dataset.action,
-				event = Object.create(blockActionStruct);
+					action = e.target.dataset.action,
+					event = Object.create(blockActionStruct);
 
-				event.id = block.getAttribute('id');
+				event.id = e.target.dataset.blockid;
 				event.action = action;
 				event.column = getBlockColumn(block);
 

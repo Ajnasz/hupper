@@ -1,5 +1,7 @@
+/*jshint esnext: true*/
 /*global require, exports*/
-var pref = require('./pref');
+/*eslint-disable new-cap*/
+var pref = require('./pref').pref;
 
 var cm = require('sdk/context-menu');
 
@@ -14,60 +16,72 @@ function setContextMenu () {
 		'self.postMessage(node.textContent);' +
 	'})';
 
-	if (pref.getPref('filtertrolls')) {
-		var markAsTroll = cm.Item({
-			label: 'Mark as troll',
-			context: contexts,
-			contentScript: script,
-			onMessage: function (username) {
-				var trolls = pref.getCleanTrolls();
+	pref.getPref('filtertrolls').then((results) => {
+		let [filtertrolls] = results;
 
-				if (trolls.indexOf(username) === -1) {
-					trolls.push(username);
+		if (filtertrolls) {
+			var markAsTroll = cm.Item({
+				label: 'Mark as troll',
+				context: contexts,
+				contentScript: script,
+				onMessage: function (username) {
+					pref.getCleanTrolls().then((trolls) => {
+
+						if (trolls.indexOf(username) === -1) {
+							trolls.push(username);
+						}
+
+						pref.setPref('trolls', trolls.join(','));
+					});
 				}
+			});
+			markAsTroll.context.add(cm.SelectorContext('.submitted:not(.trollHeader) > a'));
+			markAsTroll.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
 
-				pref.setPref('trolls', trolls.join(','));
-			}
-		});
-		markAsTroll.context.add(cm.SelectorContext('.submitted:not(.trollHeader) > a'));
-		markAsTroll.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
+			var unmarkTroll = cm.Item({
+				label: 'Unmark troll',
+				context: contexts,
+				contentScript: script,
+				onMessage: function (username) {
+					username = username.trim();
+					pref.getCleanTrolls().then((trolls) => {
+						let filteredTrolls = trolls.filter(function (troll) {
+							return troll.trim() !== username;
+						});
 
-		var unmarkTroll = cm.Item({
-			label: 'Unmark troll',
-			context: contexts,
-			contentScript: script,
-			onMessage: function (username) {
-				username = username.trim();
-				var trolls = pref.getCleanTrolls().filter(function (troll) {
-					return troll.trim() !== username;
-				});
+						pref.setPref('trolls', filteredTrolls.join(','));
+					});
+				}
+			});
+			unmarkTroll.context.add(cm.SelectorContext('.submitted.trollHeader > a'));
+			unmarkTroll.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
+		}
 
-				pref.setPref('trolls', trolls.join(','));
-			}
-		});
-		unmarkTroll.context.add(cm.SelectorContext('.submitted.trollHeader > a'));
-		unmarkTroll.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
-	}
+	});
 
 	var highlightUser = cm.Item({
 		label: 'Highlight user',
 		context: contexts,
 		contentScript: script,
 		onMessage: function (username) {
-			var users = pref.getCleanHighlightedUsers();
+			Promise.all([
+				pref.getCleanHighlightedUsers(),
+				pref.getPref('huppercolor')
+			]).then((results) => {
+				let [users, color] = results;
+				if (!users.some(function (user) {
+					return user.name === username;
+				})) {
+					users.push({
+						name: username,
+						color: color
+					});
+				}
 
-			if (!users.some(function (user) {
-				return user.name === username;
-			})) {
-				users.push({
-					name: username,
-					color: pref.getPref('huppercolor')
-				});
-			}
-
-			pref.setPref('highlightusers', users.map(function (user) {
-				return user.name + ':' + user.color;
-			}).join(','));
+				pref.setPref('highlightusers', users.map(function (user) {
+					return user.name + ':' + user.color;
+				}).join(','));
+			});
 		}
 	});
 	highlightUser.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
@@ -78,13 +92,15 @@ function setContextMenu () {
 		context: contexts,
 		contentScript: script,
 		onMessage: function (username) {
-			var users = pref.getCleanHighlightedUsers().filter(function (user) {
-				return user.name !== username;
-			});
+			pref.getCleanHighlightedUsers().then((users) => {
+				let filteredUsers = users.filter(function (user) {
+					return user.name !== username;
+				});
 
-			pref.setPref('highlightusers', users.map(function (user) {
-				return user.name + ':' + user.color;
-			}).join(','));
+				pref.setPref('highlightusers', filteredUsers.map(function (user) {
+					return user.name + ':' + user.color;
+				}).join(','));
+			});
 		}
 	});
 

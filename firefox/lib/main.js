@@ -1,8 +1,8 @@
-/*jshint moz:true*/
+/*jshint moz:true, esnext: true*/
 /*global require*/
 var pageMod = require('sdk/page-mod');
 var sdkSelf = require('sdk/self');
-var pref = require('./pref');
+var pref = require('./pref').pref;
 var pagestyles = require('./pagestyles');
 let func = require('./core/func');
 
@@ -36,9 +36,33 @@ function eventEmitter(worker) {
 		emit: emit
 	};
 }
+function manageStyles() {
+	'use strict';
+	return Promise.all([
+		pref.getPref('style_min_fontsize'),
+		pref.getPref('style_wider_sidebar'),
+		pref.getPref('style_hide_left_sidebar'),
+		pref.getPref('style_hide_right_sidebar'),
+		pagestyles.getPageStyleFiles()
+	]).then((resp) => {
+		let styles = pagestyles.getPageStyle({
+			minFontSize: resp[0],
+			minWidth: resp[1],
+			hideLeftSidebar: resp[2],
+			hideRightSidebar: resp[3]
+		});
+
+		return new Promise((resolve) => {
+			resolve({styles: styles, files: resp[4]});
+		});
+	});
+}
+
 
 (function () {
 	'use strict';
+
+manageStyles().then((results) => {
 return new pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
 	attachTo: ['top', 'existing'],
@@ -55,63 +79,82 @@ return new pageMod.PageMod({
 
 				modComments.setScores(comments);
 
-				if (pref.getPref('hideboringcomments')) {
-					let boringRex = new RegExp(pref.getPref('boringcommentcontents'));
-					modComments.markBoringComments(comments, boringRex);
-				}
+				Promise.all([
+					pref.getPref('hideboringcomments'),
+					pref.getPref('boringcommentcontents'),
+					pref.getPref('filtertrolls'),
+					pref.getCleanTrolls(),
+					pref.getCleanHighlightedUsers(),
+					pref.getPref('replacenewcommenttext')
+				]).then((results) => {
+					let [
+						hideBoringComments,
+						boringRexStr,
+						filterTrolls,
+						trolls,
+						highlightedUsers,
+						replaceNewCommentText
+					] = results;
+					if (hideBoringComments) {
+						let boringRex = new RegExp(boringRexStr);
+						modComments.markBoringComments(comments, boringRex);
+					}
 
-				if (pref.getPref('filtertrolls')) {
-					let trolls = pref.getCleanTrolls();
-					modComments.markTrollComments(comments, trolls);
-				}
+					if (filterTrolls) {
+						modComments.markTrollComments(comments, trolls);
+					}
 
-				let highlightedUsers = pref.getCleanHighlightedUsers();
+					if (highlightedUsers.length) {
+						modComments.setHighlightedComments(highlightedUsers, comments);
+					}
 
-				if (highlightedUsers.length) {
-					modComments.setHighlightedComments(highlightedUsers, comments);
-				}
+					let flatCommentList = modComments.flatComments(comments);
 
-				let flatCommentList = modComments.flatComments(comments);
-
-				let childComments = flatCommentList.filter(function (comment) {
-					return comment.parent !== '';
-				});
-
-				events.emit('comment.addParentLink', childComments);
-				events.emit('comment.addExpandLink', childComments.filter(function (comment) {
-					return comment.indentLevel > 1;
-				}));
-
-				events.emit('comments.update', flatCommentList);
-
-				let newComments = modComments.getNewComments(comments);
-
-				if (pref.getPref('replacenewcommenttext') && newComments.length > 0) {
-					events.emit('comment.setNew', {
-						comments: newComments,
-						text: pref.getPref('newcommenttext')
+					let childComments = flatCommentList.filter(function (comment) {
+						return comment.parent !== '';
 					});
-				}
-				modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
-					events.emit('comment.addNextPrev', nextPrev);
-				});
 
-				if (newComments.length > 0) {
-					events.emit('hupper-block.add-menu', {
-						href: '#new',
-						text: TEXT_FIRST_NEW_COMMENT
+					events.emit('comment.addParentLink', childComments);
+					events.emit('comment.addExpandLink', childComments.filter(function (comment) {
+						return comment.indentLevel > 1;
+					}));
+
+					events.emit('comments.update', flatCommentList);
+
+					let newComments = modComments.getNewComments(comments);
+
+					if (replaceNewCommentText && newComments.length > 0) {
+						pref.getPref('newcommenttext').then((text) => {
+							events.emit('comment.setNew', {
+								comments: newComments,
+								text: text
+							});
+						});
+					}
+
+					modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
+						events.emit('comment.addNextPrev', nextPrev);
 					});
-				}
 
-				require('sdk/simple-prefs').on('highlightusers', function () {
-					let highlightedUsers = pref.getCleanHighlightedUsers();
-					modComments.setHighlightedComments(highlightedUsers, comments);
-					events.emit('comments.update', flatCommentList);
-				});
-				require('sdk/simple-prefs').on('trolls', function () {
-					let trolls = pref.getCleanTrolls();
-					modComments.updateTrolls(trolls, comments);
-					events.emit('comments.update', flatCommentList);
+					if (newComments.length > 0) {
+						events.emit('hupper-block.add-menu', {
+							href: '#new',
+							text: TEXT_FIRST_NEW_COMMENT
+						});
+					}
+
+					require('sdk/simple-prefs').on('highlightusers', function () {
+						pref.getCleanHighlightedUsers().then((highlightedUsers) => {
+							modComments.setHighlightedComments(highlightedUsers, comments);
+							events.emit('comments.update', flatCommentList);
+						});
+					});
+					require('sdk/simple-prefs').on('trolls', function () {
+						pref.getCleanTrolls().then((trolls) => {
+							modComments.updateTrolls(trolls, comments);
+							events.emit('comments.update', flatCommentList);
+						});
+					});
 				});
 
 			});
@@ -130,11 +173,16 @@ return new pageMod.PageMod({
 			events.emit('getArticles');
 			events.on('gotArticles', function (articles) {
 				let newArticles = articles.filter(modArticles.filterNewArticles);
+
 				console.log('articles', articles);
-				events.emit('articles.mark-new', {
-					text: pref.getPref('newcommenttext'),
-					articles: newArticles
+
+				pref.getPref('newcommenttext').then((newCommentText) => {
+					events.emit('articles.mark-new', {
+						text: newCommentText,
+						articles: newArticles
+					});
 				});
+
 				if (newArticles.length > 0) {
 					events.emit('hupper-block.add-menu', {
 						href: '#' + newArticles[0].id,
@@ -153,19 +201,22 @@ return new pageMod.PageMod({
 				events.emit('articles.add-category-hide-button', articles);
 
 				events.on('article.hide-taxonomy', function (article) {
-					let taxonomies = pref.getCleanTaxonomies();
 
-					if (taxonomies.indexOf(articles.cateogry) === -1) {
-						taxonomies.push(article.category);
-						pref.setPref('hidetaxonomy', taxonomies.join(','));
+					pref.getCleanTaxonomies().then((taxonomies) => {
+						if (taxonomies.indexOf(articles.cateogry) === -1) {
+							taxonomies.push(article.category);
+							pref.setPref('hidetaxonomy', taxonomies.join(','));
 
-						let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
-						events.emit('articles.hide', hideableArticles);
-					}
+							let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
+							events.emit('articles.hide', hideableArticles);
+						}
+					});
 				});
 
-				let hideableArticles = modArticles.filterHideableArticles(articles, pref.getCleanTaxonomies());
-				events.emit('articles.hide', hideableArticles);
+				pref.getCleanTaxonomies().then((taxonomies) => {
+					let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
+					events.emit('articles.hide', hideableArticles);
+				});
 			});
 		}
 
@@ -187,74 +238,83 @@ return new pageMod.PageMod({
 		}
 
 		function updateBlock(details, prefName, value) {
-			let blockPrefs = JSON.parse(pref.getPref('blocks'));
-			let modBlocks = require('./core/blocks');
-			let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
-			pref.setPref('blocks', JSON.stringify(blockPrefs));
-			return output;
+			return pref.getPref('blocks').then((blocks) => {
+				return new Promise((resolve) => {
+					let blockPrefs = JSON.parse(blocks);
+					let modBlocks = require('./core/blocks');
+					let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
+					pref.setPref('blocks', JSON.stringify(blockPrefs));
+					resolve(output);
+				});
+			});
 		}
 
 		function onBlockDelete(events, details) {
-			let block = updateBlock(details, 'hidden', true);
-
-			emitBlockEvent(events, 'block.hide', block);
-			emitBlockEvent(events, 'hupper-block.hide-block', block);
+			updateBlock(details, 'hidden', true).then((block) => {
+				emitBlockEvent(events, 'block.hide', block);
+				emitBlockEvent(events, 'hupper-block.hide-block', block);
+			});
 		}
 
 		function onBlockRestore(events, details) {
-			let block = updateBlock(details, 'hidden', false);
-
-			emitBlockEvent(events, 'block.show', block);
-			emitBlockEvent(events, 'hupper-block.show-block', block);
+			updateBlock(details, 'hidden', false).then((block) => {
+				emitBlockEvent(events, 'block.show', block);
+				emitBlockEvent(events, 'hupper-block.show-block', block);
+			});
 		}
 
 		function onBlockHideContent(events, details) {
-			let block = updateBlock(details, 'contentHidden', true);
-
-			emitBlockEvent(events, 'block.hide-content', block);
+			updateBlock(details, 'contentHidden', true).then((block) => {
+				emitBlockEvent(events, 'block.hide-content', block);
+			});
 		}
 
 		function onBlockShowContent(events, details) {
-			let block = updateBlock(details, 'contentHidden', false);
-
-			emitBlockEvent(events, 'block.show-content', block);
+			updateBlock(details, 'contentHidden', false).then((block) => {
+				emitBlockEvent(events, 'block.show-content', block);
+			});
 		}
 
 		function onUpDownAction(events, details) {
-			let blockPrefs = JSON.parse(pref.getPref('blocks'));
-			let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
-			if (columnBlocks) {
-				pref.setPref('blocks', JSON.stringify(blockPrefs));
-				events.emit('block.change-order', {
-					sidebar: details.column,
-					blocks: columnBlocks
-				});
-			}
+			pref.getPref('blocks').then((blocks) => {
+				let blockPrefs = JSON.parse(blocks);
+				let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
+				if (columnBlocks) {
+					pref.setPref('blocks', JSON.stringify(blockPrefs));
+					events.emit('block.change-order', {
+						sidebar: details.column,
+						blocks: columnBlocks
+					});
+				}
+			});
 		}
 
 		function onLeftRightAction(events, details) {
-			let blockPrefs = JSON.parse(pref.getPref('blocks'));
-			let allBlocks = require('./core/blocks')
-					.onBlockChangeColumn(events, details, blockPrefs);
+			pref.getPref('blocks').then((blocks) => {
+				let blockPrefs = JSON.parse(blocks);
+				let allBlocks = require('./core/blocks')
+						.onBlockChangeColumn(events, details, blockPrefs);
 
-			if (allBlocks) {
-				pref.setPref('blocks', JSON.stringify(blockPrefs));
+				if (allBlocks) {
+					pref.setPref('blocks', JSON.stringify(blockPrefs));
 
-				events.emit('block.change-column', blockPrefs);
-			}
+					events.emit('block.change-column', blockPrefs);
+				}
+			});
 		}
 
 		/**
 		* @param blockActionStruct action
 		*/
 		function onBlockAction(events, details) {
+			console.log('on block action', events, details);
 
 			switch (details.action) {
 				case 'delete':
 					onBlockDelete(events, details);
 				break;
 
-				case 'restore':
+				case 'restore-block':
 					onBlockRestore(events, details);
 				break;
 
@@ -295,41 +355,46 @@ return new pageMod.PageMod({
 		}
 
 		function onGotBlocks(blocks) {
-			let modBlocks = require('./core/blocks'),
-				blocksPref = JSON.parse(pref.getPref('blocks'));
+			pref.getPref('blocks').then((blocksPrefStr) => {
+				let modBlocks = require('./core/blocks'),
+					blocksPref = JSON.parse(blocksPrefStr);
 
-			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
+				blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
 
-			pref.setPref('blocks', JSON.stringify(blocksPref));
+				pref.setPref('blocks', JSON.stringify(blocksPref));
 
-			events.emit('enableBlockControls', blocks.left);
-			events.emit('enableBlockControls', blocks.right);
+				events.emit('enableBlockControls', blocks.left);
+				events.emit('enableBlockControls', blocks.right);
 
-			events.on('blocks.change-order-all-done', function () {
-				finishBlockSetup(blocks, blocksPref);
+				events.on('blocks.change-order-all-done', function () {
+					finishBlockSetup(blocks, blocksPref);
 
+					parseComments();
+					parseArticles();
+				});
+
+				events.emit('blocks.change-order-all', blocksPref);
+			});
+		}
+		pref.getPref('parseblocks').then((parse) => {
+			if (parse) {
+				events.on('gotBlocks', onGotBlocks);
+
+				events.emit('getBlocks');
+			} else {
 				parseComments();
 				parseArticles();
-			});
+			}
+		});
 
-			events.emit('blocks.change-order-all', blocksPref);
-		}
-
-		if (pref.getPref('parseblocks')) {
-			events.on('gotBlocks', onGotBlocks);
-
-			events.emit('getBlocks');
-		} else {
-			parseComments();
-			parseArticles();
-		}
-
-		if (pref.getPref('setunlimitedlinks')) {
-			events.emit('setUnlimitedLinks');
-		}
+		pref.getPref('setunlimitedlinks').then((setLinks) => {
+			if (setLinks) {
+				events.emit('setUnlimitedLinks');
+			}
+		});
 	},
-	contentStyle: pagestyles.getPageStyle(),
-	contentStyleFile: pagestyles.getPageStyleFiles(),
+	contentStyle: results.styles,
+	contentStyleFile: results.files,
 	contentScriptFile: [
 		sdkSelf.data.url('core/rq.js'),
 		sdkSelf.data.url('core/dom.js'),
@@ -342,5 +407,6 @@ return new pageMod.PageMod({
 		sdkSelf.data.url('core/unlimitedlinks.js'),
 		sdkSelf.data.url('hupper.js')
 	]
+});
 });
 }());

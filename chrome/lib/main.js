@@ -117,18 +117,24 @@ function manageComments(events) {
 
 		Promise.all([
 			pref.getPref('hideboringcomments'),
+			pref.getPref('boringcommentcontents'),
 			pref.getPref('filtertrolls'),
 			pref.getCleanTrolls(),
 			pref.getCleanHighlightedUsers(),
 			pref.getPref('replacenewcommenttext')
 		]).then((results) => {
-			let [hideBoring, hideTrolls, trolls, highlightedUsers, replaceNew] = results;
+			let [
+				hideBoring,
+				boringRexStr,
+				hideTrolls,
+				trolls,
+				highlightedUsers,
+				replaceNew
+			] = results;
 
 			if (hideBoring) {
-				pref.getPref('boringcommentcontents').then((regexp) => {
-					let boringRex = new RegExp(regexp);
-					modComments.markBoringComments(comments, boringRex);
-				});
+				let boringRex = new RegExp(boringRexStr);
+				modComments.markBoringComments(comments, boringRex);
 			}
 			if (hideTrolls) {
 				modComments.markTrollComments(comments, trolls);
@@ -236,7 +242,7 @@ function manageBlocks(events) {
 				onBlockDelete(events, details);
 			break;
 
-			case 'restore':
+			case 'restore-block':
 				onBlockRestore(events, details);
 			break;
 
@@ -303,7 +309,7 @@ function manageBlocks(events) {
 	}
 
 	function onUpDownAction(events, details) {
-		pref.getPref('blocks').the((blocks) => {
+		pref.getPref('blocks').then((blocks) => {
 			let blockPrefs = JSON.parse(blocks);
 			let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
 			if (columnBlocks) {
@@ -317,7 +323,7 @@ function manageBlocks(events) {
 	}
 
 	function onLeftRightAction(events, details) {
-		pref.getPref('blocks').the((blocks) => {
+		pref.getPref('blocks').then((blocks) => {
 			let blockPrefs = JSON.parse(blocks);
 			let allBlocks = require('./core/blocks')
 					.onBlockChangeColumn(events, details, blockPrefs);
@@ -379,7 +385,6 @@ function manageStyles(tabId) {
 		}
 	});
 }
-
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
 	'use strict';
