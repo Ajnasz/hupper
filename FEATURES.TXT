@@ -16,7 +16,7 @@ Hide block content      | Y | Y |
 Hide block              | Y | Y |
 Move block up/down      | Y | Y |
 Move block left/right   | Y | Y |
-Hupper block            | Y | Y |
+Hupper block            | Y | Y | Restore ls -1 not working
 Hide left/right sidebar | Y | Y | In FF need to restart browser
 
 # Front page:
