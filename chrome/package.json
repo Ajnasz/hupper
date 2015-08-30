@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Ajnasz/hupper",
   "devDependencies": {
+    "babel": "^5.8.23",
     "escodegen": "^1.6.1",
     "esprima": "^2.2.0"
   }
