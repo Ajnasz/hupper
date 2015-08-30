@@ -1,5 +1,5 @@
 /*jshint esnext:true*/
-/*global define, require*/
+/*global define, require, chrome*/
 (function () {
 	'use strict';
 
@@ -140,6 +140,7 @@
 			localStorage.setItem('prefs', JSON.stringify(defaultPrefs));
 		}
 		/* use chrome.storage
+		 */
 		return Promise.all(defaultPrefs.map((pref) => {
 			return new Promise(function (resolve) {
 				chrome.storage.sync.get(pref.name, function (result) {
@@ -169,7 +170,7 @@
 				});
 			});
 		});
-		*/
+		/* */
 	}
 
 	let events = (function () {
@@ -228,58 +229,36 @@
 	}
 
 	function findPref(pref) {
-		let prefs;
-
-		createDefaultPrefs();
-
-		try {
-			prefs = JSON.parse(localStorage.getItem('prefs'));
-		} catch (er) {
-			prefs = [];
-		}
-
-		for (let i = 0, pl = prefs.length; i < pl; i++) {
-			if (prefs[i].name === pref) {
-				return prefs[i];
-			}
-		}
-
-		return null;
+		return new Promise(function (resolve) {
+			chrome.storage.sync.get(pref, function (results) {
+				if (typeof results[pref] !== 'undefined') {
+					resolve(results[pref]);
+				} else {
+					resolve(null);
+				}
+			});
+		});
 	}
 
 	function savePref(pref, value) {
-		let prefs;
+		return new Promise(function (resolve) {
+			let item = require('./core/func').first(defaultPrefs, (item) => {
+				return item.name === pref;
+			});
 
-		try {
-			prefs = JSON.parse(localStorage.getItem('prefs'));
-		} catch (er) {
-			prefs = [];
-		}
-
-		let prefObj = null;
-
-		for (let i = 0, pl = prefs.length; i < pl; i++) {
-			let name = prefs[i].name;
-			if (name === pref) {
-				prefObj = prefs[i];
-				break;
-			}
-		}
-
-		if (prefObj) {
-			if (validateType(prefObj.type, value)) {
-				if (prefObj.value !== value) {
-					prefObj.value = value;
-					localStorage.prefs = JSON.stringify(prefs);
-					events.emit(pref);
+			if (item) {
+				if (validateType(item.type, value)) {
+					let newValue = Object.create(null);
+					newValue[pref] = value;
+					chrome.storage.sync.set(newValue);
+					resolve();
+				} else {
+					throw new Error('Pref: ' + pref + ' value is not valid type for: ' + item.type);
 				}
-				return;
 			} else {
-				throw new Error('Pref: ' + pref + ' value is not valid type for: ' + pref.type);
+				throw new Error('Pref: ' + pref + ' not found');
 			}
-		}
-
-		throw new Error('Pref: ' + pref + ' not found');
+		});
 	}
 
 
@@ -288,21 +267,16 @@
 		var chromePrefs = Object.create(prefs, {
 			setPref: {
 				value: function (pref, value) {
-					savePref(pref, value);
+					savePref(pref, value).catch((err) => {
+						throw err;
+					});
 				}
 			},
 
 			getPref: {
 				value: function (pref) {
-					return new Promise(function (resolve) {
-						let prefObj = findPref(pref);
-
-						if (prefObj) {
-							resolve(prefObj.value);
-						} else {
-							resolve(null);
-						}
-
+					return findPref(pref).catch((err) => {
+						throw err;
 					});
 				}
 			}
