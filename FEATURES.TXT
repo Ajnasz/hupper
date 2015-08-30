@@ -38,3 +38,27 @@ Show "+1" for comments   | Y | Y |
 Highlight user comment   | Y | N |
 Mark troll user comment  | Y | N |
 Highlight linked comment | Y | Y | Hidden comment and answer to hidden comment not visible
+
+
+
+
+
+Other bugs
+
+function updateBlock(details, prefName, value, blockPrefs) {
+	var columnBlocks = undefined;
+	if (details.column === "sidebar-right") {
+		columnBlocks = blockPrefs.right;
+	} else if (details.column === "sidebar-left") {
+		columnBlocks = blockPrefs.left;
+	} else {
+		throw new Error("Unknown sidebar");
+	}
+	var block = columnBlocks.filter(function (b) {
+		return b.id === details.id;
+	})[0];
+	block[prefName] = value;
+	return block;
+}
+
+`block[prefName] = value;` throws error if block not on page
