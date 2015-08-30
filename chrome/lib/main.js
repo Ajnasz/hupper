@@ -3,9 +3,6 @@
 
 let pref = require('./pref').pref;
 
-const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
-const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
-
 var eventEmitter = (function () {
 	'use strict';
 	var tabs = {};
@@ -57,312 +54,6 @@ var eventEmitter = (function () {
 		};
 	};
 }());
-
-function manageArticles(events) {
-	'use strict';
-	let modArticles = require('./core/articles');
-
-	events.on('gotArticles', function (articles) {
-		let newArticles = articles.filter(modArticles.filterNewArticles);
-		console.log('articles', articles);
-		pref.getPref('newcommenttext').then((pref) => {
-			events.emit('articles.mark-new', {
-				text: pref,
-				articles: newArticles
-			});
-		});
-		if (newArticles.length > 0) {
-			events.emit('hupper-block.add-menu', {
-				href: '#' + newArticles[0].id,
-				text: TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS
-			});
-
-			let nextPrev = modArticles.setNewArticles(newArticles, events);
-
-			if (nextPrev) {
-				nextPrev.forEach(function (item) {
-					events.emit('articles.addNextPrev', item);
-				});
-			}
-		}
-
-		events.emit('articles.add-category-hide-button', articles);
-
-		events.on('article.hide-taxonomy', function (article) {
-			pref.getCleanTaxonomies().then((taxonomies) => {
-				if (taxonomies.indexOf(articles.cateogry) === -1) {
-					taxonomies.push(article.category);
-					pref.setPref('hidetaxonomy', taxonomies.join(','));
-
-					let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
-					events.emit('articles.hide', hideableArticles);
-				}
-			});
-		});
-		pref.getCleanTaxonomies().then((taxonomies) => {
-			let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
-			events.emit('articles.hide', hideableArticles);
-		});
-	});
-	events.emit('getArticles');
-}
-
-function manageComments(events) {
-	'use strict';
-	console.log('parse comments');
-	events.on('gotComments', function (comments) {
-		let modComments = require('./core/comments');
-
-		modComments.setScores(comments);
-
-		Promise.all([
-			pref.getPref('hideboringcomments'),
-			pref.getPref('boringcommentcontents'),
-			pref.getPref('filtertrolls'),
-			pref.getCleanTrolls(),
-			pref.getCleanHighlightedUsers(),
-			pref.getPref('replacenewcommenttext')
-		]).then((results) => {
-			let [
-				hideBoring,
-				boringRexStr,
-				hideTrolls,
-				trolls,
-				highlightedUsers,
-				replaceNew
-			] = results;
-
-			if (hideBoring) {
-				let boringRex = new RegExp(boringRexStr);
-				modComments.markBoringComments(comments, boringRex);
-			}
-			if (hideTrolls) {
-				modComments.markTrollComments(comments, trolls);
-			}
-
-
-			if (highlightedUsers.length) {
-				modComments.setHighlightedComments(highlightedUsers, comments);
-			}
-
-			let flatCommentList = modComments.flatComments(comments);
-
-			let childComments = flatCommentList.filter(function (comment) {
-				return comment.parent !== '';
-			});
-
-			events.emit('comment.addParentLink', childComments);
-			events.emit('comment.addExpandLink', childComments.filter(function (comment) {
-				return comment.indentLevel > 1;
-			}));
-
-			events.emit('comments.update', flatCommentList);
-
-			let newComments = modComments.getNewComments(comments);
-
-			if (replaceNew && newComments.length > 0) {
-				pref.getPref('newcommenttext').then((text) => {
-					events.emit('comment.setNew', {
-						comments: newComments,
-						text: text
-					});
-				});
-			}
-			modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
-				events.emit('comment.addNextPrev', nextPrev);
-			});
-
-			if (newComments.length > 0) {
-				events.emit('hupper-block.add-menu', {
-					href: '#new',
-					text: TEXT_FIRST_NEW_COMMENT
-				});
-			}
-
-			pref.on('highlightusers', function () {
-				pref.getCleanHighlightedUsers().then((highlightedUsers) => {
-					modComments.setHighlightedComments(highlightedUsers, comments);
-					events.emit('comments.update', flatCommentList);
-				});
-			});
-			pref.on('trolls', function () {
-				pref.getCleanTrolls().then((trolls) => {
-					modComments.updateTrolls(trolls, comments);
-					events.emit('comments.update', flatCommentList);
-				});
-			});
-		});
-
-	});
-
-	events.emit('getComments', {
-		// get content only if filtering boring comments
-		content: true
-	});
-
-}
-
-function manageBlocks(events) {
-	'use strict';
-	function emitBlockEvent(events, event, block) {
-		events.emit(event, {
-			id: block.id,
-			column: block.column
-		});
-	}
-
-	function requestBlockHide(events, block) {
-		emitBlockEvent(events, 'block.hide', block);
-		emitBlockEvent(events, 'hupper-block.hide-block', block);
-	}
-
-	function requestBlockContentHide(events, block) {
-		emitBlockEvent(events, 'block.hide-content', block);
-		emitBlockEvent(events, 'hupper-block.show-block', block);
-	}
-
-	function updateBlock(details, prefName, value) {
-		return pref.getPref('blocks').then((blocks) => {
-			return new Promise((resolve) => {
-				let blockPrefs = JSON.parse(blocks);
-				let modBlocks = require('./core/blocks');
-				let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
-				pref.setPref('blocks', JSON.stringify(blockPrefs));
-				resolve(output);
-			});
-		});
-	}
-
-	let func = require('./core/func');
-
-	function onBlockAction(events, details) {
-
-		switch (details.action) {
-			case 'delete':
-				onBlockDelete(events, details);
-			break;
-
-			case 'restore-block':
-				onBlockRestore(events, details);
-			break;
-
-			case 'hide-content':
-				onBlockHideContent(events, details);
-			break;
-
-			case 'show-content':
-				onBlockShowContent(events, details);
-			break;
-
-			case 'up':
-			case 'down':
-				onUpDownAction(events, details);
-			break;
-
-			case 'left':
-			case 'right':
-				onLeftRightAction(events, details);
-			break;
-		}
-	}
-
-	function finishBlockSetup(blocks, blocksPref) {
-		let modBlocks = require('./core/blocks');
-
-		events.emit('blocks.set-titles', modBlocks.getBlockTitles());
-
-		let allBlocks = blocksPref.left.concat(blocksPref.right);
-
-		allBlocks.filter(modBlocks.filterHidden)
-				.forEach(func.partial(requestBlockHide, events));
-
-		allBlocks.filter(modBlocks.filterContentHidden)
-				.forEach(func.partial(requestBlockContentHide, events));
-
-		events.on('block.action', func.partial(onBlockAction, events));
-	}
-
-	function onBlockDelete(events, details) {
-		updateBlock(details, 'hidden', true).then((block) => {
-			emitBlockEvent(events, 'block.hide', block);
-			emitBlockEvent(events, 'hupper-block.hide-block', block);
-		});
-	}
-
-	function onBlockRestore(events, details) {
-		updateBlock(details, 'hidden', false).then((block) => {
-			emitBlockEvent(events, 'block.show', block);
-			emitBlockEvent(events, 'hupper-block.show-block', block);
-		});
-	}
-
-	function onBlockHideContent(events, details) {
-		updateBlock(details, 'contentHidden', true).then((block) => {
-			emitBlockEvent(events, 'block.hide-content', block);
-		});
-	}
-
-	function onBlockShowContent(events, details) {
-		updateBlock(details, 'contentHidden', false).then((block) => {
-			emitBlockEvent(events, 'block.show-content', block);
-		});
-	}
-
-	function onUpDownAction(events, details) {
-		pref.getPref('blocks').then((blocks) => {
-			let blockPrefs = JSON.parse(blocks);
-			let columnBlocks = require('./core/blocks').onBlockChangeOrder(events, details, blockPrefs);
-			if (columnBlocks) {
-				pref.setPref('blocks', JSON.stringify(blockPrefs));
-				events.emit('block.change-order', {
-					sidebar: details.column,
-					blocks: columnBlocks
-				});
-			}
-		});
-	}
-
-	function onLeftRightAction(events, details) {
-		pref.getPref('blocks').then((blocks) => {
-			let blockPrefs = JSON.parse(blocks);
-			let allBlocks = require('./core/blocks')
-					.onBlockChangeColumn(events, details, blockPrefs);
-
-			if (allBlocks) {
-				pref.setPref('blocks', JSON.stringify(blockPrefs));
-
-				events.emit('block.change-column', blockPrefs);
-			}
-		});
-	}
-
-	function onGotBlocks(blocks) {
-		pref.getPref('blocks').then((blocksPrefStr) => {
-			let modBlocks = require('./core/blocks'),
-				blocksPref = JSON.parse(blocksPrefStr);
-
-			blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
-
-			pref.setPref('blocks', JSON.stringify(blocksPref));
-
-			events.emit('enableBlockControls', blocks.left);
-			events.emit('enableBlockControls', blocks.right);
-
-			events.on('blocks.change-order-all-done', function () {
-				finishBlockSetup(blocks, blocksPref);
-
-				// parseComments();
-				// parseArticles();
-			});
-
-			events.emit('blocks.change-order-all', blocksPref);
-		});
-	}
-
-	events.on('gotBlocks', onGotBlocks);
-	events.emit('getBlocks');
-}
-
 function manageStyles(tabId) {
 	'use strict';
 	let pageStyles = require('./core/pagestyles');
@@ -394,9 +85,26 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 	if (event === 'DOMContentLoaded') {
 		let events = eventEmitter(sender.tab.id);
 
-		manageArticles(events);
-		manageComments(events);
-		manageBlocks(events);
+		let parseComments = require('./core/main').parseComments;
+		let parseArticles = require('./core/main').parseArticles;
+		let parseBlocks = require('./core/main').parseBlocks;
+
+		parseComments(events, pref);
+		parseArticles(events, pref);
+
+		pref.getPref('parseblocks').then((parse) => {
+			if (parse) {
+				events.on('gotBlocks', parseBlocks.bind(null, events, pref));
+				events.emit('getBlocks');
+			}
+		});
+
+		pref.getPref('setunlimitedlinks').then((links) => {
+			if (links) {
+				events.emit('setUnlimitedLinks');
+			}
+		});
+
 		manageStyles(sender.tab.id);
 
 		events.on('trolluser', function (username) {
@@ -452,12 +160,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 					return user.name + ':' + user.color;
 				}).join(','));
 			});
-		});
-
-		pref.getPref('setunlimitedlinks').then((links) => {
-			if (links) {
-				events.emit('setUnlimitedLinks');
-			}
 		});
 
 		/*

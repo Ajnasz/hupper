@@ -53,11 +53,8 @@ function manageStyles() {
 	});
 }
 
-
-(function () {
-	'use strict';
-
 manageStyles().then((results) => {
+	'use strict';
 return new pageMod.PageMod({
 	include: ['*.hup.lh', '*.hup.hu'],
 	attachTo: ['top', 'existing'],
@@ -65,9 +62,9 @@ return new pageMod.PageMod({
 		let events = eventEmitter(worker);
 		console.log('on attach');
 
-		var parseComments = require('./core/main').parseComments;
-		var parseArticles = require('./core/main').parseArticles;
-		var parseBlocks = require('./core/main').parseBlocks;
+		let parseComments = require('./core/main').parseComments;
+		let parseArticles = require('./core/main').parseArticles;
+		let parseBlocks = require('./core/main').parseBlocks;
 
 		pref.getPref('parseblocks').then((parse) => {
 			if (parse) {
@@ -101,4 +98,3 @@ return new pageMod.PageMod({
 	]
 });
 });
-}());

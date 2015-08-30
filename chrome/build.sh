@@ -13,8 +13,9 @@ node modulenamefixer.js
 
 cat lib/require.js \
 	lib/core/pref.js \
-	lib/pref.js \
 	lib/core/func.js \
+	lib/pref.js \
+	lib/core/main.js \
 	lib/core/pagestyles.js \
 	lib/core/articles.js \
 	lib/core/comments.js \
