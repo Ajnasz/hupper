@@ -1,5 +1,5 @@
 /*jshint moz:true, esnext: true*/
-/*global exports, require*/
+/*global exports, require, define*/
 
 (function () {
 	'use strict';
@@ -311,7 +311,15 @@
 		});
 	}
 
-	exports.parseComments = parseComments;
-	exports.parseArticles = parseArticles;
-	exports.parseBlocks = onGotBlocks;
+	if (typeof exports !== 'undefined') {
+		exports.parseComments = parseComments;
+		exports.parseArticles = parseArticles;
+		exports.parseBlocks = onGotBlocks;
+	} else {
+		define('./core/main', function (exports) {
+			exports.parseComments = parseComments;
+			exports.parseArticles = parseArticles;
+			exports.parseBlocks = onGotBlocks;
+		});
+	}
 }());
