@@ -1,0 +1,14 @@
+{
+	"validateQuoteMarks": "'",
+	"disallowSpacesInsideParentheses": true,
+	"disallowSpacesInsideBrackets": true,
+	"requireSpaceBetweenArguments": true,
+	"requireSpaceAfterKeywords": true,
+	"requireSpaceBeforeBlockStatements": true,
+	"requireSpaceBeforeObjectValues": true,
+	"disallowSpaceAfterObjectKeys": true,
+	"requireSpaceAfterBinaryOperators": true,
+	"requireSpaceBeforeBinaryOperators": true,
+	"requireSemicolons": true,
+	"esnext": true
+}
