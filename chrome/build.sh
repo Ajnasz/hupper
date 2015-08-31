@@ -29,9 +29,9 @@ cat lib/require.js \
 $(npm bin)/babel --compact=false lib/built-es6.js > lib/built.js
 
 cat options/require.js \
+	options/core/func.js \
 	options/core/pref.js \
 	options/pref.js \
-	options/core/func.js \
 	options/options.js > options/built-es6.js
 $(npm bin)/babel --compact=false options/built-es6.js > options/built.js
 

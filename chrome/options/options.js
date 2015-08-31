@@ -3,73 +3,92 @@
 (function () {
 	'use strict';
 	let prefs = require('./pref').pref;
+	let func = require('./core/func');
 
-	function createText(item) {
-		let fragment = document.createDocumentFragment();
-		let input = document.createElement('input');
-		let label = document.createElement('label');
-		let div = document.createElement('div');
-		let br = document.createElement('br');
-
-		label.textContent = item.title;
-		input.type = 'text';
-		input.name = item.name;
-		input.value = item.value;
-		input.dataset.type = item.type;
-
-		div.appendChild(label);
-		div.appendChild(br);
-		div.appendChild(input);
-
-		fragment.appendChild(div);
-
-		return fragment;
+	function createElement(type) {
+		let element = document.createElement(type);
+		return element;
 	}
 
-	function createInteger(item) {
-		let fragment = document.createDocumentFragment();
-		let input = document.createElement('input');
-		let label = document.createElement('label');
-		let div = document.createElement('div');
-		let br = document.createElement('br');
+	function createControlGroup() {
+		let div = createElement('div');
+		div.classList.add('control-group');
 
-		label.textContent = item.title;
-		input.type = 'number';
-		input.name = item.name;
-		input.value = item.value;
-		input.dataset.type = item.type;
-
-		div.appendChild(label);
-		div.appendChild(br);
-		div.appendChild(input);
-		fragment.appendChild(div);
-
-		return fragment;
+		return div;
 	}
 
-	function createBool(item) {
-		let fragment = document.createDocumentFragment();
-		let input = document.createElement('input');
-		let label = document.createElement('label');
-		let div = document.createElement('div');
+	function camelConcat() {
+		return func.toArray(arguments).map((i) => {
+			return i[0].toUpperCase() + i.slice(1);
+		}).join('');
+	}
 
-		label.textContent = item.title;
-		input.type = 'checkbox';
-		input.name = item.name;
-		input.checked = item.value;
-		input.value = '1';
+	function getElemId(item) {
+		return camelConcat('Item', item.name);
+	}
+
+	function createInput(item) {
+		let input = createElement('input');
+
 		input.dataset.type = item.type;
+		input.name = item.name;
+		input.id = getElemId(item);
 
-		div.appendChild(input);
-		div.appendChild(label);
+		if (item.type === 'bool') {
+			input.type = 'checkbox';
+			input.value = '1';
+			input.checked = item.value;
+		} else {
+			input.value = item.value;
+
+			if (item.type === 'integer') {
+				input.type = 'number';
+			} else if (item.type === 'color') {
+				input.type = 'color';
+			} else {
+				input.type = 'text';
+			}
+		}
+
+		return input;
+	}
+
+	function createLabel(item) {
+		let label = createElement('label');
+		label.textContent = item.title;
+		label.setAttribute('for', getElemId(item));
+		return label;
+	}
+
+	function createBr() {
+		let br = createElement('br');
+		return br;
+	}
+
+	function composeGroup(item) {
+		let fragment = document.createDocumentFragment();
+		let input = createInput(item);
+		let label = createLabel(item);
+		let div = createControlGroup();
+
+		if (item.type === 'bool') {
+			div.appendChild(input);
+			div.appendChild(label);
+		} else {
+			div.appendChild(label);
+			div.appendChild(createBr());
+			div.appendChild(input);
+		}
+
 		fragment.appendChild(div);
+
 		return fragment;
 	}
 
 	function createControl(item) {
 		let fragment = document.createDocumentFragment();
-		let button = document.createElement('button');
-		let div = document.createElement('div');
+		let button = createElement('button');
+		let div = createElement('div');
 
 		button.type = 'button';
 		button.id = 'control-' + item.name;
@@ -88,35 +107,42 @@
 			if (x.hidden) {
 				return;
 			}
-			if (x.type === 'string') {
-				elem = createText(x);
-			} else if (x.type === 'bool') {
-				elem = createBool(x);
-			} else if (x.type === 'integer') {
-				elem = createInteger(x);
-			} else if (x.type === 'control') {
+
+			if (x.type === 'control') {
 				elem = createControl(x);
+			} else {
+				elem = composeGroup(x);
 			}
 
 			if (elem) {
 				msg.appendChild(elem);
 			}
-			// msg.innerHTML += x.name + ': ' + x.value + (x.hidden ? ' hidden' : '') + ' ' + x.title + ' ' + x.type + '<br>';
 		});
 
-		msg.addEventListener('change', function (e) {
+		msg.addEventListener('change', (e) => {
 			let target = e.target;
 			let name = target.name;
+			let type = target.dataset.type;
 			let value;
-			if (target.dataset.type === 'bool') {
+			if (type === 'bool') {
 				value = target.checked;
-			} else if (target.dataset.type === 'string') {
+			} else if (['string', 'color'].indexOf(type) > -1) {
 				value = target.value;
+			} else if (type === 'integer') {
+				value = parseInt(target.value, 10);
 			} else {
-				return;
+				throw new Error('Unkown type');
 			}
 
 			prefs.setPref(name, value);
 		}, false);
+
+		msg.addEventListener('click', (e) => {
+			let target = e.target;
+
+			if (target.dataset.type === 'control') {
+				console.log('edit');
+			}
+		});
 	});
 }());

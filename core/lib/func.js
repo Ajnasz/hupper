@@ -33,7 +33,7 @@
 	function partial(func) {
 		let pArgs = toArray(arguments).slice(1);
 
-		return function() {
+		return function () {
 			func.apply(this, pArgs.concat(toArray(arguments)));
 		};
 	}
@@ -42,11 +42,13 @@
 		exports.index = index;
 		exports.first = first;
 		exports.partial = partial;
+		exports.toArray = toArray;
 	} else {
 		define('./core/func', function (exports) {
 			exports.index = index;
 			exports.first = first;
 			exports.partial = partial;
+			exports.toArray = toArray;
 		});
 	}
 }());
