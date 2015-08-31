@@ -1,7 +1,8 @@
 /*jshint node: true, esnext: true*/
+/*global require*/
+/*eslint-env node*/
 
 var fs = require('fs');
-var path = require('path');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
 
@@ -36,8 +37,14 @@ function walk(dir, done) {
 			}
 			file = dir + '/' + file;
 			fs.stat(file, function (err, stat) {
+				if (err) {
+					throw err;
+				}
 				if (stat && stat.isDirectory()) {
 					walk(file, function (err, res) {
+						if (err) {
+							throw err;
+						}
 						results = results.concat(res);
 						next();
 					});
@@ -81,8 +88,11 @@ function fixRequires(data) {
 
 }
 
-walk('lib/core', function(err, results) {
+walk(process.argv[2], function (err, results) {
 	'use strict';
+	if (err) {
+		throw err;
+	}
 	results.forEach(function (result) {
 		var f = escodegen.generate(fixRequires(fs.readFileSync(result)));
 		fs.writeFileSync(result, f);

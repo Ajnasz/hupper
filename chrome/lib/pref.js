@@ -136,11 +136,6 @@
 	];
 
 	function createDefaultPrefs() {
-		if (!localStorage.getItem('prefs')) {
-			localStorage.setItem('prefs', JSON.stringify(defaultPrefs));
-		}
-		/* use chrome.storage
-		 */
 		return Promise.all(defaultPrefs.map((pref) => {
 			return new Promise(function (resolve) {
 				chrome.storage.sync.get(pref.name, function (result) {
@@ -279,11 +274,31 @@
 						throw err;
 					});
 				}
+			},
+
+			getAllPrefs: {
+				value: function () {
+					return Promise.all(defaultPrefs.map((pref) => {
+						return findPref(pref.name).then((value) => {
+							let output = Object.create(null);
+							output.name = pref.name;
+							output.title = pref.title;
+							output.type = pref.type;
+							output.hidden = pref.hidden;
+							output.value = value;
+
+							return new Promise((resolve) => {
+								resolve(output);
+							});
+						});
+					}));
+				}
 			}
 		});
 
 		chromePrefs.on = events.on;
 
 		exports.pref = chromePrefs;
+		createDefaultPrefs();
 	});
 }());

@@ -1,5 +1,5 @@
 /*jshint esnext: true*/
-var hupperModules = {};
+var hupperModules = Object.create(null);
 
 function require(name) {
 	'use strict';

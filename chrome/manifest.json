@@ -6,7 +6,11 @@
 	"background": {
 		"scripts": ["lib/built.js"]
 	},
-	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true,
+		"open_in_tab": true
+	},
 	"content_scripts": [{
 		"run_at": "document_start",
 		"matches": [
