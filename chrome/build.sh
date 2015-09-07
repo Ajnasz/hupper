@@ -28,6 +28,8 @@ cat lib/require.js \
 	lib/main.js > lib/built-es6.js
 $(npm bin)/babel --compact=false lib/built-es6.js > lib/built.js
 
+cp lib/pref.js options/pref.js
+cp lib/require.js options/require.js
 cat options/require.js \
 	options/core/func.js \
 	options/core/pref.js \

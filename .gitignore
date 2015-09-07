@@ -14,3 +14,9 @@ chrome/lib/built.js
 chrome/lib/built-es6.js
 
 chrome/node_modules
+
+chrome/options/core
+chrome/options/pref.js
+chrome/options/require.js
+chrome/options/built.js
+chrome/options/built-es6.js
