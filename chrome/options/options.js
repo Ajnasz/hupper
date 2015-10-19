@@ -100,6 +100,53 @@
 		return fragment;
 	}
 
+	function createPanel(options, html) {
+		let div = createElement('div');
+		let close = createElement('span');
+
+		let panelContent = createElement('div');
+		panelContent.classList.add('panel-content');
+
+		div.appendChild(panelContent);
+
+		close.classList.add('close');
+		close.appendChild(document.createTextNode('X'));
+
+		div.classList.add('panel');
+
+		if (options.id) {
+			div.setAttribute('id', options.id);
+		}
+
+		panelContent.insertAdjacentHTML('afterbegin', html);
+		div.insertBefore(close, div.firstChild);
+
+		close.addEventListener('click', function () {
+			div.addEventListener('transitionend', function r() {
+				div.parentNode.removeChild(div);
+				div.removeEventListener('transitionEnd', r);
+			}, false);
+
+			let panelBg = document.getElementById('panel-bg');
+			panelBg.addEventListener('transitionend', function r() {
+				panelBg.parentNode.removeChild(panelBg);
+				div.removeEventListener('transitionEnd', r);
+			}, false);
+
+			div.classList.remove('show');
+			panelBg.classList.remove('show');
+		});
+
+		return div;
+	}
+
+	function createPanelBg() {
+		let div = createElement('div');
+		div.setAttribute('id', 'panel-bg');
+
+		return div;
+	}
+
 	prefs.getAllPrefs().then((pref) => {
 		let msg = document.querySelector('#Messages');
 		pref.forEach((x) => {
@@ -141,7 +188,52 @@
 			let target = e.target;
 
 			if (target.dataset.type === 'control') {
-				console.log('edit');
+				let html = `
+	<h1>Edit highlighted users</h1>
+
+	<form action="" method="" id="HighlightUserForm">
+		<div class="field-group">
+			<label for="HighlightedUserName">User name</label>
+			<input type="text" name="userName" id="HighlightedUserName" required />
+		</div>
+		<div class="field-group">
+			<label for="HighlightedUserColor">Highlight color</label>
+			<input type="text" name="userColor" id="HighlightedUserColor" required />
+		</div>
+		<button type="submit">Add</button>
+	</form>
+
+	<table id="ListOfHighlightedUsers">
+		<thead>
+			<th>User name</th>
+			<th>User color</th>
+			<th>Delete user</th>
+		</thead>
+		<tbody></tbody>
+	</table>`;
+
+				let id = 'panel-' + target.id;
+				let panel = document.getElementById(id);
+				let panelBg = document.getElementById('panel-bg');
+
+				if (!panel) {
+					panel = createPanel({id: id}, html);
+				}
+
+				if (!panelBg) {
+					panelBg = createPanelBg();
+					document.body.appendChild(panelBg);
+				}
+
+
+				document.body.appendChild(panel);
+				setTimeout(function () {
+					panelBg.classList.add('show');
+					setTimeout(function () {
+						panel.classList.add('show');
+					}, 10);
+				}, 10);
+
 			}
 		});
 	});

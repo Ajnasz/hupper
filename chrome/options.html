@@ -5,8 +5,76 @@
 
 	<title>Hupper Options</title>
 	<style>
+body {
+	background-color: #fff;
+}
 .control-group {
 	margin: 1em 0 1.5em;
+}
+.panel {
+	position: absolute;
+	height: 400px;
+	width: 400px;
+	margin-top: -200px;
+	margin-left: -200px;
+	background-color: #fff;
+	border: 1px solid #333;
+
+	transition: top 1s ease;
+
+	top: -200%;
+	left: -200%;
+	z-index: 2;
+}
+
+.panel.show {
+	top: 50%;
+	left: 50%;
+}
+
+.panel-content {
+	padding: 20px;
+	overflow: auto;
+}
+
+.panel .field-group {
+	margin: 15px 0;
+}
+.panel .field-group label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.panel form {
+	margin: 0 0 20px;
+}
+.panel table {
+	width: 100%;
+}
+
+.panel .close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	width: 5px;
+	height: 5px;
+	cursor: pointer;
+}
+
+#panel-bg {
+	background-color: rgba(0, 0, 0, 0);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+	transition: background-color 0.5s ease 0.2s;
+}
+
+#panel-bg.show {
+	background-color: rgba(0, 0, 0, 0.8);
+	z-index: 1;
 }
 	</style>
 </head>
