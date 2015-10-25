@@ -35,8 +35,13 @@ function setContextMenu () {
 					});
 				}
 			});
-			markAsTroll.context.add(cm.SelectorContext('.submitted:not(.trollHeader) > a'));
-			markAsTroll.context.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
+			markAsTroll
+				.context
+				.add(cm.SelectorContext('.submitted:not(.trollHeader) > a'));
+
+			markAsTroll
+				.context
+				.add(cm.SelectorContext('.comment:not(.highlighted) .submitted > a'));
 
 			var unmarkTroll = cm.Item({
 				label: 'Unmark troll',
@@ -78,7 +83,7 @@ function setContextMenu () {
 					});
 				}
 
-				pref.setPref('highlightusers', users.map(function (user) {
+				pref.setPref('highlightusers', users.map((user) => {
 					return user.name + ':' + user.color;
 				}).join(','));
 			});
@@ -91,13 +96,13 @@ function setContextMenu () {
 		label: 'Unhighlight user',
 		context: contexts,
 		contentScript: script,
-		onMessage: function (username) {
+		onMessage: (username) => {
 			pref.getCleanHighlightedUsers().then((users) => {
-				let filteredUsers = users.filter(function (user) {
+				let filteredUsers = users.filter((user) => {
 					return user.name !== username;
 				});
 
-				pref.setPref('highlightusers', filteredUsers.map(function (user) {
+				pref.setPref('highlightusers', filteredUsers.map((user) => {
 					return user.name + ':' + user.color;
 				}).join(','));
 			});

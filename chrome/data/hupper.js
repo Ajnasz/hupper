@@ -150,6 +150,10 @@
 
 	function getContextUser(data) {
 		let elem = document.querySelector('.comment .submitted > a[href="' + data.linkUrl + '"]');
+
+		if (elem === null) {
+			elem = document.querySelector('.comment .submitted > a[href="' + data.linkUrl.replace(/^https?:\/\/hup\.(?:hu|lh)/, '') + '"]');
+		}
 		return elem ? elem.textContent : null;
 	}
 
