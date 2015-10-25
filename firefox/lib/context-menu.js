@@ -16,10 +16,8 @@ function setContextMenu () {
 		'self.postMessage(node.textContent);' +
 	'})';
 
-	pref.getPref('filtertrolls').then((results) => {
-		let [filtertrolls] = results;
-
-		if (filtertrolls) {
+	pref.getPref('filtertrolls').then((filtertrolls) => {
+		if (filtertrolls === true) {
 			var markAsTroll = cm.Item({
 				label: 'Mark as troll',
 				context: contexts,

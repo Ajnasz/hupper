@@ -194,7 +194,12 @@ var contextConf = {
         'https://hup.hu/user/*'
     ]
 };
-['trolluser', 'untrolluser', 'highlightuser', 'unhighlightuser'].forEach(function (title) {
+[
+	'trolluser',
+	'untrolluser',
+	'highlightuser',
+	'unhighlightuser'
+].forEach((title) => {
 	'use strict';
 
     let conf = {
@@ -203,5 +208,6 @@ var contextConf = {
         targetUrlPatterns: contextConf.targetUrlPatterns,
         onclick: onContextClick(title)
     };
+
     chrome.contextMenus.create(conf);
 });
