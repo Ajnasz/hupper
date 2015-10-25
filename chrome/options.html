@@ -8,17 +8,21 @@
 body {
 	background-color: #fff;
 }
+
+.button {
+	background-color: #223344;
+}
 .control-group {
 	margin: 1em 0 1.5em;
 }
 .panel {
 	position: absolute;
-	height: 400px;
 	width: 400px;
 	margin-top: -200px;
 	margin-left: -200px;
 	background-color: #fff;
 	border: 1px solid #333;
+	border-radius: 5px;
 
 	transition: top 1s ease;
 
@@ -35,6 +39,7 @@ body {
 .panel-content {
 	padding: 20px;
 	overflow: auto;
+	max-height: 400px;
 }
 
 .panel .field-group {
@@ -56,8 +61,11 @@ body {
 	position: absolute;
 	top: 15px;
 	right: 15px;
-	width: 5px;
-	height: 5px;
+	padding: 1px 2px;
+
+	min-height: auto;
+	min-width: auto;
+
 	cursor: pointer;
 }
 

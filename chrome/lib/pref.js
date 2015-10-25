@@ -214,6 +214,9 @@
 			case 'integer':
 				isValid = typeof value === 'number';
 			break;
+			case 'color':
+				isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
+			break;
 			default:
 				isValid = true;
 				console.info('Unknown type %s', prefType);

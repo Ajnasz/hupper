@@ -3,15 +3,12 @@
 (function () {
 	'use strict';
 	let prefs = require('./pref').pref;
+	let dom = require('./core/dom');
 	let func = require('./core/func');
 
-	function createElement(type) {
-		let element = document.createElement(type);
-		return element;
-	}
-
 	function createControlGroup() {
-		let div = createElement('div');
+		let div = dom.createElem('div');
+
 		div.classList.add('control-group');
 
 		return div;
@@ -28,7 +25,7 @@
 	}
 
 	function createInput(item) {
-		let input = createElement('input');
+		let input = dom.createElem('input');
 
 		input.dataset.type = item.type;
 		input.name = item.name;
@@ -54,14 +51,14 @@
 	}
 
 	function createLabel(item) {
-		let label = createElement('label');
+		let label = dom.createElem('label');
 		label.textContent = item.title;
 		label.setAttribute('for', getElemId(item));
 		return label;
 	}
 
 	function createBr() {
-		let br = createElement('br');
+		let br = dom.createElem('br');
 		return br;
 	}
 
@@ -87,8 +84,8 @@
 
 	function createControl(item) {
 		let fragment = document.createDocumentFragment();
-		let button = createElement('button');
-		let div = createElement('div');
+		let button = dom.createElem('button');
+		let div = dom.createElem('div');
 
 		button.type = 'button';
 		button.id = 'control-' + item.name;
@@ -101,15 +98,16 @@
 	}
 
 	function createPanel(options, html) {
-		let div = createElement('div');
-		let close = createElement('span');
+		let div = dom.createElem('div');
+		let close = dom.createElem('button');
+		let panelContent = dom.createElem('div');
 
-		let panelContent = createElement('div');
 		panelContent.classList.add('panel-content');
 
 		div.appendChild(panelContent);
 
 		close.classList.add('close');
+		close.setAttribute('type', 'button');
 		close.appendChild(document.createTextNode('X'));
 
 		div.classList.add('panel');
@@ -121,27 +119,44 @@
 		panelContent.insertAdjacentHTML('afterbegin', html);
 		div.insertBefore(close, div.firstChild);
 
-		close.addEventListener('click', function () {
-			div.addEventListener('transitionend', function r() {
+		function closePanel() {
+			div.addEventListener('transitionend', function removeDiv() {
 				div.parentNode.removeChild(div);
-				div.removeEventListener('transitionEnd', r);
+				div.removeEventListener('transitionend', removeDiv);
 			}, false);
 
 			let panelBg = document.getElementById('panel-bg');
-			panelBg.addEventListener('transitionend', function r() {
+			panelBg.addEventListener('transitionend', function removePanel() {
 				panelBg.parentNode.removeChild(panelBg);
-				div.removeEventListener('transitionEnd', r);
+				div.removeEventListener('transitionend', removePanel);
 			}, false);
 
 			div.classList.remove('show');
 			panelBg.classList.remove('show');
+		}
+
+		close.addEventListener('click', function onClose() {
+			close.removeEventListener('click', onClose);
+			closePanel();
 		});
+		document.getElementById('panel-bg').addEventListener('click', function onClose() {
+			document.getElementById('panel-bg').removeEventListener('click', onClose);
+		});
+
+		window.addEventListener('keyup', function c(ev) {
+			if (ev.keyCode === 27) {
+				if (!ev.target.matches('.panel input,.panel textarea,.panel select')) {
+					closePanel();
+					window.removeEventListener('keyup', c);
+				}
+			}
+		}, false);
 
 		return div;
 	}
 
 	function createPanelBg() {
-		let div = createElement('div');
+		let div = dom.createElem('div');
 		div.setAttribute('id', 'panel-bg');
 
 		return div;
@@ -149,8 +164,10 @@
 
 	prefs.getAllPrefs().then((pref) => {
 		let msg = document.querySelector('#Messages');
+
 		pref.forEach((x) => {
 			let elem;
+
 			if (x.hidden) {
 				return;
 			}
@@ -171,6 +188,7 @@
 			let name = target.name;
 			let type = target.dataset.type;
 			let value;
+
 			if (type === 'bool') {
 				value = target.checked;
 			} else if (['string', 'color'].indexOf(type) > -1) {
@@ -186,38 +204,21 @@
 
 		msg.addEventListener('click', (e) => {
 			let target = e.target;
+			let editHighlightedUsers = require('./edit-highlightedusers');
+			let editTrolls = require('./edit-trolls');
 
 			if (target.dataset.type === 'control') {
-				let html = `
-	<h1>Edit highlighted users</h1>
-
-	<form action="" method="" id="HighlightUserForm">
-		<div class="field-group">
-			<label for="HighlightedUserName">User name</label>
-			<input type="text" name="userName" id="HighlightedUserName" required />
-		</div>
-		<div class="field-group">
-			<label for="HighlightedUserColor">Highlight color</label>
-			<input type="text" name="userColor" id="HighlightedUserColor" required />
-		</div>
-		<button type="submit">Add</button>
-	</form>
-
-	<table id="ListOfHighlightedUsers">
-		<thead>
-			<th>User name</th>
-			<th>User color</th>
-			<th>Delete user</th>
-		</thead>
-		<tbody></tbody>
-	</table>`;
 
 				let id = 'panel-' + target.id;
 				let panel = document.getElementById(id);
 				let panelBg = document.getElementById('panel-bg');
 
-				if (!panel) {
-					panel = createPanel({id: id}, html);
+				let html;
+
+				if (target.id === 'control-edithighlightusers') {
+					html = editHighlightedUsers.tpl;
+				} else if (target.id === 'control-edittrolls') {
+					html = editTrolls.tpl;
 				}
 
 				if (!panelBg) {
@@ -225,12 +226,22 @@
 					document.body.appendChild(panelBg);
 				}
 
+				if (!panel) {
+					panel = createPanel({id: id}, html);
+				}
 
 				document.body.appendChild(panel);
+				panel.querySelector('input').focus();
 				setTimeout(function () {
 					panelBg.classList.add('show');
 					setTimeout(function () {
 						panel.classList.add('show');
+
+						if (target.id === 'control-edithighlightusers') {
+							editHighlightedUsers.run();
+						} else if (target.id === 'control-edittrolls') {
+							editTrolls.run();
+						}
 					}, 10);
 				}, 10);
 
