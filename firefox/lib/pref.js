@@ -2,7 +2,6 @@
 /*global require, exports*/
 
 let prefs = require('./core/pref').prefs;
-console.log(Object.keys(require('./core/pref')));
 
 var firefoxPrefs = Object.create(prefs, {
 	setPref: {
