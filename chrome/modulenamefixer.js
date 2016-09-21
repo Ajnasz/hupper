@@ -5,6 +5,7 @@
 var fs = require('fs');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
+var path = require('path');
 
 // Executes visitor on the object and its children (recursively).
 function traverse(object, visitor) {
@@ -93,7 +94,9 @@ walk(process.argv[2], function (err, results) {
 	if (err) {
 		throw err;
 	}
-	results.forEach(function (result) {
+	results.filter(function (name) {
+		return path.basename(name)[0] !== '.';
+	}).forEach(function (result) {
 		var f = escodegen.generate(fixRequires(fs.readFileSync(result)));
 		fs.writeFileSync(result, f);
 	});

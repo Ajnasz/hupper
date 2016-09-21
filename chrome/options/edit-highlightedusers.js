@@ -1,13 +1,7 @@
-/*jshint esnext:true*/
-/*global define, require*/
+import { prefs } from './pref';
+import * as dom from './core/dom';
 
-(function () {
-	'use strict';
-	let prefs = require('./pref').pref;
-
-	let dom = require('./core/dom');
-
-	let editHighlightedUsersTpl = `<h1>Edit highlighted users</h1>
+let editHighlightedUsersTpl = `<h1>Edit highlighted users</h1>
 		<form action="" method="" id="HighlightUserForm">
 			<div class="field-group">
 				<label for="HighlightedUserName">User name</label>
@@ -125,8 +119,4 @@
 
 	}
 
-	define('./edit-highlightedusers', (exports) => {
-		exports.tpl = editHighlightedUsersTpl;
-		exports.run = editHighlightedUsers;
-	});
-}());
+export {editHighlightedUsersTpl as tpl, editHighlightedUsers as run };

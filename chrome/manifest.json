@@ -4,7 +4,7 @@
 	"manifest_version": 2,
 	"description": "Extension for HUP.hu",
 	"background": {
-		"scripts": ["lib/built.js"]
+		"scripts": ["lib/bundle.js"]
 	},
 	"options_ui": {
 		"page": "options.html",
@@ -24,7 +24,7 @@
 			"data/core/css/indentstyles.css"
 		],
 		"js": [
-			"data/built.js"
+			"data/bundle.js"
 		]
 	}],
 	"permissions": [
@@ -37,5 +37,11 @@
 		"http://hup.lh:3000/",
 		"https://hup.lh/",
 		"unlimitedStorage"
-	]
+	],
+
+	"applications": {
+		"gecko": {
+			"id": "hupper@ajnasz.hu"
+		}
+	}
 }

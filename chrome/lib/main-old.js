@@ -1,6 +1,7 @@
-import { prefs } from './pref';
-import * as pageStyles from './core/pagestyles';
-import * as coreMain from './core/main';
+/*jshint esnext: true*/
+/*global chrome, require*/
+
+let pref = require('./pref').pref;
 
 var eventEmitter = (function () {
 	'use strict';
@@ -55,11 +56,12 @@ var eventEmitter = (function () {
 }());
 function manageStyles(tabId) {
 	'use strict';
+	let pageStyles = require('./core/pagestyles');
 	Promise.all([
-		prefs.getPref('style_min_fontsize'),
-		prefs.getPref('style_wider_sidebar'),
-		prefs.getPref('style_hide_left_sidebar'),
-		prefs.getPref('style_hide_right_sidebar')
+		pref.getPref('style_min_fontsize'),
+		pref.getPref('style_wider_sidebar'),
+		pref.getPref('style_hide_left_sidebar'),
+		pref.getPref('style_hide_right_sidebar')
 	]).then((resp) => {
 		let styles = pageStyles.getPageStyle({
 			minFontSize: resp[0],
@@ -83,21 +85,21 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 	if (event === 'DOMContentLoaded') {
 		let events = eventEmitter(sender.tab.id);
 
-		let parseComments = coreMain.parseComments;
-		let parseArticles = coreMain.parseArticles;
-		let parseBlocks = coreMain.parseBlocks;
+		let parseComments = require('./core/main').parseComments;
+		let parseArticles = require('./core/main').parseArticles;
+		let parseBlocks = require('./core/main').parseBlocks;
 
-		parseComments(events, prefs);
-		parseArticles(events, prefs);
+		parseComments(events, pref);
+		parseArticles(events, pref);
 
-		prefs.getPref('parseblocks').then((parse) => {
+		pref.getPref('parseblocks').then((parse) => {
 			if (parse) {
-				events.on('gotBlocks', parseBlocks.bind(null, events, prefs));
+				events.on('gotBlocks', parseBlocks.bind(null, events, pref));
 				events.emit('getBlocks');
 			}
 		});
 
-		prefs.getPref('setunlimitedlinks').then((links) => {
+		pref.getPref('setunlimitedlinks').then((links) => {
 			if (links) {
 				events.emit('setUnlimitedLinks');
 			}
@@ -106,34 +108,34 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		manageStyles(sender.tab.id);
 
 		events.on('trolluser', function (username) {
-			prefs.getCleanTrolls().then((trolls) => {
+			pref.getCleanTrolls().then((trolls) => {
 
 				if (trolls.indexOf(username) === -1) {
 					trolls.push(username);
 				}
 
-				prefs.setPref('trolls', trolls.join(','));
+				pref.setPref('trolls', trolls.join(','));
 			});
 		});
 
 		events.on('untrolluser', function (username) {
 			username = username.trim();
-			prefs.getCleanTrolls().then((trolls) => {
+			pref.getCleanTrolls().then((trolls) => {
 				let filteredTrolls = trolls.filter(function (troll) {
 					return troll.trim() !== username;
 				});
 
-				prefs.setPref('trolls', filteredTrolls.join(','));
+				pref.setPref('trolls', filteredTrolls.join(','));
 			});
 		});
 
 		events.on('unhighlightuser', function (username) {
-			prefs.getCleanHighlightedUsers().then((users) => {
+			pref.getCleanHighlightedUsers().then((users) => {
 				let filteredUsers = users.filter(function (user) {
 					return user.name !== username;
 				});
 
-				prefs.setPref('highlightusers', filteredUsers.map(function (user) {
+				pref.setPref('highlightusers', filteredUsers.map(function (user) {
 					return user.name + ':' + user.color;
 				}).join(','));
 			});
@@ -141,8 +143,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
 		events.on('highlightuser', function (username) {
 			Promise.all([
-				prefs.getCleanHighlightedUsers(),
-				prefs.getPref('huppercolor')
+				pref.getCleanHighlightedUsers(),
+				pref.getPref('huppercolor')
 			]).then((results) => {
 				let [users, color] = results;
 				if (!users.some(function (user) {
@@ -154,7 +156,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 					});
 				}
 
-				prefs.setPref('highlightusers', users.map(function (user) {
+				pref.setPref('highlightusers', users.map(function (user) {
 					return user.name + ':' + user.color;
 				}).join(','));
 			});
