@@ -1,7 +1,7 @@
 /*jshint esnext:true*/
 /*global require, define*/
 import { prefs } from './pref';
-import * as editTrolls from './edit-trolls';
+import * as editTrolls from './core/edit-trolls';
 
 let editTrollsTpl = `<h1>Edit trolls</h1>
 

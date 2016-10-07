@@ -70,4 +70,4 @@ var prefs = Object.create(null, {
 	}
 });
 
-export default prefs;
+export {prefs};

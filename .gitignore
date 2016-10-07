@@ -5,3 +5,5 @@ firefox/data/core
 firefox/lib/core
 
 chrome/node_modules
+
+chrome/**/bundle.js

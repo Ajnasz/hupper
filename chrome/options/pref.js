@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import * as corePrefs from './core/pref';
+import {prefs as corePrefs} from './core/pref';
 
 import * as func from './core/func';
 
@@ -267,40 +267,35 @@ function savePref(pref, value) {
 
 createDefaultPrefs();
 
-export let prefs = Object.create(corePrefs, {
-	setPref: {
-		value: function (pref, value) {
-			savePref(pref, value).catch((err) => {
-				throw err;
-			});
-		}
+export let prefs = Object.assign(corePrefs, {
+	setPref: function (pref, value) {
+		savePref(pref, value).catch((err) => {
+			throw err;
+		});
 	},
 
-	getPref: {
-		value: function (pref) {
-			return findPref(pref).catch((err) => {
-				throw err;
-			});
-		}
+	getPref: function (pref) {
+		return findPref(pref).catch((err) => {
+			throw err;
+		});
 	},
 
-	getAllPrefs: {
-		value: function () {
-			return Promise.all(defaultPrefs.map((pref) => {
-				return findPref(pref.name).then((value) => {
-					let output = Object.create(null);
-					output.name = pref.name;
-					output.title = pref.title;
-					output.type = pref.type;
-					output.hidden = pref.hidden;
-					output.value = value;
+	getAllPrefs: function () {
+		return Promise.all(defaultPrefs.map((pref) => {
+			return findPref(pref.name).then((value) => {
+				let output = Object.create(null);
+				output.name = pref.name;
+				output.title = pref.title;
+				output.type = pref.type;
+				output.hidden = pref.hidden;
+				output.value = value;
 
-					return new Promise((resolve) => {
-						resolve(output);
-					});
+				return new Promise((resolve) => {
+					resolve(output);
 				});
-			}));
-		}
+			});
+		}));
 	},
-	on: events.on
+	on: events.on,
+	events: events
 });

@@ -1,4 +1,4 @@
-import * as dom from './core/dom';
+import * as dom from './dom';
 
 function getForm() {
 	return document.getElementById('AddTrollForm');
