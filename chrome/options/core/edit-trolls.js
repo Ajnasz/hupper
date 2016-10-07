@@ -54,7 +54,7 @@ var events = (function () {
 		},
 		emit: function (name, args) {
 			if (events[name]) {
-				events.name.forEach((cb) => {
+				events[name].forEach((cb) => {
 					cb.call(null, args);
 				});
 			}
