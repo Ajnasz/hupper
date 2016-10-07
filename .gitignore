@@ -4,12 +4,4 @@
 firefox/data/core
 firefox/lib/core
 
-chrome/data/core
-chrome/lib/core
-
 chrome/node_modules
-
-chrome/options/core
-chrome/options/pref.js
-chrome/options/require.js
-chrome/*/bundle.js
