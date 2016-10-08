@@ -83,9 +83,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 	if (event === 'DOMContentLoaded') {
 		let events = eventEmitter(sender.tab.id);
 
-		let parseComments = coreMain.parseComments;
-		let parseArticles = coreMain.parseArticles;
-		let parseBlocks = coreMain.parseBlocks;
+		let {parseComments, parseArticles, parseBlocks} = coreMain;
 
 		parseComments(events, prefs);
 		parseArticles(events, prefs);

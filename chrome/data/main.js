@@ -12,13 +12,10 @@ let events = (function () {
 	let listeners = new Map();
 
 	function listen(request, sender) {
-		let event = request.event;
-		let data = request.data;
+		let {event, data} = request;
 
 		if (listeners.has(event)) {
-			listeners.get(event).forEach((cb) => {
-				cb(data);
-			});
+			listeners.get(event).forEach(cb => cb(data));
 		}
 
 		console.log('message request', request, sender);
@@ -37,7 +34,7 @@ let events = (function () {
 
 		emit(name, args) {
 			console.log('Emit Listener', name);
-			chrome.runtime.sendMessage({'event': name, data: args});
+			chrome.runtime.sendMessage({event: name, data: args});
 		},
 
 		init() {
@@ -171,6 +168,7 @@ function onUnhighlightUser(data) {
 
 function onTrollUser(data) {
 	let user = getContextUser(data);
+
 	if (user) {
 		events.emit('trolluser', user);
 	}
@@ -178,6 +176,7 @@ function onTrollUser(data) {
 
 function onUntrollUser(data) {
 	let user = getContextUser(data);
+
 	if (user) {
 		events.emit('untrolluser', user);
 	}
