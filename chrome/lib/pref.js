@@ -262,44 +262,39 @@ function savePref(pref, value) {
 }
 
 
-var chromePrefs = Object.create(prefs, {
-	setPref: {
-		value: function (pref, value) {
-			savePref(pref, value).catch((err) => {
+var chromePrefs = Object.assign(prefs, {
+	setPref: function (pref, value) {
+		savePref(pref, value)
+			.then(x => events.emit(pref, value))
+			.catch((err) => {
 				throw err;
 			});
-		}
 	},
 
-	getPref: {
-		value: function (pref) {
-			return findPref(pref).catch((err) => {
-				throw err;
-			});
-		}
+	getPref: function (pref) {
+		return findPref(pref).catch((err) => {
+			throw err;
+		});
 	},
 
-	getAllPrefs: {
-		value: function () {
-			return Promise.all(defaultPrefs.map((pref) => {
-				return findPref(pref.name).then((value) => {
-					let output = Object.create(null);
-					output.name = pref.name;
-					output.title = pref.title;
-					output.type = pref.type;
-					output.hidden = pref.hidden;
-					output.value = value;
+	getAllPrefs: function () {
+		return Promise.all(defaultPrefs.map((pref) => {
+			return findPref(pref.name).then((value) => {
+				let output = Object.create(null);
+				output.name = pref.name;
+				output.title = pref.title;
+				output.type = pref.type;
+				output.hidden = pref.hidden;
+				output.value = value;
 
-					return new Promise((resolve) => {
-						resolve(output);
-					});
+				return new Promise((resolve) => {
+					resolve(output);
 				});
-			}));
-		}
-	}
+			});
+		}));
+	},
+	on: events.on
 });
-
-chromePrefs.on = events.on;
 
 createDefaultPrefs();
 export { chromePrefs as prefs };
