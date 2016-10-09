@@ -187,7 +187,7 @@ function onEnableBlockControls(blocks) {
 		events.emit('block.action', event);
 	});
 }
-function onDomContentLoaded() {
+function onDOMContentLoaded() {
 	events.init();
 	events.on('getArticles', onGetArticles);
 	events.on('getComments', onGetComments);
@@ -229,9 +229,9 @@ function onDomContentLoaded() {
 
 	console.log('dom content loaded');
 	events.emit('DOMContentLoaded');
-	// window.removeEventListener('DOMContentLoaded', onDomContentLoaded); // run once
+	// window.removeEventListener('DOMContentLoaded', onDOMContentLoaded); // run once
 }
-window.addEventListener('DOMContentLoaded', onDomContentLoaded, false);
+window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 
 window.addEventListener('unload', function () {
 	events.emit('unload');

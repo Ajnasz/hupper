@@ -175,20 +175,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 	}
 });
 
-var onContextClick = function (type) {
-	'use strict';
-    return function (e) {
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.sendMessage(tab.id, {
-                event: type,
-                data: e
-            }, function () {
-                // console.log(cb)
-            });
-        });
-    };
-};
-
 var contextConf = {
     contexts: ['link'],
     targetUrlPatterns: [
@@ -208,11 +194,18 @@ var contextConf = {
 	'use strict';
 
     let conf = {
+		id: title,
         title: title,
         contexts: contextConf.contexts,
         targetUrlPatterns: contextConf.targetUrlPatterns,
-        onclick: onContextClick(title)
+        // onclick: onContextClick(title)
     };
 
     chrome.contextMenus.create(conf);
+	chrome.contextMenus.onClicked.addListener(function (info, tab) {
+		chrome.tabs.sendMessage(tab.id, {
+			event: info.menuItemId,
+			data: info
+		});
+	});
 });
