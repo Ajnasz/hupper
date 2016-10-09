@@ -1,5 +1,3 @@
-/*jshint esnext:true*/
-/*global require, define*/
 import { prefs } from '../core/prefs';
 import * as editTrolls from './core/edit-trolls';
 
