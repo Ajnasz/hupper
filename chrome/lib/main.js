@@ -1,4 +1,4 @@
-import { prefs } from './pref';
+import { prefs } from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
 

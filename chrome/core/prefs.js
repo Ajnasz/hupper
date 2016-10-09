@@ -1,4 +1,4 @@
-import { prefs } from '../core/pref';
+import { prefs } from './pref';
 import * as func from '../core/func';
 
 let defaultPrefs = [
@@ -261,7 +261,6 @@ function savePref(pref, value) {
 	});
 }
 
-
 var chromePrefs = Object.assign(prefs, {
 	setPref: function (pref, value) {
 		savePref(pref, value)
@@ -293,7 +292,8 @@ var chromePrefs = Object.assign(prefs, {
 			});
 		}));
 	},
-	on: events.on
+	on: events.on,
+	events: events
 });
 
 createDefaultPrefs();

@@ -1,4 +1,4 @@
-import { prefs } from './pref';
+import { prefs } from '../core/prefs';
 import * as dom from './core/dom';
 import * as func from '../core/func';
 import * as editHighlightedUsers from './edit-highlightedusers';

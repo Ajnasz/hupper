@@ -142,6 +142,18 @@ function setScores(comments) {
 	});
 }
 
+function convertComments(comments, opts) {
+	return comments.map(function (opts, comment) {
+		let output = parseComment(getCommentFromId(comment.id), {
+			content: opts && opts.content
+		});
+
+		output.children = convertComments(comment.children, opts);
+
+		return output;
+	}.bind(null, opts));
+}
+
 export {
 	setScores,
 	getNewComments,

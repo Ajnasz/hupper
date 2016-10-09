@@ -1,6 +1,6 @@
 /*jshint esnext:true*/
 /*global require, define*/
-import { prefs } from './pref';
+import { prefs } from '../core/prefs';
 import * as editTrolls from './core/edit-trolls';
 
 let editTrollsTpl = `<h1>Edit trolls</h1>
@@ -14,7 +14,6 @@ let editTrollsTpl = `<h1>Edit trolls</h1>
 </form>
 
 <table id="ListOfTrolls"><tbody></tbody></table>`;
-
 
 function run() {
 	function removeTroll(troll) {

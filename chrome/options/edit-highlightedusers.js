@@ -1,4 +1,4 @@
-import { prefs } from './pref';
+import { prefs } from '../core/prefs';
 import * as dom from './core/dom';
 
 let editHighlightedUsersTpl = `<h1>Edit highlighted users</h1>
