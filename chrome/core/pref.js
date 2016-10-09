@@ -20,11 +20,13 @@ var prefs = Object.create(null, {
 							};
 						});
 					}
+
 					resolve(value);
 				});
 			});
 		}
 	},
+
 	getCleanTrolls: {
 		value: function () {
 			return this.getPref('trolls').then(trolls => {
@@ -37,11 +39,13 @@ var prefs = Object.create(null, {
 							return troll.trim() !== '';
 						});
 					}
+
 					resolve(value);
 				});
 			});
 		}
 	},
+
 	getCleanTaxonomies: {
 		value: function () {
 			return this.getPref('hidetaxonomy').then(taxonomies => {
@@ -54,6 +58,7 @@ var prefs = Object.create(null, {
 							return taxonomy.trim() !== '';
 						});
 					}
+
 					resolve(value);
 				});
 			});

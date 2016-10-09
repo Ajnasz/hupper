@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import {prefs as corePrefs} from './core/pref';
+import {prefs as corePrefs} from '../core/pref';
 
 import * as func from '../core/func';
 

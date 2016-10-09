@@ -1,4 +1,4 @@
-import { prefs } from './core/pref';
+import { prefs } from '../core/pref';
 import * as func from '../core/func';
 
 let defaultPrefs = [
