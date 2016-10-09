@@ -264,7 +264,6 @@ function savePref(pref, value) {
 var chromePrefs = Object.assign(prefs, {
 	setPref: function (pref, value) {
 		savePref(pref, value)
-			.then(x => events.emit(pref, value))
 			.catch((err) => {
 				throw err;
 			});
@@ -294,6 +293,14 @@ var chromePrefs = Object.assign(prefs, {
 	},
 	on: events.on,
 	events: events
+});
+
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+	Object.keys(changes).forEach(name => {
+		chromePrefs.getPref(name).then((value) => {
+			events.emit(name, value);
+		});
+	});
 });
 
 createDefaultPrefs();
