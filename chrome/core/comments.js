@@ -101,7 +101,7 @@ function flatComments(comments) {
 	return output;
 }
 
-function setHighlightedComments(users, comments) {
+function setHighlightedComments(comments, users) {
 	let undef;
 	comments.forEach(function (comment) {
 		let highlightData = func.first(users, function (user) {
@@ -114,7 +114,7 @@ function setHighlightedComments(users, comments) {
 			comment.userColor = undef;
 		}
 
-		setHighlightedComments(users, comment.children);
+		setHighlightedComments(comment.children, users);
 	});
 }
 

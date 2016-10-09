@@ -39,7 +39,7 @@ function parseComments(events, pref) {
 			modComments.updateHiddenState(comments);
 
 			if (highlightedUsers.length) {
-				modComments.setHighlightedComments(highlightedUsers, comments);
+				modComments.setHighlightedComments(comments, highlightedUsers);
 			}
 
 
@@ -75,14 +75,15 @@ function parseComments(events, pref) {
 			}
 			pref.on('highlightusers', function () {
 				pref.getCleanHighlightedUsers().then(highlightedUsers => {
-					modComments.setHighlightedComments(highlightedUsers, comments);
+					modComments.setHighlightedComments(comments, highlightedUsers);
 					events.emit('comments.update', flatCommentList);
 					console.log('comments.update from highlightusers');
 				});
 			});
 			pref.on('trolls', function () {
 				pref.getCleanTrolls().then(trolls => {
-					modComments.updateHiddenState(comments);
+					modComments.markTrollComments(comments, trolls);
+					modComments.updateHiddenState(flatCommentList);
 					events.emit('comments.update', flatCommentList);
 					console.log('comments.update from trolls');
 				});

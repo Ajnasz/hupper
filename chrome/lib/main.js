@@ -188,6 +188,7 @@ var onContextClick = function (type) {
         });
     };
 };
+
 var contextConf = {
     contexts: ['link'],
     targetUrlPatterns: [
@@ -197,6 +198,7 @@ var contextConf = {
         'https://hup.hu/user/*'
     ]
 };
+
 [
 	'trolluser',
 	'untrolluser',

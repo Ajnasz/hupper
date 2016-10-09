@@ -241,7 +241,7 @@ function findPref(pref) {
 }
 
 function savePref(pref, value) {
-	return new Promise(function (resolve) {
+	return new Promise(function (resolve, reject) {
 		let item = func.first(defaultPrefs, (item) => {
 			return item.name === pref;
 		});
@@ -253,10 +253,10 @@ function savePref(pref, value) {
 				storage().set(newValue);
 				resolve(newValue);
 			} else {
-				throw new Error('Pref: ' + pref + ' value is not valid type for: ' + item.type);
+				reject(new Error(`Pref: ${pref} value is not valid type for: ${item.type}`));
 			}
 		} else {
-			throw new Error('Pref: ' + pref + ' not found');
+			reject(new Error(`Pref: ${pref} not found`));
 		}
 	});
 }
