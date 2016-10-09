@@ -1,6 +1,6 @@
 'use strict';
-import * as func from './func';
-import * as modComments from './comments';
+import * as func from '../../core/func';
+import * as modComments from '../../core/comments';
 import * as modArticles from './articles';
 import * as modBlocks from './blocks';
 
@@ -26,25 +26,35 @@ function parseComments(events, pref) {
 				highlightedUsers,
 				replaceNewCommentText
 			] = results;
+
 			if (hideBoringComments) {
 				let boringRex = new RegExp(boringRexStr);
 				modComments.markBoringComments(comments, boringRex);
 			}
+
 			if (filterTrolls) {
 				modComments.markTrollComments(comments, trolls);
 			}
+
+			modComments.updateHiddenState(comments);
+
 			if (highlightedUsers.length) {
 				modComments.setHighlightedComments(highlightedUsers, comments);
 			}
+
+
 			let flatCommentList = modComments.flatComments(comments);
 			let childComments = flatCommentList.filter(function (comment) {
 				return comment.parent !== '';
 			});
+
 			events.emit('comment.addParentLink', childComments);
 			events.emit('comment.addExpandLink', childComments.filter(function (comment) {
 				return comment.indentLevel > 1;
 			}));
+
 			events.emit('comments.update', flatCommentList);
+
 			let newComments = modComments.getNewComments(comments);
 			if (replaceNewCommentText && newComments.length > 0) {
 				pref.getPref('newcommenttext').then(text => {
@@ -67,12 +77,14 @@ function parseComments(events, pref) {
 				pref.getCleanHighlightedUsers().then(highlightedUsers => {
 					modComments.setHighlightedComments(highlightedUsers, comments);
 					events.emit('comments.update', flatCommentList);
+					console.log('comments.update from highlightusers');
 				});
 			});
 			pref.on('trolls', function () {
 				pref.getCleanTrolls().then(trolls => {
-					modComments.updateTrolls(trolls, comments);
+					modComments.updateHiddenState(comments);
 					events.emit('comments.update', flatCommentList);
+					console.log('comments.update from trolls');
 				});
 			});
 		});
@@ -80,7 +92,7 @@ function parseComments(events, pref) {
 	events.emit('getComments', { content: true });
 }
 function parseArticles(events, pref) {
-	const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozz\xE1sz\xF3l\xE1sok';
+	const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
 	console.log('get articles');
 	events.emit('getArticles');
 	events.on('gotArticles', function (articles) {

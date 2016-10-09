@@ -1,5 +1,5 @@
 import * as dom from './dom';
-import * as func from './func';
+import * as func from '../../core/func';
 
 const ARTICLE_HNAV_CLASS = 'hnav';
 

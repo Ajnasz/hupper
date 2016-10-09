@@ -2,7 +2,7 @@
 
 import {prefs as corePrefs} from './core/pref';
 
-import * as func from './core/func';
+import * as func from '../core/func';
 
 let defaultPrefs = [
 	{

@@ -1,5 +1,5 @@
-import * as dom from './dom';	
-import * as func from './func';	
+import * as dom from './dom';
+import * as func from '../../core/func';
 
 const BLOCK_CLASS = 'block';
 const SIDEBAR_CLASS = 'sidebar';

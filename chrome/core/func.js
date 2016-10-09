@@ -18,10 +18,10 @@ function first(array, cb) {
 	return null;
 }
 
-/*
-	* @param NodeList list
-	* @return {HTMLDOMElement[]}
-	*/
+/**
+ * @param NodeList list
+ * @return {HTMLDOMElement[]}
+ */
 function toArray(list) {
 	return Array.prototype.slice.call(list);
 }
@@ -29,9 +29,9 @@ function toArray(list) {
 function partial(func) {
 	let pArgs = toArray(arguments).slice(1);
 
-	return function() {
+	return function () {
 		func.apply(this, pArgs.concat(toArray(arguments)));
 	};
 }
 
-export {first, index, partial, toArray };
+export { first, index, partial, toArray };

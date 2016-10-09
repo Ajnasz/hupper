@@ -44,6 +44,10 @@ var eventEmitter = (function () {
 
 		function emit(event, args) {
 			console.log('emit event', event, tabId);
+
+			if (event === 'comments.update') {
+				console.trace();
+			}
 			chrome.tabs.sendMessage(tabId, {event: event, data: args});
 		}
 
@@ -104,6 +108,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 		manageStyles(sender.tab.id);
 
 		events.on('trolluser', function (username) {
+			username = username.trim();
+
 			prefs.getCleanTrolls().then((trolls) => {
 
 				if (trolls.indexOf(username) === -1) {
@@ -116,6 +122,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
 		events.on('untrolluser', function (username) {
 			username = username.trim();
+
 			prefs.getCleanTrolls().then((trolls) => {
 				let filteredTrolls = trolls.filter(function (troll) {
 					return troll.trim() !== username;

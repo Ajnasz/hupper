@@ -1,6 +1,6 @@
 /*jshint moz:true*/
 'use strict';
-import * as func from './func';
+import * as func from '../../core/func';
 
 const pathNames = [
 	'/cikkek',

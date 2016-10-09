@@ -1,4 +1,4 @@
-import * as func from './func';	
+import * as func from '../../core/func';
 
 function createBlockPref(block) {
 	return {

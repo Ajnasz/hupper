@@ -1,7 +1,7 @@
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock  from './core/hupper-block';
-import * as modComment from './core/comments';
+import * as modComment from '../core/comments';
 
 import * as unlimitedlinks from './core/unlimitedlinks';
 import * as modCommentTree from './core/commenttree';

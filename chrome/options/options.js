@@ -4,7 +4,7 @@
 	'use strict';
 	let prefs = require('./pref').pref;
 	let dom = require('./core/dom');
-	let func = require('./core/func');
+	let func = require('../core/func');
 
 	function createControlGroup() {
 		let div = dom.createElem('div');

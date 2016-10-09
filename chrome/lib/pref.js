@@ -1,5 +1,5 @@
 import { prefs } from './core/pref';
-import * as func from './core/func';
+import * as func from '../core/func';
 
 let defaultPrefs = [
 	{
@@ -251,7 +251,7 @@ function savePref(pref, value) {
 				let newValue = Object.create(null);
 				newValue[pref] = value;
 				storage().set(newValue);
-				resolve();
+				resolve(newValue);
 			} else {
 				throw new Error('Pref: ' + pref + ' value is not valid type for: ' + item.type);
 			}
