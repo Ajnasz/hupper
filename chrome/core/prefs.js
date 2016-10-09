@@ -1,5 +1,6 @@
 import { prefs } from './pref';
 import * as func from '../core/func';
+import { log } from './log';
 
 let defaultPrefs = [
 	{
@@ -221,7 +222,7 @@ function validateType(prefType, value) {
 		break;
 		default:
 			isValid = true;
-			console.info('Unknown type %s', prefType);
+			log.info('Unknown type %s', prefType);
 		break;
 	}
 

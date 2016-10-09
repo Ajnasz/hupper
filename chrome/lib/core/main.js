@@ -4,12 +4,17 @@ import * as modComments from '../../core/comments';
 import * as modArticles from '../../core/articles';
 import * as modBlocks from './blocks';
 
+import { log } from '../../core/log';
+
 function parseComments(events, pref) {
-	const TEXT_FIRST_NEW_COMMENT = 'Els\u0151 olvasatlan hozz\xE1sz\xF3l\xE1s';
-	console.log('parse comments!');
+	const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
+
+	log.log('parse comments!');
 	events.on('gotComments', function onGotComments(comments) {
-		console.log('GOT COMMENTS~!!!');
+		log.log('GOT COMMENTS~!!!');
+
 		modComments.setScores(comments);
+
 		Promise.all([
 			pref.getPref('hideboringcomments'),
 			pref.getPref('boringcommentcontents'),
@@ -41,7 +46,6 @@ function parseComments(events, pref) {
 			if (highlightedUsers.length) {
 				modComments.setHighlightedComments(comments, highlightedUsers);
 			}
-
 
 			let flatCommentList = modComments.flatComments(comments);
 			let childComments = flatCommentList.filter(function (comment) {
@@ -77,7 +81,7 @@ function parseComments(events, pref) {
 				pref.getCleanHighlightedUsers().then(highlightedUsers => {
 					modComments.setHighlightedComments(comments, highlightedUsers);
 					events.emit('comments.update', flatCommentList);
-					console.log('comments.update from highlightusers');
+					log.log('comments.update from highlightusers');
 				});
 			});
 			pref.on('trolls', function () {
@@ -85,7 +89,7 @@ function parseComments(events, pref) {
 					modComments.markTrollComments(comments, trolls);
 					modComments.updateHiddenState(flatCommentList);
 					events.emit('comments.update', flatCommentList);
-					console.log('comments.update from trolls');
+					log.log('comments.update from trolls');
 				});
 			});
 		});
@@ -94,11 +98,11 @@ function parseComments(events, pref) {
 }
 function parseArticles(events, pref) {
 	const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
-	console.log('get articles');
+	log.log('get articles');
 	events.emit('getArticles');
 	events.on('gotArticles', function (articles) {
 		let newArticles = articles.filter(modArticles.filterNewArticles);
-		console.log('articles', articles);
+		log.log('articles', articles);
 		pref.getPref('newcommenttext').then(newCommentText => {
 			events.emit('articles.mark-new', {
 				text: newCommentText,
@@ -196,7 +200,7 @@ function onLeftRightAction(events, pref, details) {
 	});
 }
 function onBlockAction(events, pref, details) {
-	console.log('on block action', events, details);
+	log.log('on block action', events, details);
 	switch (details.action) {
 		case 'delete':
 			onBlockDelete(events, pref, details);

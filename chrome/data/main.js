@@ -6,7 +6,9 @@ import * as modComment from './core/comments';
 import * as unlimitedlinks from './core/unlimitedlinks';
 import * as modCommentTree from './core/commenttree';
 
-console.log(modBlocks, modArticles, modHupperBlock, modComment);
+import { log } from '../core/log';
+
+log.log(modBlocks, modArticles, modHupperBlock, modComment);
 
 let events = (function () {
 	let listeners = new Map();
@@ -18,12 +20,12 @@ let events = (function () {
 			listeners.get(event).forEach(cb => cb(data));
 		}
 
-		console.log('message request', request, sender);
+		log.log('message request', request, sender);
 	}
 
 	return {
 		on(name, cb) {
-			console.log('Add listener', name);
+			log.log('Add listener', name);
 
 			if (!listeners.has(name)) {
 				listeners.set(name, []);
@@ -33,12 +35,12 @@ let events = (function () {
 		},
 
 		emit(name, args) {
-			console.log('Emit Listener', name);
+			log.log('Emit Listener', name, args);
 			chrome.runtime.sendMessage({event: name, data: args});
 		},
 
 		init() {
-			console.log('events init');
+			log.log('events init');
 			chrome.runtime.onMessage.addListener(listen);
 			window.addEventListener('unload', function () {
 				listeners.clear();
@@ -87,7 +89,7 @@ function onGetComments(options) {
 		return;
 	}
 
-	console.log('subscribe');
+	log.log('subscribe');
 	document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
 
 	commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
@@ -153,7 +155,10 @@ function getContextUser(data) {
 }
 
 function onHighlightUser(data) {
+	log.log('on highlight user', data);
+
 	let user = getContextUser(data);
+
 	if (user) {
 		events.emit('highlightuser', user);
 	}
@@ -224,10 +229,10 @@ function onDOMContentLoaded() {
 	});
 
 	addHupperBlock().then(function () {
-		console.log('huper block added');
+		log.log('huper block added');
 	});
 
-	console.log('dom content loaded');
+	log.log('dom content loaded');
 	events.emit('DOMContentLoaded');
 	// window.removeEventListener('DOMContentLoaded', onDOMContentLoaded); // run once
 }

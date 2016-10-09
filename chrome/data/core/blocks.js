@@ -1,6 +1,8 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
 
+import { log } from '../../core/log';
+
 const BLOCK_CLASS = 'block';
 const SIDEBAR_CLASS = 'sidebar';
 const SIDEBAR_LEFT_CLASS = 'sidebar-left';
@@ -163,7 +165,7 @@ function setBlockOrder(sidebar, blocks) {
 }
 
 function reorderBlocks(blocks) {
-	console.log('reorder blocks', blocks);
+	log.log('reorder blocks', blocks);
 
 	let sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
 	let sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);

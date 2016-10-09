@@ -1,6 +1,7 @@
 import { prefs } from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
+import { log } from '../core/log';
 
 var eventEmitter = (function () {
 	'use strict';
@@ -9,7 +10,7 @@ var eventEmitter = (function () {
 		tabs[tabId] = null;
 	});
 	chrome.runtime.onMessage.addListener(function (request, sender) {
-		console.log('runtimemessage', sender);
+		log.log('runtimemessage', sender);
 
 		let tabId = sender.tab.id;
 
@@ -37,17 +38,18 @@ var eventEmitter = (function () {
 				tabs[tabId][event] = [];
 			}
 
-			console.log('register callback', event);
+			log.log('register callback', event);
 
 			tabs[tabId][event].push(cb);
 		}
 
 		function emit(event, args) {
-			console.log('emit event', event, tabId);
+			log.log('emit event', event, tabId);
 
 			if (event === 'comments.update') {
-				console.trace();
+				log.trace();
 			}
+
 			chrome.tabs.sendMessage(tabId, {event: event, data: args});
 		}
 
@@ -81,7 +83,7 @@ function manageStyles(tabId) {
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
 	'use strict';
-	console.log('runtime message', request, sender);
+	log.log('runtime message', request, sender);
 	let event = request.event;
 
 	if (event === 'DOMContentLoaded') {
@@ -91,6 +93,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
 		parseComments(events, prefs);
 		parseArticles(events, prefs);
+		manageStyles(sender.tab.id);
 
 		prefs.getPref('parseblocks').then((parse) => {
 			if (parse) {
@@ -105,7 +108,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 			}
 		});
 
-		manageStyles(sender.tab.id);
 
 		events.on('trolluser', function (username) {
 			username = username.trim();

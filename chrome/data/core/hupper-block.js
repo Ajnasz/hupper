@@ -1,5 +1,5 @@
-
 import * as dom from './dom';
+import { log } from '../../core/log';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 function addHupperBlock() {
@@ -90,7 +90,7 @@ function addHiddenBlockContainer() {
 }
 
 function addHiddenBlock(block) {
-	console.log('add hidden block', block);
+	log.log('add hidden block', block);
 	let container = addHiddenBlockContainer();
 
 	let element = document.getElementById(block.id);

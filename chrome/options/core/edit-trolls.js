@@ -1,4 +1,5 @@
 import * as dom from './dom';
+import { createEmitter } from '../../core/events';
 
 function getForm() {
 	return document.getElementById('AddTrollForm');
@@ -41,27 +42,7 @@ function drawTrolls(trolls) {
 	trolls.forEach(addTrollItem);
 }
 
-var events = (function () {
-	var events = {};
-
-	return {
-		on: function (name, cb) {
-			if (!events[name]) {
-				events[name] = [];
-			}
-
-			events[name].push(cb);
-		},
-		emit: function (name, args) {
-			if (events[name]) {
-				events[name].forEach((cb) => {
-					cb.call(null, args);
-				});
-			}
-		}
-	};
-}());
-
+var events = createEmitter();
 
 function init() {
 	getList().addEventListener('click', (e) => {
