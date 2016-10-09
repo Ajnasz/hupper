@@ -1,7 +1,7 @@
 'use strict';
 import * as func from '../../core/func';
 import * as modComments from '../../core/comments';
-import * as modArticles from './articles';
+import * as modArticles from '../../core/articles';
 import * as modBlocks from './blocks';
 
 function parseComments(events, pref) {
