@@ -3,6 +3,7 @@ import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
 import { log } from '../core/log';
 
+/*
 var eventEmitter = (function () {
 	'use strict';
 	var tabs = {};
@@ -59,6 +60,7 @@ var eventEmitter = (function () {
 		};
 	};
 }());
+*/
 function manageStyles(tabId) {
 	'use strict';
 	Promise.all([
@@ -81,6 +83,7 @@ function manageStyles(tabId) {
 	});
 }
 
+/*
 chrome.runtime.onMessage.addListener(function (request, sender) {
 	'use strict';
 	log.log('runtime message', request, sender);
@@ -167,15 +170,14 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 			});
 		});
 
-		/*
-		events.on('gotBlocks', function (data) {
-			onGotBlocks(data);
-		});
+		// events.on('gotBlocks', function (data) {
+		// 	onGotBlocks(data);
+		// });
 
-		events.emit('getBlocks');
-		*/
+		// events.emit('getBlocks');
 	}
 });
+*/
 
 var contextConf = {
     contexts: ['link'],
@@ -211,3 +213,24 @@ var contextConf = {
 		});
 	});
 });
+
+(function () {
+	var tabs = new Set();
+	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+		let {event, data} = msg;
+		if (event === 'register') {
+			tabs.add(sender.tab.id);
+			sendResponse({event: 'registered'});
+			return true; // send response async
+		} else if (event === 'requestCommentParse') {
+			console.log('request comment parse');
+			coreMain.commentGenya(data).then(sendResponse);
+
+			return true;
+		}
+	});
+
+	chrome.tabs.onRemoved.addListener(function (tabID) {
+		tabs.delete(tabID);
+	});
+}());

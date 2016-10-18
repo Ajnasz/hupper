@@ -532,6 +532,10 @@ function showScore(comment) {
 	}
 }
 
+function hasScore(comment) {
+	return typeof comment.score !== 'undefined' && comment.score !== 0;
+}
+
 function onCommentUpdate(comments) {
 	comments.forEach((comment) => {
 		if (comment.hide) {
@@ -544,6 +548,7 @@ function onCommentUpdate(comments) {
 			if (comment.troll) {
 				setProp(comment, 'troll', true);
 			}
+
 		} else {
 			if (getProp(comment, 'boring')) {
 				setProp(comment, 'boring', false);
@@ -559,7 +564,7 @@ function onCommentUpdate(comments) {
 				unhighlightComment(comment);
 			}
 
-			if (comment.score !== 0) {
+			if (hasScore(comment)) {
 				showScore(comment);
 			}
 		}
@@ -578,8 +583,8 @@ function onCommentAddNextPrev(item) {
 }
 
 function onCommentSetNew(newComments) {
-	var obj = newComments.comments.map(commentDataStructToObj);
-	obj.forEach((comment) => setNew(comment, newComments.text));
+	var obj = newComments.map(commentDataStructToObj);
+	obj.forEach((comment, index) => setNew(comment, newComments[index].newCommentText));
 }
 
 function onCommentsContainerClick(e) {

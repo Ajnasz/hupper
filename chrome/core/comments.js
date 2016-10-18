@@ -7,18 +7,17 @@ let plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 function setPrevNextLinks(newComments) {
 	let newCommentsLength = newComments.length;
 
-	return newComments.map(function (comment, index) {
-		let nextPrev = { id: comment.id };
+	newComments.forEach(function (comment, index, array) {
 		if (index + 1 < newCommentsLength) {
-			nextPrev.nextId = newComments[index + 1].id;
+			comment.nextId = array[index + 1].id;
 		}
 
 		if (index > 0) {
-			nextPrev.prevId = newComments[index - 1].id;
+			comment.prevId = array[index - 1].id;
 		}
-
-		return nextPrev;
 	});
+
+	return newComments;
 }
 
 function updateTrolls(trolls, comments) {

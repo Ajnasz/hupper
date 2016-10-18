@@ -82,24 +82,18 @@ function onArticlesHide(articles) {
 	modArticles.hideArticles(articles);
 }
 
-function onGetComments(options) {
+function getCommentObjects(options) {
 	let commentsContainer = document.getElementById('comments');
 
 	if (!commentsContainer) {
 		return;
 	}
 
-	log.log('subscribe');
-	document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
-
-	commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
-	events.emit('gotComments', modComment.convertComments(modCommentTree.getCommentTree(), options));
-
+	return modComment.convertComments(modCommentTree.getCommentTree(), options);
 }
 
 function onGetBlocks() {
 	events.emit('gotBlocks', modBlocks.getBlocks());
-
 }
 
 function onCommentSetNew(newComments) {
@@ -193,9 +187,15 @@ function onEnableBlockControls(blocks) {
 	});
 }
 function onDOMContentLoaded() {
+	/*
 	events.init();
 	events.on('getArticles', onGetArticles);
-	events.on('getComments', onGetComments);
+	events.on('getComments', (options) => {
+		addCommentListeners();
+		let comments = getCommentObjects(options);
+
+		events.emit('gotComments', );
+	});
 	events.on('getBlocks', onGetBlocks);
 	events.on('comments.update', modComment.onCommentUpdate);
 	events.on('comment.setNew', onCommentSetNew);
@@ -235,9 +235,61 @@ function onDOMContentLoaded() {
 	log.log('dom content loaded');
 	events.emit('DOMContentLoaded');
 	// window.removeEventListener('DOMContentLoaded', onDOMContentLoaded); // run once
+	// */
 }
-window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 
+
+/*
 window.addEventListener('unload', function () {
 	events.emit('unload');
 });
+*/
+
+function updateComments() {
+	let comments = getCommentObjects({content: true});
+
+	if (!comments) {
+		return;
+	}
+
+	chrome.runtime.sendMessage({
+		event: 'requestCommentParse',
+		data: comments
+	}, function (comments) {
+		if (comments) {
+			modComment.onCommentUpdate(comments);
+			let childComments = comments.filter(c => c.parent !== '');
+			modComment.addParentLinkToComments(childComments);
+			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
+
+			let newComments = comments.filter(c => c.isNew && !c.hide);
+			newComments.forEach(modComment.onCommentAddNextPrev);
+			modComment.onCommentSetNew(newComments);
+
+		}
+	});
+}
+
+function addCommentListeners() {
+	let commentsContainer = document.getElementById('comments');
+
+	if (commentsContainer) {
+		document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
+		commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
+	}
+}
+
+// window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+window.addEventListener('DOMContentLoaded', function () {
+	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+	});
+
+	chrome.runtime.sendMessage({event: 'register'}, function (response) {
+		if (response.event === 'registered') {
+			addCommentListeners();
+			updateComments();
+		}
+		// updateArticles();
+		// updateBlocks();
+	});
+}, false);
