@@ -38,4 +38,5 @@ function inArray (array, item) {
 	return array.indexOf(item) > -1;
 }
 
-export { first, index, partial, toArray };
+
+export { first, index, partial, toArray, inArray };

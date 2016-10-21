@@ -230,8 +230,6 @@ var contextConf = {
 			return true;
 
 		case 'requestArticleParse':
-			console.log('article data', data);
-			
 			coreMain.articleGenya(data).then(sendResponse);
 			return true;
 		}

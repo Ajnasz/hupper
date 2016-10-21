@@ -83,9 +83,11 @@ function addLinkToNextArticle(id, nextArticleId) {
 
 function addCategoryHideButton(article) {
 	let categoryContainer = article.node.querySelector('.links.inline > .first.last');
+
 	if (!categoryContainer) {
 		return;
 	}
+
 	let button = dom.createElem('button', [
 		{name: 'type', value: 'button'},
 		{name: 'title', value: TEXT_HIDE_ARTICLE_TITLE}

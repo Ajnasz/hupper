@@ -150,7 +150,7 @@ function articleGenya(articles) {
 
 	return prefs.getCleanTaxonomies()
 		.then(taxonomies => {
-			articles.forEach(a => a.hide = taxonomies.indexOf(a.category) > -1);
+			articles.forEach(a => a.hide = func.inArray(taxonomies, a.category));
 		})
 		.then(x => prefs.getPref('newcommenttext'))
 		.then((newCommentText) => {

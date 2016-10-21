@@ -283,6 +283,11 @@ function updateArticles() {
 	}, function (articles) {
 		if (articles) {
 			modArticles.onMarkNew(articles);
+			articles
+				.filter(a => a.hasOwnProperty('nextId') || a.hasOwnProperty('prevId'))
+				.forEach(modArticles.onArticleAddNextPrev);
+
+			modArticles.onAddCategoryHideButton(articles);
 		}
 	});
 }
@@ -305,8 +310,8 @@ window.addEventListener('DOMContentLoaded', function () {
 		if (response.event === 'registered') {
 			addCommentListeners();
 			updateComments();
+			updateArticles();
 		}
-		updateArticles();
 		// updateBlocks();
 	});
 }, false);
