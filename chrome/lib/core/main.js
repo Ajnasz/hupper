@@ -8,6 +8,22 @@ import { prefs } from '../../core/prefs';
 
 import { log } from '../../core/log';
 
+function setPrevNextLinks(nodes) {
+	let len = nodes.length;
+
+	nodes.forEach(function (node, index, array) {
+		if (index + 1 < len) {
+			node.nextId = array[index + 1].id;
+		}
+
+		if (index > 0) {
+			node.prevId = array[index - 1].id;
+		}
+	});
+
+	return nodes;
+}
+
 function commentGenya(comments) {
 	modComments.setScores(comments);
 
@@ -52,12 +68,11 @@ function commentGenya(comments) {
 
 		let flatCommentList = modComments.flatComments(comments);
 
-		let newComments = flatCommentList
-			.filter(c => c.isNew && !c.hide);
+		let newComments = flatCommentList.filter(c => c.isNew && !c.hide);
 
 		newComments.forEach(c => c.newCommentText = newCommentText);
 
-		modComments.setPrevNextLinks(newComments);
+		setPrevNextLinks(newComments);
 		// todo new comments:
 		//   replace new text
 		//   add prev/next
@@ -100,7 +115,7 @@ function parseComments(events, pref) {
 				});
 			}
 
-			modComments.setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
+			setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
 				events.emit('comment.addNextPrev', nextPrev);
 			});
 
@@ -130,6 +145,21 @@ function parseComments(events, pref) {
 	});
 	events.emit('getComments', { content: true });
 }
+
+function articleGenya(articles) {
+
+	return prefs.getCleanTaxonomies()
+		.then(taxonomies => {
+			articles.forEach(a => a.hide = taxonomies.indexOf(a.category) > -1);
+		})
+		.then(x => prefs.getPref('newcommenttext'))
+		.then((newCommentText) => {
+			let newArticles = articles.filter(x => x.isNew && !x.hide);
+			newArticles.forEach(a => a.newText = newCommentText);
+			setPrevNextLinks(newArticles);
+		}).then(f => articles);
+}
+
 function parseArticles(events, pref) {
 	const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
 	log.log('get articles');
@@ -291,5 +321,6 @@ export {
 	parseComments,
 	parseArticles,
 	parseBlocks,
-	commentGenya
+	commentGenya,
+	articleGenya
 };

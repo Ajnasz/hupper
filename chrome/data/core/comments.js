@@ -1,5 +1,6 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
+import { addHNav } from './element';
 
 const TROLL_COMMENT_CLASS = 'trollComment';
 const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
@@ -260,17 +261,6 @@ function addLinkToNextComment(id, nextCommentId) {
 
 	addHNav(comment);
 	insertIntoHnav(comment, link);
-}
-
-/**
- * @param commentStruct comment
- */
-function addHNav(comment) {
-	if (!comment.header.querySelector('.' + COMMENT_HNAV_CLASS)) {
-		var span = dom.createElem('span', null, [COMMENT_HNAV_CLASS]);
-
-		comment.header.appendChild(span);
-	}
 }
 
 /**

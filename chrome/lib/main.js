@@ -218,14 +218,21 @@ var contextConf = {
 	var tabs = new Set();
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		let {event, data} = msg;
-		if (event === 'register') {
+
+		switch (event) {
+		case 'register':
 			tabs.add(sender.tab.id);
 			sendResponse({event: 'registered'});
-			return true; // send response async
-		} else if (event === 'requestCommentParse') {
-			console.log('request comment parse');
-			coreMain.commentGenya(data).then(sendResponse);
+			return true;
 
+		case 'requestCommentParse':
+			coreMain.commentGenya(data).then(sendResponse);
+			return true;
+
+		case 'requestArticleParse':
+			console.log('article data', data);
+			
+			coreMain.articleGenya(data).then(sendResponse);
 			return true;
 		}
 	});

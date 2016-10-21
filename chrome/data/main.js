@@ -270,6 +270,23 @@ function updateComments() {
 	});
 }
 
+function updateArticles() {
+	let articles = modArticles.parseArticles();
+
+	if (!articles) {
+		return;
+	}
+
+	chrome.runtime.sendMessage({
+		event: 'requestArticleParse',
+		data: articles
+	}, function (articles) {
+		if (articles) {
+			modArticles.onMarkNew(articles);
+		}
+	});
+}
+
 function addCommentListeners() {
 	let commentsContainer = document.getElementById('comments');
 
@@ -289,7 +306,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			addCommentListeners();
 			updateComments();
 		}
-		// updateArticles();
+		updateArticles();
 		// updateBlocks();
 	});
 }, false);

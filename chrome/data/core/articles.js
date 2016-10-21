@@ -1,5 +1,6 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
+import { addHNav } from './element';
 
 const ARTICLE_HNAV_CLASS = 'hnav';
 
@@ -40,14 +41,6 @@ function articleStructToArticleNodeStruct(article) {
 	output.header = elem.querySelector('h2.title');
 
 	return output;
-}
-
-function addHNav(article) {
-	if (!article.header.querySelector('.' + ARTICLE_HNAV_CLASS)) {
-		var span = dom.createElem('span', null, [ARTICLE_HNAV_CLASS]);
-
-		article.header.appendChild(span);
-	}
 }
 
 function insertIntoHnav(article, item) {
@@ -133,9 +126,9 @@ function onAddCategoryHideButton(items) {
 		.forEach(addCategoryHideButton);
 }
 
-function onMarkNew(data) {
-	data.articles.map(articleStructToArticleNodeStruct)
-			.forEach(func.partial(markNewArticle, data.text));
+function onMarkNew(articles) {
+	articles.map(articleStructToArticleNodeStruct)
+			.forEach((a, index) => markNewArticle(articles[index].newText, a));
 }
 
 function onArticleAddNextPrev(item) {
