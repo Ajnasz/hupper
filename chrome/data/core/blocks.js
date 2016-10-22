@@ -133,7 +133,7 @@ function showBlockContent(block) {
 }
 
 /**
-	* @param {HTMLTDElement} sidebar The sidebar where the blocks will be placed
+	* @param {HTMLTElement} sidebar The sidebar where the blocks will be placed
 	* @param {blockPref[]} blocks Array of blockpref objects (See
 	* lib/blocks.js, has properties: id, hidden, contentHidden)
 	* @param {elementList} elementList List of block elements (ALL)

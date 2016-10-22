@@ -232,7 +232,12 @@ var contextConf = {
 		case 'requestArticleParse':
 			coreMain.articleGenya(data).then(sendResponse);
 			return true;
+
+		case 'requestBlockParse':
+			coreMain.blockGenya(data).then(sendResponse);
+			return true;
 		}
+
 	});
 
 	chrome.tabs.onRemoved.addListener(function (tabID) {

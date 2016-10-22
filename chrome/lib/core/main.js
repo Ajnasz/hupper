@@ -317,10 +317,21 @@ function parseBlocks(events, pref, blocks) {
 	});
 }
 
+function blockGenya (blocks) {
+	return prefs.getPref('blocks').then(blocksPrefStr => {
+		let blocksPref = JSON.parse(blocksPrefStr);
+		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
+		prefs.setPref('blocks', JSON.stringify(blocksPref));
+		return blocksPref;
+		// events.emit('blocks.change-order-all', blocksPref);
+	});
+}
+
 export {
 	parseComments,
 	parseArticles,
 	parseBlocks,
 	commentGenya,
-	articleGenya
+	articleGenya,
+	blockGenya
 };

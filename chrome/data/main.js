@@ -282,14 +282,34 @@ function updateArticles() {
 		data: articles
 	}, function (articles) {
 		if (articles) {
+			modArticles.hideArticles(articles.filter(a => a.hide));
 			modArticles.onMarkNew(articles);
-			articles
-				.filter(a => a.hasOwnProperty('nextId') || a.hasOwnProperty('prevId'))
+			articles.filter(a => a.hasOwnProperty('nextId') || a.hasOwnProperty('prevId'))
 				.forEach(modArticles.onArticleAddNextPrev);
-
 			modArticles.onAddCategoryHideButton(articles);
 		}
 	});
+}
+
+function updateBlocks() {
+	let blocks = modBlocks.getBlocks();
+
+	if (!blocks.left && !blocks.right) {
+		return;
+	}
+
+	chrome.runtime.sendMessage({
+		event: 'requestBlockParse',
+		data: blocks
+	}, function (blocks) {
+		if (blocks) {
+			modBlocks.reorderBlocks(blocks);
+		}
+	});
+}
+
+function addArticleListeners() {
+	console.info('TODO add article listeners');
 }
 
 function addCommentListeners() {
@@ -311,7 +331,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			addCommentListeners();
 			updateComments();
 			updateArticles();
+			updateBlocks();
 		}
-		// updateBlocks();
 	});
 }, false);
