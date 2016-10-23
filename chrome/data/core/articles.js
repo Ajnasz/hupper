@@ -55,13 +55,20 @@ function insertIntoHnav(article, item) {
 	}
 }
 
+function removeArticleLink(item) {
+	let article = articleStructToArticleNodeStruct(item),
+		oldLinks = article.header.querySelectorAll('.prev-next-article');
+
+	oldLinks.forEach(l => l.parentNode.removeChild(l));
+}
+
 function addPrevNextArticleLink(id, relId, text) {
 	var article = articleStructToArticleNodeStruct({id: id}),
 		link;
 
-	link = dom.createElem('a', [{name: 'href', value: '#' + relId}], null, text);
-
 	addHNav(article);
+
+	link = dom.createElem('a', [{name: 'href', value: '#' + relId}], ['prev-next-article'], text);
 	insertIntoHnav(article, link);
 }
 
@@ -104,7 +111,7 @@ function addCategoryHideButton(article) {
 	* @param articleNodeStruct article
 	*/
 function markNewArticle(newArticleText, article) {
-	if (!article || !article.header) {
+	if (!article || !article.header || article.header.querySelector('.hnew')) {
 		return;
 	}
 	addHNav(article);
@@ -137,6 +144,7 @@ function onMarkNew(articles) {
 }
 
 function onArticleAddNextPrev(item) {
+	removeArticleLink(item);
 	if (item.prevId) {
 		addLinkToPrevArticle(item.id, item.prevId);
 	}

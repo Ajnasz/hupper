@@ -147,7 +147,6 @@ function parseComments(events, pref) {
 }
 
 function articleGenya(articles) {
-
 	return prefs.getCleanTaxonomies()
 		.then(taxonomies => {
 			articles.forEach(a => a.hide = func.inArray(taxonomies, a.category));
@@ -202,6 +201,18 @@ function parseArticles(events, pref) {
 		});
 	});
 }
+
+function hideArticle (article) {
+	return prefs.getCleanTaxonomies().then(taxonomies => {
+		if (!func.inArray(taxonomies, article.category)) {
+			taxonomies.push(article.category);
+			prefs.setPref('hidetaxonomy', JSON.stringify(taxonomies));
+		}
+
+		return taxonomies;
+	});
+}
+
 function emitBlockEvent(events, event, block) {
 	events.emit(event, {
 		id: block.id,
@@ -376,5 +387,6 @@ export {
 	commentGenya,
 	articleGenya,
 	blockGenya,
-	updateBlockGenya
+	updateBlockGenya,
+	hideArticle
 };

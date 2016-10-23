@@ -304,7 +304,11 @@ function addBlockListeners() {
 }
 
 function addArticleListeners() {
-	console.info('TODO add article listeners');
+	modArticles.listenToTaxonomyButtonClick(function (article) {
+		chrome.runtime.sendMessage({event: 'article.hide-taxonomy', data: article}, function (article) {
+			updateArticles();
+		});
+	});
 }
 
 function addCommentListeners() {
@@ -342,6 +346,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			updateBlocks();
 			addCommentListeners();
 			addBlockListeners();
+			addArticleListeners();
 			addHupperBlockListeners();
 		}
 	});

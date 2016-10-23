@@ -51,12 +51,10 @@ var prefs = Object.create(null, {
 			return this.getPref('hidetaxonomy').then(taxonomies => {
 				return new Promise(resolve => {
 					let value;
-					if (taxonomies === null) {
+					if (!taxonomies) {
 						value = [];
 					} else {
-						value = taxonomies.split(',').filter(function (taxonomy) {
-							return taxonomy.trim() !== '';
-						});
+						value = JSON.parse(taxonomies).map(t => t.trim()).filter(t => t !== '');
 					}
 
 					resolve(value);

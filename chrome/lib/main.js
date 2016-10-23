@@ -240,6 +240,10 @@ var contextConf = {
 		case 'block.action':
 			coreMain.updateBlockGenya(data).then(sendResponse);
 			return true;
+
+		case 'article.hide-taxonomy':
+			coreMain.hideArticle(data).then(sendResponse);
+			return true;
 		}
 
 
