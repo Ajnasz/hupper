@@ -236,7 +236,12 @@ var contextConf = {
 		case 'requestBlockParse':
 			coreMain.blockGenya(data).then(sendResponse);
 			return true;
+
+		case 'block.action':
+			coreMain.updateBlockGenya(data).then(sendResponse);
+			return true;
 		}
+
 
 	});
 

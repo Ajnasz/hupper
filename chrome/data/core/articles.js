@@ -104,6 +104,9 @@ function addCategoryHideButton(article) {
 	* @param articleNodeStruct article
 	*/
 function markNewArticle(newArticleText, article) {
+	if (!article || !article.header) {
+		return;
+	}
 	addHNav(article);
 	let newText = dom.createElem('span', [], ['hnew', 'nnew'], newArticleText);
 	article.header.querySelector('.' + ARTICLE_HNAV_CLASS).appendChild(newText);

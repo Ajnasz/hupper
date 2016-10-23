@@ -208,38 +208,49 @@ function emitBlockEvent(events, event, block) {
 		column: block.column
 	});
 }
-function updateBlock(pref, details, prefName, value) {
+
+/**
+ * @method updateBlock
+ * @param {String} pref
+ * @param {*} details
+ */
+function updateBlock(details, prefName, value) {
 	return prefs.getPref('blocks').then(blocks => {
-		return new Promise(resolve => {
-			let blockPrefs = JSON.parse(blocks);
-			let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
-			prefs.setPref('blocks', JSON.stringify(blockPrefs));
-			resolve(output);
-		});
+		let blockPrefs = JSON.parse(blocks);
+		let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
+
+		prefs.setPref('blocks', JSON.stringify(blockPrefs));
+
+		return output;
 	});
 }
+
 function onBlockDelete(events, pref, details) {
-	updateBlock(pref, details, 'hidden', true).then(block => {
+	updateBlock(details, 'hidden', true).then(block => {
 		emitBlockEvent(events, 'block.hide', block);
 		emitBlockEvent(events, 'hupper-block.hide-block', block);
 	});
 }
+
 function onBlockRestore(events, pref, details) {
-	updateBlock(pref, details, 'hidden', false).then(block => {
+	updateBlock(details, 'hidden', false).then(block => {
 		emitBlockEvent(events, 'block.show', block);
 		emitBlockEvent(events, 'hupper-block.show-block', block);
 	});
 }
+
 function onBlockHideContent(events, pref, details) {
-	updateBlock(pref, details, 'contentHidden', true).then(block => {
+	updateBlock(details, 'contentHidden', true).then(block => {
 		emitBlockEvent(events, 'block.hide-content', block);
 	});
 }
+
 function onBlockShowContent(events, pref, details) {
-	updateBlock(pref, details, 'contentHidden', false).then(block => {
+	updateBlock(details, 'contentHidden', false).then(block => {
 		emitBlockEvent(events, 'block.show-content', block);
 	});
 }
+
 function onUpDownAction(events, pref, details) {
 	prefs.getPref('blocks').then(blocks => {
 		let blockPrefs = JSON.parse(blocks);
@@ -253,6 +264,7 @@ function onUpDownAction(events, pref, details) {
 		}
 	});
 }
+
 function onLeftRightAction(events, pref, details) {
 	prefs.getPref('blocks').then(blocks => {
 		let blockPrefs = JSON.parse(blocks);
@@ -263,6 +275,7 @@ function onLeftRightAction(events, pref, details) {
 		}
 	});
 }
+
 function onBlockAction(events, pref, details) {
 	log.log('on block action', events, details);
 	switch (details.action) {
@@ -288,14 +301,17 @@ function onBlockAction(events, pref, details) {
 			break;
 	}
 }
+
 function requestBlockHide(events, block) {
 	emitBlockEvent(events, 'block.hide', block);
 	emitBlockEvent(events, 'hupper-block.hide-block', block);
 }
+
 function requestBlockContentHide(events, block) {
 	emitBlockEvent(events, 'block.hide-content', block);
 	emitBlockEvent(events, 'hupper-block.show-block', block);
 }
+
 function finishBlockSetup(events, pref, blocks, blocksPref) {
 	events.emit('blocks.set-titles', modBlocks.getBlockTitles());
 	let allBlocks = blocksPref.left.concat(blocksPref.right);
@@ -303,6 +319,7 @@ function finishBlockSetup(events, pref, blocks, blocksPref) {
 	allBlocks.filter(modBlocks.filterContentHidden).forEach(func.partial(requestBlockContentHide, events));
 	events.on('block.action', func.partial(onBlockAction, events, pref));
 }
+
 function parseBlocks(events, pref, blocks) {
 	prefs.getPref('blocks').then(blocksPrefStr => {
 		let blocksPref = JSON.parse(blocksPrefStr);
@@ -327,11 +344,33 @@ function blockGenya (blocks) {
 	});
 }
 
+function updateBlockGenya(details) {
+	switch (details.action) {
+		case 'delete':
+			return updateBlock(details, 'hidden', true);
+		case 'restore-block':
+			return updateBlock(details, 'hidden', false);
+		case 'hide-content':
+			return updateBlock(details, 'contentHidden', true);
+		case 'show-content':
+			return updateBlock(details, 'contentHidden', false);
+		case 'up':
+		case 'down':
+			// onUpDownAction(events, pref, details);
+			break;
+		case 'left':
+		case 'right':
+			// onLeftRightAction(events, pref, details);
+			break;
+	}
+}
+
 export {
 	parseComments,
 	parseArticles,
 	parseBlocks,
 	commentGenya,
 	articleGenya,
-	blockGenya
+	blockGenya,
+	updateBlockGenya
 };

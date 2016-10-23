@@ -182,6 +182,8 @@ function onUntrollUser(data) {
 }
 
 function onEnableBlockControls(blocks) {
+	modBlocks.decorateBlocks(blocks);
+
 	modBlocks.onEnableBlockControls(blocks, function (event) {
 		events.emit('block.action', event);
 	});
@@ -304,7 +306,17 @@ function updateBlocks() {
 	}, function (blocks) {
 		if (blocks) {
 			modBlocks.reorderBlocks(blocks);
+			modBlocks.decorateBlocks(blocks.left);
+			modBlocks.decorateBlocks(blocks.right);
 		}
+	});
+}
+
+function addBlockListeners() {
+	modBlocks.onEnableBlockControls(function (event) {
+		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (response) {
+			modBlocks.toggleBlock(response);
+		});
 	});
 }
 
@@ -328,10 +340,11 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
-			addCommentListeners();
 			updateComments();
 			updateArticles();
 			updateBlocks();
+			addCommentListeners();
+			addBlockListeners();
 		}
 	});
 }, false);

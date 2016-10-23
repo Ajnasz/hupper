@@ -93,11 +93,21 @@ function decorateBlock(block) {
 
 	if (blockStruct.header) {
 		['delete', 'hide-content', 'show-content', 'right', 'left', 'down', 'up']
-			.map(createBlockButton).forEach(function (btn) {
+			// add button, if not added yet
+			.filter(action => !blockStruct.header.querySelector(`button[data-action="${action}"]`))
+			.map(createBlockButton)
+			.forEach(function (btn) {
 				blockStruct.header.appendChild(btn);
 			});
+		
+		toggleBlock(block);
 	}
 
+}
+
+function toggleBlock(block) {
+	func.yesOrNo(block.hidden, hideBlock.bind(null, block), showBlock.bind(null, block));
+	func.yesOrNo(block.contentHidden, hideBlockContent.bind(null, block), showBlockContent.bind(null, block));
 }
 
 function decorateBlocks(blocks) {
@@ -136,7 +146,7 @@ function showBlockContent(block) {
 	* @param {HTMLTElement} sidebar The sidebar where the blocks will be placed
 	* @param {blockPref[]} blocks Array of blockpref objects (See
 	* lib/blocks.js, has properties: id, hidden, contentHidden)
-	* @param {elementList} elementList List of block elements (ALL)
+	* @param {[Element]} elementList List of block elements (ALL)
 	*/
 function renderSidebar(sidebar, blocks, elementList) {
 	blocks.forEach(function (block) {
@@ -239,11 +249,8 @@ function onBlockButtonClick(e) {
 	return false;
 }
 
-function onEnableBlockControls(blocks, dispatch) {
-	decorateBlocks(blocks);
-
-	let commonParent = dom.findCommonParent(blocks.map(blockDataStructToBlockElement));
-	commonParent.addEventListener('click', function (e) {
+function onEnableBlockControls(dispatch) {
+	document.getElementById('content').addEventListener('click', function (e) {
 		let event = onBlockButtonClick(e);
 
 		if (event) {
@@ -267,5 +274,6 @@ export {
 	setTitles,
 	onBlockControlClick,
 	onBlockButtonClick,
-	onEnableBlockControls
+	onEnableBlockControls,
+	toggleBlock
 };

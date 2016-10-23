@@ -38,5 +38,8 @@ function inArray (array, item) {
 	return array.indexOf(item) > -1;
 }
 
+function yesOrNo (isOk, yes, no) {
+	return isOk ? yes() : no();
+}
 
-export { first, index, partial, toArray, inArray };
+export { first, index, partial, toArray, inArray, yesOrNo };

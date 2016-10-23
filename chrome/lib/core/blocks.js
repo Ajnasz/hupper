@@ -41,8 +41,11 @@ function filterHidden(block) {
 function filterContentHidden(block) {
 	return block.contentHidden;
 }
+
+
 function updateBlock(details, prefName, value, blockPrefs) {
 	let columnBlocks;
+
 	if (details.column === 'sidebar-right') {
 		columnBlocks = blockPrefs.right;
 	} else if (details.column === 'sidebar-left') {
@@ -50,11 +53,15 @@ function updateBlock(details, prefName, value, blockPrefs) {
 	} else {
 		throw new Error('Unknown sidebar');
 	}
-	let matchingBlocks = columnBlocks.filter((b) => b.id === details.id);
-	let block = matchingBlocks[0];
+
+	// let matchingBlocks = columnBlocks.filter(b => b.id === details.id);
+	let block = func.first(columnBlocks, b => b.id === details.id);
+
 	block[prefName] = value;
+
 	return block;
 }
+
 function findNotHiddenIndex(blocks, start, direction) {
 	if (!blocks[start].hidden) {
 		return start;
@@ -76,6 +83,7 @@ function findNotHiddenIndex(blocks, start, direction) {
 	}
 	return -1;
 }
+
 function onBlockChangeOrder(events, details, blockPrefs) {
 	let columnBlocks = details.column === 'sidebar-right' ? blockPrefs.right : blockPrefs.left;
 	let oldIndex = func.index(columnBlocks, function (block) {
@@ -88,6 +96,7 @@ function onBlockChangeOrder(events, details, blockPrefs) {
 		return columnBlocks;
 	}
 }
+
 function onBlockChangeColumn(events, details, blockPrefs) {
 	let isOnRightSide = details.column === 'sidebar-right';
 	let columnBlocks = isOnRightSide ? blockPrefs.right : blockPrefs.left;
