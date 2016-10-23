@@ -101,6 +101,9 @@ function decorateBlock(block) {
 			});
 		
 		toggleBlock(block);
+		if (block.title) {
+			setBlockTitleLink(block.id, block.title);
+		}
 	}
 
 }

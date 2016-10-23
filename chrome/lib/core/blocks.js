@@ -143,6 +143,10 @@ function getBlockTitles() {
 	};
 }
 
+function getBlockTitle(block) {
+	return getBlockTitles()[block.id];
+}
+
 export {
 	mergeBlockPrefsWithBlocks,
 	filterHidden,
@@ -151,4 +155,5 @@ export {
 	onBlockChangeOrder,
 	onBlockChangeColumn,
 	updateBlock,
+	getBlockTitle
 };

@@ -58,9 +58,6 @@ function addHupperBlock() {
 
 		document.getElementById('block-hupper').addEventListener('click', function (e) {
 			let event = modBlocks.onBlockControlClick(e);
-			if (event) {
-				events.emit('block.action', event);
-			}
 		}, false);
 		resolve();
 	});
@@ -340,6 +337,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
+			addHupperBlock();
 			updateComments();
 			updateArticles();
 			updateBlocks();

@@ -341,6 +341,10 @@ function blockGenya (blocks) {
 		prefs.setPref('blocks', JSON.stringify(blocksPref));
 		return blocksPref;
 		// events.emit('blocks.change-order-all', blocksPref);
+	}).then(blocksPrefs => {
+		blocksPrefs.left.forEach(block => block.title = modBlocks.getBlockTitle(block));
+		blocksPrefs.right.forEach(block => block.title = modBlocks.getBlockTitle(block));
+		return blocksPrefs;
 	});
 }
 
@@ -360,7 +364,7 @@ function updateBlockGenya(details) {
 			break;
 		case 'left':
 		case 'right':
-			// onLeftRightAction(events, pref, details);
+			// onLeftRightAction(events, pref, details); hup-hidden
 			break;
 	}
 }
