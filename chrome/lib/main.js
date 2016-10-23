@@ -69,12 +69,8 @@ function manageStyles(tabId) {
 		prefs.getPref('style_hide_left_sidebar'),
 		prefs.getPref('style_hide_right_sidebar')
 	]).then((resp) => {
-		let styles = pageStyles.getPageStyle({
-			minFontSize: resp[0],
-			minWidth: resp[1],
-			hideLeftSidebar: resp[2],
-			hideRightSidebar: resp[3]
-		});
+		let  [ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar ] = resp;
+		let styles = pageStyles.getPageStyle({ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar });
 		if (styles.length) {
 			chrome.tabs.insertCSS(tabId, {
 				code: styles.join('')
@@ -223,6 +219,7 @@ var contextConf = {
 		case 'register':
 			tabs.add(sender.tab.id);
 			sendResponse({event: 'registered'});
+			manageStyles(sender.tab.id);
 			return true;
 
 		case 'requestCommentParse':
