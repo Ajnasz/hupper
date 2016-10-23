@@ -340,6 +340,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
+			if (response.data.setunlimitedlinks) {
+				unlimitedlinks.setUnlimitedLinks();
+			}
 			modHupperBlock.addHupperBlock();
 			updateComments();
 			updateArticles();

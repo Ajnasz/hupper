@@ -218,8 +218,12 @@ var contextConf = {
 		switch (event) {
 		case 'register':
 			tabs.add(sender.tab.id);
-			sendResponse({event: 'registered'});
 			manageStyles(sender.tab.id);
+			prefs.getPref('setunlimitedlinks').then(s => {
+				sendResponse({event: 'registered', data: {
+					setunlimitedlinks: s
+				}});
+			});
 			return true;
 
 		case 'requestCommentParse':
