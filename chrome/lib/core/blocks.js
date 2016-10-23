@@ -44,18 +44,11 @@ function filterContentHidden(block) {
 
 
 function updateBlock(details, prefName, value, blockPrefs) {
-	let columnBlocks;
+	let block = func.first(blockPrefs.left, b => b.id === details.id);
 
-	if (details.column === 'sidebar-right') {
-		columnBlocks = blockPrefs.right;
-	} else if (details.column === 'sidebar-left') {
-		columnBlocks = blockPrefs.left;
-	} else {
-		throw new Error('Unknown sidebar');
+	if (!block) {
+		block = func.first(blockPrefs.right, b => b.id === details.id);
 	}
-
-	// let matchingBlocks = columnBlocks.filter(b => b.id === details.id);
-	let block = func.first(columnBlocks, b => b.id === details.id);
 
 	block[prefName] = value;
 

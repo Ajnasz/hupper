@@ -53,14 +53,7 @@ let events = (function () {
 }());
 
 function addHupperBlock() {
-	return new Promise(function (resolve) {
-		modHupperBlock.addHupperBlock();
-
-		document.getElementById('block-hupper').addEventListener('click', function (e) {
-			let event = modBlocks.onBlockControlClick(e);
-		}, false);
-		resolve();
-	});
+	modHupperBlock.addHupperBlock();
 }
 
 function onGetArticles() {
@@ -178,13 +171,6 @@ function onUntrollUser(data) {
 	}
 }
 
-function onEnableBlockControls(blocks) {
-	modBlocks.decorateBlocks(blocks);
-
-	modBlocks.onEnableBlockControls(blocks, function (event) {
-		events.emit('block.action', event);
-	});
-}
 function onDOMContentLoaded() {
 	/*
 	events.init();
@@ -311,8 +297,8 @@ function updateBlocks() {
 
 function addBlockListeners() {
 	modBlocks.onEnableBlockControls(function (event) {
-		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (response) {
-			modBlocks.toggleBlock(response);
+		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
+			modBlocks.toggleBlock(block);
 		});
 	});
 }
@@ -330,6 +316,19 @@ function addCommentListeners() {
 	}
 }
 
+function addHupperBlockListeners() {
+	document.getElementById('block-hupper').addEventListener('click', function (e) {
+		let event = modBlocks.onBlockControlClick(e);
+		if (!event) {
+			return;
+		}
+
+		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
+			modBlocks.toggleBlock(block);
+		});
+	}, false);
+}
+
 // window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 window.addEventListener('DOMContentLoaded', function () {
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
@@ -337,12 +336,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
-			addHupperBlock();
+			modHupperBlock.addHupperBlock();
 			updateComments();
 			updateArticles();
 			updateBlocks();
 			addCommentListeners();
 			addBlockListeners();
+			addHupperBlockListeners();
 		}
 	});
 }, false);

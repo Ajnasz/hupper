@@ -1,5 +1,6 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
+import * as modHupperBlock  from './hupper-block';
 
 import { log } from '../../core/log';
 
@@ -110,6 +111,7 @@ function decorateBlock(block) {
 
 function toggleBlock(block) {
 	func.yesOrNo(block.hidden, hideBlock.bind(null, block), showBlock.bind(null, block));
+	func.yesOrNo(block.hidden, modHupperBlock.addHiddenBlock.bind(null, block), modHupperBlock.removeHiddenBlock.bind(null, block));
 	func.yesOrNo(block.contentHidden, hideBlockContent.bind(null, block), showBlockContent.bind(null, block));
 }
 
