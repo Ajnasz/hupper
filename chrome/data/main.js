@@ -1,3 +1,4 @@
+/* global chrome:true */
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock  from './core/hupper-block';
@@ -24,7 +25,7 @@ let events = (function () {
 	}
 
 	return {
-		on(name, cb) {
+		on (name, cb) {
 			log.log('Add listener', name);
 
 			if (!listeners.has(name)) {
@@ -34,12 +35,12 @@ let events = (function () {
 			listeners.get(name).push(cb);
 		},
 
-		emit(name, args) {
+		emit (name, args) {
 			log.log('Emit Listener', name, args);
 			chrome.runtime.sendMessage({event: name, data: args});
 		},
 
-		init() {
+		init () {
 			log.log('events init');
 			chrome.runtime.onMessage.addListener(listen);
 			window.addEventListener('unload', function () {
@@ -52,7 +53,7 @@ let events = (function () {
 	};
 }());
 
-function addHupperBlock() {
+function addHupperBlock () {
 	modHupperBlock.addHupperBlock();
 }
 
@@ -129,12 +130,15 @@ function onBlockSetTitles(data) {
 	modBlocks.setTitles(data);
 }
 
-function getContextUser(data) {
-	let elem = document.querySelector('.comment .submitted > a[href="' + data.linkUrl + '"]');
+function getContextUser (data) {
+
+	let url = new URL(data.linkUrl);
+	let elem = document.querySelector(`.comment .submitted > a[href$="${url.pathname}"]`);
 
 	if (elem === null) {
-		elem = document.querySelector('.comment .submitted > a[href="' + data.linkUrl.replace(/^https?:\/\/hup\.(?:hu|lh)/, '') + '"]');
+		elem = document.querySelector(`.node > table > tbody > tr > td:nth-child(1) > a[href$="${url.pathname}"]`);
 	}
+
 	return elem ? elem.textContent : null;
 }
 
@@ -230,7 +234,7 @@ window.addEventListener('unload', function () {
 });
 */
 
-function updateComments() {
+function updateComments () {
 	let comments = getCommentObjects({content: true});
 
 	if (!comments) {
@@ -242,6 +246,8 @@ function updateComments() {
 		data: comments
 	}, function (comments) {
 		if (comments) {
+			console.log(comments);
+
 			modComment.onCommentUpdate(comments);
 			let childComments = comments.filter(c => c.parent !== '');
 			modComment.addParentLinkToComments(childComments);
@@ -250,7 +256,6 @@ function updateComments() {
 			let newComments = comments.filter(c => c.isNew && !c.hide);
 			newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
-
 		}
 	});
 }
@@ -288,17 +293,31 @@ function updateBlocks() {
 		data: blocks
 	}, function (blocks) {
 		if (blocks) {
+			console.log(blocks);
 			modBlocks.reorderBlocks(blocks);
-			modBlocks.decorateBlocks(blocks.left);
-			modBlocks.decorateBlocks(blocks.right);
+			modBlocks.decorateBlocks(blocks);
 		}
 	});
 }
 
-function addBlockListeners() {
+function addBlockListeners () {
 	modBlocks.onEnableBlockControls(function (event) {
-		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
-			modBlocks.toggleBlock(block);
+		chrome.runtime.sendMessage({
+			event: 'block.action',
+			data: event,
+			context: modBlocks.getBlocks()
+		}, function (response) {
+			switch (event.action) {
+			case 'up':
+			case 'down':
+			case 'left':
+			case 'right':
+				modBlocks.reorderBlocks(response);
+				break;
+			default:
+				modBlocks.toggleBlock(response);
+				return;
+			}
 		});
 	});
 }
@@ -336,6 +355,17 @@ function addHupperBlockListeners() {
 // window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 window.addEventListener('DOMContentLoaded', function () {
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+		switch (msg.event) {
+		case 'trolluser':
+		case 'untrolluser':
+		case 'highlightuser':
+		case 'unhighlightuser':
+			sendResponse({event: msg.event, data: getContextUser(msg.data)});
+			break;
+
+		case 'userChange':
+			updateComments();
+		}
 	});
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {

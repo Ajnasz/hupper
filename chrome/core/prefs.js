@@ -264,10 +264,9 @@ function savePref(pref, value) {
 
 var chromePrefs = Object.assign(prefs, {
 	setPref: function (pref, value) {
-		savePref(pref, value)
-			.catch((err) => {
-				throw err;
-			});
+		return savePref(pref, value).catch((err) => {
+			throw err;
+		});
 	},
 
 	getPref: function (pref) {

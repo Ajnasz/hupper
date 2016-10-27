@@ -13,8 +13,8 @@ let editTrollsTpl = `<h1>Edit trolls</h1>
 
 <table id="ListOfTrolls"><tbody></tbody></table>`;
 
-function run() {
-	function removeTroll(troll) {
+function run () {
+	function removeTroll (troll) {
 		prefs.getCleanTrolls().then((trolls) => {
 			let filteredTrolls = trolls.filter((n) => {
 				return n !== troll;
@@ -24,7 +24,7 @@ function run() {
 		});
 	}
 
-	function addTroll(troll) {
+	function addTroll (troll) {
 		prefs.getCleanTrolls().then((trolls) => {
 			if (trolls.indexOf(troll) === -1) {
 				trolls.push(troll);
@@ -41,8 +41,8 @@ function run() {
 	editTrolls.events.on('untroll', (name) => {
 		removeTroll(name);
 	});
-	prefs.getCleanTrolls().then((trolls) => {
 
+	prefs.getCleanTrolls().then((trolls) => {
 		editTrolls.drawTrolls(trolls);
 	});
 

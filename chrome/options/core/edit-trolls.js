@@ -56,7 +56,7 @@ function init() {
 	getForm().addEventListener('submit', (e) => {
 		e.preventDefault();
 
-		events.emit('untroll', getTrollNameField().value);
+		events.emit('troll', getTrollNameField().value);
 	});
 }
 

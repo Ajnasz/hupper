@@ -59,11 +59,12 @@ function getBlockColumn(block) {
 	*	id string
 	*	column string
 	*/
-function blockElemToBlockDataStruct(block) {
+function blockElemToBlockDataStruct(block, index) {
 	let output = Object.create(blockDataStruct);
 
 	output.id = block.getAttribute('id');
 	output.column = getBlockColumn(block);
+	output.index = index;
 
 	return output;
 }
@@ -100,7 +101,7 @@ function decorateBlock(block) {
 			.forEach(function (btn) {
 				blockStruct.header.appendChild(btn);
 			});
-		
+
 		toggleBlock(block);
 		if (block.title) {
 			setBlockTitleLink(block.id, block.title);
@@ -155,9 +156,7 @@ function showBlockContent(block) {
 	*/
 function renderSidebar(sidebar, blocks, elementList) {
 	blocks.forEach(function (block) {
-		let index = func.index(elementList, function (blockElem) {
-			return blockElem.id === block.id;
-		});
+		let index = func.index(elementList, blockElem => blockElem.id === block.id);
 
 		if (index > -1) {
 			let elem = elementList.splice(index, 1)[0];
@@ -188,8 +187,8 @@ function reorderBlocks(blocks) {
 	let elementList = getBlockElements(sidebarLeft)
 			.concat(getBlockElements(sidebarRight));
 
-	renderSidebar(sidebarLeft, blocks.left, elementList);
-	renderSidebar(sidebarRight, blocks.right, elementList);
+	renderSidebar(sidebarLeft, func.sortBy(blocks.filter(i => i.column === 'left'), 'index'), elementList);
+	renderSidebar(sidebarRight, func.sortBy(blocks.filter(i => i.column === 'right'), 'index'), elementList);
 }
 
 function setBlockTitleLink(blockId, href) {

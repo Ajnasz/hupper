@@ -30,7 +30,7 @@ function partial (func) {
 	let pArgs = toArray(arguments).slice(1);
 
 	return function () {
-		func.apply(this, pArgs.concat(toArray(arguments)));
+		return func.apply(this, pArgs.concat(toArray(arguments)));
 	};
 }
 
@@ -42,4 +42,19 @@ function yesOrNo (isOk, yes, no) {
 	return isOk ? yes() : no();
 }
 
-export { first, index, partial, toArray, inArray, yesOrNo };
+function sortBy (array, field) {
+	return array.sort((a, b) => {
+		let aVal = a[field],
+			bVal = b[field];
+
+		if (aVal > bVal) {
+			return 1;
+		} else if (aVal < bVal) {
+			return -1;
+		}
+
+		return 0;
+	});
+}
+
+export { first, index, partial, toArray, inArray, yesOrNo, sortBy };

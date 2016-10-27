@@ -1,69 +1,65 @@
 import * as func from '../../core/func';
 
-function createBlockPref(block) {
+function createBlockPref (column, block) {
 	return {
 		id: block.id,
 		hidden: false,
-		contentHidden: false
+		contentHidden: false,
+		index: block.index,
+		column
 	};
 }
-function mergeBlockPrefsWithBlocks(blocks, blocksPref) {
+function mergeBlockPrefsWithBlocks (blocks, blocksPref) {
 	if (!blocksPref) {
-		blocksPref = {};
-	}
-	if (!blocksPref.left) {
-		blocksPref.left = blocks.left.map(createBlockPref);
+		blocksPref = blocks.left.map(func.partial(createBlockPref, 'left')).concat(
+			blocks.right.map(func.partial(createBlockPref, 'right')));
 	} else {
-		blocksPref.left = blocksPref.left.concat(blocks.left.filter(function (block) {
-			return !blocksPref.left.some(function (b) {
-				return b.id === block.id;
-			}) && !blocksPref.right.some(function (b) {
-				return b.id === block.id;
-			});
+		if (blocksPref.items) {
+			blocksPref = blocksPref.items;
+		}
+
+		blocksPref = blocksPref.concat(blocks.left.map(func.partial(createBlockPref, 'left')).filter(block => {
+			return !blocksPref.some(p => p.id === block.id);
+		})).concat(blocks.right.map(func.partial(createBlockPref, 'right')).filter(block => {
+			return !blocksPref.some(p => p.id === block.id);
 		}));
+
+		func.sortBy(blocksPref.filter(b => b.column === 'left'), 'index').forEach((b, i) => b.index = i);
+		func.sortBy(blocksPref.filter(b => b.column === 'right'), 'index').forEach((b, i) => b.index = i);
 	}
-	if (!blocksPref.right) {
-		blocksPref.right = blocks.right.map(createBlockPref);
-	} else {
-		blocksPref.right = blocksPref.right.concat(blocks.right.filter(function (block) {
-			return !blocksPref.left.some(function (b) {
-				return b.id === block.id;
-			}) && !blocksPref.right.some(function (b) {
-				return b.id === block.id;
-			});
-		}));
-	}
+
+
 	return blocksPref;
 }
-function filterHidden(block) {
+
+function filterHidden (block) {
 	return block.hidden;
 }
-function filterContentHidden(block) {
+
+function filterContentHidden (block) {
 	return block.contentHidden;
 }
 
 
-function updateBlock(details, prefName, value, blockPrefs) {
-	let block = func.first(blockPrefs.left, b => b.id === details.id);
-
-	if (!block) {
-		block = func.first(blockPrefs.right, b => b.id === details.id);
-	}
+function updateBlock (details, prefName, value, blockPrefs) {
+	let block = func.first(blockPrefs, b => b.id === details.id);
 
 	block[prefName] = value;
 
 	return block;
 }
 
-function findNotHiddenIndex(blocks, start, direction) {
+function findNotHiddenIndex (blocks, start, direction) {
 	if (!blocks[start].hidden) {
 		return start;
 	}
+
 	if (direction === 'down') {
 		for (let i = start, bl = blocks.length; i < bl; i++) {
 			if (blocks[i].hidden) {
 				continue;
 			}
+
 			return i;
 		}
 	} else if (direction === 'up') {
@@ -71,31 +67,35 @@ function findNotHiddenIndex(blocks, start, direction) {
 			if (blocks[i].hidden) {
 				continue;
 			}
+
 			return i;
 		}
 	}
 	return -1;
 }
 
-function onBlockChangeOrder(events, details, blockPrefs) {
+function onBlockChangeOrder (events, details, blockPrefs) {
 	let columnBlocks = details.column === 'sidebar-right' ? blockPrefs.right : blockPrefs.left;
 	let oldIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
 	});
+
 	if (oldIndex > -1) {
 		let newIndex = findNotHiddenIndex(columnBlocks, details.action === 'up' ? oldIndex - 1 : oldIndex + 1, details.action);
 		let tmpBlock = columnBlocks.splice(newIndex, 1, columnBlocks[oldIndex]);
+
 		columnBlocks.splice(oldIndex, 1, tmpBlock[0]);
 		return columnBlocks;
 	}
 }
 
-function onBlockChangeColumn(events, details, blockPrefs) {
+function onBlockChangeColumn (events, details, blockPrefs) {
 	let isOnRightSide = details.column === 'sidebar-right';
 	let columnBlocks = isOnRightSide ? blockPrefs.right : blockPrefs.left;
 	let blockIndex = func.index(columnBlocks, function (block) {
 		return block.id === details.id;
 	});
+
 	if (blockIndex > -1) {
 		let tmpBlock = columnBlocks.splice(blockIndex, 1);
 		let otherColumn = isOnRightSide ? blockPrefs.left : blockPrefs.right;
@@ -103,7 +103,8 @@ function onBlockChangeColumn(events, details, blockPrefs) {
 		return blockPrefs;
 	}
 }
-function getBlockTitles() {
+
+function getBlockTitles () {
 	return {
 		'block-aggregator-feed-13': 'http://distrowatch.com',
 		'block-aggregator-feed-19': 'http://www.freebsd.org',
@@ -136,7 +137,7 @@ function getBlockTitles() {
 	};
 }
 
-function getBlockTitle(block) {
+function getBlockTitle (block) {
 	return getBlockTitles()[block.id];
 }
 
@@ -148,5 +149,6 @@ export {
 	onBlockChangeOrder,
 	onBlockChangeColumn,
 	updateBlock,
-	getBlockTitle
+	getBlockTitle,
+	createBlockPref
 };

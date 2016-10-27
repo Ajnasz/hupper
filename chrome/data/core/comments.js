@@ -238,13 +238,20 @@ function insertIntoHnav(comment, item) {
  * @param string id Comment id
  * @param string nextCommentId
  */
-function addLinkToPrevComment(id, prevCommentId) {
+function addLinkToPrevComment (id, prevCommentId) {
 	var comment = getCommentObj(getCommentFromId(id)),
 		link;
+
+	link = comment.header.querySelector(`a[href="#${prevCommentId}"]`);
+
+	if (link) {
+		link.parentNode.removeChild(link);
+	}
 
 	link = dom.createElem('a', [{name: 'href', value: '#' + prevCommentId}], null, TEXT_PREV);
 
 	addHNav(comment);
+
 	insertIntoHnav(comment, link);
 	// comment.header.querySelector('.' + COMMENT_HNAV_CLASS).appendChild(link);
 }
@@ -253,13 +260,20 @@ function addLinkToPrevComment(id, prevCommentId) {
  * @param string id Comment id
  * @param string nextCommentId
  */
-function addLinkToNextComment(id, nextCommentId) {
+function addLinkToNextComment (id, nextCommentId) {
 	var comment = getCommentObj(getCommentFromId(id)),
 		link;
+
+	link = comment.header.querySelector(`a[href="#${nextCommentId}"]`);
+
+	if (link) {
+		link.parentNode.removeChild(link);
+	}
 
 	link = dom.createElem('a', [{name: 'href', value: '#' + nextCommentId}], null, TEXT_NEXT);
 
 	addHNav(comment);
+
 	insertIntoHnav(comment, link);
 }
 
@@ -267,7 +281,7 @@ function addLinkToNextComment(id, nextCommentId) {
  * @param string id Comment id
  * @return HTMLDOMElement Comment element
  */
-function getCommentFromId(id) {
+function getCommentFromId (id) {
 	var elem = document.getElementById(id);
 
 	return dom.next(elem, '.' + COMMENT_CLASS);
@@ -277,7 +291,7 @@ function getCommentFromId(id) {
  * @param commentDataStruct comment
  * @return commentStruct
  */
-function commentDataStructToObj(comment) {
+function commentDataStructToObj (comment) {
 	var item = getCommentFromId(comment.id);
 
 	return getCommentObj(item);
@@ -380,12 +394,25 @@ function hideBoringComments(comments) {
 	comments.map(commentDataStructToObj).forEach(markBoring);
 }
 
+function addFooterLink (comment, link) {
+	var commentObj = commentDataStructToObj(comment);
+	let footer = commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS);
+
+	let href = link.querySelector('a').href;
+
+	let oldLink = func.toArray(footer.querySelectorAll('a'))
+		.filter(a => a.href === href)
+		.forEach(a => footer.removeChild(a.parentNode));
+
+	footer.appendChild(link);
+}
+
 /**
  * @param string text
  * @param href text
  * @param {string[]} classList
  */
-function createFooterLink(text, href, classList) {
+function createFooterLink (text, href, classList) {
 	var listItem = dom.createElem('li'),
 		link;
 
@@ -398,21 +425,15 @@ function createFooterLink(text, href, classList) {
 /**
  * @param commentDataStruct comment
  */
-function addParentLinkToComment(comment) {
-	var commentObj = commentDataStructToObj(comment);
-
-	commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
-		.appendChild(createFooterLink(TEXT_PARENT, '#' + comment.parent));
+function addParentLinkToComment (comment) {
+	addFooterLink(comment, createFooterLink(TEXT_PARENT, '#' + comment.parent));
 }
 
 /**
  * @param commentDataStruct comment
  */
-function addExpandLinkToComment(comment) {
-	var commentObj = commentDataStructToObj(comment);
-
-	commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS)
-		.appendChild(createFooterLink(TEXT_WIDEN, '#', [EXPAND_COMMENT_CLASS]));
+function addExpandLinkToComment (comment) {
+	addFooterLink(comment, createFooterLink(TEXT_WIDEN, '#', [EXPAND_COMMENT_CLASS]));
 }
 
 /**
