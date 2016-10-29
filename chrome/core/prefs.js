@@ -65,9 +65,16 @@ let defaultPrefs = [
 
 	{
 		'name': 'hidetaxonomy',
-		'title': 'Hidable article types',
+		'title': 'Hidden article types',
 		'type': 'string',
-		'value': ''
+		'value': '[]',
+		'hidden': true
+	},
+
+	{
+		'name': 'edithidetaxonomy',
+		'title': 'Edit hidden article types',
+		'type': 'control'
 	},
 
 	{
@@ -301,7 +308,7 @@ var chromePrefs = Object.assign(prefs, {
 	events
 });
 
-chrome.storage.onChanged.addListener(function (changes, areaName) {
+chrome.storage.onChanged.addListener(function (changes) {
 	Object.keys(changes).forEach(name => {
 		chromePrefs.getPref(name).then((value) => {
 			events.emit(name, value);

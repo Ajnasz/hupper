@@ -1,4 +1,6 @@
 import * as dom from './dom';
+import * as editor from '../editor';
+import { createEmitter } from '../../core/events';
 
 function createPanelBg () {
 	let div = dom.createElem('div');
@@ -7,7 +9,7 @@ function createPanelBg () {
 	return div;
 }
 
-function createPanel (options, body) {
+function createPanel (options, body, events) {
 	let div = dom.createElem('div');
 	let close = dom.createElem('button');
 	let header = dom.createElem('header');
@@ -35,8 +37,22 @@ function createPanel (options, body) {
 	panelContent.insertAdjacentHTML('afterbegin', body);
 	div.insertBefore(header, div.firstChild);
 
+	function onClick (e) {
+		events.emit('click', e);
+	}
+
+	function onSubmit (e) {
+		events.emit('submit', e);
+	}
+
+	div.addEventListener('click', onClick, false);
+	div.querySelector('form').addEventListener('submit', onSubmit, false);
+
 	function closePanel () {
 		div.addEventListener('transitionend', function removeDiv () {
+			div.removeEventListener('click', onClick);
+			div.querySelector('form').removeEventListener('submit', onSubmit);
+			events.emit('close');
 			div.parentNode.removeChild(div);
 			div.removeEventListener('transitionend', removeDiv);
 		}, false);
@@ -55,6 +71,7 @@ function createPanel (options, body) {
 		close.removeEventListener('click', onClose);
 		closePanel();
 	});
+
 	document.getElementById('panel-bg').addEventListener('click', function onClose () {
 		document.getElementById('panel-bg').removeEventListener('click', onClose);
 	});
@@ -98,18 +115,39 @@ function create (options, body) {
 		document.body.appendChild(panelBg);
 	}
 
-	let panel = document.getElementById(id);
-	if (!panel) {
-		panel = createPanel(options, body);
+	if (document.getElementById(id)) {
+		throw new Error('Panel already exists');
 	}
+
+	let events = createEmitter();
+
+	let panel = createPanel(options, body, events);
 
 	document.body.appendChild(panel);
 
 	return {
+		events,
 		panel,
 		panelBg,
 		show () {
 			return showBg(panelBg).then(showPanel.bind(null, panel));
+		},
+
+		drawTable (items) {
+			let found = panel.querySelector('.js-found'),
+				notFound = panel.querySelector('.js-not-found');
+
+			if (items.length > 0) {
+				let tbody = panel.querySelector('tbody');
+				dom.empty(tbody);
+				items.forEach(item => tbody.appendChild(editor.getRow(item)));
+
+				notFound.classList.add('hidden');
+				found.classList.remove('hidden');
+			} else {
+				notFound.classList.remove('hidden');
+				found.classList.add('hidden');
+			}
 		}
 	};
 }

@@ -1,4 +1,3 @@
-import * as dom from './core/dom';
 import { prefs } from '../core/prefs';
 import * as editor from './editor';
 import * as panel from './core/panel';
@@ -18,21 +17,7 @@ let editTrollsTpl = editor.createBody({
 
 function draw (dialog) {
 	prefs.getCleanTrolls().then((trolls) => {
-		let found = dialog.panel.querySelector('.js-found'),
-			notFound = dialog.panel.querySelector('.js-not-found');
-
-		if (trolls.length > 0) {
-			let tbody = dialog.panel.querySelector('tbody');
-			dom.empty(tbody);
-			trolls.forEach(troll => tbody.appendChild(editor.getRow([troll])));
-
-			notFound.classList.add('hidden');
-			found.classList.remove('hidden');
-		} else {
-			notFound.classList.remove('hidden');
-			found.classList.add('hidden');
-		}
-		// editTrolls.drawTrolls(trolls);
+		dialog.drawTable(trolls.map(t => [t]));
 	});
 }
 
@@ -42,22 +27,23 @@ function open () {
 
 	let dialog = panel.create({id, title}, editTrollsTpl);
 
-	dialog.show().then(() => {
-		dialog.panel.querySelector('input').focus();
-	});
-
-	dialog.panel.addEventListener('click', (e) => {
+	function onClick (e) {
 		let target = e.target;
-
 		if (target.dataset.action === 'delete') {
 			prefs.removeTroll(target.dataset.id).then(draw.bind(null, dialog));
 		}
-	}, false);
+	}
 
-	dialog.panel.querySelector('form').addEventListener('submit', (e) => {
+	function onSubmit (e) {
 		e.preventDefault();
-
 		prefs.addTroll(dialog.panel.querySelector('form').elements[0].value).then(draw.bind(null, dialog));
+	}
+
+	dialog.events.on('click', onClick);
+	dialog.events.on('submit', onSubmit);
+
+	dialog.show().then(() => {
+		dialog.panel.querySelector('input').focus();
 	});
 
 	draw(dialog);

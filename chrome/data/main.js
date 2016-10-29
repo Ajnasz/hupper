@@ -283,6 +283,7 @@ function updateArticles() {
 
 function updateBlocks() {
 	let blocks = modBlocks.getBlocks();
+	console.log('update blocks', blocks);
 
 	if (!blocks.left && !blocks.right) {
 		return;
@@ -292,6 +293,7 @@ function updateBlocks() {
 		event: 'requestBlockParse',
 		data: blocks
 	}, function (blocks) {
+		console.log('block responses', blocks);
 		if (blocks) {
 			console.log(blocks);
 			modBlocks.reorderBlocks(blocks);
@@ -340,6 +342,7 @@ function addCommentListeners() {
 }
 
 function addHupperBlockListeners() {
+	console.log('add hupper block listeners');
 	document.getElementById('block-hupper').addEventListener('click', function (e) {
 		let event = modBlocks.onBlockControlClick(e);
 		if (!event) {

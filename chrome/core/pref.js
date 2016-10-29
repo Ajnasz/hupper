@@ -1,5 +1,9 @@
 import * as func from './func';
 
+function filterEmpty (array) {
+	return array.map(item => item.trim()).filter(item => item !== '');
+}
+
 var prefs = Object.create(null, {
 	getCleanHighlightedUsers: {
 		value: function () {
@@ -9,9 +13,7 @@ var prefs = Object.create(null, {
 					if (highlightusers === null) {
 						value = [];
 					} else {
-						value = highlightusers.split(',').filter(function (user) {
-							return user.trim() !== '';
-						}).map(function (user) {
+						value = filterEmpty(highlightusers.split(',')).map(function (user) {
 							return user.split(':');
 						}).filter(function (user) {
 							return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
@@ -74,9 +76,7 @@ var prefs = Object.create(null, {
 					if (trolls === null) {
 						value = [];
 					} else {
-						value = trolls.split(',').filter(troll => {
-							return troll.trim() !== '';
-						});
+						value = filterEmpty(trolls.split(','));
 					}
 
 					resolve(value);
@@ -110,8 +110,7 @@ var prefs = Object.create(null, {
 
 	setCleanTrolls: {
 		value: function (trolls) {
-			let cleanTrolls = trolls.map(troll => troll.trim()).filter(troll => troll !== '');
-			return this.setPref('trolls', cleanTrolls.join(','));
+			return this.setPref('trolls', filterEmpty(trolls).join(','));
 		}
 	},
 
@@ -123,12 +122,41 @@ var prefs = Object.create(null, {
 					if (!taxonomies) {
 						value = [];
 					} else {
-						value = JSON.parse(taxonomies).map(t => t.trim()).filter(t => t !== '');
+						value = filterEmpty(JSON.parse(taxonomies));
 					}
 
 					resolve(value);
 				});
 			});
+		}
+	},
+
+	addTaxonomy: {
+		value: function (taxonomy) {
+			return this.getCleanTaxonomies().then(taxonomies => {
+				if (taxonomies.indexOf(taxonomy) === -1) {
+					taxonomies.push(taxonomy);
+				}
+
+				return this.setCleanTaxonomies(taxonomies);
+			});
+		}
+	},
+
+	removeTaxonomy: {
+		value: function (taxonomy) {
+			return this.getCleanTaxonomies().then(taxonomies => {
+				let filteredTaxonomies = taxonomies.filter((n) => {
+					return n !== taxonomy;
+				});
+				return this.setCleanTaxonomies(filteredTaxonomies);
+			});
+		}
+	},
+
+	setCleanTaxonomies: {
+		value: function (taxonomies) {
+			return this.setPref('hidetaxonomy', JSON.stringify(taxonomies));
 		}
 	}
 });

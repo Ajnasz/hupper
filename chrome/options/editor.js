@@ -18,6 +18,10 @@ let controlGroupTPL = `<div class="field-group">
 
 let theadTPL = '<th>{name}</th>';
 
+function isHEX (value) {
+	return /^#[A-F0-9]{6}$/i.test(value);
+}
+
 function replace (tpl, data) {
 	return tpl.replace(/\{([^}]+)\}/g, function (match, item) {
 		return data[item] || item;
@@ -37,12 +41,22 @@ function createBody (data) {
 			return data[item] || item;
 		}
 	});
-
 }
 
 function getRow (fields) {
 	let tr = fields.reduce(function (acc, field) {
-		let td = dom.createElem('td', null, null, field);
+		let td = dom.createElem('td', null, null);
+
+		if (isHEX(field)) {
+			let colorSpan = dom.createElem('span', null, ['color']),
+				textSpan = dom.createElem('span', null, ['color-text'], field);
+			colorSpan.style.backgroundColor = field;
+			colorSpan.style.color = field;
+			colorSpan.appendChild(textSpan);
+			td.appendChild(colorSpan);
+		} else {
+			td.textContent = field;
+		}
 		acc.appendChild(td);
 		return acc;
 	}, dom.createElem('tr'));
@@ -50,7 +64,7 @@ function getRow (fields) {
 	let btn = dom.createElem('button', [
 		{name: 'data-id', value: fields[0]},
 		{name: 'data-action', value: 'delete'}
-	], ['btn', 'btn-delete'], 'Delete');
+	], ['btn', 'btn-delete', 'btn-warn'], 'Delete');
 	let td = dom.createElem('td');
 	td.appendChild(btn);
 

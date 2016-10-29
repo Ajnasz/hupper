@@ -45,8 +45,8 @@ header {
 
 header h1 {
 	color: #fff;
-	letter-spacing: -2px;
-	text-transform: uppercase;
+	letter-spacing: -1px;
+	/* text-transform: uppercase; */
 }
 
 main {
@@ -93,7 +93,8 @@ button {
 	color: var(--color);
 	border-color: var(--border-color);
 	background-color: var(--bg-color);
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2)
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	border-radius: 3px;
 }
 
 .btn:hover {
@@ -109,6 +110,17 @@ button {
 .btn-cta:hover {
 	background-color: #516c87;
 	border-color: #3d5267;
+}
+
+.btn-warn {
+	background-color: #d74b4b;
+	border-color: #cc2d2d;
+	color: #fff;
+}
+
+.btn-warn:hover {
+	background-color: #c42b2b;
+	border-color: #9a2222;
 }
 
 
@@ -237,6 +249,19 @@ label {
 
 .panel .hidden {
 	display: none;
+}
+
+.panel .color {
+	padding: 0.5rem;
+	border-radius: 4px;
+	border-color: #eee;
+	display: block;
+	text-align: center;
+
+	box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+}
+.panel .color-text {
+	filter: invert(100%) saturate(20%);
 }
 
 #panel-bg {

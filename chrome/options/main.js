@@ -1,9 +1,9 @@
 import { prefs } from '../core/prefs';
 import * as dom from './core/dom';
-import * as panel from './core/panel';
 import * as func from '../core/func';
 import * as editHighlightedUsers from './edit-highlightedusers';
 import * as editTrolls from './edit-trolls';
+import * as editHidetaxonomy from './edit-hidetaxonomy';
 
 function createControlGroup () {
 	let div = dom.createElem('div');
@@ -83,7 +83,7 @@ function createControl (item) {
 	let fragment = document.createDocumentFragment();
 
 	let button = dom.createElem('button');
-	let div = dom.createElem('div');
+	let div = createControlGroup();
 
 	button.type = 'button';
 	button.id = 'control-' + item.name;
@@ -140,10 +140,16 @@ prefs.getAllPrefs().then((pref) => {
 		let target = e.target;
 
 		if (target.dataset.type === 'control') {
-			if (target.id === 'control-edithighlightusers') {
+			switch (target.id) {
+			case 'control-edithighlightusers':
 				editHighlightedUsers.open();
-			} else {
+				break;
+			case 'control-edittrolls':
 				editTrolls.open();
+				break;
+			case 'control-edithidetaxonomy':
+				editHidetaxonomy.open();
+				break;
 			}
 		}
 	});
