@@ -40,6 +40,7 @@ function createInput(item) {
 			input.type = 'number';
 		} else if (item.type === 'color') {
 			input.type = 'color';
+			input.classList.add('btn');
 		} else {
 			input.type = 'text';
 		}
@@ -60,18 +61,20 @@ function createBr() {
 	return br;
 }
 
-function composeGroup(item) {
+function composeGroup (item) {
 	let fragment = document.createDocumentFragment();
 	let input = createInput(item);
 	let label = createLabel(item);
 	let div = createControlGroup();
 
 	if (item.type === 'bool') {
+		div.classList.add('control-group-bool');
 		div.appendChild(input);
 		div.appendChild(label);
 	} else {
+		div.classList.add('control-group-text');
 		div.appendChild(label);
-		div.appendChild(createBr());
+		// div.appendChild(createBr());
 		div.appendChild(input);
 	}
 
@@ -89,16 +92,21 @@ function createControl(item) {
 	button.id = 'control-' + item.name;
 	button.textContent = item.title;
 	button.dataset.type = item.type;
+	button.classList.add('btn');
 
 	div.appendChild(button);
 	fragment.appendChild(div);
 	return fragment;
 }
 
-function createPanel(options, html) {
+function createPanel (options, html) {
 	let div = dom.createElem('div');
 	let close = dom.createElem('button');
+	let header = dom.createElem('header');
+	let title = dom.createElem('h1');
 	let panelContent = dom.createElem('div');
+
+	title.textContent = options.title;
 
 	panelContent.classList.add('panel-content');
 
@@ -107,6 +115,8 @@ function createPanel(options, html) {
 	close.classList.add('close');
 	close.setAttribute('type', 'button');
 	close.appendChild(document.createTextNode('X'));
+	header.appendChild(title);
+	header.appendChild(close);
 
 	div.classList.add('panel');
 
@@ -115,7 +125,7 @@ function createPanel(options, html) {
 	}
 
 	panelContent.insertAdjacentHTML('afterbegin', html);
-	div.insertBefore(close, div.firstChild);
+	div.insertBefore(header, div.firstChild);
 
 	function closePanel() {
 		div.addEventListener('transitionend', function removeDiv() {
@@ -209,11 +219,13 @@ prefs.getAllPrefs().then((pref) => {
 			let panel = document.getElementById(id);
 			let panelBg = document.getElementById('panel-bg');
 
-			let html;
+			let html, title;
 
 			if (target.id === 'control-edithighlightusers') {
+				title = 'Edit highlighted users'
 				html = editHighlightedUsers.tpl;
 			} else if (target.id === 'control-edittrolls') {
+				title = 'Edit trolls';
 				html = editTrolls.tpl;
 			}
 
@@ -223,7 +235,7 @@ prefs.getAllPrefs().then((pref) => {
 			}
 
 			if (!panel) {
-				panel = createPanel({id: id}, html);
+				panel = createPanel({id: id, title}, html);
 			}
 
 			document.body.appendChild(panel);

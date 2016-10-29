@@ -2,7 +2,7 @@ import { prefs } from '../core/prefs';
 import * as func from '../core/func';
 import * as dom from './core/dom';
 
-let editHighlightedUsersTpl = `<h1>Edit highlighted users</h1>
+let editHighlightedUsersTpl = `
 		<form action="" method="" id="HighlightUserForm" class="field-grid">
 			<div class="field-group">
 				<label for="HighlightedUserName">User name</label>
@@ -10,9 +10,9 @@ let editHighlightedUsersTpl = `<h1>Edit highlighted users</h1>
 			</div>
 			<div class="field-group">
 					<label for="HighlightedUserColor">Highlight color</label>
-					<input type="color" name="userColor" id="HighlightedUserColor" required />
+					<input class="btn" type="color" name="userColor" id="HighlightedUserColor" required />
 			</div>
-			<button type="submit">Add</button>
+			<button class="btn btn-cta" type="submit">Add</button>
 		</form>
 
 		<table id="ListOfHighlightedUsers">
@@ -50,7 +50,7 @@ function editHighlightedUsers () {
 		let btnTd = dom.createElem('td', null, ['delete-user']);
 		let button = dom.createElem('button', [
 			{name: 'type', value: 'button'}
-		], ['delete-highlighted-users'], 'Delete');
+		], ['delete-highlighted-users', 'btn'], 'Delete');
 
 		button.dataset.name = user.name;
 		button.dataset.action = 'unhighlight';

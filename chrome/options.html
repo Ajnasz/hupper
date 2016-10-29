@@ -4,119 +4,20 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
 	<title>Hupper Options</title>
-	<style>
-body {
-	background-color: #fff;
-}
-
-.button {
-	background-color: #223344;
-}
-.control-group {
-	margin: 1em 0 1.5em;
-}
-.panel {
-	position: absolute;
-	width: 400px;
-	margin-top: -200px;
-	margin-left: -200px;
-	background-color: #fff;
-	border: 1px solid #333;
-	border-radius: 5px;
-
-	transition: top 1s ease;
-
-	top: -200%;
-	left: -200%;
-	z-index: 2;
-}
-
-.panel.show {
-	top: 50%;
-	left: 50%;
-}
-
-.panel-content {
-	padding: 20px;
-	overflow: auto;
-	max-height: 400px;
-}
-
-.panel .field-group {
-	margin: 15px 0;
-}
-.panel .field-group label {
-	display: block;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
-.panel form {
-	margin: 0 0 20px;
-}
-.panel table {
-	width: 100%;
-}
-
-.panel .close {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	padding: 1px 2px;
-
-	min-height: auto;
-	min-width: auto;
-
-	cursor: pointer;
-}
-
-#panel-bg {
-	background-color: rgba(0, 0, 0, 0);
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 0;
-	transition: background-color 0.5s ease 0.2s;
-}
-
-#panel-bg.show {
-	background-color: rgba(0, 0, 0, 0.8);
-	z-index: 1;
-}
-
-#ListOfTrolls ul {
-	margin: 0;
-	padding: 0;
-}
-
-#ListOfTrolls li:after {
-	list-style: none;
-}
-
-#ListOfTrolls li:after {
-	content: '';
-	display: table-cell;
-	clear: both;
-}
-
-#ListOfTrolls .delete-troll {
-	float: right;
-}
-	</style>
+	<style>@import url('options/style.css');</style>
 </head>
 <body>
 	<header>
-		<h1>Hupper settings</h1>
+		<h1 class="content">Hupper settings</h1>
 	</header>
-	<main role="main">
+	<main class="content" role="main">
 		<div id="Messages">
 		</div>
 	</main>
-<footer>
-	<button type="button" id="ResetSettings">Reset Settings</button>
-</footer>
+	<footer class="content">
+		<button class="btn btn-cta" type="button" id="ResetSettings">Reset Settings</button>
+	</footer>
 
-<script src="options/bundle.js"></script>
+	<script src="options/bundle.js"></script>
 </body>
 </html>

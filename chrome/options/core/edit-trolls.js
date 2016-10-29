@@ -20,7 +20,7 @@ function createTrollItem(name) {
 
 	let button = dom.createElem('button', [
 		{name: 'type', value: 'button'}
-	], ['delete-troll'], 'Delete');
+	], ['delete-troll', 'btn'], 'Delete');
 
 	button.dataset.name = name;
 	button.dataset.action = 'untroll';
