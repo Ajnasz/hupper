@@ -1,54 +1,30 @@
 import { prefs } from '../core/prefs';
-import * as editor from './editor';
-import * as panel from './core/panel';
-
-let editTaxonomiesTpl = editor.createBody({
-	formID: 'EditTaxonomyForm',
-	tableID: 'ListOfTaxonomies',
-	tableHead: [ 'Article type', 'Delete' ],
-	notFoundTitle: 'No article types added',
-	fields: [{
-		id: 'ArticleType',
-		label: 'ArticleType',
-		type: 'text',
-		name: 'articleType'
-	}]
-});
-
-function draw (dialog) {
-	prefs.getCleanTaxonomies().then((taxonomies) => {
-		dialog.drawTable(taxonomies.map(x => [x]));
-	});
-}
+import * as editorDialog from './editor-dialog';
 
 function open () {
-	const id =  'EditTaxoomiesDialog',
-		title =  'Edit articles';
+	return editorDialog.open({
+		id: 'EditTaxonomiesDialog',
+		title: 'Edit articles',
+		tableRowValueMap: x => [x],
+		tpl: {
+			formID: 'EditTaxonomyForm',
+			tableID: 'ListOfTaxonomies',
+			tableHead: [ 'Article type', 'Delete' ],
+			notFoundTitle: 'No article types added',
+			fields: [{
+				id: 'ArticleType',
+				label: 'ArticleType',
+				type: 'text',
+				name: 'articleType'
+			}]
+		},
 
-	let dialog = panel.create({id, title}, editTaxonomiesTpl);
+		formValueMap: ['articleType'],
 
-	function onClick (e) {
-		let target = e.target;
-		if (target.dataset.action === 'delete') {
-			prefs.removeTaxonomy(target.dataset.id).then(draw.bind(null, dialog));
-		}
-	}
-
-	function onSubmit (e) {
-		e.preventDefault();
-		prefs.addTaxonomy(dialog.panel.querySelector('form').elements[0].value).then(draw.bind(null, dialog));
-	}
-
-	dialog.events.on('click', onClick);
-	dialog.events.on('submit', onSubmit);
-
-	dialog.show().then(() => {
-		dialog.panel.querySelector('input').focus();
+		get: prefs.getCleanTaxonomies.bind(prefs),
+		remove: prefs.removeTaxonomy.bind(prefs),
+		add: prefs.addTaxonomy.bind(prefs)
 	});
-
-	draw(dialog);
-
 }
 
 export { open };
-
