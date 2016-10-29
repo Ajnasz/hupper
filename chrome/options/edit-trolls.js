@@ -1,18 +1,18 @@
 import { prefs } from '../core/prefs';
+import * as editor from './editor';
 import * as editTrolls from './core/edit-trolls';
 
-let editTrollsTpl = `<form action="" method="" id="AddTrollForm">
-	<div class="field-group">
-		<label for="TrollName">Troll name</label>
-		<input type="text" name="trollName" id="TrollName" />
-	</div>
-	<button class="btn btn-cta" type="submit">Add</button>
-</form>
-
-<table id="ListOfTrolls">
-	<thead><tr><th>Name</th><td>Delete</td></tr></thead>
-	<tbody></tbody>
-</table>`;
+let editTrollsTpl = editor.createBody({
+	formID: 'AddTrollForm',
+	tableID: 'ListOfTrolls',
+	tableHead: [ 'Name', 'Delete' ],
+	fields: [{
+		id: 'TrollName',
+		label: 'Troll name',
+		type: 'text',
+		name: 'trollName'
+	}]
+});
 
 function run () {
 	function removeTroll (troll) {

@@ -1,0 +1,272 @@
+:root {
+
+}
+
+.btn {
+	--color: #333;
+	--bg-color: #fff;
+	--hover-bg-color: #e6e6e6;
+
+	--border-color: #ccc;
+	--hover-border-color: #adadad;
+}
+
+input {
+	--border-color: #ccc;
+	--hover-box-shadow-color: rgba(121, 66, 6, 0.6);
+	--hover-border-color: rgba(121, 66, 6, 0.6);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	padding: 0;
+	margin: 0;
+}
+html {
+	background-color: #fff;
+	font-size: 10px;
+	font-family: "Droid Sans", sans-serif;
+	padding: 0;
+}
+
+.content {
+	margin: auto;
+	max-width: 80%;
+}
+
+header {
+	background-color: #9C8F7F;
+	padding: 2rem 0;
+	margin-bottom: 2rem;
+}
+
+header h1 {
+	color: #fff;
+	letter-spacing: -2px;
+	text-transform: uppercase;
+}
+
+main {
+	font-size: 1.3rem;
+}
+
+footer {
+	border-top: 1px solid #ccc;
+	padding: 2rem 0;
+}
+
+input {
+	padding: 0.6rem 1.2rem;
+	border-radius: 0.3rem;
+	font-size: 1.3rem;
+	margin: 0;
+
+	box-shadow: none;
+	border: 1px solid var(--border-color);
+	transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+input:focus {
+	/* box-shadow: 0 0 8px var(--hover-box-shadow-color); */
+	border-color: var(--hover-border-color);
+}
+
+input[type="color"],
+button {
+	padding: 0.4rem 0.6rem;
+	font-weight: 400;
+	border-radius: 0.2rem;
+	font-size: 1.3rem;
+	line-height: 1.6rem;
+
+	border: 1px solid;
+}
+
+.btn {
+	cursor: pointer;
+}
+
+.btn {
+	color: var(--color);
+	border-color: var(--border-color);
+	background-color: var(--bg-color);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2)
+}
+
+.btn:hover {
+	background-color: var(--hover-bg-color);
+	border-color: var(--hover-border-color)
+}
+
+.btn-cta {
+	background-color: #6685A4;
+	color: #fff;
+	border-color: #54718d;
+}
+.btn-cta:hover {
+	background-color: #516c87;
+	border-color: #3d5267;
+}
+
+
+input[type="text"],
+input[type="number"] {
+	max-width: 100%;
+}
+
+label {
+	color: #666;
+	font-weight: 600;
+}
+
+.control-group {
+	margin: 1em 0 1.5em;
+}
+
+.control-group-text label {
+	display: block;
+	margin-bottom: 0.5rem;
+}
+
+.control-group-bool input {
+	float: left;
+}
+
+.control-group-bool label {
+	margin-left: 1rem;
+}
+
+.panel {
+	font-size: 1.3rem;
+
+	position: absolute;
+	width: 400px;
+	margin-top: -200px;
+	margin-left: -200px;
+	background-color: #fff;
+	border: 1px solid #333;
+	border-radius: 5px;
+
+	transition: top 1s ease;
+
+	top: -200%;
+	left: -200%;
+	z-index: 2;
+}
+
+.panel.show {
+	top: 50%;
+	left: 50%;
+}
+
+.panel-content {
+	padding: 20px;
+	overflow: auto;
+	max-height: 400px;
+}
+
+.panel .field-group {
+	margin: 15px 0;
+}
+.panel .field-group label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.panel form {
+	margin: 0 0 20px;
+}
+
+.panel table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.panel table th {
+	font-weight: 600;
+	color: #666;
+}
+
+.panel table th,
+.panel table td {
+	border: 1px solid #ccc;
+	padding: 0.5rem;
+	text-align: left;
+}
+
+.panel table th:last-child,
+.panel table td:last-child {
+	text-align: right;
+}
+
+.panel header {
+	margin: 0;
+	padding: 1.5rem;
+}
+
+.panel header h1 {
+	margin: 0;
+}
+ 
+.panel header:after {
+	content: '';
+	display: table-cell;
+	clear: both;
+}
+
+.panel input[type="text"] {
+	width: 100%;
+}
+
+.panel .close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 1px 2px;
+
+	border-radius: 15px;
+
+	min-height: auto;
+	min-width: auto;
+
+	cursor: pointer;
+}
+
+#panel-bg {
+	background-color: rgba(0, 0, 0, 0);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+	transition: background-color 0.5s ease 0.2s;
+}
+
+#panel-bg.show {
+	background-color: rgba(0, 0, 0, 0.8);
+	z-index: 1;
+}
+
+#ListOfTrolls ul {
+	margin: 0;
+	padding: 0;
+}
+
+#ListOfTrolls li:after {
+	list-style: none;
+}
+
+#ListOfTrolls li:after {
+	content: '';
+	display: table-cell;
+	clear: both;
+}
+
+#ListOfTrolls .delete-troll {
+	float: right;
+}
+	

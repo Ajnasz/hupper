@@ -1,18 +1,18 @@
-let editorTPL = `<h1>{title}</h1>
-
-<form action="" method="" id="">
+let editorTPL = `<form action="" method="" id="{formID}">
 	{fields}
 	<footer>
-		<button type="submit">Add</button>
+		<button class="btn btn-cta" type="submit">Add</button>
 	</footer>
 </form>
-
-<table class="js-table"><tbody></tbody></table>`;
+<table id="{tableID}" class="js-table"><thead>{tableHead}</thead><tbody></tbody></table>`;
 
 let controlGroupTPL = `<div class="field-group">
 		<label for="{id}">{label}</label>
 		<input type="{type}" name="{name}" id="{id}">
 	</div>`;
+
+
+let theadTPL = '<th>{name}</th>';
 
 function replace (tpl, data) {
 	return tpl.replace(/\{([^}]+)\}/g, function (match, item) {
@@ -20,14 +20,15 @@ function replace (tpl, data) {
 	});
 }
 
-function createFragment (data) {
-
-	let fragment = document.createDocumentFragement();
-
-	fragment.innerHTML = editorTPL.replace(/\{([^}]+)\}/g, function (match, item) {
+function createBody (data) {
+	return editorTPL.replace(/\{([^}]+)\}/g, function (match, item) {
 		switch (item) {
 		case 'fields':
-			return data.fields.map(field => replace(controlGroupTPL, field));
+			return data.fields.map(f => replace(controlGroupTPL, f)).join('');
+
+		case 'tableHead':
+			return '<tr>' + data.tableHead.map(t => replace(theadTPL, {name: t})).join('') + '</tr>';
+
 		default:
 			return data[item] || item;
 		}
@@ -35,4 +36,5 @@ function createFragment (data) {
 
 }
 
-export { createFragment };
+
+export { createBody };

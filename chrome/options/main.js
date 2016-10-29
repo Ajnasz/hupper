@@ -1,10 +1,11 @@
 import { prefs } from '../core/prefs';
 import * as dom from './core/dom';
+import * as panel from './core/panel';
 import * as func from '../core/func';
 import * as editHighlightedUsers from './edit-highlightedusers';
 import * as editTrolls from './edit-trolls';
 
-function createControlGroup() {
+function createControlGroup () {
 	let div = dom.createElem('div');
 
 	div.classList.add('control-group');
@@ -12,17 +13,17 @@ function createControlGroup() {
 	return div;
 }
 
-function camelConcat() {
+function camelConcat () {
 	return func.toArray(arguments).map((i) => {
 		return i[0].toUpperCase() + i.slice(1);
 	}).join('');
 }
 
-function getElemId(item) {
+function getElemId (item) {
 	return camelConcat('Item', item.name);
 }
 
-function createInput(item) {
+function createInput (item) {
 	let input = dom.createElem('input');
 
 	input.dataset.type = item.type;
@@ -49,16 +50,11 @@ function createInput(item) {
 	return input;
 }
 
-function createLabel(item) {
+function createLabel (item) {
 	let label = dom.createElem('label');
 	label.textContent = item.title;
 	label.setAttribute('for', getElemId(item));
 	return label;
-}
-
-function createBr() {
-	let br = dom.createElem('br');
-	return br;
 }
 
 function composeGroup (item) {
@@ -83,8 +79,9 @@ function composeGroup (item) {
 	return fragment;
 }
 
-function createControl(item) {
+function createControl (item) {
 	let fragment = document.createDocumentFragment();
+
 	let button = dom.createElem('button');
 	let div = dom.createElem('div');
 
@@ -97,77 +94,6 @@ function createControl(item) {
 	div.appendChild(button);
 	fragment.appendChild(div);
 	return fragment;
-}
-
-function createPanel (options, html) {
-	let div = dom.createElem('div');
-	let close = dom.createElem('button');
-	let header = dom.createElem('header');
-	let title = dom.createElem('h1');
-	let panelContent = dom.createElem('div');
-
-	title.textContent = options.title;
-
-	panelContent.classList.add('panel-content');
-
-	div.appendChild(panelContent);
-
-	close.classList.add('close');
-	close.setAttribute('type', 'button');
-	close.appendChild(document.createTextNode('X'));
-	header.appendChild(title);
-	header.appendChild(close);
-
-	div.classList.add('panel');
-
-	if (options.id) {
-		div.setAttribute('id', options.id);
-	}
-
-	panelContent.insertAdjacentHTML('afterbegin', html);
-	div.insertBefore(header, div.firstChild);
-
-	function closePanel() {
-		div.addEventListener('transitionend', function removeDiv() {
-			div.parentNode.removeChild(div);
-			div.removeEventListener('transitionend', removeDiv);
-		}, false);
-
-		let panelBg = document.getElementById('panel-bg');
-		panelBg.addEventListener('transitionend', function removePanel() {
-			panelBg.parentNode.removeChild(panelBg);
-			div.removeEventListener('transitionend', removePanel);
-		}, false);
-
-		div.classList.remove('show');
-		panelBg.classList.remove('show');
-	}
-
-	close.addEventListener('click', function onClose() {
-		close.removeEventListener('click', onClose);
-		closePanel();
-	});
-	document.getElementById('panel-bg').addEventListener('click', function onClose() {
-		document.getElementById('panel-bg').removeEventListener('click', onClose);
-	});
-
-	window.addEventListener('keyup', function c(ev) {
-		if (ev.keyCode === 27) {
-			if (!ev.target.matches('.panel input,.panel textarea,.panel select')) {
-				closePanel();
-				window.removeEventListener('keyup', c);
-			}
-		}
-	}, false);
-
-	return div;
-}
-
-function createPanelBg() {
-	let div = dom.createElem('div');
-	div.setAttribute('id', 'panel-bg');
-
-	return div;
 }
 
 prefs.getAllPrefs().then((pref) => {
@@ -214,45 +140,26 @@ prefs.getAllPrefs().then((pref) => {
 		let target = e.target;
 
 		if (target.dataset.type === 'control') {
-
-			let id = 'panel-' + target.id;
-			let panel = document.getElementById(id);
-			let panelBg = document.getElementById('panel-bg');
-
 			let html, title;
 
 			if (target.id === 'control-edithighlightusers') {
-				title = 'Edit highlighted users'
+				title = 'Edit highlighted users';
 				html = editHighlightedUsers.tpl;
 			} else if (target.id === 'control-edittrolls') {
 				title = 'Edit trolls';
 				html = editTrolls.tpl;
 			}
 
-			if (!panelBg) {
-				panelBg = createPanelBg();
-				document.body.appendChild(panelBg);
-			}
+			let dialog = panel.create({id: target.id, title}, html);
 
-			if (!panel) {
-				panel = createPanel({id: id, title}, html);
-			}
-
-			document.body.appendChild(panel);
-			panel.querySelector('input').focus();
-			setTimeout(function () {
-				panelBg.classList.add('show');
-				setTimeout(function () {
-					panel.classList.add('show');
-
-					if (target.id === 'control-edithighlightusers') {
-						editHighlightedUsers.run();
-					} else if (target.id === 'control-edittrolls') {
-						editTrolls.run();
-					}
-				}, 10);
-			}, 10);
-
+			dialog.show().then(() => {
+				dialog.dialog.querySelector('input').focus();
+				if (target.id === 'control-edithighlightusers') {
+					editHighlightedUsers.run();
+				} else if (target.id === 'control-edittrolls') {
+					editTrolls.run();
+				}
+			});
 		}
 	});
 });
