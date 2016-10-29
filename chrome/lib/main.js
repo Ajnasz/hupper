@@ -293,6 +293,8 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			coreMain.hideArticle(data).then(sendResponse);
 
 			return true;
+		default:
+			return false;
 		}
 
 	});

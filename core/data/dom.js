@@ -21,7 +21,7 @@
 		 * @param selector string
 		 * @param string sibling Use 'prev' if previous
 		 */
-		function findSibling(element, selector, sibling) {
+		function findSibling (element, selector, sibling) {
 			var elem = element,
 				siblingName = sibling === 'prev' ? 'previousSibling' : 'nextSibling';
 
@@ -36,7 +36,7 @@
 		 * @param element HTMLDOMElement
 		 * @param selector string
 		 */
-		function next(element, selector) {
+		function next (element, selector) {
 			return findSibling(element, selector);
 		}
 
@@ -44,11 +44,16 @@
 		 * @param element HTMLDOMElement
 		 * @param selector string
 		 */
-		function prev(element, selector) {
+		function prev (element, selector) {
 			return findSibling(element, selector, 'prev');
 		}
 
-		function closest(element, selector) {
+		/**
+		 * @method closest
+		 * @param {HTMLElement} element
+		 * @param {String} selector
+		 */
+		function closest (element, selector) {
 			var elem = element.parentNode;
 
 			while (elem && !is(elem, selector)) {
@@ -58,11 +63,19 @@
 			return elem || null;
 		}
 
-		function remove(element) {
+		/**
+		 * @method remove
+		 * @param {HTMLDOMElement} element
+		 */
+		function remove (element) {
 			return element.parentNode.removeChild(element);
 		}
 
-		function findCommonParent(elements) {
+		/**
+		 * @method findCommonParent
+		 * @param {[HTMLDOMElement]} elements
+		 */
+		function findCommonParent (elements) {
 			var index, parent, maxIndex;
 
 			elements = elements.filter((x) => x !== null);

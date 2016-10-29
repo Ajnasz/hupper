@@ -244,3 +244,5 @@ prefs.getAllPrefs().then((pref) => {
 		}
 	});
 });
+
+document.getElementById('ResetSettings').addEventListener('click', () => prefs.clear());

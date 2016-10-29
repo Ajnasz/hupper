@@ -374,9 +374,9 @@ window.addEventListener('DOMContentLoaded', function () {
 				unlimitedlinks.setUnlimitedLinks();
 			}
 			modHupperBlock.addHupperBlock();
+			updateBlocks();
 			updateComments();
 			updateArticles();
-			updateBlocks();
 			addCommentListeners();
 			addBlockListeners();
 			addArticleListeners();

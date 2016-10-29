@@ -59,7 +59,7 @@ function removeArticleLink(item) {
 	let article = articleStructToArticleNodeStruct(item),
 		oldLinks = article.header.querySelectorAll('.prev-next-article');
 
-	oldLinks.forEach(l => l.parentNode.removeChild(l));
+	func.toArray(oldLinks).forEach(l => l.parentNode.removeChild(l));
 }
 
 function addPrevNextArticleLink(id, relId, text) {

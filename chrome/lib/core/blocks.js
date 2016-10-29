@@ -10,7 +10,9 @@ function createBlockPref (column, block) {
 	};
 }
 function mergeBlockPrefsWithBlocks (blocks, blocksPref) {
-	if (!blocksPref) {
+	console.log('blocks pref', blocksPref);
+	
+	if (!blocksPref || !blocksPref.length) {
 		blocksPref = blocks.left.map(func.partial(createBlockPref, 'left')).concat(
 			blocks.right.map(func.partial(createBlockPref, 'right')));
 	} else {

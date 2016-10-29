@@ -20,7 +20,7 @@ var blockSturct = {
 	header: null
 };
 
-function blockDataStructToBlockElement(blockObj) {
+function blockDataStructToBlockElement (blockObj) {
 	return document.getElementById(blockObj.id);
 }
 
@@ -28,7 +28,7 @@ function blockDataStructToBlockElement(blockObj) {
 	* @param blockDataStruct
 	* @return blockSturct
 	*/
-function blockDataStructToBlockSturct(block) {
+function blockDataStructToBlockSturct (block) {
 	let output = Object.create(blockSturct),
 		node = blockDataStructToBlockElement(block);
 
@@ -39,7 +39,7 @@ function blockDataStructToBlockSturct(block) {
 	return output;
 }
 
-function getBlockElements(sidebar) {
+function getBlockElements (sidebar) {
 	return func.toArray(sidebar.querySelectorAll('.' + BLOCK_CLASS));
 }
 
@@ -47,7 +47,7 @@ function getBlockElements(sidebar) {
 	* @param HTMLBlockElement block
 	* @return string
 	*/
-function getBlockColumn(block) {
+function getBlockColumn (block) {
 	let sidebar = dom.closest(block, '.' + SIDEBAR_CLASS);
 
 	return sidebar.getAttribute('id');
@@ -59,7 +59,7 @@ function getBlockColumn(block) {
 	*	id string
 	*	column string
 	*/
-function blockElemToBlockDataStruct(block, index) {
+function blockElemToBlockDataStruct (block, index) {
 	let output = Object.create(blockDataStruct);
 
 	output.id = block.getAttribute('id');
@@ -69,7 +69,7 @@ function blockElemToBlockDataStruct(block, index) {
 	return output;
 }
 
-function getBlocks() {
+function getBlocks () {
 	let leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
 			.map(blockElemToBlockDataStruct);
 	let rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
@@ -81,7 +81,7 @@ function getBlocks() {
 	};
 }
 
-function createBlockButton(action) {
+function createBlockButton (action) {
 	let btn = dom.createElem('button',
 		[{ name: 'data-action', value: action }],
 		['hupper-button', 'block-button', action + '-button']
@@ -90,7 +90,7 @@ function createBlockButton(action) {
 	return btn;
 }
 
-function decorateBlock(block) {
+function decorateBlock (block) {
 	let blockStruct = blockDataStructToBlockSturct(block);
 
 	if (blockStruct.header) {
@@ -110,17 +110,17 @@ function decorateBlock(block) {
 
 }
 
-function toggleBlock(block) {
+function toggleBlock (block) {
 	func.yesOrNo(block.hidden, hideBlock.bind(null, block), showBlock.bind(null, block));
 	func.yesOrNo(block.hidden, modHupperBlock.addHiddenBlock.bind(null, block), modHupperBlock.removeHiddenBlock.bind(null, block));
 	func.yesOrNo(block.contentHidden, hideBlockContent.bind(null, block), showBlockContent.bind(null, block));
 }
 
-function decorateBlocks(blocks) {
+function decorateBlocks (blocks) {
 	blocks.forEach(decorateBlock);
 }
 
-function toggleBlockClass(block, cls, add) {
+function toggleBlockClass (block, cls, add) {
 	let blockElem = blockDataStructToBlockElement(block);
 
 	if (blockElem) {
@@ -132,19 +132,19 @@ function toggleBlockClass(block, cls, add) {
 	}
 }
 
-function hideBlock(block) {
+function hideBlock (block) {
 	toggleBlockClass(block, 'hup-hidden', true);
 }
 
-function showBlock(block) {
+function showBlock (block) {
 	toggleBlockClass(block, 'hup-hidden', false);
 }
 
-function hideBlockContent(block) {
+function hideBlockContent (block) {
 	toggleBlockClass(block, 'content-hidden', true);
 }
 
-function showBlockContent(block) {
+function showBlockContent (block) {
 	toggleBlockClass(block, 'content-hidden', false);
 }
 
@@ -154,7 +154,7 @@ function showBlockContent(block) {
 	* lib/blocks.js, has properties: id, hidden, contentHidden)
 	* @param {[Element]} elementList List of block elements (ALL)
 	*/
-function renderSidebar(sidebar, blocks, elementList) {
+function renderSidebar (sidebar, blocks, elementList) {
 	blocks.forEach(function (block) {
 		let index = func.index(elementList, blockElem => blockElem.id === block.id);
 
@@ -165,7 +165,7 @@ function renderSidebar(sidebar, blocks, elementList) {
 	});
 }
 
-function setBlockOrder(sidebar, blocks) {
+function setBlockOrder (sidebar, blocks) {
 	let sidebarElem = document.getElementById(sidebar);
 
 	let blockElements = getBlockElements(sidebarElem);
@@ -178,7 +178,7 @@ function setBlockOrder(sidebar, blocks) {
 	renderSidebar(sidebarElem, blocks, blockElements);
 }
 
-function reorderBlocks(blocks) {
+function reorderBlocks (blocks) {
 	log.log('reorder blocks', blocks);
 
 	let sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
@@ -191,7 +191,7 @@ function reorderBlocks(blocks) {
 	renderSidebar(sidebarRight, func.sortBy(blocks.filter(i => i.column === 'right'), 'index'), elementList);
 }
 
-function setBlockTitleLink(blockId, href) {
+function setBlockTitleLink (blockId, href) {
 	let block = document.getElementById(blockId);
 
 	if (block) {
@@ -204,7 +204,7 @@ function setBlockTitleLink(blockId, href) {
 	}
 }
 
-function setTitles(titles) {
+function setTitles (titles) {
 	Object.keys(titles).forEach(function (id) {
 		setBlockTitleLink(id, titles[id]);
 	});
@@ -220,11 +220,11 @@ let blockActionStruct = (function () {
 	return obj;
 }());
 
-function onBlockControlClick(e) {
+function onBlockControlClick (e) {
 	if (e.target.dataset.action === 'restore-block') {
 		let block = dom.closest(e.target, '.block'),
 			action = e.target.dataset.action,
-			column = e.target.dataset.sidebar,
+			// column = e.target.dataset.sidebar,
 			event = Object.create(blockActionStruct);
 
 		event.id = e.target.dataset.blockid;
@@ -237,11 +237,11 @@ function onBlockControlClick(e) {
 	return false;
 }
 
-function onBlockButtonClick(e) {
+function onBlockButtonClick (e) {
 	if (dom.is(e.target, '.block-button')) {
 		let block = dom.closest(e.target, '.block'),
-		action = e.target.dataset.action,
-		event = Object.create(blockActionStruct);
+			action = e.target.dataset.action,
+			event = Object.create(blockActionStruct);
 
 		event.id = block.getAttribute('id');
 		event.action = action;
@@ -253,7 +253,7 @@ function onBlockButtonClick(e) {
 	return false;
 }
 
-function onEnableBlockControls(dispatch) {
+function onEnableBlockControls (dispatch) {
 	document.getElementById('content').addEventListener('click', function (e) {
 		let event = onBlockButtonClick(e);
 

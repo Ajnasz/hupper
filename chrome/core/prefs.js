@@ -1,3 +1,5 @@
+/* global chrome */
+
 import { prefs } from './pref';
 import * as func from '../core/func';
 import { log } from './log';
@@ -72,7 +74,7 @@ let defaultPrefs = [
 		'name': 'blocks',
 		'title': 'Block settings',
 		'type': 'string',
-		'value': '{}',
+		'value': '[]',
 		'hidden': true
 	},
 	{
@@ -134,11 +136,11 @@ let defaultPrefs = [
 	}
 ];
 
-function storage() {
+function storage () {
 	return chrome.storage.sync || chrome.storage.local;
 }
 
-function createDefaultPrefs() {
+function createDefaultPrefs () {
 	return Promise.all(defaultPrefs.map((pref) => {
 		return new Promise(function (resolve) {
 			storage().get(pref.name, function (result) {
@@ -174,7 +176,7 @@ function createDefaultPrefs() {
 let events = (function () {
 	let listeners = new Map();
 	return {
-		on(name, cb) {
+		on (name, cb) {
 			if (!listeners.has(name)) {
 				listeners.set(name, []);
 			}
@@ -182,7 +184,7 @@ let events = (function () {
 			listeners.get(name).push(cb);
 		},
 
-		off(name, cb) {
+		off (name, cb) {
 			if (listeners.get(name)) {
 				for (let i = 0, ll = listeners.get(name).length; i < ll; i++) {
 					if (listeners.get(name)[i] === cb) {
@@ -194,7 +196,7 @@ let events = (function () {
 			}
 		},
 
-		emit(name, args) {
+		emit (name, args) {
 			if (listeners.get(name)) {
 				listeners.get(name).forEach((cb) => {
 					cb(args);
@@ -204,32 +206,32 @@ let events = (function () {
 	};
 }());
 
-function validateType(prefType, value) {
+function validateType (prefType, value) {
 	let isValid = false;
 
 	switch (prefType) {
-		case 'string':
-			isValid = typeof value === 'string';
+	case 'string':
+		isValid = typeof value === 'string';
 		break;
-		case 'bool':
-			isValid = typeof value === 'boolean';
+	case 'bool':
+		isValid = typeof value === 'boolean';
 		break;
-		case 'integer':
-			isValid = typeof value === 'number';
+	case 'integer':
+		isValid = typeof value === 'number';
 		break;
-		case 'color':
-			isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
+	case 'color':
+		isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
 		break;
-		default:
-			isValid = true;
-			log.info('Unknown type %s', prefType);
+	default:
+		isValid = true;
+		log.info('Unknown type %s', prefType);
 		break;
 	}
 
 	return isValid;
 }
 
-function findPref(pref) {
+function findPref (pref) {
 	return new Promise(function (resolve) {
 		storage().get(pref, function (results) {
 			if (typeof results[pref] !== 'undefined') {
@@ -241,7 +243,7 @@ function findPref(pref) {
 	});
 }
 
-function savePref(pref, value) {
+function savePref (pref, value) {
 	return new Promise(function (resolve, reject) {
 		let item = func.first(defaultPrefs, (item) => {
 			return item.name === pref;
@@ -263,19 +265,23 @@ function savePref(pref, value) {
 }
 
 var chromePrefs = Object.assign(prefs, {
-	setPref: function (pref, value) {
+	clear () {
+		storage().clear(createDefaultPrefs);
+		
+	},
+	setPref (pref, value) {
 		return savePref(pref, value).catch((err) => {
 			throw err;
 		});
 	},
 
-	getPref: function (pref) {
+	getPref (pref) {
 		return findPref(pref).catch((err) => {
 			throw err;
 		});
 	},
 
-	getAllPrefs: function () {
+	getAllPrefs () {
 		return Promise.all(defaultPrefs.map((pref) => {
 			return findPref(pref.name).then((value) => {
 				let output = Object.create(null);
@@ -292,7 +298,7 @@ var chromePrefs = Object.assign(prefs, {
 		}));
 	},
 	on: events.on,
-	events: events
+	events
 });
 
 chrome.storage.onChanged.addListener(function (changes, areaName) {
