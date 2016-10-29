@@ -33,10 +33,9 @@ var prefs = Object.create(null, {
 
 	removeHighlightedUser: {
 		value: function (userName) {
-			return this.getCleanHighlightedUsers().then(highlightusers => {
-				let filteredUsers = highlightusers.filter(user => user.name !== userName);
-				this.setCleanHighlightedUsers(filteredUsers);
-			});
+			return this.getCleanHighlightedUsers()
+				.then(highlightusers => highlightusers.filter(user => user.name !== userName))
+				.then(filteredUsers => this.setCleanHighlightedUsers(filteredUsers));
 		}
 	},
 

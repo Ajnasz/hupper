@@ -8,6 +8,8 @@ import { prefs } from '../../core/prefs';
 
 import { log } from '../../core/log';
 
+log.info('ok');
+
 function setPrevNextLinks (nodes) {
 	let len = nodes.length;
 
@@ -157,65 +159,20 @@ function parseComments (events, pref) {
 }
 */
 
-function highlightUser (username) {
-	return Promise.all([
-		prefs.getCleanHighlightedUsers(),
-		prefs.getPref('huppercolor')
-	]).then(results => {
-		let [users, color] = results;
-
-		let user = func.first(users, u => u.name === username);
-
-		if (user) {
-			user.color = color;
-		} else {
-			users.push({name: username, color});
-		}
-
-		return users;
-	}).then(users => {
-		return prefs.setPref('highlightusers', users.map(function (user) {
-			return user.name + ':' + user.color;
-		}).join(','));
-	});
+function highlightUser (userName) {
+	return prefs.getPref('huppercolor').then(color => prefs.addHighlightedUser(userName, color));
 }
 
-function unhighlightUser (username) {
-	return prefs.getCleanHighlightedUsers().then(users => {
-		let index = func.index(users, u => u.name === username);
-
-		if (index > -1) {
-			users.splice(index, 1);
-		}
-
-		return users;
-	}).then(users => {
-		return prefs.setPref('highlightusers', users.map(function (user) {
-			return user.name + ':' + user.color;
-		}).join(','));
-	});
+function unhighlightUser (userName) {
+	return prefs.removeHighlightedUser(userName);
 }
 
 function trollUser (username) {
-	return prefs.getCleanTrolls().then(trolls => {
-		if (trolls.indexOf(username) === -1) {
-			trolls.push(username);
-		}
-
-		return prefs.setPref('trolls', trolls.join(','));
-	});
+	return prefs.addTroll(username);
 }
 
 function untrollUser (username) {
-	return prefs.getCleanTrolls().then(trolls => {
-		let index = trolls.indexOf(username);
-
-		if (index !== -1) {
-			trolls.splice(index, 1);
-		}
-
-		return prefs.setPref('trolls', trolls.join(','));
-	});
+	return prefs.removeTroll(username);
 }
 
 function articleGenya (articles) {
@@ -231,51 +188,6 @@ function articleGenya (articles) {
 		}).then(() => articles);
 }
 
-/*
-function parseArticles (events, pref) {
-	const TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS = 'Olvasatlan hozzászólások';
-	log.log('get articles');
-	events.emit('getArticles');
-	events.on('gotArticles', function (articles) {
-		let newArticles = articles.filter(modArticles.filterNewArticles);
-		log.log('articles', articles);
-		prefs.getPref('newcommenttext').then(newCommentText => {
-			events.emit('articles.mark-new', {
-				text: newCommentText,
-				articles: newArticles
-			});
-		});
-		if (newArticles.length > 0) {
-			events.emit('hupper-block.add-menu', {
-				href: '#' + newArticles[0].id,
-				text: TEXT_FIRST_ARTICLE_WITH_NEW_COMMENTS
-			});
-			let nextPrev = modArticles.setNewArticles(newArticles, events);
-			if (nextPrev) {
-				nextPrev.forEach(function (item) {
-					events.emit('articles.addNextPrev', item);
-				});
-			}
-		}
-		events.emit('articles.add-category-hide-button', articles);
-		events.on('article.hide-taxonomy', function (article) {
-			prefs.getCleanTaxonomies().then(taxonomies => {
-				if (taxonomies.indexOf(articles.cateogry) === -1) {
-					taxonomies.push(article.category);
-					prefs.setPref('hidetaxonomy', taxonomies.join(','));
-					let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
-					events.emit('articles.hide', hideableArticles);
-				}
-			});
-		});
-		prefs.getCleanTaxonomies().then(taxonomies => {
-			let hideableArticles = modArticles.filterHideableArticles(articles, taxonomies);
-			events.emit('articles.hide', hideableArticles);
-		});
-	});
-}
-*/
-
 function hideArticle (article) {
 	return prefs.getCleanTaxonomies().then(taxonomies => {
 		if (!func.inArray(taxonomies, article.category)) {
@@ -284,13 +196,6 @@ function hideArticle (article) {
 		}
 
 		return taxonomies;
-	});
-}
-
-function emitBlockEvent (events, event, block) {
-	events.emit(event, {
-		id: block.id,
-		column: block.column
 	});
 }
 
@@ -310,31 +215,6 @@ function updateBlock (details, prefName, value) {
 	});
 }
 
-function onBlockDelete (events, pref, details) {
-	updateBlock(details, 'hidden', true).then(block => {
-		emitBlockEvent(events, 'block.hide', block);
-		emitBlockEvent(events, 'hupper-block.hide-block', block);
-	});
-}
-
-function onBlockRestore (events, pref, details) {
-	updateBlock(details, 'hidden', false).then(block => {
-		emitBlockEvent(events, 'block.show', block);
-		emitBlockEvent(events, 'hupper-block.show-block', block);
-	});
-}
-
-function onBlockHideContent (events, pref, details) {
-	updateBlock(details, 'contentHidden', true).then(block => {
-		emitBlockEvent(events, 'block.hide-content', block);
-	});
-}
-
-function onBlockShowContent (events, pref, details) {
-	updateBlock(details, 'contentHidden', false).then(block => {
-		emitBlockEvent(events, 'block.show-content', block);
-	});
-}
 
 function getColumnName (column) {
 	switch (column) {
@@ -451,67 +331,6 @@ function onLeftRightAction (details) {
 	});
 }
 
-function onBlockAction (events, pref, details) {
-	log.log('on block action', events, details);
-	switch (details.action) {
-	case 'delete':
-		onBlockDelete(events, pref, details);
-		break;
-	case 'restore-block':
-		onBlockRestore(events, pref, details);
-		break;
-	case 'hide-content':
-		onBlockHideContent(events, pref, details);
-		break;
-	case 'show-content':
-		onBlockShowContent(events, pref, details);
-		break;
-	case 'up':
-	case 'down':
-		onUpDownAction(events, pref, details);
-		break;
-	case 'left':
-	case 'right':
-		onLeftRightAction(events, pref, details);
-		break;
-	}
-}
-
-function requestBlockHide (events, block) {
-	emitBlockEvent(events, 'block.hide', block);
-	emitBlockEvent(events, 'hupper-block.hide-block', block);
-}
-
-function requestBlockContentHide (events, block) {
-	emitBlockEvent(events, 'block.hide-content', block);
-	emitBlockEvent(events, 'hupper-block.show-block', block);
-}
-
-function finishBlockSetup (events, pref, blocks, blocksPref) {
-	events.emit('blocks.set-titles', modBlocks.getBlockTitles());
-	let allBlocks = blocksPref.left.concat(blocksPref.right);
-	allBlocks.filter(modBlocks.filterHidden).forEach(func.partial(requestBlockHide, events));
-	allBlocks.filter(modBlocks.filterContentHidden).forEach(func.partial(requestBlockContentHide, events));
-	events.on('block.action', func.partial(onBlockAction, events, pref));
-
-}
-
-function parseBlocks (events, pref, blocks) {
-
-	prefs.getPref('blocks').then(blocksPrefStr => {
-		let blocksPref = JSON.parse(blocksPrefStr);
-		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
-		prefs.setPref('blocks', JSON.stringify(blocksPref));
-		events.emit('enableBlockControls', blocks.left);
-		events.emit('enableBlockControls', blocks.right);
-		events.on('blocks.change-order-all-done', () => {
-			finishBlockSetup(events, pref, blocks, blocksPref);
-		});
-		events.emit('blocks.change-order-all', blocksPref);
-	});
-
-}
-
 function blockGenya (blocks) {
 
 	return prefs.getPref('blocks').then(blocksPrefStr => {
@@ -557,9 +376,6 @@ function updateBlockGenya (details, context) {
 }
 
 export {
-	// parseComments,
-	// parseArticles,
-	parseBlocks,
 	commentGenya,
 	articleGenya,
 	blockGenya,

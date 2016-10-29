@@ -215,7 +215,16 @@ function getNewMarkerElement(comment) {
  */
 function setNew(comment, text) {
 	addHNav(comment);
-	dom.remove(getNewMarkerElement(comment));
+	let original = getNewMarkerElement(comment);
+
+	if (original) {
+		original.remove(original);
+	}
+
+	if (comment.header.querySelector('.hnew')) {
+		return;
+	}
+
 	var hnav = comment.header.querySelector('.' + COMMENT_HNAV_CLASS);
 	var span = dom.createElem('span', null, ['hnew'], text);
 	hnav.appendChild(span);
