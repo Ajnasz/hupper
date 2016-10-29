@@ -1,10 +1,14 @@
+import * as dom from './core/dom';
 let editorTPL = `<form action="" method="" id="{formID}">
 	{fields}
 	<footer>
 		<button class="btn btn-cta" type="submit">Add</button>
 	</footer>
 </form>
-<table id="{tableID}" class="js-table"><thead>{tableHead}</thead><tbody></tbody></table>`;
+
+<div class="hidden js-not-found"><h2>{notFoundTitle}</h2></div>
+
+<table id="{tableID}" class="js-table js-found"><thead>{tableHead}</thead><tbody></tbody></table>`;
 
 let controlGroupTPL = `<div class="field-group">
 		<label for="{id}">{label}</label>
@@ -36,5 +40,24 @@ function createBody (data) {
 
 }
 
+function getRow (fields) {
+	let tr = fields.reduce(function (acc, field) {
+		let td = dom.createElem('td', null, null, field);
+		acc.appendChild(td);
+		return acc;
+	}, dom.createElem('tr'));
 
-export { createBody };
+	let btn = dom.createElem('button', [
+		{name: 'data-id', value: fields[0]},
+		{name: 'data-action', value: 'delete'}
+	], ['btn', 'btn-delete'], 'Delete');
+	let td = dom.createElem('td');
+	td.appendChild(btn);
+
+	tr.appendChild(td);
+
+	return tr;
+}
+
+
+export { createBody, getRow };

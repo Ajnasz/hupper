@@ -1,130 +1,72 @@
 import { prefs } from '../core/prefs';
-import * as func from '../core/func';
+import * as editor from './editor';
 import * as dom from './core/dom';
+import * as panel from './core/panel';
 
-let editHighlightedUsersTpl = `
-		<form action="" method="" id="HighlightUserForm" class="field-grid">
-			<div class="field-group">
-				<label for="HighlightedUserName">User name</label>
-				<input type="text" name="userName" id="HighlightedUserName" required />
-			</div>
-			<div class="field-group">
-					<label for="HighlightedUserColor">Highlight color</label>
-					<input class="btn" type="color" name="userColor" id="HighlightedUserColor" required />
-			</div>
-			<button class="btn btn-cta" type="submit">Add</button>
-		</form>
 
-		<table id="ListOfHighlightedUsers">
-			<thead>
-				<th>User name</th>
-				<th>User color</th>
-				<th>Delete user</th>
-			</thead>
-			<tbody></tbody>
-		</table>`;
+let editHighlightedUsersTpl = editor.createBody({
+	formID: 'HighlightUserForm',
+	tableID: 'ListOfHighlightedUsers',
+	tableHead: [ 'Name', 'Color', 'Delete' ],
+	notFoundTitle: 'No users added',
+	fields: [{
+		id: 'HighlightedUserName',
+		label: 'Name',
+		type: 'text',
+		name: 'userName'
+	}, {
+		id: 'HighlightedUserColor',
+		label: 'Color',
+		type: 'color',
+		name: 'userColor'
+	}]
+});
 
-function editHighlightedUsers () {
-	function getForm () {
-		return document.getElementById('HighlightUserForm');
-	}
+function draw (dialog) {
+	prefs.getCleanHighlightedUsers().then(users => {
+		let found = dialog.panel.querySelector('.js-found'),
+			notFound = dialog.panel.querySelector('.js-not-found');
+		
+		if (users.length > 0) {
+			let tbody = dialog.panel.querySelector('tbody');
+			dom.empty(tbody);
+			users.forEach(user => tbody.appendChild(editor.getRow([user.name, user.color])));
 
-	function getList () {
-		return document.getElementById('ListOfHighlightedUsers').querySelector('tbody');
-	}
+			notFound.classList.add('hidden');
+			found.classList.remove('hidden');
+		} else {
+			notFound.classList.remove('hidden');
+			found.classList.add('hidden');
+		}
+	});
+}
 
-	function getUserNameField () {
-		return document.getElementById('HighlightedUserName');
-	}
+function open () {
+	const id =  'EditHighlightedUsersDialog',
+		title =  'Edit highlighted users';
 
-	function getUserColorField () {
-		return document.getElementById('HighlightedUserColor');
-	}
+	let dialog = panel.create({id, title}, editHighlightedUsersTpl);
 
-	function createHighlightedUserItem (user) {
-		let tr = dom.createElem('tr');
-		let userNameTd = dom.createElem('td', null, ['user-name'], user.name);
-		let userColorTd = dom.createElem('td');
+	dialog.show().then(() => {
+		dialog.panel.querySelector('input').focus();
+	});
 
-		let userColor = dom.createElem('span', null, ['user-color'], user.color.toLowerCase());
-		let btnTd = dom.createElem('td', null, ['delete-user']);
-		let button = dom.createElem('button', [
-			{name: 'type', value: 'button'}
-		], ['delete-highlighted-users', 'btn'], 'Delete');
-
-		button.dataset.name = user.name;
-		button.dataset.action = 'unhighlight';
-		userColor.style.backgroundColor = user.color;
-
-		btnTd.appendChild(button);
-		userColorTd.appendChild(userColor);
-
-		tr.appendChild(userNameTd);
-		tr.appendChild(userColorTd);
-		tr.appendChild(btnTd);
-
-		return tr;
-	}
-
-	function addHighlightedUser (name) {
-		let container = getList();
-		container.appendChild(createHighlightedUserItem(name));
-	}
-
-	function drawUsers () {
-		dom.empty(getList());
-
-		prefs.getCleanHighlightedUsers().then((users) => {
-			users.forEach(addHighlightedUser);
-		});
-	}
-
-	function getUsersString (users) {
-		return users.filter((user) => {
-			return user && user.name && user.color;
-		}).map((user) => {
-			return user.name + ':' + user.color;
-		}).join(',');
-	}
-
-	getList().addEventListener('click', (e) => {
+	dialog.panel.addEventListener('click', (e) => {
 		let target = e.target;
 
-		if (target.dataset.action === 'unhighlight') {
-			let userName = target.dataset.name;
-			prefs.getCleanHighlightedUsers().then((users) => {
-				let filteredUsers = users.filter((user) => {
-					return user.name !== userName;
-				});
-				prefs.setPref('highlightusers', getUsersString(filteredUsers));
-				drawUsers();
-			});
+		if (target.dataset.action === 'delete') {
+			prefs.removeHighlightedUser(target.dataset.id).then(draw.bind(null, dialog));
 		}
 	}, false);
 
-	getForm().addEventListener('submit', (e) => {
+	dialog.panel.querySelector('form').addEventListener('submit', (e) => {
 		e.preventDefault();
-		let user = {
-			name: getUserNameField().value,
-			color: getUserColorField().value
-		};
-		// prefs
-		prefs.getCleanHighlightedUsers().then((users) => {
-			let index = func.index(users, u => u.name === user.name);
 
-			if (index === -1) {
-				users.push(user);
-			} else {
-				users[index].color = user.color;
-			}
+		let elements = dialog.panel.querySelector('form');
 
-			prefs.setPref('highlightusers', getUsersString(users));
-			drawUsers();
-		});
+		prefs.addHighlightedUser(elements[0].value, elements[1].value).then(draw.bind(null, dialog));
 	});
 
-	drawUsers();
-
+	draw(dialog);
 }
-
-export {editHighlightedUsersTpl as tpl, editHighlightedUsers as run };
+export {editHighlightedUsersTpl as tpl, open };

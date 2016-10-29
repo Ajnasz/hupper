@@ -235,6 +235,10 @@ label {
 	cursor: pointer;
 }
 
+.panel .hidden {
+	display: none;
+}
+
 #panel-bg {
 	background-color: rgba(0, 0, 0, 0);
 	position: absolute;

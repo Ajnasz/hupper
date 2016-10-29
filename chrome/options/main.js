@@ -140,26 +140,11 @@ prefs.getAllPrefs().then((pref) => {
 		let target = e.target;
 
 		if (target.dataset.type === 'control') {
-			let html, title;
-
 			if (target.id === 'control-edithighlightusers') {
-				title = 'Edit highlighted users';
-				html = editHighlightedUsers.tpl;
-			} else if (target.id === 'control-edittrolls') {
-				title = 'Edit trolls';
-				html = editTrolls.tpl;
+				editHighlightedUsers.open();
+			} else {
+				editTrolls.open();
 			}
-
-			let dialog = panel.create({id: target.id, title}, html);
-
-			dialog.show().then(() => {
-				dialog.dialog.querySelector('input').focus();
-				if (target.id === 'control-edithighlightusers') {
-					editHighlightedUsers.run();
-				} else if (target.id === 'control-edittrolls') {
-					editTrolls.run();
-				}
-			});
 		}
 	});
 });
