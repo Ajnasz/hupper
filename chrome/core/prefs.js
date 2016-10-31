@@ -9,28 +9,32 @@ let defaultPrefs = [
 		'name': 'replacenewcommenttext',
 		'title': 'Replace the \"új\" text of new comments to a better searchable one',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'comments'
 	},
 
 	{
 		'name': 'newcommenttext',
 		'title': 'The text to show instead of \"új\"',
 		'type': 'string',
-		'value': '[new]'
+		'value': '[new]',
+		'group': 'comments'
 	},
 
 	{
 		'name': 'filtertrolls',
 		'title': 'Enable trollfilter',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'comments'
 	},
 
 	{
 		'name': 'edittrolls',
 		'title': 'Edit trolls',
 		'label': 'Click to edit trolls',
-		'type': 'control'
+		'type': 'control',
+		'group': 'comments'
 	},
 
 	{
@@ -38,21 +42,24 @@ let defaultPrefs = [
 		'title': 'List of trolls',
 		'type': 'string',
 		'value': '',
-		'hidden': true
+		'hidden': true,
+		'group': 'comments'
 	},
 
 	{
 		'name': 'huppercolor',
 		'title': 'Default highlighted user\'s comment header color',
 		'type': 'color',
-		'value': '#B5D7BE'
+		'value': '#B5D7BE',
+		'group': 'comments'
 	},
 
 	{
 		'name': 'edithighlightusers',
 		'title': 'Edit highlighted users',
 		'label': 'Click to edit highlighted users',
-		'type': 'control'
+		'type': 'control',
+		'group': 'comments'
 	},
 
 	{
@@ -60,7 +67,8 @@ let defaultPrefs = [
 		'title': 'Highlight comments of the users',
 		'type': 'string',
 		'value': 'username:#fff999,username2:#999fff',
-		'hidden': true
+		'hidden': true,
+		'group': 'comments'
 	},
 
 	{
@@ -68,13 +76,15 @@ let defaultPrefs = [
 		'title': 'Hidden article types',
 		'type': 'string',
 		'value': '[]',
-		'hidden': true
+		'hidden': true,
+		'group': 'articles'
 	},
 
 	{
 		'name': 'edithidetaxonomy',
 		'title': 'Edit hidden article types',
-		'type': 'control'
+		'type': 'control',
+		'group': 'articles'
 	},
 
 	{
@@ -82,64 +92,75 @@ let defaultPrefs = [
 		'title': 'Block settings',
 		'type': 'string',
 		'value': '[]',
-		'hidden': true
+		'hidden': true,
+		'group': 'blocks'
 	},
 	{
 		'name': 'parseblocks',
 		'title': 'Parse blocks',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'blocks'
+
 	},
 
 	{
 		'name': 'style_accessibility',
 		'title': 'Load accessibility styles',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'styles'
 	},
 	{
 		'name': 'style_wider_sidebar',
 		'title': 'Width of sidebars',
 		'type': 'integer',
-		'value': 0
+		'value': 0,
+		'group': 'styles'
 	},
 	{
 		'name': 'style_min_fontsize',
 		'title': 'Minimum font size',
 		'type': 'integer',
-		'value': 0
+		'value': 0,
+		'group': 'styles'
 	},
 	{
 		'name': 'style_hide_left_sidebar',
 		'title': 'Hide left sidebar',
 		'type': 'bool',
-		'value': false
+		'value': false,
+		'group': 'styles'
 	},
 	{
 		'name': 'style_hide_right_sidebar',
 		'title': 'Hide right sidebar',
 		'type': 'bool',
-		'value': false
+		'value': false,
+		'group': 'styles'
 	},
 
 	{
 		'name': 'hideboringcomments',
 		'title': 'Hide boring comments',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'comments'
 	},
 
 	{
 		'name': 'boringcommentcontents',
 		'title': 'Regular expression to identify boring comments',
 		'type': 'string',
-		'value': '^([-_]|-1|\\\\+1)$'
+		'value': '^([-_]|-1|\\\\+1)$',
+		'group': 'comments'
 	},
 	{
 		'name': 'setunlimitedlinks',
 		'title': 'Show as many comments as possible on a page',
 		'type': 'bool',
-		'value': true
+		'value': true,
+		'group': 'articles'
 	}
 ];
 
@@ -296,6 +317,7 @@ var chromePrefs = Object.assign(prefs, {
 				output.title = pref.title;
 				output.type = pref.type;
 				output.hidden = pref.hidden;
+				output.group = pref.group;
 				output.value = value;
 
 				return new Promise((resolve) => {

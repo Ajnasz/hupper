@@ -26,12 +26,14 @@ function open (config) {
 		let form = dialog.panel.querySelector('form');
 		let values = config.formValueMap.map(name => form.querySelector(`[name="${name}"]`).value);
 		config.add.apply(null, values).then(drawLines);
+		form.reset();
+		form.querySelector('input').focus();
 	}
 
 	dialog.events.on('click', onClick);
 	dialog.events.on('submit', onSubmit);
 
-	return dialog.show().then(drawLines).then(() => {
+	return drawLines().then(() => dialog.show()).then(() => {
 		dialog.panel.querySelector('input').focus();
 	});
 }

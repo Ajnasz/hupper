@@ -1,7 +1,5 @@
-'use strict';
 import * as func from '../../core/func';
 import * as modComments from '../../core/comments';
-// import * as modArticles from '../../core/articles';
 import * as modBlocks from './blocks';
 
 import { prefs } from '../../core/prefs';
@@ -77,9 +75,6 @@ function commentGenya (comments) {
 		}
 
 		setPrevNextLinks(newComments);
-		// todo new comments:
-		//   replace new text
-		//   add prev/next
 
 		return prefs.getCleanHighlightedUsers();
 	}).then(highlightusers => {
@@ -91,73 +86,6 @@ function commentGenya (comments) {
 		return flatCommentList;
 	}).then(() => flatCommentList);
 }
-
-/*
-function parseComments (events, pref) {
-	const TEXT_FIRST_NEW_COMMENT = 'Első olvasatlan hozzászólás';
-
-	log.log('parse comments!');
-	events.on('gotComments', function onGotComments (comments) {
-		Promise.all([
-			prefs.getPref('replacenewcommenttext')
-		]).then(results => {
-			commentGenya(comments);
-
-			let [ replaceNewCommentText ] = results;
-
-			let childComments = flatCommentList.filter(function (comment) {
-				return comment.parent !== '';
-			});
-
-			events.emit('comment.addParentLink', childComments);
-			events.emit('comment.addExpandLink', childComments.filter(function (comment) {
-				return comment.indentLevel > 1;
-			}));
-
-			events.emit('comments.update', flatCommentList);
-
-			let newComments = modComments.getNewComments(comments);
-
-			if (replaceNewCommentText && newComments.length > 0) {
-				prefs.getPref('newcommenttext').then(text => {
-					events.emit('comment.setNew', {
-						comments: newComments,
-						text: text
-					});
-				});
-			}
-
-			setPrevNextLinks(newComments, events).forEach(function (nextPrev) {
-				events.emit('comment.addNextPrev', nextPrev);
-			});
-
-			if (newComments.length > 0) {
-				events.emit('hupper-block.add-menu', {
-					href: '#new',
-					text: TEXT_FIRST_NEW_COMMENT
-				});
-			}
-
-			prefs.on('highlightusers', function () {
-				prefs.getCleanHighlightedUsers().then(highlightedUsers => {
-					modComments.setHighlightedComments(comments, highlightedUsers);
-					events.emit('comments.update', flatCommentList);
-					log.log('comments.update from highlightusers');
-				});
-			});
-			prefs.on('trolls', function () {
-				prefs.getCleanTrolls().then(trolls => {
-					modComments.markTrollComments(comments, trolls);
-					modComments.updateHiddenState(flatCommentList);
-					events.emit('comments.update', flatCommentList);
-					log.log('comments.update from trolls');
-				});
-			});
-		});
-	});
-	events.emit('getComments', { content: true });
-}
-*/
 
 function highlightUser (userName) {
 	return prefs.getPref('huppercolor').then(color => prefs.addHighlightedUser(userName, color));
@@ -189,14 +117,7 @@ function articleGenya (articles) {
 }
 
 function hideArticle (article) {
-	return prefs.getCleanTaxonomies().then(taxonomies => {
-		if (!func.inArray(taxonomies, article.category)) {
-			taxonomies.push(article.category);
-			prefs.setPref('hidetaxonomy', JSON.stringify(taxonomies));
-		}
-
-		return taxonomies;
-	});
+	return prefs.addTaxonomy(article.category);
 }
 
 /**
@@ -256,13 +177,13 @@ function onUpDownAction (details, context) {
 		let relativeItem;
 
 		if (details.action === 'up') {
-			if (index === 0) {
+			if (index === 0) { // no change
 				return Promise.resolve(contextBlocks);
 			}
 
 			relativeItem = contextBlocks[index - 1];
 		} else if (details.action === 'down') {
-			if (index === contextBlocks.length - 1) {
+			if (index === contextBlocks.length - 1) { // no change
 				return Promise.resolve(contextBlocks);
 			}
 
@@ -286,16 +207,6 @@ function onUpDownAction (details, context) {
 		})));
 
 		return Promise.resolve(blockObjects);
-
-		// let columnBlocks = modBlocks.onBlockChangeOrder(events, details, blockPrefs);
-
-		// if (columnBlocks) {
-		// 	prefs.setPref('blocks', JSON.stringify(blockPrefs));
-		// 	events.emit('block.change-order', {
-		// 		sidebar: details.column,
-		// 		blocks: columnBlocks
-		// 	});
-		// }
 	});
 }
 
@@ -338,11 +249,8 @@ function blockGenya (blocks) {
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
 		prefs.setPref('blocks', JSON.stringify(blocksPref));
 		return blocksPref;
-		// events.emit('blocks.change-order-all', blocksPref);
 	}).then(blocksPrefs => {
 		blocksPrefs.forEach(block => block.title = modBlocks.getBlockTitle(block));
-		// blocksPrefs.left.forEach(block => block.title = modBlocks.getBlockTitle(block));
-		// blocksPrefs.right.forEach(block => block.title = modBlocks.getBlockTitle(block));
 		return blocksPrefs;
 	});
 

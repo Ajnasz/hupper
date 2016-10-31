@@ -57,4 +57,18 @@ function sortBy (array, field) {
 	});
 }
 
-export { first, index, partial, toArray, inArray, yesOrNo, sortBy };
+function groupBy (array, field) {
+	return array.reduce((acc, item) => {
+		if (!acc[item[field]]) {
+			acc[item[field]] = [];
+		}
+
+		acc[item[field]].push(item);
+
+		return acc;
+	}, {});
+}
+
+
+
+export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy };

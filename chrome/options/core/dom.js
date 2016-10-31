@@ -5,7 +5,7 @@ import * as func from '../../core/func';
  * @param CSSSelector what
  * @return boolean
  */
-function is(element, what) {
+function is (element, what) {
 	if (element.matches) {
 		return element.matches(what);
 	} else if (element.mozMatchesSelector) {
@@ -18,34 +18,34 @@ function is(element, what) {
 	 * @param selector string
 	 * @param string sibling Use 'prev' if previous
 	 */
-function findSibling(element, selector, sibling) {
+function findSibling (element, selector, sibling) {
 	var elem = element,
 		siblingName = sibling === 'prev' ? 'previousSibling' : 'nextSibling';
 
-while (elem && (elem.nodeType !== Node.ELEMENT_NODE || !is(elem, selector))) {
-	elem = elem[siblingName];
+	while (elem && (elem.nodeType !== Node.ELEMENT_NODE || !is(elem, selector))) {
+		elem = elem[siblingName];
+	}
+
+	return elem || null;
 }
 
-return elem || null;
-	}
+/**
+ * @param element HTMLDOMElement
+ * @param selector string
+ */
+function next (element, selector) {
+	return findSibling(element, selector);
+}
 
-	/**
-	 * @param element HTMLDOMElement
-	 * @param selector string
-	 */
-	function next(element, selector) {
-		return findSibling(element, selector);
-	}
+/**
+ * @param element HTMLDOMElement
+ * @param selector string
+ */
+function prev (element, selector) {
+	return findSibling(element, selector, 'prev');
+}
 
-	/**
-	 * @param element HTMLDOMElement
-	 * @param selector string
-	 */
-	function prev(element, selector) {
-		return findSibling(element, selector, 'prev');
-	}
-
-function closest(element, selector) {
+function closest (element, selector) {
 	var elem = element.parentNode;
 
 	while (elem && !is(elem, selector)) {
@@ -55,11 +55,11 @@ function closest(element, selector) {
 	return elem || null;
 }
 
-function remove(element) {
+function remove (element) {
 	return element.parentNode.removeChild(element);
 }
 
-function findCommonParent(elements) {
+function findCommonParent (elements) {
 	var index, parent, maxIndex;
 
 	elements = elements.filter((x) => x !== null);
@@ -89,7 +89,7 @@ function findCommonParent(elements) {
 	return parent;
 }
 
-function createElem(nodeType, attributes, classes, text) {
+function createElem (nodeType, attributes, classes, text) {
 	var element = document.createElement(nodeType);
 
 	if (attributes && attributes.length) {
@@ -109,13 +109,13 @@ function createElem(nodeType, attributes, classes, text) {
 	return element;
 }
 
-function empty(element) {
-	while(element.firstChild) {
+function empty (element) {
+	while (element.firstChild) {
 		element.removeChild(element.firstChild);
 	}
 }
 
-function emptyText(element) {
+function emptyText (element) {
 	func.toArray(element.childNodes).filter(function (node) {
 		return node.nodeType === Node.TEXT_NODE;
 	}).forEach(remove);

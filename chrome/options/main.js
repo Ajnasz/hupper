@@ -50,28 +50,27 @@ function createInput (item) {
 	return input;
 }
 
-function createLabel (item) {
-	let label = dom.createElem('label');
-	label.textContent = item.title;
-	label.setAttribute('for', getElemId(item));
-	return label;
-}
-
 function composeGroup (item) {
 	let fragment = document.createDocumentFragment();
 	let input = createInput(item);
-	let label = createLabel(item);
 	let div = createControlGroup();
 
 	if (item.type === 'bool') {
 		div.classList.add('control-group-bool');
-		div.appendChild(input);
-		div.appendChild(label);
+		let l = dom.createElem('label');
+		let s = dom.createElem('span');
+		l.appendChild(input);
+		l.appendChild(s);
+		s.textContent = item.title;
+		div.appendChild(l);
 	} else {
 		div.classList.add('control-group-text');
-		div.appendChild(label);
-		// div.appendChild(createBr());
-		div.appendChild(input);
+		let l = dom.createElem('label');
+		let s = dom.createElem('span');
+		l.appendChild(s);
+		l.appendChild(input);
+		s.textContent = item.title + ':';
+		div.appendChild(l);
 	}
 
 	fragment.appendChild(div);
@@ -85,6 +84,8 @@ function createControl (item) {
 	let button = dom.createElem('button');
 	let div = createControlGroup();
 
+	div.classList.add('control-group-control');
+
 	button.type = 'button';
 	button.id = 'control-' + item.name;
 	button.textContent = item.title;
@@ -96,25 +97,53 @@ function createControl (item) {
 	return fragment;
 }
 
+function getGroupName (group) {
+	switch (group) {
+	case 'comments':
+		return 'Comments';
+	case 'articles':
+		return 'Articles';
+	case 'blocks':
+		return 'Blocks';
+	case 'styles':
+		return 'Styles';
+	}
+}
+
 prefs.getAllPrefs().then((pref) => {
 	let msg = document.querySelector('#Messages');
 
-	pref.forEach((x) => {
-		let elem;
+	let byGroup = func.groupBy(pref, 'group');
+	
+	Object.keys(byGroup).forEach(groupName => {
+		let pref = byGroup[groupName];
 
-		if (x.hidden) {
-			return;
-		}
+		let group = dom.createElem('div', null, ['group']),
+			title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName)),
+			groupContainer = dom.createElem('div', null, ['group-container']);
 
-		if (x.type === 'control') {
-			elem = createControl(x);
-		} else {
-			elem = composeGroup(x);
-		}
+		group.appendChild(title);
+		group.appendChild(groupContainer);
 
-		if (elem) {
-			msg.appendChild(elem);
-		}
+		pref.forEach((x) => {
+			let elem;
+
+			if (x.hidden) {
+				return;
+			}
+
+			if (x.type === 'control') {
+				elem = createControl(x);
+			} else {
+				elem = composeGroup(x);
+			}
+
+			if (elem) {
+				groupContainer.appendChild(elem);
+			}
+		});
+
+		msg.appendChild(group);
 	});
 
 	msg.addEventListener('change', (e) => {

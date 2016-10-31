@@ -8,7 +8,7 @@ let editorTPL = `<form action="" method="" id="{formID}">
 
 <div class="hidden js-not-found"><h2>{notFoundTitle}</h2></div>
 
-<table id="{tableID}" class="js-table js-found"><thead>{tableHead}</thead><tbody></tbody></table>`;
+<table id="{tableID}" class="js-table js-found hidden"><thead>{tableHead}</thead><tbody></tbody></table>`;
 
 let controlGroupTPL = `<div class="field-group">
 		<label for="{id}">{label}</label>

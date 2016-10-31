@@ -604,7 +604,7 @@ function onCommentAddNextPrev(item) {
 
 function onCommentSetNew(newComments) {
 	var obj = newComments.map(commentDataStructToObj);
-	obj.forEach((comment, index) => setNew(comment, newComments[index].newCommentText));
+	obj.forEach((comment, index) => setNew(comment, newComments[index].newCommentText || 'új'));
 }
 
 function onCommentsContainerClick(e) {

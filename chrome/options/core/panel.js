@@ -3,32 +3,78 @@ import * as editor from '../editor';
 import { createEmitter } from '../../core/events';
 
 function createPanelBg () {
-	let div = dom.createElem('div');
-	div.setAttribute('id', 'panel-bg');
+	let panelBg = document.getElementById('panel-bg');
+
+	if (panelBg) {
+		return panelBg;
+	}
+
+	let div = dom.createElem('div', [{name: 'id', value: 'panel-bg'}]);
+	document.body.appendChild(div);
 
 	return div;
 }
 
+function transitionTrack (elem) {
+	return new Promise(resolve => {
+		let transitions = new Set();
+
+		function transitionTrack (e) {
+			if (e.target === elem) {
+				transitions.add(e.type);
+			}
+		}
+
+		elem.addEventListener('transitionstart', transitionTrack);
+
+		elem.addEventListener('transitionend', function onTransitionEnd (e) {
+			if (e.target !== elem) {
+				return;
+			}
+
+			transitions.delete(e.type);
+
+			if (transitions.size === 0) {
+				elem.removeEventListener('transitionstart', transitionTrack);
+				elem.removeEventListener('transitionend', onTransitionEnd);
+				resolve();
+			}
+		}, false);
+	});
+}
+
+function closeElem (elem) {
+	let promise =  transitionTrack(elem).then(() => elem.parentNode.removeChild(elem));
+	elem.classList.remove('show');
+
+	return promise;
+}
+
+function showElem (elem) {
+	let promise =  transitionTrack(elem);
+	setTimeout(() => {
+		elem.classList.add('show');
+	}, 10);
+
+	return promise;
+}
+
 function createPanel (options, body, events) {
-	let div = dom.createElem('div');
-	let close = dom.createElem('button');
+	let panelContainer = dom.createElem('div', null, ['panel-container']);
+	let div = dom.createElem('div', null, [ 'panel']);
+	let close = dom.createElem('button', [{name: 'type', value: 'button'}], ['close']);
 	let header = dom.createElem('header');
 	let title = dom.createElem('h1');
-	let panelContent = dom.createElem('div');
+	let panelContent = dom.createElem('div', null, ['panel-content']);
 
 	title.textContent = options.title;
 
-	panelContent.classList.add('panel-content');
-
+	panelContainer.appendChild(div);
 	div.appendChild(panelContent);
 
-	close.classList.add('close');
-	close.setAttribute('type', 'button');
-	close.appendChild(document.createTextNode('X'));
+	close.appendChild(document.createTextNode('✕'));
 	header.appendChild(title);
 	header.appendChild(close);
-
-	div.classList.add('panel');
 
 	if (options.id) {
 		div.setAttribute('id', options.id);
@@ -45,26 +91,26 @@ function createPanel (options, body, events) {
 		events.emit('submit', e);
 	}
 
+	function panelAlert (panel) {
+		transitionTrack(panel).then(() => panel.style.transform = null);
+		panel.style.transform = 'scale(1.05)';
+	}
+
 	div.addEventListener('click', onClick, false);
 	div.querySelector('form').addEventListener('submit', onSubmit, false);
 
 	function closePanel () {
-		div.addEventListener('transitionend', function removeDiv () {
-			div.removeEventListener('click', onClick);
-			div.querySelector('form').removeEventListener('submit', onSubmit);
-			events.emit('close');
-			div.parentNode.removeChild(div);
-			div.removeEventListener('transitionend', removeDiv);
-		}, false);
 
 		let panelBg = document.getElementById('panel-bg');
-		panelBg.addEventListener('transitionend', function removePanel () {
-			panelBg.parentNode.removeChild(panelBg);
-			div.removeEventListener('transitionend', removePanel);
-		}, false);
 
-		div.classList.remove('show');
-		panelBg.classList.remove('show');
+		closeElem(div).then(function () {
+			div.removeEventListener('click', onClick);
+			div.querySelector('form').removeEventListener('submit', onSubmit);
+			document.getElementById('panel-bg').removeEventListener('click', panelAlert);
+			panelContainer.parentNode.removeChild(panelContainer);
+		}).then(closeElem.bind(null, panelBg)).then(function () {
+			events.emit('close');
+		});
 	}
 
 	close.addEventListener('click', function onClose () {
@@ -73,7 +119,8 @@ function createPanel (options, body, events) {
 	});
 
 	document.getElementById('panel-bg').addEventListener('click', function onClose () {
-		document.getElementById('panel-bg').removeEventListener('click', onClose);
+		// document.getElementById('panel-bg').removeEventListener('click', onClose);
+		panelAlert(div);
 	});
 
 	window.addEventListener('keyup', function c (ev) {
@@ -85,45 +132,31 @@ function createPanel (options, body, events) {
 		}
 	}, false);
 
+	document.body.appendChild(panelContainer);
+
 	return div;
 }
 
 function showBg (panelBg) {
-	return new Promise(function (resolve) {
-		setTimeout(function () {
-			panelBg.classList.add('show');
-			resolve();
-		}, 10);
-	});
+	return showElem(panelBg);
 }
 
 function showPanel (panel) {
-	return new Promise(function (resolve) {
-		setTimeout(function () {
-			panel.classList.add('show');
-			resolve();
-		}, 10);
-	});
+	return showElem(panel);
 }
 
 function create (options, body) {
 	let id = 'panel-' + options.id;
 
-	let panelBg = document.getElementById('panel-bg');
-	if (!panelBg) {
-		panelBg = createPanelBg();
-		document.body.appendChild(panelBg);
-	}
-
 	if (document.getElementById(id)) {
 		throw new Error('Panel already exists');
 	}
 
+	let panelBg = createPanelBg();
+
 	let events = createEmitter();
 
 	let panel = createPanel(options, body, events);
-
-	document.body.appendChild(panel);
 
 	return {
 		events,
