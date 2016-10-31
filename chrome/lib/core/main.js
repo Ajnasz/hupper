@@ -243,7 +243,6 @@ function onLeftRightAction (details) {
 }
 
 function blockGenya (blocks) {
-
 	return prefs.getPref('blocks').then(blocksPrefStr => {
 		let blocksPref = JSON.parse(blocksPrefStr);
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);

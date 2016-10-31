@@ -105,19 +105,13 @@ let defaultPrefs = [
 	},
 
 	{
-		'name': 'style_accessibility',
-		'title': 'Load accessibility styles',
-		'type': 'bool',
-		'value': true,
-		'group': 'styles'
-	},
-	{
 		'name': 'style_wider_sidebar',
 		'title': 'Width of sidebars',
 		'type': 'integer',
 		'value': 0,
 		'group': 'styles'
 	},
+
 	{
 		'name': 'style_min_fontsize',
 		'title': 'Minimum font size',
@@ -125,6 +119,15 @@ let defaultPrefs = [
 		'value': 0,
 		'group': 'styles'
 	},
+
+	{
+		'name': 'style_accessibility',
+		'title': 'Load accessibility styles',
+		'type': 'bool',
+		'value': true,
+		'group': 'styles'
+	},
+
 	{
 		'name': 'style_hide_left_sidebar',
 		'title': 'Hide left sidebar',
@@ -132,6 +135,7 @@ let defaultPrefs = [
 		'value': false,
 		'group': 'styles'
 	},
+
 	{
 		'name': 'style_hide_right_sidebar',
 		'title': 'Hide right sidebar',
@@ -152,7 +156,7 @@ let defaultPrefs = [
 		'name': 'boringcommentcontents',
 		'title': 'Regular expression to identify boring comments',
 		'type': 'string',
-		'value': '^([-_]|-1|\\\\+1)$',
+		'value': '^([-_]|-1|\\+1|sub|subscribe)$',
 		'group': 'comments'
 	},
 	{

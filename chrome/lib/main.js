@@ -6,19 +6,26 @@ import * as coreMain from './core/main';
 // import { log } from '../core/log';
 
 
-function manageStyles (tabId) {
+function manageStyles (tabID) {
 	'use strict';
 	Promise.all([
 		prefs.getPref('style_min_fontsize'),
 		prefs.getPref('style_wider_sidebar'),
 		prefs.getPref('style_hide_left_sidebar'),
-		prefs.getPref('style_hide_right_sidebar')
+		prefs.getPref('style_hide_right_sidebar'),
+		prefs.getPref('style_accessibility')
 	]).then((resp) => {
-		let  [ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar ] = resp;
+		let  [ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar, loadStyles ] = resp;
 		let styles = pageStyles.getPageStyle({ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar });
 		if (styles.length) {
-			chrome.tabs.insertCSS(tabId, {
+			chrome.tabs.insertCSS(tabID, {
 				code: styles.join('')
+			});
+		}
+
+		if (loadStyles) {
+			chrome.tabs.insertCSS(tabID, {
+				file: 'data/core/css/accessibilitystyles.css'
 			});
 		}
 	});
@@ -54,7 +61,6 @@ var contextConf = {
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-	console.log('menu clicked', info);
 	chrome.tabs.sendMessage(tab.id, {
 		event: info.menuItemId,
 		data: info
@@ -101,9 +107,14 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 		case 'register':
 			tabs.add(sender.tab.id);
 			manageStyles(sender.tab.id);
-			prefs.getPref('setunlimitedlinks').then(s => {
+			Promise.all([
+				prefs.getPref('setunlimitedlinks'),
+				prefs.getPref('parseblocks')
+			]).then(settings => {
+				let [setunlimitedlinks, parseblocks] = settings;
 				sendResponse({event: 'registered', data: {
-					setunlimitedlinks: s
+					setunlimitedlinks,
+					parseblocks
 				}});
 			});
 
@@ -120,7 +131,13 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			return true;
 
 		case 'requestBlockParse':
-			coreMain.blockGenya(data).then(sendResponse);
+			prefs.getPref('parseblocks').then(parse => {
+				if (parse) {
+					coreMain.blockGenya(data).then(sendResponse);
+				} else {
+					sendResponse(null);
+				}
+			});
 
 			return true;
 
