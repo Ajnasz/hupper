@@ -1,9 +1,6 @@
 *.xpi
 *.swp
 
-firefox/data/core
-firefox/lib/core
+**/node_modules
 
-chrome/node_modules
-
-chrome/**/bundle.js
+**/bundle.js
