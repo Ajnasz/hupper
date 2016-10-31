@@ -1,17 +1,9 @@
 # Development howto
 
-## Build Chrome
+## Build
 
 ```
-$ cd chrome
+$ cd src
 $ npm install # install dependencies
-$ ./build.sh
-```
-
-## Build Firefox
-
-```
-$ sudo npm install -g jpm
-$ cd firefox
 $ ./build.sh
 ```
