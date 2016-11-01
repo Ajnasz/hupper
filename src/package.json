@@ -1,8 +1,8 @@
 {
   "name": "hupper",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Improve the user experience of HUP.hu",
+  "main": "",
   "directories": {
     "test": "test"
   },
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/Ajnasz/hupper.git"
   },
-  "author": "",
+  "author": "Lajos Koszti <ajnasz@ajnasz.hu>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Ajnasz/hupper/issues"
@@ -23,8 +23,7 @@
     "babel-cli": "^6.14.0",
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
-    "escodegen": "^1.6.1",
-    "esprima": "^2.2.0"
+    "browserify": "^13.1.1"
   },
   "dependencies": {
     "babel-plugin-transform-es2015-modules-umd": "^6.12.0"
