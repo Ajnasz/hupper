@@ -1,6 +1,6 @@
 {
 	"name": "Hupper",
-	"version": "2.0.0b1",
+	"version": "2.0.0b3",
 	"manifest_version": 2,
 	"description": "Improve the user experience of HUP.hu",
 	"background": {
