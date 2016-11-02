@@ -11,7 +11,7 @@ $BROWSERIFY lib/main.js -o lib/bundle.js -t [ babelify --presets [ es2015 ] ]
 echo -n " ."
 rm -f hupper.zip
 echo -n " ."
-zip --quiet -r hupper.zip data lib options options.html manifest.json package.json
+zip --quiet -r hupper.zip icons/*.png data/bundle.js data/**/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json package.json
 echo " . "
 
 echo "build on `date`"
