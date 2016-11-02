@@ -41,8 +41,7 @@
 		"https://hup.hu/",
 		"http://hup.lh/",
 		"http://hup.lh:3000/",
-		"https://hup.lh/",
-		"unlimitedStorage"
+		"https://hup.lh/"
 	],
 
 	"applications": {
