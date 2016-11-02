@@ -1,0 +1,64 @@
+# General
+
+Feature                 | F | C | Bug
+------------------------|---|---|------------------------------------------------------
+Custom style for pager  | Y | Y |
+Custom font size        | Y | Y |
+Custom block width      | Y | Y |
+Unlimited comments      | Y | Y |
+Settings panel          | Y | N |
+
+# Blocks, sidebars
+
+Feature                 | F | C | Bug
+------------------------|---|---|------------------------------------------------------
+Hide block content      | Y | Y |
+Hide block              | Y | Y |
+Move block up/down      | Y | Y |
+Move block left/right   | Y | Y |
+Hupper block            | Y | Y | Restore ls -1 not working
+Hide left/right sidebar | Y | Y | In FF need to restart browser
+
+# Front page:
+
+Feature                  | F | C | Bug
+-------------------------|---|---|------------------------------------------------------
+Replace [new] text       | Y | Y |
+Next/Prev links articles | Y | Y | Prev appears if the first article (eg. ads) is hidden
+Hide article             | Y | Y |
+
+# Article page (comments)
+
+Feature                  | F | C | Bug
+-------------------------|---|---|--------------------------------------------------------
+Next/Prev links          | Y | Y |
+Link to parent comment   | Y | Y |
+Widen parent comment     | Y | Y |
+Show "+1" for comments   | Y | Y |
+Highlight user comment   | Y | N |
+Mark troll user comment  | Y | N |
+Highlight linked comment | Y | Y | Hidden comment and answer to hidden comment not visible
+
+
+
+
+
+Other bugs
+
+function updateBlock(details, prefName, value, blockPrefs) {
+	var columnBlocks = undefined;
+	if (details.column === "sidebar-right") {
+		columnBlocks = blockPrefs.right;
+	} else if (details.column === "sidebar-left") {
+		columnBlocks = blockPrefs.left;
+	} else {
+		throw new Error("Unknown sidebar");
+	}
+	var block = columnBlocks.filter(function (b) {
+		return b.id === details.id;
+	})[0];
+	block[prefName] = value;
+	return block;
+}
+
+`block[prefName] = value;` throws error if block not on page

@@ -1,0 +1,391 @@
+:root {
+
+}
+
+.btn {
+	--color: #666;
+	--bg-color: 255, 255, 255;
+	--hover-bg-color: 230, 230, 230;
+
+	--border-color: rgb(204, 204, 204);
+	--hover-border-color: rgb(175, 175, 175);
+}
+
+.btn-cta {
+	--bg-color: 102, 133, 164;
+	--hover-bg-color: 81, 108, 135;
+	
+	--border-color: rgb(84, 113, 141);
+	--hover-border-color: rgb(61, 82, 103);
+}
+
+.btn-warn {
+	--bg-color: 215, 75, 75;
+	--hover-bg-color: 196, 43, 43;
+
+	--border-color: rgb(204, 45, 45);
+	--hover-border-color: rgb(154, 34, 34);
+}
+
+input {
+	--border-color: #ccc;
+	--hover-box-shadow-color: rgba(121, 66, 6, 0.6);
+	--hover-border-color: rgba(121, 66, 6, 0.6);
+
+	--color: #666;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	background-color: #fff;
+	font-size: 10px;
+	font-family: "DejaVu Sans", "Droid Sans", sans-serif;
+	padding: 0;
+}
+
+.content {
+	margin: auto;
+	max-width: 80%;
+}
+
+h2 {
+	font-size: 1.6rem;
+	font-weight: 400;
+}
+
+header {
+	padding: 2rem 0;
+	margin-bottom: 2rem;
+}
+
+header h1 {
+	letter-spacing: -1px;
+	font-weight: 400;
+	font-size: 2rem;
+}
+
+main {
+	font-size: 1.3rem;
+}
+
+footer {
+	padding: 2rem 0;
+}
+
+footer.content {
+	margin-top: 2rem;
+}
+
+input {
+	padding: 0.3rem 0.6rem;
+	border-radius: 0.3rem;
+	font-size: 1.3rem;
+	margin: 0;
+
+	box-shadow: none;
+	border: 1px solid var(--border-color);
+	transition: box-shadow 0.3s, border-color 0.3s;
+
+	color: var(--color);
+}
+
+label span + input {
+	margin-left: 1rem;
+}
+
+input:focus {
+	border-color: var(--hover-border-color);
+	outline-color: var(--hover-border-color);
+}
+
+input[type="color"],
+button {
+	padding: 0.4rem 0.6rem;
+	font-weight: 400;
+	border-radius: 0.2rem;
+	font-size: 1.3rem;
+	line-height: 1.6rem;
+
+	border: 1px solid;
+}
+
+.btn {
+	font-family: inherit;
+	cursor: pointer;
+}
+
+.btn {
+	font-weight: 400;
+	color: var(--color);
+	border-color: var(--border-color);
+	background-color: rgb(var(--bg-color));
+	border-radius: 3px;
+
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--bg-color), 0.75);
+
+	transition: 0.2s background-color ease, 0.2s border-color, 0.2s box-shadow;
+}
+
+.btn:hover {
+	background-color: rgb(var(--hover-bg-color));
+	border-color: var(--hover-border-color);
+
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
+}
+
+.btn-cta {
+	background-color: rgb(var(--bg-color));
+	color: #fff;
+	border-color: var(--border-color);
+
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(var(--bg-color), 0.75);
+}
+
+.btn-cta:hover {
+	background-color: rgb(var(--hover-bg-color));
+	border-color: var(--hover-border-color);
+
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
+}
+
+.btn-warn {
+	background-color: rgb(var(--bg-color));
+	border-color: #cc2d2d;
+	border-color: var(--border-color);
+	color: #fff;
+
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--bg-color), 0.75);
+}
+
+.btn-warn:hover {
+	background-color: rgb(var(--hover-bg-color));
+	border-color: var(--hover-border-color);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
+}
+
+
+input[type="text"],
+input[type="number"] {
+	max-width: 100%;
+}
+
+label {
+	color: #666;
+	font-weight: 400;
+}
+
+.group-container {
+	padding-left: 1.5rem;
+	margin-bottom: 3rem;
+}
+
+.control-group {
+}
+
+.control-group + .control-group {
+	margin-top: 2rem;
+}
+
+.control-group-bool + .control-group-control,
+.control-group-text + .control-group-control {
+	margin-top: 1rem;
+}
+
+.control-group-text label {
+	display: block;
+	margin-bottom: 0.5rem;
+}
+
+.control-group-bool input {
+	float: left;
+}
+
+.control-group-bool input + span {
+	margin-left: 0.5rem;
+}
+
+.panel-container {
+	display: flex;
+	height: 100vh;
+	width: 100vw;
+
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.panel {
+	position: relative;
+	font-size: 1.3rem;
+
+	width: 50vw;
+	max-width: 650px;
+	margin: auto;
+	padding-bottom: 1rem; 
+	background-color: #fff;
+	border: 1px solid transparent;
+	box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15); 
+
+	border-radius: 5px;
+
+	top: -7vh;
+	transform: scale(0.9);
+	transition: top 0.2s ease, opacity 0.2s ease, transform 0.1s ease;
+
+	z-index: 2;
+
+	opacity: 0;
+}
+
+.panel.show {
+	transform: scale(1);
+	top: 0;
+	opacity: 1;
+}
+
+.panel-content {
+	padding: 20px;
+	max-height: 70vh;
+	overflow: auto;
+}
+
+.panel .field-group {
+	margin: 15px 0;
+}
+.panel .field-group label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.panel form {
+	margin: 0 0 20px;
+}
+
+.panel table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.panel table th {
+	font-weight: 600;
+	color: #666;
+}
+
+.panel table th,
+.panel table td {
+	border: 1px solid #ccc;
+	padding: 0.5rem;
+	text-align: left;
+}
+
+.panel table th:last-child,
+.panel table td:last-child {
+	text-align: right;
+}
+
+.panel header {
+	margin: 0;
+	padding: 1.5rem;
+}
+
+.panel header h1 {
+	margin: 0;
+}
+ 
+.panel header:after {
+	content: '';
+	display: table-cell;
+	clear: both;
+}
+
+.panel input[type="text"] {
+	width: 100%;
+}
+
+.panel .close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+
+	background-color: transparent;
+	border-color: transparent;
+
+	border-radius: 50%;
+
+	min-height: auto;
+	min-width: auto;
+
+	cursor: pointer;
+
+	outline: none;
+
+	font-size: 13px;
+	transform: scale(1);
+	transition: color 0.1s ease, transform 0.1s ease;
+}
+.panel .close:hover {
+	transform: scale(1.5);
+	color: #000;
+}
+
+.panel .hidden {
+	display: none;
+}
+
+.panel .color {
+	padding: 0.5rem;
+	border-radius: 4px;
+	border-color: #eee;
+	display: block;
+	text-align: center;
+
+	box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+}
+.panel .color-text {
+	filter: invert(100%) saturate(20%);
+}
+
+#panel-bg {
+	background-color: rgba(255, 255, 255, 0);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+	transition: background-color 0.2s ease;
+}
+
+#panel-bg.show {
+	background-color: rgba(255, 255, 255, 0.8);
+	z-index: 1;
+}
+
+#ListOfTrolls ul {
+	margin: 0;
+	padding: 0;
+}
+
+#ListOfTrolls li:after {
+	list-style: none;
+}
+
+#ListOfTrolls li:after {
+	content: '';
+	display: table-cell;
+	clear: both;
+}
+
+#ListOfTrolls .delete-troll {
+	float: right;
+}

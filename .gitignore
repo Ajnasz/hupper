@@ -1,1 +1,7 @@
 *.xpi
+*.swp
+
+**/node_modules
+
+**/bundle.js
+hupper.zip
