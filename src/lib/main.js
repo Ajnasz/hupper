@@ -121,19 +121,19 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			return true;
 
 		case 'requestCommentParse':
-			coreMain.commentGenya(data).then(sendResponse);
+			coreMain.commentParse(data).then(sendResponse);
 
 			return true;
 
 		case 'requestArticleParse':
-			coreMain.articleGenya(data).then(sendResponse);
+			coreMain.articleParse(data).then(sendResponse);
 
 			return true;
 
 		case 'requestBlockParse':
 			prefs.getPref('parseblocks').then(parse => {
 				if (parse) {
-					coreMain.blockGenya(data).then(sendResponse);
+					coreMain.blockParse(data).then(sendResponse);
 				} else {
 					sendResponse(null);
 				}
@@ -142,7 +142,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			return true;
 
 		case 'block.action':
-			coreMain.updateBlockGenya(data, msg.context).then(x => {
+			coreMain.handleBlockAction(data, msg.context).then(x => {
 				console.log('foobar', x);
 				sendResponse(x);
 			}).catch(e => {

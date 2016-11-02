@@ -24,7 +24,7 @@ function setPrevNextLinks (nodes) {
 	return nodes;
 }
 
-function commentGenya (comments) {
+function commentParse (comments) {
 	modComments.setScores(comments);
 
 	let flatCommentList = modComments.flatComments(comments);
@@ -103,7 +103,7 @@ function untrollUser (username) {
 	return prefs.removeTroll(username);
 }
 
-function articleGenya (articles) {
+function articleParse (articles) {
 	return prefs.getCleanTaxonomies()
 		.then(taxonomies => {
 			articles.forEach(a => a.hide = func.inArray(taxonomies, a.category));
@@ -242,7 +242,7 @@ function onLeftRightAction (details) {
 	});
 }
 
-function blockGenya (blocks) {
+function blockParse (blocks) {
 	return prefs.getPref('blocks').then(blocksPrefStr => {
 		let blocksPref = JSON.parse(blocksPrefStr);
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
@@ -255,7 +255,7 @@ function blockGenya (blocks) {
 
 }
 
-function updateBlockGenya (details, context) {
+function handleBlockAction (details, context) {
 
 	switch (details.action) {
 
@@ -283,10 +283,10 @@ function updateBlockGenya (details, context) {
 }
 
 export {
-	commentGenya,
-	articleGenya,
-	blockGenya,
-	updateBlockGenya,
+	commentParse,
+	articleParse,
+	blockParse,
+	handleBlockAction,
 	hideArticle,
 	highlightUser,
 	unhighlightUser,
