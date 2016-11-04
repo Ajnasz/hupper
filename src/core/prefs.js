@@ -14,6 +14,14 @@ let defaultPrefs = [
 	},
 
 	{
+		'name': 'setunlimitedlinks',
+		'title': 'Show as many comments as possible on a page',
+		'type': 'bool',
+		'value': true,
+		'group': 'comments'
+	},
+
+	{
 		'name': 'newcommenttext',
 		'title': 'The text to show instead of \"új\"',
 		'type': 'string',
@@ -158,13 +166,6 @@ let defaultPrefs = [
 		'type': 'string',
 		'value': '^([-_]|-1|\\+1|sub|subscribe)$',
 		'group': 'comments'
-	},
-	{
-		'name': 'setunlimitedlinks',
-		'title': 'Show as many comments as possible on a page',
-		'type': 'bool',
-		'value': true,
-		'group': 'articles'
 	}
 ];
 

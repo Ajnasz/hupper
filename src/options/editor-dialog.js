@@ -35,6 +35,8 @@ function open (config) {
 
 	return drawLines().then(() => dialog.show()).then(() => {
 		dialog.panel.querySelector('input').focus();
+
+		return dialog;
 	});
 }
 
