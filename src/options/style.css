@@ -9,9 +9,13 @@
 
 	--border-color: rgb(204, 204, 204);
 	--hover-border-color: rgb(175, 175, 175);
+
+	--box-shadow-color: rgba(0, 0, 0, 0.08);
+	--inset-box-shadow-color: rgba(var(--bg-color), 0.75);
 }
 
 .btn-cta {
+	--color: #fff;
 	--bg-color: 102, 133, 164;
 	--hover-bg-color: 81, 108, 135;
 
@@ -20,11 +24,16 @@
 }
 
 .btn-warn {
+	--color: #fff;
 	--bg-color: 215, 75, 75;
 	--hover-bg-color: 196, 43, 43;
 
 	--border-color: rgb(204, 45, 45);
 	--hover-border-color: rgb(154, 34, 34);
+}
+
+.panel .color {
+	--border-color: #eee;
 }
 
 input {
@@ -129,7 +138,7 @@ button {
 	background-color: rgb(var(--bg-color));
 	border-radius: 3px;
 
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--bg-color), 0.75);
+	box-shadow: 0 1px 0 var(--box-shadow-color), inset 0 1px 2px var(--inset-box-shadow-color);
 
 	transition: 0.2s background-color ease, 0.2s border-color, 0.2s box-shadow;
 }
@@ -140,37 +149,6 @@ button {
 
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
 }
-
-.btn-cta {
-	background-color: rgb(var(--bg-color));
-	color: #fff;
-	border-color: var(--border-color);
-
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(var(--bg-color), 0.75);
-}
-
-.btn-cta:hover {
-	background-color: rgb(var(--hover-bg-color));
-	border-color: var(--hover-border-color);
-
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
-}
-
-.btn-warn {
-	background-color: rgb(var(--bg-color));
-	border-color: #cc2d2d;
-	border-color: var(--border-color);
-	color: #fff;
-
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--bg-color), 0.75);
-}
-
-.btn-warn:hover {
-	background-color: rgb(var(--hover-bg-color));
-	border-color: var(--hover-border-color);
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(var(--hover-bg-color), 0.75);
-}
-
 
 input[type="text"],
 input[type="number"] {
@@ -232,7 +210,7 @@ label {
 	max-width: 65rem;
 	min-width: 30rem;
 	margin: auto;
-	padding-bottom: 1rem; 
+	padding-bottom: 1rem;
 	background-color: #fff;
 	border: 1px solid transparent;
 	box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
@@ -301,7 +279,7 @@ label {
 .panel header h1 {
 	margin: 0;
 }
- 
+
 .panel header:after {
 	content: '';
 	display: table-cell;
