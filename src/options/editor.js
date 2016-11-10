@@ -1,4 +1,7 @@
 import * as dom from './core/dom';
+import * as color from '../core/color';
+
+
 let editorTPL = `<form action="" method="" id="{formID}">
 	{fields}
 	<footer>
@@ -51,7 +54,8 @@ function getRow (fields) {
 			let colorSpan = dom.createElem('span', null, ['color']),
 				textSpan = dom.createElem('span', null, ['color-text'], field);
 			colorSpan.style.backgroundColor = field;
-			colorSpan.style.color = field;
+			textSpan.style.color = color.getContrastColor(field);
+			// colorSpan.style.color = field;
 			colorSpan.appendChild(textSpan);
 			td.appendChild(colorSpan);
 		} else {

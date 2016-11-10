@@ -333,7 +333,7 @@ label {
 }
 
 .panel .color-text {
-	filter: invert(100%);
+	/* filter: invert(100%); */
 	font-weight: 600;
 }
 
