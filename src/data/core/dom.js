@@ -4,7 +4,7 @@ import * as func from '../../core/func';
 	* @param CSSSelector what
 	* @return boolean
 	*/
-function is(element, what) {
+function is (element, what) {
 	if (element.matches) {
 		return element.matches(what);
 	} else if (element.mozMatchesSelector) {
@@ -17,7 +17,7 @@ function is(element, what) {
 	* @param selector string
 	* @param string sibling Use 'prev' if previous
 	*/
-function findSibling(element, selector, sibling) {
+function findSibling (element, selector, sibling) {
 	var elem = element,
 		siblingName = sibling === 'prev' ? 'previousSibling' : 'nextSibling';
 
@@ -32,7 +32,7 @@ function findSibling(element, selector, sibling) {
 	* @param element HTMLDOMElement
 	* @param selector string
 	*/
-function next(element, selector) {
+function next (element, selector) {
 	return findSibling(element, selector);
 }
 
@@ -40,11 +40,11 @@ function next(element, selector) {
 	* @param element HTMLDOMElement
 	* @param selector string
 	*/
-function prev(element, selector) {
+function prev (element, selector) {
 	return findSibling(element, selector, 'prev');
 }
 
-function closest(element, selector) {
+function closest (element, selector) {
 	var elem = element.parentNode;
 
 	while (elem && !is(elem, selector)) {
@@ -62,7 +62,7 @@ function remove (element) {
 	return element.parentNode.removeChild(element);
 }
 
-function findCommonParent(elements) {
+function findCommonParent (elements) {
 	var index, parent, maxIndex;
 
 	elements = elements.filter((x) => x !== null);
@@ -92,7 +92,7 @@ function findCommonParent(elements) {
 	return parent;
 }
 
-function createElem(nodeType, attributes, classes, text) {
+function createElem (nodeType, attributes, classes, text) {
 	var element = document.createElement(nodeType);
 
 	if (attributes && attributes.length) {
