@@ -4,7 +4,7 @@
 
 .btn {
 	--color: #666;
-	--bg-color: 255, 255, 255;
+	--bg-color: 250, 250, 250;
 	--hover-bg-color: 230, 230, 230;
 
 	--border-color: rgb(204, 204, 204);
@@ -14,7 +14,7 @@
 .btn-cta {
 	--bg-color: 102, 133, 164;
 	--hover-bg-color: 81, 108, 135;
-	
+
 	--border-color: rgb(84, 113, 141);
 	--hover-border-color: rgb(61, 82, 103);
 }
@@ -229,18 +229,19 @@ label {
 	font-size: 1.3rem;
 
 	width: 50vw;
-	max-width: 650px;
+	max-width: 65rem;
+	min-width: 30rem;
 	margin: auto;
 	padding-bottom: 1rem; 
 	background-color: #fff;
 	border: 1px solid transparent;
-	box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15); 
+	box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
 
 	border-radius: 5px;
 
-	top: -7vh;
-	transform: scale(0.9);
-	transition: top 0.2s ease, opacity 0.2s ease, transform 0.1s ease;
+	top: 0;
+	transform: scale(0.9) translateY(-7vh) ;
+	transition: opacity 0.2s ease, transform 0.1s ease;
 
 	z-index: 2;
 
@@ -248,8 +249,7 @@ label {
 }
 
 .panel.show {
-	transform: scale(1);
-	top: 0;
+	transform: scale(1) translateY(0);
 	opacity: 1;
 }
 
@@ -353,8 +353,10 @@ label {
 
 	box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
 }
+
 .panel .color-text {
-	filter: invert(100%) saturate(20%);
+	filter: invert(100%);
+	font-weight: 600;
 }
 
 #panel-bg {
