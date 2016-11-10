@@ -1,6 +1,7 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
 import { addHNav } from './element';
+import * as color from '../../core/color';
 
 const TROLL_COMMENT_CLASS = 'trollComment';
 const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
@@ -378,15 +379,20 @@ function unhighlightComment(comment) {
 	var commentObj = commentDataStructToObj(comment);
 	commentObj.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
 	commentObj.header.style.backgroundColor = '';
+	commentObj.header.style.color = '';
 }
 
 /**
  * @param commentStruct comment
  */
-function highlightComment(comment) {
+function highlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
 	commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
 	commentObj.header.style.backgroundColor = comment.userColor;
+
+	let contrastColor = color.getContrastColor(comment.userColor);
+	commentObj.header.style.color = contrastColor;
+	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = contrastColor);
 }
 
 /**
