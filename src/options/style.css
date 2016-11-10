@@ -349,6 +349,8 @@ label {
 	display: block;
 	text-align: center;
 
+	cursor: pointer;
+
 	box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
 }
 .panel .color-text {
@@ -388,4 +390,8 @@ label {
 
 #ListOfTrolls .delete-troll {
 	float: right;
+}
+
+#ListOfHighlightedUsers td:first-child {
+	cursor: pointer;
 }

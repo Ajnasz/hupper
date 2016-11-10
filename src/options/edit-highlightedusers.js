@@ -1,5 +1,6 @@
 import { prefs } from '../core/prefs';
 import * as editorDialog from './editor-dialog';
+import * as dom from '../data/core/dom';
 
 function open () {
 	return editorDialog.open({
@@ -29,6 +30,29 @@ function open () {
 		get: prefs.getCleanHighlightedUsers.bind(prefs),
 		remove: prefs.removeHighlightedUser.bind(prefs),
 		add: prefs.addHighlightedUser.bind(prefs)
+	}).then(dialog => {
+		dialog.panel.addEventListener('click', (e) => {
+			let color = dom.elemOrClosest(e.target, '.color');
+
+			if (color) {
+				e.preventDefault();
+				dialog.panel.querySelector('#HighlightedUserColor').value = color.querySelector('.color-text').textContent;
+			}
+		}, false);
+
+		return dialog;
+	}).then(dialog => {
+		dialog.panel.addEventListener('click', (e) => {
+			let td = dom.elemOrClosest(e.target, 'td');
+
+			if (td && td === td.parentNode.querySelector('td')) {
+				e.preventDefault();
+				dialog.panel.querySelector('#HighlightedUserName').value = td.textContent.trim();
+			}
+
+		});
+
+		return dialog;
 	});
 }
 

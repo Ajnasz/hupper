@@ -54,7 +54,11 @@ function closest(element, selector) {
 	return elem || null;
 }
 
-function remove(element) {
+function elemOrClosest (element, selector) {
+	return is(element, selector) ? element : closest(element, selector);
+}
+
+function remove (element) {
 	return element.parentNode.removeChild(element);
 }
 
@@ -108,16 +112,16 @@ function createElem(nodeType, attributes, classes, text) {
 	return element;
 }
 
-function empty(element) {
-	while(element.firstChild) {
+function empty (element) {
+	while (element.firstChild) {
 		element.removeChild(element.firstChild);
 	}
 }
 
-function emptyText(element) {
+function emptyText (element) {
 	func.toArray(element.childNodes).filter(function (node) {
 		return node.nodeType === Node.TEXT_NODE;
 	}).forEach(remove);
 }
 
-export { next, prev, closest, is, remove, createElem, findCommonParent, empty, emptyText };
+export { next, prev, closest, elemOrClosest, is, remove, createElem, findCommonParent, empty, emptyText };
