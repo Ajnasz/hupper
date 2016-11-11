@@ -1,7 +1,6 @@
 import * as dom from './dom';
 import * as func from '../../core/func';
 import { addHNav } from './element';
-import * as color from '../../core/color';
 
 const TROLL_COMMENT_CLASS = 'trollComment';
 const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
@@ -390,9 +389,8 @@ function highlightComment (comment) {
 	commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
 	commentObj.header.style.backgroundColor = comment.userColor;
 
-	let contrastColor = color.getContrastColor(comment.userColor);
-	commentObj.header.style.color = contrastColor;
-	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = contrastColor);
+	commentObj.header.style.color = comment.userContrastColor;
+	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = comment.userContrastColor);
 }
 
 /**

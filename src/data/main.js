@@ -45,9 +45,6 @@ function updateComments () {
 		data: comments
 	}, function (comments) {
 		if (comments) {
-			console.log(comments);
-
-			modComment.onCommentUpdate(comments);
 			let childComments = comments.filter(c => c.parent !== '');
 			modComment.addParentLinkToComments(childComments);
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
@@ -55,6 +52,8 @@ function updateComments () {
 			let newComments = comments.filter(c => c.isNew && !c.hide);
 			newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
+
+			modComment.onCommentUpdate(comments);
 		}
 	});
 }

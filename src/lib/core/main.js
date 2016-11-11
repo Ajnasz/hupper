@@ -1,6 +1,7 @@
 import * as func from '../../core/func';
 import * as modComments from '../../core/comments';
 import * as modBlocks from './blocks';
+import * as colorModule from '../../core/color';
 
 import { prefs } from '../../core/prefs';
 
@@ -80,7 +81,10 @@ function commentParse (comments) {
 	}).then(highlightusers => {
 		highlightusers.forEach(user => {
 			let {name, color} = user;
-			flatCommentList.filter(c => c.author === name).forEach(c => c.userColor = color);
+			flatCommentList.filter(c => c.author === name).forEach(c => {
+				c.userColor = color;
+				c.userContrastColor = colorModule.getContrastColor(color);
+			});
 		});
 
 		return flatCommentList;
