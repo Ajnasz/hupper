@@ -1,4 +1,5 @@
 import * as func from './func';
+import { log } from './log';
 
 function filterEmpty (array) {
 	return array.map(item => item.trim()).filter(item => item !== '');
@@ -75,7 +76,15 @@ var prefs = Object.create(null, {
 					if (trolls === null) {
 						value = [];
 					} else {
-						value = filterEmpty(trolls.split(','));
+						try {
+							value = JSON.parse(trolls);
+						} catch (e) {
+							// migrating
+							log.log(e);
+							value = trolls.split(',');
+						}
+
+						value = filterEmpty(value);
 					}
 
 					resolve(value);
@@ -109,7 +118,7 @@ var prefs = Object.create(null, {
 
 	setCleanTrolls: {
 		value: function (trolls) {
-			return this.setPref('trolls', filterEmpty(trolls).join(','));
+			return this.setPref('trolls', JSON.stringify(filterEmpty(trolls)));
 		}
 	},
 

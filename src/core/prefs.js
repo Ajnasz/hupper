@@ -49,7 +49,7 @@ let defaultPrefs = [
 		'name': 'trolls',
 		'title': 'List of trolls',
 		'type': 'string',
-		'value': '',
+		'value': '[]',
 		'hidden': true,
 		'group': 'comments'
 	},
