@@ -14,16 +14,25 @@ var prefs = Object.create(null, {
 					if (highlightusers === null) {
 						value = [];
 					} else {
-						value = filterEmpty(highlightusers.split(',')).map(function (user) {
-							return user.split(':');
-						}).filter(function (user) {
-							return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-						}).map(function (user) {
-							return {
-								name: user[0],
-								color: user[1]
-							};
-						});
+						let tmpValue;
+
+						try {
+							tmpValue = JSON.parse(highlightusers);
+						} catch (er) {
+							log.error(er);
+							tmpValue = filterEmpty(highlightusers.split(',')).map((user) => {
+								return user.split(':');
+							}).filter(function (user) {
+								return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
+							}).map(function (user) {
+								return {
+									name: user[0],
+									color: user[1]
+								};
+							});
+						}
+
+						value = tmpValue.filter(user => user && user.name && user.color);
 					}
 
 					resolve(value);
@@ -44,11 +53,9 @@ var prefs = Object.create(null, {
 		value: function (users) {
 			let cleanUsers = users.filter((user) => {
 				return user && user.name && user.color;
-			}).map((user) => {
-				return user.name + ':' + user.color;
-			}).join(',');
+			});
 
-			return prefs.setPref('highlightusers', cleanUsers);
+			return prefs.setPref('highlightusers', JSON.stringify(cleanUsers));
 		}
 	},
 

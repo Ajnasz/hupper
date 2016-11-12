@@ -74,7 +74,7 @@ let defaultPrefs = [
 		'name': 'highlightusers',
 		'title': 'Highlight comments of the users',
 		'type': 'string',
-		'value': 'username:#fff999,username2:#999fff',
+		'value': '[{"name":"username", "color":"#fff999"}},{"name":"username2", "color":"#999fff"}}]',
 		'hidden': true,
 		'group': 'comments'
 	},
