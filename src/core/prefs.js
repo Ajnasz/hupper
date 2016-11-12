@@ -300,7 +300,6 @@ function savePref (pref, value) {
 var chromePrefs = Object.assign(prefs, {
 	clear () {
 		storage().clear(createDefaultPrefs);
-		
 	},
 	setPref (pref, value) {
 		return savePref(pref, value).catch((err) => {

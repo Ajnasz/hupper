@@ -1,5 +1,39 @@
-:root {
+@keyframes slideup {
+	from {
+		transform: scale(1) translateY(0) ;
+		opacity: 1;
+	}
 
+	to {
+		transform: scale(0.99) translateY(-2rem) ;
+		opacity: 0;
+	}
+}
+
+@keyframes slidedown {
+	0% {
+		transform: scale(0.99) translateY(-2rem) ;
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1) translateY(0) ;
+		opacity: 1;
+	}
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.05);
+	}
+
+	100% {
+		transform: scale(1);
+	}
 }
 
 .btn {
@@ -204,8 +238,10 @@ label {
 
 .panel {
 	position: relative;
-	font-size: 1.3rem;
+	top: 0;
+	z-index: 2;
 
+	display: none;
 	width: 50vw;
 	max-width: 65rem;
 	min-width: 30rem;
@@ -217,18 +253,26 @@ label {
 
 	border-radius: 5px;
 
-	top: 0;
-	transform: scale(0.9) translateY(-7vh) ;
-	transition: opacity 0.2s ease, transform 0.1s ease;
+	font-size: 1.3rem;
+}
 
-	z-index: 2;
-
-	opacity: 0;
+.panel.visible {
+	display: block;
 }
 
 .panel.show {
-	transform: scale(1) translateY(0);
-	opacity: 1;
+	animation-duration: 0.1s;
+	animation-name: slidedown;
+}
+
+.panel.hide {
+	animation-duration: 0.1s;
+	animation-name: slideup;
+}
+
+.panel.pulse {
+	animation-duration: 0.1s;
+	animation-name: pulse;
 }
 
 .panel-content {

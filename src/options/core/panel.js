@@ -1,6 +1,7 @@
 import * as dom from './dom';
 import * as editor from '../editor';
 import { createEmitter } from '../../core/events';
+import { log } from '../../core/log';
 
 function createPanelBg () {
 	let panelBg = document.getElementById('panel-bg');
@@ -15,37 +16,54 @@ function createPanelBg () {
 	return div;
 }
 
+function getTrackName (e) {
+	e.type.indexOf('animation') === 0 ? e.animationname : e.type;
+}
+
 function transitionTrack (elem) {
 	return new Promise(resolve => {
 		let transitions = new Set();
 
 		function transitionTrack (e) {
+			log.log('transtion track', e);
+			
 			if (e.target === elem) {
-				transitions.add(e.type);
+				transitions.add(getTrackName(e));
 			}
 		}
 
-		elem.addEventListener('transitionstart', transitionTrack);
-
-		elem.addEventListener('transitionend', function onTransitionEnd (e) {
+		function onTransitionEnd (e) {
+			log.log('end', e);
+			
 			if (e.target !== elem) {
 				return;
 			}
 
-			transitions.delete(e.type);
+			transitions.delete(getTrackName(e));
 
+			log.log('transitions', transitions);
 			if (transitions.size === 0) {
-				elem.removeEventListener('transitionstart', transitionTrack);
-				elem.removeEventListener('transitionend', onTransitionEnd);
-				resolve();
+				elem.removeEventListener('transitionstart', transitionTrack, false);
+				elem.removeEventListener('transitionend', onTransitionEnd, false);
+
+				elem.removeEventListener('animationstart', transitionTrack, false);
+				elem.removeEventListener('animationend', onTransitionEnd, false);
+				resolve(elem);
 			}
-		}, false);
+		}
+
+		elem.addEventListener('transitionstart', transitionTrack), false;
+		elem.addEventListener('transitionend', onTransitionEnd, false);
+
+		elem.addEventListener('animationstart', transitionTrack, false);
+		elem.addEventListener('animationend', onTransitionEnd, false);
 	});
 }
 
 function closeElem (elem) {
 	let promise =  transitionTrack(elem).then(() => elem.parentNode.removeChild(elem));
 	elem.classList.remove('show');
+	elem.classList.add('hide');
 
 	return promise;
 }
@@ -53,7 +71,7 @@ function closeElem (elem) {
 function showElem (elem) {
 	let promise =  transitionTrack(elem);
 	setTimeout(() => {
-		elem.classList.add('show');
+		elem.classList.add('show', 'visible');
 	}, 10);
 
 	return promise;
@@ -92,12 +110,15 @@ function createPanel (options, body, events) {
 	}
 
 	function panelAlert (panel) {
-		transitionTrack(panel).then(() => panel.style.transform = null);
-		panel.style.transform = 'scale(1.05)';
+		let promise = transitionTrack(panel).then(() => panel.classList.remove('pulse'));
+		panel.classList.add('pulse');
+		return promise;
 	}
 
-	div.addEventListener('click', onClick, false);
-	div.querySelector('form').addEventListener('submit', onSubmit, false);
+	function onPanelBGClick () {
+		// document.getElementById('panel-bg').removeEventListener('click', onClose);
+		panelAlert(div);
+	}
 
 	function closePanel () {
 
@@ -106,28 +127,28 @@ function createPanel (options, body, events) {
 		closeElem(div).then(function () {
 			div.removeEventListener('click', onClick);
 			div.querySelector('form').removeEventListener('submit', onSubmit);
-			document.getElementById('panel-bg').removeEventListener('click', panelAlert);
+			document.getElementById('panel-bg').removeEventListener('click', onPanelBGClick, false);
 			panelContainer.parentNode.removeChild(panelContainer);
 		}).then(closeElem.bind(null, panelBg)).then(function () {
 			events.emit('close');
 		});
 	}
 
+	div.addEventListener('click', onClick, false);
+	div.querySelector('form').addEventListener('submit', onSubmit, false);
+
 	close.addEventListener('click', function onClose () {
 		close.removeEventListener('click', onClose);
 		closePanel();
 	});
 
-	document.getElementById('panel-bg').addEventListener('click', function onClose () {
-		// document.getElementById('panel-bg').removeEventListener('click', onClose);
-		panelAlert(div);
-	});
+	document.getElementById('panel-bg').addEventListener('click', onPanelBGClick, false);
 
-	window.addEventListener('keyup', function c (ev) {
+	window.addEventListener('keyup', function onKeyup (ev) {
 		if (ev.keyCode === 27) {
 			if (!ev.target.matches('.panel input,.panel textarea,.panel select')) {
 				closePanel();
-				window.removeEventListener('keyup', c);
+				window.removeEventListener('keyup', onKeyup);
 			}
 		}
 	}, false);
@@ -163,7 +184,9 @@ function create (options, body) {
 		panel,
 		panelBg,
 		show () {
-			return showBg(panelBg).then(showPanel.bind(null, panel));
+			return showBg(panelBg)
+				.then(showPanel.bind(null, panel))
+				.then(() => panel.classList.remove('show'));
 		},
 
 		drawTable (items) {
