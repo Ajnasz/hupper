@@ -243,21 +243,14 @@ function insertIntoHnav(comment, item) {
 	}
 }
 
-/**
- * @param string id Comment id
- * @param string nextCommentId
- */
-function addLinkToPrevComment (id, prevCommentId) {
-	var comment = getCommentObj(getCommentFromId(id)),
-		link;
-
-	link = comment.header.querySelector(`a[href="#${prevCommentId}"]`);
+function commentLink (comment, commentToLinkID, text) {
+	let link = comment.header.querySelector(`a[href="#${commentToLinkID}"]`);
 
 	if (link) {
 		link.parentNode.removeChild(link);
 	}
 
-	link = dom.createElem('a', [{name: 'href', value: '#' + prevCommentId}], null, TEXT_PREV);
+	link = dom.createElem('a', [{name: 'href', value: '#' + commentToLinkID}], null, text);
 
 	addHNav(comment);
 
@@ -269,21 +262,16 @@ function addLinkToPrevComment (id, prevCommentId) {
  * @param string id Comment id
  * @param string nextCommentId
  */
-function addLinkToNextComment (id, nextCommentId) {
-	var comment = getCommentObj(getCommentFromId(id)),
-		link;
+function addLinkToPrevComment (comment, prevCommentId) {
+	commentLink(comment, prevCommentId, TEXT_PREV);
+}
 
-	link = comment.header.querySelector(`a[href="#${nextCommentId}"]`);
-
-	if (link) {
-		link.parentNode.removeChild(link);
-	}
-
-	link = dom.createElem('a', [{name: 'href', value: '#' + nextCommentId}], null, TEXT_NEXT);
-
-	addHNav(comment);
-
-	insertIntoHnav(comment, link);
+/**
+ * @param string id Comment id
+ * @param string nextCommentId
+ */
+function addLinkToNextComment (comment, nextCommentId) {
+	commentLink(comment, nextCommentId, TEXT_NEXT);
 }
 
 /**
@@ -560,7 +548,7 @@ function hasScore(comment) {
 	return typeof comment.score !== 'undefined' && comment.score !== 0;
 }
 
-function onCommentUpdate(comments) {
+function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
 		if (comment.hide) {
 			hide(comment);
@@ -592,23 +580,24 @@ function onCommentUpdate(comments) {
 				showScore(comment);
 			}
 		}
-
 	});
 }
 
-function onCommentAddNextPrev(item) {
-	if (item.prevId) {
-		addLinkToPrevComment(item.id, item.prevId);
-	}
+function onCommentSetNew (newComments) {
+	let obj = newComments.map(commentDataStructToObj);
+	obj.forEach((comment, index) => {
+		let commentObj = newComments[index];
 
-	if (item.nextId) {
-		addLinkToNextComment(item.id, item.nextId);
-	}
-}
+		setNew(comment, commentObj.newCommentText || 'új');
 
-function onCommentSetNew(newComments) {
-	var obj = newComments.map(commentDataStructToObj);
-	obj.forEach((comment, index) => setNew(comment, newComments[index].newCommentText || 'új'));
+		if (commentObj.prevId) {
+			addLinkToPrevComment(comment, commentObj.prevId);
+		}
+
+		if (commentObj.nextId) {
+			addLinkToNextComment(comment, commentObj.nextId);
+		}
+	});
 }
 
 function onCommentsContainerClick(e) {
@@ -668,7 +657,6 @@ export {
 	getCommentFromId,
 	showScore,
 	onCommentUpdate,
-	onCommentAddNextPrev,
 	onCommentSetNew,
 	onCommentsContainerClick,
 	onBodyClick,
