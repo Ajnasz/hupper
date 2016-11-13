@@ -124,11 +124,15 @@ function parseArticles() {
 	return func.toArray(elements).map(articleElementToStruct);
 }
 
-function hideArticles(articles) {
+function toggleArticles (articles) {
 	articles
 		.map(articleStructToArticleNodeStruct)
-		.forEach(function (a) {
-			a.node.classList.add('hup-hidden');
+		.forEach(function (a, index) {
+			if (articles[index].hide) {
+				a.node.classList.add('hup-hidden');
+			} else {
+				a.node.classList.remove('hup-hidden');
+			}
 		});
 }
 
@@ -174,7 +178,7 @@ export {
 	addLinkToNextArticle,
 	addCategoryHideButton,
 	articleElementToStruct,
-	hideArticles,
+	toggleArticles,
 	onAddCategoryHideButton,
 	onMarkNew,
 	onArticleAddNextPrev,

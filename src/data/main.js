@@ -70,7 +70,7 @@ function updateArticles () {
 		data: articles
 	}, function (articles) {
 		if (articles) {
-			modArticles.hideArticles(articles.filter(a => a.hide));
+			modArticles.toggleArticles(articles);
 			modArticles.onMarkNew(articles);
 			articles.filter(a => a.hasOwnProperty('nextId') || a.hasOwnProperty('prevId'))
 				.forEach(modArticles.onArticleAddNextPrev);
@@ -150,6 +150,21 @@ function addHupperBlockListeners () {
 	}, false);
 }
 
+function onPrefChange (pref) {
+	switch (pref) {
+	case 'trolls':
+	case 'filtertrolls':
+	case 'highlightusers':
+	case 'hideboringcomments':
+	case 'boringcommentcontents':
+		updateComments();
+		break;
+	case 'hidetaxonomy':
+		updateArticles();
+		break;
+	}
+}
+
 window.addEventListener('DOMContentLoaded', function () {
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		switch (msg.event) {
@@ -162,6 +177,11 @@ window.addEventListener('DOMContentLoaded', function () {
 
 		case 'userChange':
 			updateComments();
+			break;
+
+		case 'prefChange':
+			onPrefChange(msg.data);
+			break;
 		}
 	});
 

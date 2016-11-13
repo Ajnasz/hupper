@@ -99,6 +99,15 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 (function () {
 	let tabs = new Set();
 
+	chrome.storage.onChanged.addListener(function (changes, namespace) {
+		console.log('storage change', changes, namespace);
+
+		tabs.forEach(tab => {
+			Object.keys(changes)
+				.forEach(name => chrome.tabs.sendMessage(tab, {event: 'prefChange', data: name}));
+		});
+	});
+
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		let {event, data} = msg;
 
