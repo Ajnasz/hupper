@@ -5,6 +5,23 @@ function filterEmpty (array) {
 	return array.map(item => item.trim()).filter(item => item !== '');
 }
 
+function oldHighlightedUserGetter (highlightusers) {
+	return filterEmpty(highlightusers.split(',')).map((user) => {
+		return user.split(':');
+	}).filter(function (user) {
+		return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
+	}).map(function (user) {
+		return {
+			name: user[0],
+			color: user[1]
+		};
+	});
+}
+
+function oldTrollGetter (trolls) {
+	return trolls.split(',');
+}
+
 var prefs = Object.create(null, {
 	getCleanHighlightedUsers: {
 		value: function () {
@@ -20,16 +37,7 @@ var prefs = Object.create(null, {
 							tmpValue = JSON.parse(highlightusers);
 						} catch (er) {
 							log.error(er);
-							tmpValue = filterEmpty(highlightusers.split(',')).map((user) => {
-								return user.split(':');
-							}).filter(function (user) {
-								return user.length === 2 && Boolean(user[0]) && Boolean(user[1]);
-							}).map(function (user) {
-								return {
-									name: user[0],
-									color: user[1]
-								};
-							});
+							tmpValue = oldHighlightedUserGetter(highlightusers);
 						}
 
 						value = tmpValue.filter(user => user && user.name && user.color);
@@ -88,7 +96,7 @@ var prefs = Object.create(null, {
 						} catch (e) {
 							// migrating
 							log.log(e);
-							value = trolls.split(',');
+							value = oldTrollGetter(trolls);
 						}
 
 						value = filterEmpty(value);
