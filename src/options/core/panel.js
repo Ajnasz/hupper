@@ -1,4 +1,4 @@
-import * as dom from './dom';
+import * as dom from '../../core/dom';
 import * as editor from '../editor';
 import { createEmitter } from '../../core/events';
 import { log } from '../../core/log';

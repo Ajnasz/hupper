@@ -1,4 +1,4 @@
-import * as dom from './dom';
+import * as dom from '../../core/dom';
 import { log } from '../../core/log';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';

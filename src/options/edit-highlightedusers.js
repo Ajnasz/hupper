@@ -1,6 +1,6 @@
 import { prefs } from '../core/prefs';
 import * as editorDialog from './editor-dialog';
-import * as dom from '../data/core/dom';
+import * as dom from '../core/dom';
 
 function open () {
 	return editorDialog.open({

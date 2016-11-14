@@ -1,9 +1,10 @@
-import * as func from '../../core/func';
+import * as func from './func';
+
 /**
-	* @param HTMLDOMElement element
-	* @param CSSSelector what
-	* @return boolean
-	*/
+ * @param HTMLDOMElement element
+ * @param CSSSelector what
+ * @return boolean
+ */
 function is (element, what) {
 	if (element.matches) {
 		return element.matches(what);
@@ -12,11 +13,11 @@ function is (element, what) {
 	}
 }
 
-/**
-	* @param element HTMLDOMElement
-	* @param selector string
-	* @param string sibling Use 'prev' if previous
-	*/
+	/**
+	 * @param element HTMLDOMElement
+	 * @param selector string
+	 * @param string sibling Use 'prev' if previous
+	 */
 function findSibling (element, selector, sibling) {
 	var elem = element,
 		siblingName = sibling === 'prev' ? 'previousSibling' : 'nextSibling';
@@ -29,17 +30,17 @@ function findSibling (element, selector, sibling) {
 }
 
 /**
-	* @param element HTMLDOMElement
-	* @param selector string
-	*/
+ * @param element HTMLDOMElement
+ * @param selector string
+ */
 function next (element, selector) {
 	return findSibling(element, selector);
 }
 
 /**
-	* @param element HTMLDOMElement
-	* @param selector string
-	*/
+ * @param element HTMLDOMElement
+ * @param selector string
+ */
 function prev (element, selector) {
 	return findSibling(element, selector, 'prev');
 }
@@ -124,4 +125,4 @@ function emptyText (element) {
 	}).forEach(remove);
 }
 
-export { next, prev, closest, elemOrClosest, is, remove, createElem, findCommonParent, empty, emptyText };
+export { next, prev, closest, is, remove, createElem, findCommonParent, empty, emptyText };
