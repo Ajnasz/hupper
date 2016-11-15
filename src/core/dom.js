@@ -63,36 +63,6 @@ function remove (element) {
 	return element.parentNode.removeChild(element);
 }
 
-function findCommonParent (elements) {
-	var index, parent, maxIndex;
-
-	elements = elements.filter((x) => x !== null);
-
-	maxIndex = elements.length - 1;
-	index = 0;
-	parent = elements[index].parentNode;
-
-	while (true) {
-		if (index < maxIndex) {
-			if (!parent.contains(elements[index + 1])) {
-				parent = parent.parentNode;
-
-				if (!parent) {
-					// parent = null;
-					break;
-				}
-			} else {
-				index += 1;
-			}
-		} else {
-			break;
-		}
-
-	}
-
-	return parent;
-}
-
 function createElem (nodeType, attributes, classes, text) {
 	var element = document.createElement(nodeType);
 
@@ -120,9 +90,7 @@ function empty (element) {
 }
 
 function emptyText (element) {
-	func.toArray(element.childNodes).filter(function (node) {
-		return node.nodeType === Node.TEXT_NODE;
-	}).forEach(remove);
+	func.toArray(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).forEach(remove);
 }
 
-export { next, prev, closest, is, remove, createElem, findCommonParent, empty, emptyText };
+export { next, prev, closest, is, remove, createElem, empty, emptyText, elemOrClosest };
