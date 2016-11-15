@@ -24,17 +24,17 @@ function transitionTrack (elem) {
 	return new Promise(resolve => {
 		let transitions = new Set();
 
-		function transitionTrack (e) {
-			log.log('transtion track', e);
-			
+		function transitionStart (e) {
+			log.log('transtion start', e);
+
 			if (e.target === elem) {
 				transitions.add(getTrackName(e));
 			}
 		}
 
 		function onTransitionEnd (e) {
-			log.log('end', e);
-			
+			log.log('transition end', e);
+
 			if (e.target !== elem) {
 				return;
 			}
@@ -43,25 +43,27 @@ function transitionTrack (elem) {
 
 			log.log('transitions', transitions);
 			if (transitions.size === 0) {
-				elem.removeEventListener('transitionstart', transitionTrack, false);
+				elem.removeEventListener('transitionstart', transitionStart, false);
 				elem.removeEventListener('transitionend', onTransitionEnd, false);
 
-				elem.removeEventListener('animationstart', transitionTrack, false);
+				elem.removeEventListener('animationstart', transitionStart, false);
 				elem.removeEventListener('animationend', onTransitionEnd, false);
 				resolve(elem);
 			}
 		}
 
-		elem.addEventListener('transitionstart', transitionTrack), false;
+		elem.addEventListener('transitionstart', transitionStart), false;
 		elem.addEventListener('transitionend', onTransitionEnd, false);
 
-		elem.addEventListener('animationstart', transitionTrack, false);
+		elem.addEventListener('animationstart', transitionStart, false);
 		elem.addEventListener('animationend', onTransitionEnd, false);
 	});
 }
 
 function closeElem (elem) {
-	let promise =  transitionTrack(elem).then(() => elem.parentNode.removeChild(elem));
+	let promise =  transitionTrack(elem).then(() => {
+		elem.parentNode.removeChild(elem);
+	});
 	elem.classList.remove('show');
 	elem.classList.add('hide');
 
@@ -70,9 +72,7 @@ function closeElem (elem) {
 
 function showElem (elem) {
 	let promise =  transitionTrack(elem);
-	setTimeout(() => {
-		elem.classList.add('show', 'visible');
-	}, 10);
+	setTimeout(() => elem.classList.add('show', 'visible'), 0);
 
 	return promise;
 }

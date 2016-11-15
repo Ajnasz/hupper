@@ -4,7 +4,7 @@ import { prefs } from './pref';
 import * as func from '../core/func';
 import { log } from './log';
 
-let defaultPrefs = [
+const defaultPrefs = Object.freeze([
 	{
 		'name': 'replacenewcommenttext',
 		'title': 'Replace the \"új\" text of new comments to a better searchable one',
@@ -48,8 +48,8 @@ let defaultPrefs = [
 	{
 		'name': 'trolls',
 		'title': 'List of trolls',
-		'type': 'string',
-		'value': '[]',
+		'type': 'array',
+		'value': [],
 		'hidden': true,
 		'group': 'comments'
 	},
@@ -73,8 +73,11 @@ let defaultPrefs = [
 	{
 		'name': 'highlightusers',
 		'title': 'Highlight comments of the users',
-		'type': 'string',
-		'value': '[{"name":"username", "color":"#fff999"}},{"name":"username2", "color":"#999fff"}}]',
+		'type': 'array',
+		'value': [
+			{name: 'username', color: '#fff999'},
+			{name: 'username2', color: '#999fff'}
+		],
 		'hidden': true,
 		'group': 'comments'
 	},
@@ -82,8 +85,8 @@ let defaultPrefs = [
 	{
 		'name': 'hidetaxonomy',
 		'title': 'Hidden article types',
-		'type': 'string',
-		'value': '[]',
+		'type': 'array',
+		'value': [],
 		'hidden': true,
 		'group': 'articles'
 	},
@@ -98,8 +101,8 @@ let defaultPrefs = [
 	{
 		'name': 'blocks',
 		'title': 'Block settings',
-		'type': 'string',
-		'value': '[]',
+		'type': 'array',
+		'value': [],
 		'hidden': true,
 		'group': 'blocks'
 	},
@@ -167,7 +170,7 @@ let defaultPrefs = [
 		'value': '^([-_]|-1|\\+1|sub|subscribe)$',
 		'group': 'comments'
 	}
-];
+]);
 
 function storage () {
 	return chrome.storage.sync || chrome.storage.local;
@@ -175,8 +178,8 @@ function storage () {
 
 function createDefaultPrefs () {
 	return Promise.all(defaultPrefs.map((pref) => {
-		return new Promise(function (resolve) {
-			storage().get(pref.name, function (result) {
+		return new Promise(resolve => {
+			storage().get(pref.name, result => {
 				if (typeof result[pref.name] === 'undefined') {
 					// storage().set(value);
 					resolve([pref.name, pref.value]);
@@ -185,7 +188,7 @@ function createDefaultPrefs () {
 				}
 			});
 		});
-	})).then(function (values) {
+	})).then(values => {
 		let saveObj = values.reduce((prev, curr) => {
 			if (curr !== null) {
 				let [name, value] = curr;
@@ -197,17 +200,14 @@ function createDefaultPrefs () {
 			return prev;
 		}, {});
 
-		return new Promise(function (resolve) {
-			storage().set(saveObj, function () {
-				resolve();
-			});
-		});
+		return new Promise(resolve => storage().set(saveObj, () => resolve()));
 	});
 	/* */
 }
 
 let events = (function () {
 	let listeners = new Map();
+
 	return {
 		on (name, cb) {
 			if (!listeners.has(name)) {
@@ -241,24 +241,35 @@ let events = (function () {
 
 function validateType (prefType, value) {
 	let isValid = false;
+	let actualType = Object.prototype.toString.call(value);
 
 	switch (prefType) {
+
+	case 'array':
+		isValid = actualType === '[object Array]';
+		break;
+
 	case 'string':
-		isValid = typeof value === 'string';
+		isValid = actualType === '[object String]';
 		break;
+
 	case 'bool':
-		isValid = typeof value === 'boolean';
+		isValid = actualType === '[object Boolean]';
 		break;
+
 	case 'integer':
-		isValid = typeof value === 'number';
+		isValid = actualType === '[object Number]';
 		break;
+
 	case 'color':
 		isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
 		break;
+
 	default:
 		isValid = true;
 		log.info('Unknown type %s', prefType);
 		break;
+
 	}
 
 	return isValid;
@@ -301,6 +312,7 @@ var chromePrefs = Object.assign(prefs, {
 	clear () {
 		storage().clear(createDefaultPrefs);
 	},
+
 	setPref (pref, value) {
 		return savePref(pref, value).catch((err) => {
 			throw err;
@@ -317,6 +329,7 @@ var chromePrefs = Object.assign(prefs, {
 		return Promise.all(defaultPrefs.map((pref) => {
 			return findPref(pref.name).then((value) => {
 				let output = Object.create(null);
+
 				output.name = pref.name;
 				output.title = pref.title;
 				output.type = pref.type;
@@ -324,9 +337,7 @@ var chromePrefs = Object.assign(prefs, {
 				output.group = pref.group;
 				output.value = value;
 
-				return new Promise((resolve) => {
-					resolve(output);
-				});
+				return Promise.resolve(output);
 			});
 		}));
 	},

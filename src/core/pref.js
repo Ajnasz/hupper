@@ -23,6 +23,17 @@ function oldTrollGetter (trolls) {
 }
 
 var prefs = Object.create(null, {
+	getBlocks: {
+		value: function () {
+			return this.getPref('blocks').then(blocks => {
+				if (typeof blocks === 'string') {
+					return JSON.parse(blocks);
+				}
+
+				return blocks;
+			});
+		}
+	},
 	getCleanHighlightedUsers: {
 		value: function () {
 			return this.getPref('highlightusers').then(highlightusers => {
@@ -33,11 +44,15 @@ var prefs = Object.create(null, {
 					} else {
 						let tmpValue;
 
-						try {
-							tmpValue = JSON.parse(highlightusers);
-						} catch (er) {
-							log.error(er);
-							tmpValue = oldHighlightedUserGetter(highlightusers);
+						if (typeof highlightusers === 'string') {
+							try {
+								tmpValue = JSON.parse(highlightusers);
+							} catch (er) {
+								log.error(er);
+								tmpValue = oldHighlightedUserGetter(highlightusers);
+							}
+						} else {
+							tmpValue = highlightusers;
 						}
 
 						value = tmpValue.filter(user => user && user.name && user.color);
@@ -63,7 +78,7 @@ var prefs = Object.create(null, {
 				return user && user.name && user.color;
 			});
 
-			return prefs.setPref('highlightusers', JSON.stringify(cleanUsers));
+			return prefs.setPref('highlightusers', cleanUsers);
 		}
 	},
 
@@ -91,12 +106,16 @@ var prefs = Object.create(null, {
 					if (trolls === null) {
 						value = [];
 					} else {
-						try {
-							value = JSON.parse(trolls);
-						} catch (e) {
-							// migrating
-							log.log(e);
-							value = oldTrollGetter(trolls);
+						if (typeof trolls === 'string') {
+							try {
+								value = JSON.parse(trolls);
+							} catch (e) {
+								// migrating
+								log.log(e);
+								value = oldTrollGetter(trolls);
+							}
+						} else {
+							value = trolls;
 						}
 
 						value = filterEmpty(value);
@@ -133,7 +152,7 @@ var prefs = Object.create(null, {
 
 	setCleanTrolls: {
 		value: function (trolls) {
-			return this.setPref('trolls', JSON.stringify(filterEmpty(trolls)));
+			return this.setPref('trolls', filterEmpty(trolls));
 		}
 	},
 
@@ -145,7 +164,11 @@ var prefs = Object.create(null, {
 					if (!taxonomies) {
 						value = [];
 					} else {
-						value = filterEmpty(JSON.parse(taxonomies));
+						if (typeof taxonomies === 'string') {
+							value = filterEmpty(JSON.parse(taxonomies));
+						} else {
+							value = taxonomies;
+						}
 					}
 
 					resolve(value);
@@ -179,7 +202,7 @@ var prefs = Object.create(null, {
 
 	setCleanTaxonomies: {
 		value: function (taxonomies) {
-			return this.setPref('hidetaxonomy', JSON.stringify(taxonomies));
+			return this.setPref('hidetaxonomy', taxonomies);
 		}
 	}
 });

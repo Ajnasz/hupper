@@ -130,11 +130,10 @@ function hideArticle (article) {
  * @param {*} details
  */
 function updateBlock (details, prefName, value) {
-	return prefs.getPref('blocks').then(blocks => {
-		let blockPrefs = JSON.parse(blocks);
-		let output = modBlocks.updateBlock(details, prefName, value, blockPrefs);
+	return prefs.getBlocks().then(blocks => {
+		let output = modBlocks.updateBlock(details, prefName, value, blocks);
 
-		prefs.setPref('blocks', JSON.stringify(blockPrefs));
+		prefs.setPref('blocks', blocks);
 
 		return output;
 	});
@@ -154,9 +153,9 @@ function getColumnName (column) {
 }
 
 function onUpDownAction (details, context) {
-	return prefs.getPref('blocks').then(blocks => {
+	return prefs.getBlocks().then(blocks => {
 		let blockID = details.id;
-		let blockPrefs = JSON.parse(blocks);
+		let blockPrefs = blocks;
 		let cm = context.left.concat(context.right);
 		let contextBlocks;
 
@@ -200,7 +199,7 @@ function onUpDownAction (details, context) {
 		originalItem.index = relativeItem.index;
 		relativeItem.index = originalItemIndex;
 
-		prefs.setPref('blocks', JSON.stringify(blockPrefs.map(b => {
+		prefs.setPref('blocks', blockPrefs.map(b => {
 			let alternateB = func.first(contextBlocks, x => x.id === b.id);
 
 			if (alternateB) {
@@ -208,17 +207,16 @@ function onUpDownAction (details, context) {
 			}
 
 			return b;
-		})));
+		}));
 
 		return Promise.resolve(blockObjects);
 	});
 }
 
 function onLeftRightAction (details) {
-	return prefs.getPref('blocks').then(blocks => {
+	return prefs.getBlocks().then(blocks => {
 		let blockID = details.id;
-		let blockPrefs = JSON.parse(blocks);
-
+		let blockPrefs = blocks;
 
 		let block = func.first(blockPrefs, b => b.id === blockID);
 
@@ -240,17 +238,16 @@ function onLeftRightAction (details) {
 
 		func.sortBy(blockPrefs.filter(b => b.column === block.column), 'index').forEach((b, i) => b.index = i);
 
-		prefs.setPref('blocks', JSON.stringify(blockPrefs));
+		prefs.setPref('blocks', blockPrefs);
 
 		return Promise.resolve(blockPrefs);
 	});
 }
 
 function blockParse (blocks) {
-	return prefs.getPref('blocks').then(blocksPrefStr => {
-		let blocksPref = JSON.parse(blocksPrefStr);
+	return prefs.getBlocks().then(blocksPref => {
 		blocksPref = modBlocks.mergeBlockPrefsWithBlocks(blocks, blocksPref);
-		prefs.setPref('blocks', JSON.stringify(blocksPref));
+		prefs.setPref('blocks', blocksPref);
 		return blocksPref;
 	}).then(blocksPrefs => {
 		blocksPrefs.forEach(block => block.title = modBlocks.getBlockTitle(block));
