@@ -72,8 +72,8 @@
 
 input {
 	--border-color: #ccc;
-	--hover-box-shadow-color: rgba(121, 66, 6, 0.6);
-	--hover-border-color: rgba(121, 66, 6, 0.6);
+	--focus-box-shadow-color: rgba(121, 66, 6, 0.6);
+	--focus-border-color: rgba(121, 66, 6, 0.6);
 
 	--color: #666;
 }
@@ -145,8 +145,9 @@ label span + input {
 }
 
 input:focus {
-	border-color: var(--hover-border-color);
-	outline-color: var(--hover-border-color);
+	border-color: var(--focus-border-color);
+	outline-color: var(--focus-border-color);
+	box-shadow: 0 0 3px var(--focus-box-shadow-color);
 }
 
 input[type="color"],

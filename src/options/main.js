@@ -114,7 +114,7 @@ prefs.getAllPrefs().then((pref) => {
 	let msg = document.querySelector('#Messages');
 
 	let byGroup = func.groupBy(pref, 'group');
-	
+
 	Object.keys(byGroup).forEach(groupName => {
 		let pref = byGroup[groupName];
 
