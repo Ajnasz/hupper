@@ -1,6 +1,11 @@
 import { prefs } from '../core/prefs';
 import * as editorDialog from './editor-dialog';
 import * as dom from '../core/dom';
+import * as func from '../core/func';
+
+function getOrderedUsers ()  {
+	return prefs.getCleanHighlightedUsers().then(users => func.sortBy(users, 'color'));
+}
 
 function open () {
 	return editorDialog.open({
@@ -27,7 +32,7 @@ function open () {
 
 		formValueMap: ['userName', 'userColor'],
 
-		get: prefs.getCleanHighlightedUsers.bind(prefs),
+		get: getOrderedUsers,
 		remove: prefs.removeHighlightedUser.bind(prefs),
 		add: prefs.addHighlightedUser.bind(prefs)
 	}).then(dialog => {
