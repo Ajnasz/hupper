@@ -16,7 +16,8 @@ colors.add('#eeeeee');
 colors.add('#ffffff');
 
 function getLuminanace (r, g, b) {
-	return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+	let output = (r * 299 + g * 587 + b * 114) / 1000;
+	return output;
 }
 
 function hex2rgb (hexcolor) {
@@ -32,9 +33,9 @@ function calculateRatio (colorA, colorB) {
 	let lumiA = getLuminanace(...hex2rgb(colorA));
 	let lumiB = getLuminanace(...hex2rgb(colorB));
 
-	return lumiA < 128 ?
-		(lumiB + 0.05) / (lumiA + 0.05) :
-		(lumiA + 0.05) / (lumiB + 0.05);
+	let ratio = lumiA < 128 ? (lumiB + 0.05) / (lumiA + 0.05) : (lumiA + 0.05) / (lumiB + 0.05);
+
+	return ratio;
 }
 
 function getContrastColor (hexcolor) {
