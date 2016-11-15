@@ -90,9 +90,9 @@ function updateBlocks () {
 		event: 'requestBlockParse',
 		data: blocks
 	}, function (blocks) {
-		console.log('block responses', blocks);
+		log.log('block responses', blocks);
 		if (blocks) {
-			console.log(blocks);
+			log.log(blocks);
 			modBlocks.reorderBlocks(blocks);
 			modBlocks.decorateBlocks(blocks);
 		}
@@ -137,7 +137,7 @@ function addCommentListeners () {
 }
 
 function addHupperBlockListeners () {
-	console.log('add hupper block listeners');
+	log.log('add hupper block listeners');
 	document.getElementById('block-hupper').addEventListener('click', function (e) {
 		let event = modBlocks.onBlockControlClick(e);
 		if (!event) {
