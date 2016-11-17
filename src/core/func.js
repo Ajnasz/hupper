@@ -69,6 +69,15 @@ function groupBy (array, field) {
 	}, {});
 }
 
+function random (min = 0, max = 1, int = false) {
+	if (!int) {
+		return Math.random() * (max - min) + min;
+	}
 
+	min = Math.ceil(min);
+	max = Math.floor(max);
 
-export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy };
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy, random };

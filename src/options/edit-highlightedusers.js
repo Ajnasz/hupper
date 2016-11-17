@@ -2,6 +2,7 @@ import { prefs } from '../core/prefs';
 import * as editorDialog from './editor-dialog';
 import * as dom from '../core/dom';
 import * as func from '../core/func';
+import * as color from '../core/color';
 
 function getOrderedUsers ()  {
 	return prefs.getCleanHighlightedUsers().then(users => func.sortBy(users, 'color'));
@@ -36,13 +37,27 @@ function open () {
 		remove: prefs.removeHighlightedUser.bind(prefs),
 		add: prefs.addHighlightedUser.bind(prefs)
 	}).then(dialog => {
+		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Random color');
+		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);
 		dialog.panel.addEventListener('click', (e) => {
-			let color = dom.elemOrClosest(e.target, '.color');
+			let colorElem = dom.elemOrClosest(e.target, '.color');
 
-			if (color) {
+			if (colorElem) {
 				e.preventDefault();
-				dialog.panel.querySelector('#HighlightedUserColor').value = color.querySelector('.color-text').textContent;
+				dialog.panel.querySelector('#HighlightedUserColor').value = colorElem.querySelector('.color-text').textContent;
+
+				return;
 			}
+
+			let randomColor = dom.elemOrClosest(e.target, '.random-color');
+
+			if (randomColor) {
+				e.preventDefault();
+				let newColor = color.getRandomColor();
+
+				dialog.panel.querySelector('#HighlightedUserColor').value = newColor;
+			}
+
 		}, false);
 
 		return dialog;

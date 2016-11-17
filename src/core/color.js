@@ -1,3 +1,5 @@
+import { random } from './func';
+
 var colors = new Set();
 colors.add('#666666');
 colors.add('#555555');
@@ -14,6 +16,10 @@ colors.add('#cccccc');
 colors.add('#dddddd');
 colors.add('#eeeeee');
 colors.add('#ffffff');
+
+function getRandomColor () {
+	return '#' + [random(0, 256, true), random(0, 256, true), random(0, 256, true)].map(c => c.toString('16').padStart(2, '0')).join('');
+}
 
 function getLuminanace (r, g, b) {
 	let output = (r * 299 + g * 587 + b * 114) / 1000;
@@ -61,4 +67,4 @@ function getContrastColor (hexcolor) {
 	return output.color;
 }
 
-export { getContrastColor };
+export { getContrastColor, getRandomColor };
