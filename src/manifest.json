@@ -22,10 +22,8 @@
 	"content_scripts": [{
 		"run_at": "document_start",
 		"matches": [
-			"http://hup.lh/*",
-			"http://hup.lh:3000/*",
-			"http://hup.hu/*",
-			"https://hup.lh/*"
+			"*://hup.lh/*",
+			"*://hup.hu/*"
 		],
 		"css": [
 			"data/core/css/hupper.css",
@@ -39,11 +37,8 @@
 		"contextMenus",
 		"tabs",
 		"storage",
-		"http://hup.hu/",
-		"https://hup.hu/",
-		"http://hup.lh/",
-		"http://hup.lh:3000/",
-		"https://hup.lh/"
+		"*://hup.hu/",
+		"*://hup.lh/"
 	],
 
 	"applications": {
