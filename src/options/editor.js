@@ -1,9 +1,9 @@
 import * as dom from '../core/dom';
 import * as color from '../core/color';
-
+import * as tpl from '../core/tpl';
 
 let editorTPL = `<form action="" method="" id="{formID}">
-	{fields}
+	{=fields}
 	<footer>
 		<button class="btn btn-cta" type="submit">Add</button>
 	</footer>
@@ -11,7 +11,7 @@ let editorTPL = `<form action="" method="" id="{formID}">
 
 <div class="hidden js-not-found"><h2>{notFoundTitle}</h2></div>
 
-<table id="{tableID}" class="js-table js-found hidden"><thead>{tableHead}</thead><tbody></tbody></table>`;
+<table id="{tableID}" class="js-table js-found hidden"><thead>{=tableHead}</thead><tbody></tbody></table>`;
 
 let controlGroupTPL = `<div class="field-group">
 		<label for="{id}">{label}</label>
@@ -25,25 +25,11 @@ function isHEX (value) {
 	return /^#[A-F0-9]{6}$/i.test(value);
 }
 
-function replace (tpl, data) {
-	return tpl.replace(/\{([^}]+)\}/g, function (match, item) {
-		return data[item] || item;
-	});
-}
 
 function createBody (data) {
-	return editorTPL.replace(/\{([^}]+)\}/g, function (match, item) {
-		switch (item) {
-		case 'fields':
-			return data.fields.map(f => replace(controlGroupTPL, f)).join('');
-
-		case 'tableHead':
-			return '<tr>' + data.tableHead.map(t => replace(theadTPL, {name: t})).join('') + '</tr>';
-
-		default:
-			return data[item] || item;
-		}
-	});
+	data.fields = data.fields.map(field => tpl.template(controlGroupTPL, field)).join('');
+	data.tableHead = data.tableHead.map(th => tpl.template(theadTPL, {name: th})).join('');
+	return tpl.template(editorTPL, data);
 }
 
 function getRow (fields) {
@@ -55,7 +41,6 @@ function getRow (fields) {
 				textSpan = dom.createElem('span', null, ['color-text'], field);
 			colorSpan.style.backgroundColor = field;
 			textSpan.style.color = color.getContrastColor(field);
-			// colorSpan.style.color = field;
 			colorSpan.appendChild(textSpan);
 			td.appendChild(colorSpan);
 		} else {
