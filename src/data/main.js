@@ -54,6 +54,13 @@ function updateComments () {
 			modComment.onCommentSetNew(newComments);
 
 			modComment.onCommentUpdate(comments);
+
+			if (newComments.length > 0) {
+				modHupperBlock.addMenuItem({
+					href: '#new',
+					text: 'Első olvasatlan hozzászólás'
+				});
+			}
 		}
 	});
 }

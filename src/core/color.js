@@ -1,4 +1,4 @@
-import { random } from './func';
+import { random, padStart } from './func';
 
 var colors = new Set();
 colors.add('#666666');
@@ -18,7 +18,7 @@ colors.add('#eeeeee');
 colors.add('#ffffff');
 
 function getRandomColor () {
-	return '#' + [random(0, 256, true), random(0, 256, true), random(0, 256, true)].map(c => c.toString('16').padStart(2, '0')).join('');
+	return '#' + [random(0, 256, true), random(0, 256, true), random(0, 256, true)].map(c => padStart(c.toString('16'), 2, '0')).join('');
 }
 
 function getLuminanace (r, g, b) {
