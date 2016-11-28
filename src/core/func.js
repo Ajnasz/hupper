@@ -80,4 +80,15 @@ function random (min = 0, max = 1, int = false) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy, random };
+function padStart (str, len, padString = ' ') {
+	let output = '';
+	let strLen = str.length;
+
+	while (output.length + strLen < len) {
+		output += padString;
+	}
+
+	return output + str;
+}
+
+export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy, random, padStart };
