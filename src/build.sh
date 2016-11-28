@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 BROWSERIFY=$(npm bin)/browserify
 
 echo -n " ."
@@ -12,7 +14,13 @@ echo -n " ."
 rm -f hupper*.zip
 echo -n " ."
 
-zip --quiet -r hupper.zip icons/{128,16,32,48}.png data/bundle.js data/core/css/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json
+PATHS="data/bundle.js data/core/css/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json"
+
+for icon in 128 48 32 16;do
+	PATHS="icons/$icon.png $PATHS"
+done
+
+zip --quiet -MM -r hupper.zip $PATHS
 echo " . "
 
 echo "build on `date`"

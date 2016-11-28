@@ -1,5 +1,5 @@
 function htmlEscape (text) {
-	return text.replace(/[&<>'"]/, text => {
+	return text.replace(/[&<>'"]/g, text => {
 		let output = text;
 
 		switch (text) {
