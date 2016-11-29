@@ -50,6 +50,7 @@ function updateComments () {
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
 
 			let newComments = comments.filter(c => c.isNew && !c.hide);
+
 			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
 
