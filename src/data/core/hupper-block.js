@@ -1,7 +1,9 @@
 import * as dom from '../../core/dom';
+import * as func from '../../core/func';
 import { log } from '../../core/log';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
+
 function addHupperBlock() {
 	if (document.getElementById('block-hupper')) {
 		return;
@@ -55,7 +57,15 @@ function getItemList() {
 
 function addMenuItem(item, parent) {
 	parent = parent || getItemList();
-	let li = dom.createElem('li', null, ['leaf']);
+
+	let id = func.toCamelCase(item.text);
+
+	let current = parent.querySelector(`#${id}`);
+	if (current) {
+		dom.remove(current);
+	}
+
+	let li = dom.createElem('li', [{name: 'id', value: id}], ['leaf']);
 	let a = dom.createElem('a', [
 		{name: 'href', value: item.href}
 	], null, item.text);

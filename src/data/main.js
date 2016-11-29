@@ -57,7 +57,7 @@ function updateComments () {
 
 			if (newComments.length > 0) {
 				modHupperBlock.addMenuItem({
-					href: '#new',
+					href: '#' + newComments[0].id,
 					text: 'Első olvasatlan hozzászólás'
 				});
 			}

@@ -91,4 +91,25 @@ function padStart (str, len, padString = ' ') {
 	return output + str;
 }
 
-export { first, index, partial, toArray, inArray, yesOrNo, sortBy, groupBy, random, padStart };
+function toCamelCase (text) {
+	return text.split(/[^a-zA-Z0-9]+/)
+		.map(word => word.split(''))
+		.map(word => {
+			word[0] = word[0].toUpperCase();
+			return word.join('');
+		}).join('');
+}
+
+export {
+	first,
+	index,
+	partial,
+	toArray,
+	inArray,
+	yesOrNo,
+	sortBy,
+	groupBy,
+	random,
+	padStart,
+	toCamelCase
+};
