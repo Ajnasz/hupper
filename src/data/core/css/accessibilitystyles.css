@@ -4,6 +4,11 @@
 	text-decoration: none !important;
 }
 
+.main-content .content tr:hover td {
+	background-color: #d8d8c4;
+	border-bottom: 0 !important;
+}
+
 .main-content a:hover {
 	border-bottom: 1px solid #006699 !important;
 	text-decoration: none !important;
