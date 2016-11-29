@@ -550,23 +550,12 @@ function hasScore (comment) {
 
 function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
+		setProp(comment, 'boring', comment.boring);
+		setProp(comment, 'troll', comment.troll);
+
 		if (comment.hide) {
 			hide(comment);
-
-			if (comment.boring) {
-				setProp(comment, 'boring', true);
-			}
-
-			if (comment.troll) {
-				setProp(comment, 'troll', true);
-			}
-
 		} else {
-			if (getProp(comment, 'boring')) {
-				setProp(comment, 'boring', false);
-			} else if (getProp(comment, 'troll')) {
-				setProp(comment, 'troll', false);
-			}
 
 			show(comment);
 
