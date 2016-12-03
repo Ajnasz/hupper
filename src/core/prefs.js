@@ -188,7 +188,7 @@ const defaultPrefs = Object.freeze([
 		// 'title': 'Regular expression to identify boring comments',
 		'title': 'Reguláris kifejezés az unalmas hozzászólások megtalálásához',
 		'type': 'string',
-		'value': '^([-_]|-1|\\+1|sub|subscribe)$',
+		'value': '^([-_.]|[-+]1|sub|subscribe)$',
 		'group': 'comments'
 	}
 ]);
