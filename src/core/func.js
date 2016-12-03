@@ -93,11 +93,9 @@ function padStart (str, len, padString = ' ') {
 
 function toCamelCase (text) {
 	return text.split(/[^a-zA-Z0-9]+/)
-		.map(word => word.split(''))
-		.map(word => {
-			word[0] = word[0].toUpperCase();
-			return word.join('');
-		}).join('');
+		.filter(w => w.length > 0)
+		.map(word => word[0].toUpperCase() + word.slice(1))
+		.join('');
 }
 
 export {
