@@ -1,3 +1,7 @@
+:root {
+	--dark-bg-color: #d8d8c4;
+}
+
 .main-content a:link,
 .main-content a:visited {
 	border-bottom: 1px dotted #999 !important;
@@ -58,4 +62,8 @@
 	background-color: #D4D4CA !important;
 	color: #000 !important;
 	border-color: #000 !important;
+}
+
+.main-content tr:hover td {
+	background-color: var(--dark-bg-color);
 }
