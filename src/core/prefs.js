@@ -197,15 +197,43 @@ function storage () {
 	return chrome.storage.sync || chrome.storage.local;
 }
 
+function prefToSync (prefName, prefValue) {
+	return new Promise(resolve => {
+		chrome.storage.sync.get(prefName, (result) => {
+			if (!(prefName in result)) {
+				let obj = {};
+				obj[prefName] = prefValue;
+				chrome.storage.sync.set(obj, resolve);
+			} else {
+				resolve();
+			}
+		});
+	}).then(() => chrome.storage.local.remove(prefName));
+}
+
+function migratePrefsToSync () {
+	if (chrome.storage.sync) {
+		return new Promise((resolve) => {
+			chrome.storage.local.get(resolve);
+		}).then(result => {
+			return Promise.all(Object.keys(result).map((name) => {
+				return prefToSync(name, result[name]);
+			}));
+		});
+	}
+
+	return Promise.resolve(null);
+}
+
 function createDefaultPrefs () {
 	return Promise.all(defaultPrefs.map((pref) => {
 		return new Promise(resolve => {
 			storage().get(pref.name, result => {
-				if (typeof result[pref.name] === 'undefined') {
+				if (pref.name in result) {
+					resolve(null);
+				} else {
 					// storage().set(value);
 					resolve([pref.name, pref.value]);
-				} else {
-					resolve(null);
 				}
 			});
 		});
@@ -374,5 +402,5 @@ chrome.storage.onChanged.addListener(function (changes) {
 	});
 });
 
-createDefaultPrefs();
+migratePrefsToSync().then(createDefaultPrefs);
 export { chromePrefs as prefs };
