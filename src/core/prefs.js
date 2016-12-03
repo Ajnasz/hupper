@@ -1,5 +1,4 @@
-/* global chrome */
-
+import { extNS } from '../core/ns';
 import { prefs } from './pref';
 import * as func from '../core/func';
 import { log } from './log';
@@ -194,27 +193,27 @@ const defaultPrefs = Object.freeze([
 ]);
 
 function storage () {
-	return chrome.storage.sync || chrome.storage.local;
+	return extNS.storage.sync || extNS.storage.local;
 }
 
 function prefToSync (prefName, prefValue) {
 	return new Promise(resolve => {
-		chrome.storage.sync.get(prefName, (result) => {
+		extNS.storage.sync.get(prefName, (result) => {
 			if (!(prefName in result)) {
 				let obj = {};
 				obj[prefName] = prefValue;
-				chrome.storage.sync.set(obj, resolve);
+				extNS.storage.sync.set(obj, resolve);
 			} else {
 				resolve();
 			}
 		});
-	}).then(() => chrome.storage.local.remove(prefName));
+	}).then(() => extNS.storage.local.remove(prefName));
 }
 
 function migratePrefsToSync () {
-	if (chrome.storage.sync) {
+	if (extNS.storage.sync) {
 		return new Promise((resolve) => {
-			chrome.storage.local.get(resolve);
+			extNS.storage.local.get(resolve);
 		}).then(result => {
 			return Promise.all(Object.keys(result).map((name) => {
 				return prefToSync(name, result[name]);
@@ -394,7 +393,7 @@ var chromePrefs = Object.assign(prefs, {
 	events
 });
 
-chrome.storage.onChanged.addListener(function (changes) {
+extNS.storage.onChanged.addListener(function (changes) {
 	Object.keys(changes).forEach(name => {
 		chromePrefs.getPref(name).then((value) => {
 			events.emit(name, value);

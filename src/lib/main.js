@@ -1,5 +1,4 @@
-/* global chrome:true */
-
+import { extNS } from '../core/ns';
 import { prefs } from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
@@ -18,13 +17,13 @@ function manageStyles (tabID) {
 		let  [ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar, loadStyles ] = resp;
 		let styles = pageStyles.getPageStyle({ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar });
 		if (styles.length) {
-			chrome.tabs.insertCSS(tabID, {
+			extNS.tabs.insertCSS(tabID, {
 				code: styles.join('')
 			});
 		}
 
 		if (loadStyles) {
-			chrome.tabs.insertCSS(tabID, {
+			extNS.tabs.insertCSS(tabID, {
 				file: 'data/core/css/accessibilitystyles.css'
 			});
 		}
@@ -57,11 +56,11 @@ var contextConf = {
 		// onclick: onContextClick(title)
 	};
 
-	chrome.contextMenus.create(conf);
+	extNS.contextMenus.create(conf);
 });
 
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-	chrome.tabs.sendMessage(tab.id, {
+extNS.contextMenus.onClicked.addListener(function (info, tab) {
+	extNS.tabs.sendMessage(tab.id, {
 		event: info.menuItemId,
 		data: info
 	}, function (user) {
@@ -90,7 +89,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			}
 
 			action.then(function () {
-				chrome.tabs.sendMessage(tab.id, {event: 'userChange', data: info});
+				extNS.tabs.sendMessage(tab.id, {event: 'userChange', data: info});
 			});
 		}
 	});
@@ -99,16 +98,16 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 (function () {
 	let tabs = new Set();
 
-	chrome.storage.onChanged.addListener(function (changes, namespace) {
+	extNS.storage.onChanged.addListener(function (changes, namespace) {
 		console.log('storage change', changes, namespace);
 
 		tabs.forEach(tab => {
 			Object.keys(changes)
-				.forEach(name => chrome.tabs.sendMessage(tab, {event: 'prefChange', data: name}));
+				.forEach(name => extNS.tabs.sendMessage(tab, {event: 'prefChange', data: name}));
 		});
 	});
 
-	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+	extNS.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		let {event, data} = msg;
 
 		switch (event) {
@@ -171,7 +170,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 	});
 
-	chrome.tabs.onRemoved.addListener(function (tabID) {
+	extNS.tabs.onRemoved.addListener(function (tabID) {
 		tabs.delete(tabID);
 	});
 }());

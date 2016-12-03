@@ -1,4 +1,4 @@
-/* global chrome:true */
+import { extNS } from '../core/ns';
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock  from './core/hupper-block';
@@ -40,7 +40,7 @@ function updateComments () {
 		return;
 	}
 
-	chrome.runtime.sendMessage({
+	extNS.runtime.sendMessage({
 		event: 'requestCommentParse',
 		data: comments
 	}, function (comments) {
@@ -73,7 +73,7 @@ function updateArticles () {
 		return;
 	}
 
-	chrome.runtime.sendMessage({
+	extNS.runtime.sendMessage({
 		event: 'requestArticleParse',
 		data: articles
 	}, function (articles) {
@@ -94,7 +94,7 @@ function updateBlocks () {
 		return;
 	}
 
-	chrome.runtime.sendMessage({
+	extNS.runtime.sendMessage({
 		event: 'requestBlockParse',
 		data: blocks
 	}, function (blocks) {
@@ -109,7 +109,7 @@ function updateBlocks () {
 
 function addBlockListeners () {
 	modBlocks.onEnableBlockControls(function (event) {
-		chrome.runtime.sendMessage({
+		extNS.runtime.sendMessage({
 			event: 'block.action',
 			data: event,
 			context: modBlocks.getBlocks()
@@ -131,7 +131,7 @@ function addBlockListeners () {
 
 function addArticleListeners () {
 	modArticles.listenToTaxonomyButtonClick(function (article) {
-		chrome.runtime.sendMessage({event: 'article.hide-taxonomy', data: article}, updateArticles);
+		extNS.runtime.sendMessage({event: 'article.hide-taxonomy', data: article}, updateArticles);
 	});
 }
 
@@ -152,7 +152,7 @@ function addHupperBlockListeners () {
 			return;
 		}
 
-		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
+		extNS.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
 			modBlocks.toggleBlock(block);
 		});
 	}, false);
@@ -174,7 +174,7 @@ function onPrefChange (pref) {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+	extNS.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		switch (msg.event) {
 		case 'trolluser':
 		case 'untrolluser':
@@ -193,7 +193,7 @@ window.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	chrome.runtime.sendMessage({event: 'register'}, function (response) {
+	extNS.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
 			if (response.data.setunlimitedlinks) {
 				unlimitedlinks.setUnlimitedLinks();
