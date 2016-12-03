@@ -3,9 +3,11 @@
 	"short_name": "Hupper",
 	"version": "2.1.1",
 	"version_name": "2.1 b2",
+	"author": "Lajos Koszti <ajnasz@ajnasz.hu>",
 	"manifest_version": 2,
 	"description": "Improve the user experience of HUP.hu",
 	"background": {
+		"persistent": true,
 		"scripts": ["lib/bundle.js"]
 	},
 	"icons": {
@@ -14,6 +16,7 @@
 		"48": "icons/48.png",
 		"128": "icons/128.png"
 	},
+	"options_page": "options.html",
 	"options_ui": {
 		"page": "options.html",
 		"chrome_style": false,
