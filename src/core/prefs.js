@@ -5,17 +5,20 @@ import * as func from '../core/func';
 import { log } from './log';
 
 const defaultPrefs = Object.freeze([
+
 	{
-		'name': 'replacenewcommenttext',
-		'title': 'Replace the \"új\" text of new comments to a better searchable one',
+		'name': 'setunlimitedlinks',
+		// 'title': 'Show as many comments as possible on a page',
+		'title': 'A lehető legtöbb hozzászólás mutatása',
 		'type': 'bool',
 		'value': true,
 		'group': 'comments'
 	},
 
 	{
-		'name': 'setunlimitedlinks',
-		'title': 'Show as many comments as possible on a page',
+		'name': 'replacenewcommenttext',
+		// 'title': 'Replace the "új" text of new comments to a better searchable one',
+		'title': 'Olvasatlan hozzászólásoknál az "új" szöveg lecserélése valami jobban kereshetőre',
 		'type': 'bool',
 		'value': true,
 		'group': 'comments'
@@ -23,7 +26,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'newcommenttext',
-		'title': 'The text to show instead of \"új\"',
+		// 'title': 'The text to show instead of \"új\"',
+		'title': 'Szöveg az új hozzászólásokban "új" helyett',
 		'type': 'string',
 		'value': '[new]',
 		'group': 'comments'
@@ -31,7 +35,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'filtertrolls',
-		'title': 'Enable trollfilter',
+		// 'title': 'Enable trollfilter',
+		'title': 'Trollszűrő engedélyezése',
 		'type': 'bool',
 		'value': true,
 		'group': 'comments'
@@ -39,7 +44,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'edittrolls',
-		'title': 'Edit trolls',
+		// 'title': 'Edit trolls',
+		'title': 'Trollok szerkesztése',
 		'label': 'Click to edit trolls',
 		'type': 'control',
 		'group': 'comments'
@@ -47,7 +53,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'trolls',
-		'title': 'List of trolls',
+		// 'title': 'List of trolls',
+		'title': 'Trollok listája',
 		'type': 'array',
 		'value': [],
 		'hidden': true,
@@ -56,7 +63,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'huppercolor',
-		'title': 'Default highlighted user\'s comment header color',
+		// 'title': 'Default color of highlighted user\'s comment header',
+		'title': 'Kiemelt felhasználók alapértelmezett színe',
 		'type': 'color',
 		'value': '#B5D7BE',
 		'group': 'comments'
@@ -64,7 +72,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'edithighlightusers',
-		'title': 'Edit highlighted users',
+		// 'title': 'Edit highlighted users',
+		'title': 'Kiemelt felhasználók szerkesztése',
 		'label': 'Click to edit highlighted users',
 		'type': 'control',
 		'group': 'comments'
@@ -72,7 +81,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'highlightusers',
-		'title': 'Highlight comments of the users',
+		// 'title': 'Highlight comments of the users',
+		'title': 'Kiemelt felhasználók listája',
 		'type': 'array',
 		'value': [
 			{name: 'username', color: '#fff999'},
@@ -84,7 +94,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'hidetaxonomy',
-		'title': 'Hidden article types',
+		// 'title': 'Hidden article types',
+		'title': 'Rejtett sikkek listája',
 		'type': 'array',
 		'value': [],
 		'hidden': true,
@@ -93,14 +104,16 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'edithidetaxonomy',
-		'title': 'Edit hidden article types',
+		// 'title': 'Edit hidden article types',
+		'title': 'Rejtett cikkek szerkesztése',
 		'type': 'control',
 		'group': 'articles'
 	},
 
 	{
 		'name': 'blocks',
-		'title': 'Block settings',
+		// 'title': 'Block settings',
+		'title': 'Block beállítások',
 		'type': 'array',
 		'value': [],
 		'hidden': true,
@@ -108,7 +121,8 @@ const defaultPrefs = Object.freeze([
 	},
 	{
 		'name': 'parseblocks',
-		'title': 'Parse blocks',
+		// 'title': 'Parse blocks',
+		'title': 'Blokkok funkciók engedélyezése',
 		'type': 'bool',
 		'value': true,
 		'group': 'blocks'
@@ -117,7 +131,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'style_wider_sidebar',
-		'title': 'Width of sidebars',
+		// 'title': 'Width of sidebars',
+		'title': 'Oldalsó oszlopok szélessége',
 		'type': 'integer',
 		'value': 0,
 		'group': 'styles'
@@ -125,7 +140,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'style_min_fontsize',
-		'title': 'Minimum font size',
+		// 'title': 'Minimum font size',
+		'title': 'Minimum betűméret',
 		'type': 'integer',
 		'value': 0,
 		'group': 'styles'
@@ -133,7 +149,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'style_accessibility',
-		'title': 'Load accessibility styles',
+		// 'title': 'Load accessibility styles',
+		'title': 'Használatot segítő stílusok betöltése',
 		'type': 'bool',
 		'value': true,
 		'group': 'styles'
@@ -141,7 +158,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'style_hide_left_sidebar',
-		'title': 'Hide left sidebar',
+		// 'title': 'Hide left sidebar',
+		'title': 'Bal oldali oszlop elrejtése',
 		'type': 'bool',
 		'value': false,
 		'group': 'styles'
@@ -149,7 +167,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'style_hide_right_sidebar',
-		'title': 'Hide right sidebar',
+		// 'title': 'Hide right sidebar',
+		'title': 'Jobb oldali oszlop elrejtése',
 		'type': 'bool',
 		'value': false,
 		'group': 'styles'
@@ -157,7 +176,8 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'hideboringcomments',
-		'title': 'Hide boring comments',
+		// 'title': 'Hide boring comments',
+		'title': 'Unalmas hozzászólások elrejtése',
 		'type': 'bool',
 		'value': true,
 		'group': 'comments'
@@ -165,9 +185,10 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'boringcommentcontents',
-		'title': 'Regular expression to identify boring comments',
+		// 'title': 'Regular expression to identify boring comments',
+		'title': 'Reguláris kifejezés az unalmas hozzászólások megtalálásához',
 		'type': 'string',
-		'value': '^([-_]|-1|\\+1|sub|subscribe)$',
+		'value': '^([-_.]|[-+]1|sub|subscribe)$',
 		'group': 'comments'
 	}
 ]);
@@ -176,15 +197,43 @@ function storage () {
 	return chrome.storage.sync || chrome.storage.local;
 }
 
+function prefToSync (prefName, prefValue) {
+	return new Promise(resolve => {
+		chrome.storage.sync.get(prefName, (result) => {
+			if (!(prefName in result)) {
+				let obj = {};
+				obj[prefName] = prefValue;
+				chrome.storage.sync.set(obj, resolve);
+			} else {
+				resolve();
+			}
+		});
+	}).then(() => chrome.storage.local.remove(prefName));
+}
+
+function migratePrefsToSync () {
+	if (chrome.storage.sync) {
+		return new Promise((resolve) => {
+			chrome.storage.local.get(resolve);
+		}).then(result => {
+			return Promise.all(Object.keys(result).map((name) => {
+				return prefToSync(name, result[name]);
+			}));
+		});
+	}
+
+	return Promise.resolve(null);
+}
+
 function createDefaultPrefs () {
 	return Promise.all(defaultPrefs.map((pref) => {
 		return new Promise(resolve => {
 			storage().get(pref.name, result => {
-				if (typeof result[pref.name] === 'undefined') {
+				if (pref.name in result) {
+					resolve(null);
+				} else {
 					// storage().set(value);
 					resolve([pref.name, pref.value]);
-				} else {
-					resolve(null);
 				}
 			});
 		});
@@ -353,5 +402,5 @@ chrome.storage.onChanged.addListener(function (changes) {
 	});
 });
 
-createDefaultPrefs();
+migratePrefsToSync().then(createDefaultPrefs);
 export { chromePrefs as prefs };

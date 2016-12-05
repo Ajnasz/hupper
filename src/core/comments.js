@@ -21,17 +21,6 @@ function setPrevNextLinks (newComments) {
 	return newComments;
 }
 
-function updateTrolls (trolls, comments) {
-	comments.forEach(function (comment) {
-		let isTroll = trolls.indexOf(comment.author) > -1;
-
-		comment.troll = isTroll;
-		comment.hide = Boolean(isTroll || comment.boring);
-
-		updateTrolls(trolls, comment.children);
-	});
-}
-
 function getParagraphs (comment) {
 	return comment.content.split('\n');
 }
@@ -52,27 +41,35 @@ function isTrollComment (trolls, comment) {
 	return trolls.indexOf(comment.author) > -1;
 }
 
-function markTrollComments (comments, trolls) {
-
+function markTrollComments (comments, trolls, isParentTroll) {
 	comments.forEach(function (comment) {
-		comment.troll = isTrollComment(trolls, comment);
+		let isTroll = isTrollComment(trolls, comment);
 
-		markTrollComments(comment.children, trolls);
+		comment.troll = isTroll;
+		comment.isParentTroll = isParentTroll;
+
+		markTrollComments(comment.children, trolls, isParentTroll || isTroll);
 	});
-
 }
 
-function updateHiddenState (comments) {
+function updateHiddenState (comments, isParentHidden = false) {
 	comments.forEach(comment => {
-		comment.hide = Boolean(comment.troll || comment.boring);
-		updateHiddenState(comment.children);
+		let isHidden = Boolean(comment.troll || comment.boring);
+		comment.hide = isHidden || isParentHidden;
+		comment.isParentHidden = isParentHidden;
+
+		updateHiddenState(comment.children, isParentHidden || isHidden);
 	});
 }
 
-function markBoringComments (comments, boringRegexp) {
+function markBoringComments (comments, boringRegexp, isParentBoring = false) {
 	comments.forEach(function (comment) {
-		comment.boring = isBorinComment(boringRegexp, comment);
-		markBoringComments(comment.children, boringRegexp);
+		let isBoring = isBorinComment(boringRegexp, comment);
+
+		comment.boring = isBoring;
+		comment.isParentBoring = isParentBoring;
+
+		markBoringComments(comment.children, boringRegexp, isParentBoring || isBoring);
 	});
 }
 
@@ -150,7 +147,6 @@ export {
 	setScores,
 	getNewComments,
 	setPrevNextLinks,
-	updateTrolls,
 	setHighlightedComments,
 	markBoringComments,
 	markTrollComments,

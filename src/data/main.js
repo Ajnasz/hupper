@@ -50,6 +50,7 @@ function updateComments () {
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
 
 			let newComments = comments.filter(c => c.isNew && !c.hide);
+
 			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
 
@@ -57,7 +58,7 @@ function updateComments () {
 
 			if (newComments.length > 0) {
 				modHupperBlock.addMenuItem({
-					href: '#new',
+					href: '#' + newComments[0].id,
 					text: 'Első olvasatlan hozzászólás'
 				});
 			}

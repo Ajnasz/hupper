@@ -100,13 +100,13 @@ function createControl (item) {
 function getGroupName (group) {
 	switch (group) {
 	case 'comments':
-		return 'Comments';
+		return 'Hozzászólások';
 	case 'articles':
-		return 'Articles';
+		return 'Cikkek';
 	case 'blocks':
-		return 'Blocks';
+		return 'Blokkok';
 	case 'styles':
-		return 'Styles';
+		return 'Megjelenés';
 	}
 }
 
