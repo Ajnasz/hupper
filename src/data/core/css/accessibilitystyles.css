@@ -8,8 +8,10 @@
 	text-decoration: none !important;
 }
 
-.main-content .content tr:hover td {
-	background-color: #d8d8c4;
+.main-content .content tr:hover td,
+.main-content #tracker tr:hover td,
+.main-content #forum tr:hover td {
+	background-color: var(--dark-bg-color);
 	border-bottom: 0 !important;
 }
 
@@ -67,8 +69,4 @@
 	background-color: #D4D4CA !important;
 	color: #000 !important;
 	border-color: #000 !important;
-}
-
-.main-content tr:hover td {
-	background-color: var(--dark-bg-color);
 }
