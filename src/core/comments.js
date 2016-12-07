@@ -129,15 +129,17 @@ function isMinusOne (comment) {
 
 function setScores (comments) {
 	comments.forEach(function (comment) {
-		comment.score = 0;
-
-		comment.children.forEach(function (child) {
+		comment.votes = comment.children.reduce((accu, child) => {
 			if (isPlusOne(child)) {
-				comment.score += 1;
+				accu.plusone += 1;
 			} else if (isMinusOne(child)) {
-				comment.score -= 1;
+				accu.minusone += 1;
 			}
-		});
+
+			return accu;
+		}, { score: null, plusone: 0, minusone: 0 });
+
+		comment.votes.score = comment.votes.plusone - comment.votes.minusone;
 
 		setScores(comment.children);
 	});
