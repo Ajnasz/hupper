@@ -520,8 +520,16 @@ function getProp (comment, prop) {
 	}
 }
 
-function getScoreTitle (score) {
-	return score + ' user addott +1 pontot';
+function getScoreTitle (votes) {
+	if (votes.plusone > 0 && votes.minusone > 0) {
+		return `${votes.plusone} hupper adott +1 pontot\n${votes.minusone} hupper adott -1 pontot`;
+	} else if (votes.plusone) {
+		return `${votes.plusone} hupper adott +1 pontot`;
+	} else if (votes.minusone) {
+		return `${votes.minusone} hupper adott -1 pontot`;
+	}
+
+	return null;
 }
 
 function showScore (comment) {
@@ -534,18 +542,18 @@ function showScore (comment) {
 		let scores = dom.createElem('div', [
 			{
 				name: 'title',
-				value: getScoreTitle(comment.score)
+				value: getScoreTitle(comment.votes)
 			}
-		], ['scores'], comment.score);
+		], ['scores'], comment.votes.score);
 		elem.node.insertBefore(scores, content);
 	} else {
-		scores.textContent = comment.score;
-		scores.setAttribute('title', getScoreTitle(comment.score));
+		scores.textContent = comment.votes.score;
+		scores.setAttribute('title', getScoreTitle(comment.votes));
 	}
 }
 
 function hasScore (comment) {
-	return typeof comment.score !== 'undefined' && comment.score !== 0;
+	return typeof comment.votes.score !== 'undefined' && comment.votes.score !== 0;
 }
 
 function onCommentUpdate (comments) {
