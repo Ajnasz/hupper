@@ -45,7 +45,7 @@ function updateComments () {
 		data: comments
 	}, function (comments) {
 		if (comments) {
-			let childComments = comments.filter(c => c.parent !== '');
+			let childComments = comments.filter(c => c.parentID !== '');
 			modComment.addParentLinkToComments(childComments);
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
 

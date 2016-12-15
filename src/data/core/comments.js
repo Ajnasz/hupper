@@ -53,7 +53,7 @@ var commentDataStruct = {
 	author: '',
 	created: 0,
 	id: '',
-	parent: ''
+	parentID: ''
 };
 
 /**
@@ -191,7 +191,7 @@ function parseComment (node, options) {
 	output.author = getCommentAuthor(commentObj);
 	output.created = getCommentCreateDate(commentObj);
 	output.id = getCommentId(commentObj);
-	output.parent = findParentId(commentObj.node);
+	output.parentID = findParentId(commentObj.node);
 	output.indentLevel = findIndentLevel(commentObj);
 
 	if (options.content) {
@@ -427,7 +427,7 @@ function createFooterLink (text, href, classList) {
  * @param commentDataStruct comment
  */
 function addParentLinkToComment (comment) {
-	addFooterLink(comment, createFooterLink(TEXT_PARENT, '#' + comment.parent));
+	addFooterLink(comment, createFooterLink(TEXT_PARENT, '#' + comment.parentID));
 }
 
 /**

@@ -54,7 +54,8 @@ function markTrollComments (comments, trolls, isParentTroll) {
 
 function updateHiddenState (comments, isParentHidden = false) {
 	comments.forEach(comment => {
-		let isHidden = Boolean(comment.troll || comment.boring);
+		let isHidden = comment.troll || (comment.boring && !comment.hasInterestingChild);
+
 		comment.hide = isHidden || isParentHidden;
 		comment.isParentHidden = isParentHidden;
 
@@ -62,14 +63,33 @@ function updateHiddenState (comments, isParentHidden = false) {
 	});
 }
 
-function markBoringComments (comments, boringRegexp, isParentBoring = false) {
-	comments.forEach(function (comment) {
+function markBoringComments (comments, boringRegexp) {
+	comments.forEach(comment => {
 		let isBoring = isBorinComment(boringRegexp, comment);
 
 		comment.boring = isBoring;
-		comment.isParentBoring = isParentBoring;
 
-		markBoringComments(comment.children, boringRegexp, isParentBoring || isBoring);
+		markBoringComments(comment.children, boringRegexp);
+	});
+}
+
+function markHasInterestingChild (comments) {
+	comments.forEach(comment => {
+		if (!comment.boring) {
+
+			let c = comment;
+
+			while (c.parent) {
+				c = c.parent;
+				if (c.hasInterestingChild) {
+					break;
+				}
+
+				c.hasInterestingChild = true;
+			}
+		}
+
+		markHasInterestingChild(comment.children);
 	});
 }
 
@@ -153,5 +173,6 @@ export {
 	markBoringComments,
 	markTrollComments,
 	flatComments,
+	markHasInterestingChild,
 	updateHiddenState
 };

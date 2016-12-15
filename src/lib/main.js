@@ -152,7 +152,6 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 		case 'block.action':
 			coreMain.handleBlockAction(data, msg.context).then(x => {
-				console.log('foobar', x);
 				sendResponse(x);
 			}).catch(e => {
 				console.error(e);

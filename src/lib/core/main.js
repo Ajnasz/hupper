@@ -25,7 +25,16 @@ function setPrevNextLinks (nodes) {
 	return nodes;
 }
 
+function setParent (comments, parent) {
+	comments.forEach(comment => {
+		comment.parent = parent;
+		setParent(comment.children, comment);
+	});
+}
+
 function commentParse (comments) {
+	setParent(comments, null);
+
 	modComments.setScores(comments);
 
 	let flatCommentList = modComments.flatComments(comments);
@@ -39,6 +48,7 @@ function commentParse (comments) {
 		if (hideBoringComments) {
 			let boringRex = new RegExp(boringRexStr);
 			modComments.markBoringComments(comments, boringRex);
+			modComments.markHasInterestingChild(comments);
 		}
 
 		return Promise.all([
