@@ -144,11 +144,10 @@ function getCommentContent (comment) {
  * @return string
  */
 function findParentId (elem) {
-	var indented = dom.closest(elem, '.' + INDENTED_CLASS),
-		parentComment;
+	let indented = dom.closest(elem, '.' + INDENTED_CLASS);
 
 	if (indented) {
-		parentComment = dom.prev(indented, '.' + COMMENT_CLASS);
+		let parentComment = dom.prev(indented, '.' + COMMENT_CLASS);
 
 		if (parentComment) {
 			return getCommentId(getCommentObj(parentComment));

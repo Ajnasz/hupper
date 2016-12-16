@@ -2,12 +2,16 @@ function createEmitter () {
 	var events = new Map();
 
 	return {
-		off: function (name, cb) {
+		off (name, cb) {
 			if (!events.has(name) || events.get(name).length === 0) {
 				return;
 			}
 
-			if (arguments.length === 2) {
+			let argLen = arguments.length;
+
+			if (argLen === 1) {
+				events.delete(name);
+			} else if (argLen > 1) {
 				let listeners = events.get(name);
 
 				for (var i = 0, el = listeners.length; i < el; i++) {
@@ -16,12 +20,15 @@ function createEmitter () {
 					}
 				}
 
-				events.set(listeners.filter(l => typeof l === 'function'));
-			} else {
-				events.delete(name);
+				events.set(name, listeners.filter(l => typeof l === 'function'));
 			}
 		},
-		on: function (name, cb) {
+
+		on (name, cb) {
+			if (typeof cb !== 'function') {
+				return;
+			}
+
 			if (!events.has(name)) {
 				events.set(name, []);
 			}
@@ -29,11 +36,9 @@ function createEmitter () {
 			events.get(name).push(cb);
 		},
 
-		emit: function (name, args) {
+		emit (name, args) {
 			if (events.has(name)) {
-				events.get(name).forEach((cb) => {
-					cb.call(null, args);
-				});
+				events.get(name).forEach((cb) => cb.call(null, args));
 			}
 		}
 	};
