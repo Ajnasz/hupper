@@ -4,7 +4,7 @@ import { log } from '../../core/log';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 
-function addHupperBlock() {
+function addHupperBlock () {
 	if (document.getElementById('block-hupper')) {
 		return;
 	}
@@ -49,13 +49,13 @@ function addHupperBlock() {
 	}, false);
 }
 
-function getItemList() {
+function getItemList () {
 	let block = document.getElementById('block-hupper');
 	return block.querySelector('.menu');
 
 }
 
-function addMenuItem(item, parent) {
+function addMenuItem (item, parent) {
 	parent = parent || getItemList();
 
 	let id = func.toCamelCase(item.text);
@@ -77,7 +77,7 @@ function addMenuItem(item, parent) {
 	return li;
 }
 
-function addHiddenBlockContainer() {
+function addHiddenBlockContainer () {
 	let container = getItemList().querySelector('.hidden-blocks');
 
 	if (!container) {
@@ -99,7 +99,7 @@ function addHiddenBlockContainer() {
 	return container;
 }
 
-function addHiddenBlock(block) {
+function addHiddenBlock (block) {
 	log.log('add hidden block', block);
 	let container = addHiddenBlockContainer();
 
@@ -121,7 +121,7 @@ function addHiddenBlock(block) {
 	link.dataset.blockid = block.id;
 }
 
-function removeHiddenBlock(block) {
+function removeHiddenBlock (block) {
 	let container = addHiddenBlockContainer();
 	let link = container.querySelector('[data-action="restore-block"][data-blockid="' + block.id + '"]');
 
