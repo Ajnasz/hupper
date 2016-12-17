@@ -22,11 +22,11 @@ function setPrevNextLinks (newComments) {
 }
 
 function getParagraphs (comment) {
-	return comment.content.split('\n');
+	return comment.content.split('\n').map(p => p.trim()).filter(p => p !== '');
 }
 
 function isBorinComment (boringRegexp, comment) {
-	let paragraphs = getParagraphs(comment).map(p => p.trim()).filter(p => p !== '');
+	let paragraphs = getParagraphs(comment);
 
 	let signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
 
