@@ -93,21 +93,6 @@ function markHasInterestingChild (comments) {
 	});
 }
 
-function getNewComments (comments) {
-	let output = [];
-
-	comments.forEach(function (comment) {
-		if (comment.isNew && !comment.hide) {
-			output.push(comment);
-		}
-
-		if (!comment.hide && comment.children.length) {
-			output = output.concat(getNewComments(comment.children));
-		}
-	});
-	return output;
-}
-
 function flatComments (comments) {
 	let output = [];
 
@@ -167,7 +152,6 @@ function setScores (comments) {
 
 export {
 	setScores,
-	getNewComments,
 	setPrevNextLinks,
 	setHighlightedComments,
 	markBoringComments,

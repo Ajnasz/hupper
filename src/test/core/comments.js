@@ -181,5 +181,4 @@ test('core/comments.setScores', t => {
 	t.equal(items[5].children[0].votes.minusone, 1, 'Set children minusone to 1, if has two plusone and one minusone answer');
 
 	t.end();
-
 });
