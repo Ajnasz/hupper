@@ -1,6 +1,6 @@
 function nullFunction () {}
 
-let log = new Proxy({enabled: false, logger: null}, {
+let log = new Proxy({enabled: false, logger: console}, {
 	get (target, name) {
 		if (target.logger && target.logger[name]) {
 			if (target.enabled) {
