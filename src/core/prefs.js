@@ -190,6 +190,16 @@ const defaultPrefs = Object.freeze([
 		'type': 'string',
 		'value': '^([-_.]|[-+]1|sub|subscribe)$',
 		'group': 'comments'
+	},
+
+	{
+		'name': 'logenabled',
+		// 'title': 'Regular expression to identify boring comments',
+		'title': 'Logolás engedélyezése',
+		'type': 'bool',
+		'value': false,
+		'hidden': true,
+		'group': null
 	}
 ]);
 
@@ -402,5 +412,10 @@ chrome.storage.onChanged.addListener(function (changes) {
 	});
 });
 
+chromePrefs.on('logenabled', enabled => {
+	log.enabled = enabled;
+});
+
 migratePrefsToSync().then(createDefaultPrefs);
+
 export { chromePrefs as prefs };

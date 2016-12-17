@@ -9,7 +9,7 @@ import * as modCommentTree from './core/commenttree';
 
 import { log } from '../core/log';
 
-log.log(modBlocks, modArticles, modHupperBlock, modComment);
+log.logger = console;
 
 function getCommentObjects (options) {
 	let commentsContainer = document.getElementById('comments');
@@ -159,7 +159,7 @@ function addHupperBlockListeners () {
 }
 
 function onPrefChange (pref) {
-	switch (pref) {
+	switch (pref.name) {
 	case 'trolls':
 	case 'filtertrolls':
 	case 'highlightusers':
@@ -170,11 +170,17 @@ function onPrefChange (pref) {
 	case 'hidetaxonomy':
 		updateArticles();
 		break;
+
+	case 'logenabled':
+		log.enabled = pref.newValue;
+		break;
 	}
 }
 
 window.addEventListener('DOMContentLoaded', function () {
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+		log.log('message', msg.event);
+
 		switch (msg.event) {
 		case 'trolluser':
 		case 'untrolluser':
@@ -195,6 +201,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	chrome.runtime.sendMessage({event: 'register'}, function (response) {
 		if (response.event === 'registered') {
+			log.enabled = response.data.logenabled;
+
 			if (response.data.setunlimitedlinks) {
 				unlimitedlinks.setUnlimitedLinks();
 			}

@@ -3,8 +3,8 @@
 import { prefs } from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
-// import { log } from '../core/log';
-
+import { log } from '../core/log';
+log.logger = console;
 
 function manageStyles (tabID) {
 	'use strict';
@@ -100,11 +100,16 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 	let tabs = new Set();
 
 	chrome.storage.onChanged.addListener(function (changes, namespace) {
-		console.log('storage change', changes, namespace);
+		log.log('storage change', changes, namespace);
 
 		tabs.forEach(tab => {
-			Object.keys(changes)
-				.forEach(name => chrome.tabs.sendMessage(tab, {event: 'prefChange', data: name}));
+			Object.keys(changes).forEach(function (name) {
+				chrome.tabs.sendMessage(tab, {event: 'prefChange', data: {
+					name,
+					oldValue: changes[name].oldValue,
+					newValue: changes[name].newValue
+				}});
+			});
 		});
 	});
 
@@ -118,12 +123,14 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			manageStyles(sender.tab.id);
 			Promise.all([
 				prefs.getPref('setunlimitedlinks'),
-				prefs.getPref('parseblocks')
+				prefs.getPref('parseblocks'),
+				prefs.getPref('logenabled')
 			]).then(settings => {
-				let [setunlimitedlinks, parseblocks] = settings;
+				let [setunlimitedlinks, parseblocks, logenabled] = settings;
 				sendResponse({event: 'registered', data: {
 					setunlimitedlinks,
-					parseblocks
+					parseblocks,
+					logenabled
 				}});
 			});
 
@@ -154,7 +161,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 			coreMain.handleBlockAction(data, msg.context).then(x => {
 				sendResponse(x);
 			}).catch(e => {
-				console.error(e);
+				log.error(e);
 				// sendResponse(e);
 			});
 
