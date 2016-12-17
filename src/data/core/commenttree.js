@@ -1,4 +1,4 @@
-function findComments(parent) {
+function findComments (parent) {
 	var output = [];
 	if (!parent) {
 		return output;
@@ -17,7 +17,7 @@ function findComments(parent) {
 	return output;
 }
 
-function createObj(comments) {
+function createObj (comments) {
 	return comments.map(function (c) {
 		return {
 			id: c.previousElementSibling.id,
@@ -27,7 +27,7 @@ function createObj(comments) {
 	});
 }
 
-function recObj(comments) {
+function recObj (comments) {
 	comments.forEach(function (comment) {
 		var children = findComments(comment.node.nextElementSibling);
 
@@ -38,14 +38,14 @@ function recObj(comments) {
 	return comments;
 }
 
-function noramlizeCommentTreeItem(item) {
+function noramlizeCommentTreeItem (item) {
 	let output = Object.create(null);
 	output.id = item.id;
 
 	return output;
 }
 
-function normalizeCommentTree(tree) {
+function normalizeCommentTree (tree) {
 	return tree.map(function (item) {
 		let normalized = noramlizeCommentTreeItem(item);
 		normalized.children = normalizeCommentTree(item.children);
@@ -53,7 +53,7 @@ function normalizeCommentTree(tree) {
 	});
 }
 
-function getCommentTree() {
+function getCommentTree () {
 	let root = document.getElementById('comments');
 
 	return normalizeCommentTree(recObj(createObj(findComments(root))));

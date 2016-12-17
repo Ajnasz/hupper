@@ -9,26 +9,26 @@ const pathNames = [
 	'/promo'
 ];
 
-function isOnHup(hostname) {
+function isOnHup (hostname) {
 	return hostname === 'hup.hu' || hostname === 'www.hup.hu';
 }
 
-function isExtendablePath(linkPathName) {
+function isExtendablePath (linkPathName) {
 	return pathNames.some(function (pathName) {
 		return linkPathName.indexOf(pathName) === 0;
 	});
 }
 
-function isExtendableLink(link) {
+function isExtendableLink (link) {
 	return isOnHup(link.hostname) && isExtendablePath(link.pathname);
 }
 
-function makeExtendable(link) {
+function makeExtendable (link) {
 	let search = link.search;
 	link.search = search[0] === '?' ? '&comments_per_page=9999' : '?comments_per_page=9999';
 }
 
-function setUnlimitedLinks() {
+function setUnlimitedLinks () {
 	func.toArray(document.getElementsByTagName('a'))
 		.filter(isExtendableLink)
 		.forEach(makeExtendable);
