@@ -100,6 +100,10 @@ function toCamelCase (text) {
 		.join('');
 }
 
+function maxBy (array, field) {
+	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, {[field]: -Infinity});
+}
+
 export {
 	first,
 	index,
@@ -111,5 +115,6 @@ export {
 	groupBy,
 	random,
 	padStart,
-	toCamelCase
+	toCamelCase,
+	maxBy
 };

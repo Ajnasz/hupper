@@ -254,3 +254,20 @@ test('core/func.toCamelCase', (t) => {
 
 	t.end();
 });
+
+test('core/func.maxBy', t => {
+	t.plan(1);
+	var items = [
+		{ id: 3, value: 1 },
+		{ id: 4, value: 2 },
+		{ id: 1, value: -2 },
+		{ id: 2, value: -1 }
+	];
+
+	let actual = func.maxBy(items, 'value').id;
+	let expected = 4;
+
+	t.equal(actual, expected, `maxBy expected id ${expected}, got ${actual}`);
+
+	t.end();
+});
