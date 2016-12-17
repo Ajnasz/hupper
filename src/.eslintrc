@@ -23,7 +23,7 @@
 		"dot-notation": 1,
 		"indent": [1, "tab"],
 		"max-len": [1, 160],
-		"no-console": 0,
+		"no-console": 1,
 		"no-debugger": 1,
 		"no-fallthrough": 1,
 		"no-unused-vars": 1,
