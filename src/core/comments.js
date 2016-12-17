@@ -38,7 +38,7 @@ function isBorinComment (boringRegexp, comment) {
 }
 
 function isTrollComment (trolls, comment) {
-	return trolls.indexOf(comment.author) > -1;
+	return func.inArray(trolls, comment.author);
 }
 
 function markTrollComments (comments, trolls, isParentTroll) {
