@@ -7,7 +7,7 @@ NPMBIN=$(npm bin)
 ESLINT=$NPMBIN/eslint
 BROWSERIFY=$NPMBIN/browserify
 
-$ESLINT -c .eslintrc {options,lib,data,core}/**/*.js
+$ESLINT --ignore-pattern=bundle\.js -c .eslintrc {options,lib,data,core}/**/*.js
 
 echo -n " ."
 $BROWSERIFY options/main.js -o options/bundle.js -t babelify
