@@ -18,28 +18,16 @@ function first (array, cb) {
 	return null;
 }
 
+function inArray (array, item) {
+	return array.indexOf(item) > -1;
+}
+
 /**
  * @param NodeList list
  * @return {HTMLDOMElement[]}
  */
 function toArray (list) {
 	return Array.prototype.slice.call(list);
-}
-
-function partial (func) {
-	let pArgs = toArray(arguments).slice(1);
-
-	return function () {
-		return func.apply(this, pArgs.concat(toArray(arguments)));
-	};
-}
-
-function inArray (array, item) {
-	return array.indexOf(item) > -1;
-}
-
-function yesOrNo (isOk, yes, no) {
-	return isOk ? yes() : no();
 }
 
 function sortBy (array, field) {
@@ -55,6 +43,18 @@ function sortBy (array, field) {
 
 		return 0;
 	});
+}
+
+function partial (func) {
+	let pArgs = toArray(arguments).slice(1);
+
+	return function () {
+		return func.apply(this, pArgs.concat(toArray(arguments)));
+	};
+}
+
+function yesOrNo (isOk, yes, no) {
+	return isOk ? yes() : no();
 }
 
 function groupBy (array, field) {
@@ -94,8 +94,14 @@ function padStart (str, len, padString = ' ') {
 function toCamelCase (text) {
 	return text.split(/[^a-zA-Z0-9]+/)
 		.filter(w => w.length > 0)
-		.map(word => word[0].toUpperCase() + word.slice(1))
+		.map((word, index) => index === 0 ?
+			word[0].toLowerCase() + word.slice(1) :
+			word[0].toUpperCase() + word.slice(1))
 		.join('');
+}
+
+function maxBy (array, field) {
+	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, {[field]: -Infinity});
 }
 
 export {
@@ -109,5 +115,6 @@ export {
 	groupBy,
 	random,
 	padStart,
-	toCamelCase
+	toCamelCase,
+	maxBy
 };

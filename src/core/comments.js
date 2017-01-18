@@ -22,11 +22,11 @@ function setPrevNextLinks (newComments) {
 }
 
 function getParagraphs (comment) {
-	return comment.content.split('\n');
+	return comment.content.split('\n').map(p => p.trim()).filter(p => p !== '');
 }
 
 function isBorinComment (boringRegexp, comment) {
-	let paragraphs = getParagraphs(comment).map(p => p.trim()).filter(p => p !== '');
+	let paragraphs = getParagraphs(comment);
 
 	let signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
 
@@ -38,7 +38,7 @@ function isBorinComment (boringRegexp, comment) {
 }
 
 function isTrollComment (trolls, comment) {
-	return trolls.indexOf(comment.author) > -1;
+	return func.inArray(trolls, comment.author);
 }
 
 function markTrollComments (comments, trolls, isParentTroll) {
@@ -54,7 +54,8 @@ function markTrollComments (comments, trolls, isParentTroll) {
 
 function updateHiddenState (comments, isParentHidden = false) {
 	comments.forEach(comment => {
-		let isHidden = Boolean(comment.troll || comment.boring);
+		let isHidden = comment.troll || (comment.boring && !comment.hasInterestingChild);
+
 		comment.hide = isHidden || isParentHidden;
 		comment.isParentHidden = isParentHidden;
 
@@ -62,30 +63,34 @@ function updateHiddenState (comments, isParentHidden = false) {
 	});
 }
 
-function markBoringComments (comments, boringRegexp, isParentBoring = false) {
-	comments.forEach(function (comment) {
+function markBoringComments (comments, boringRegexp) {
+	comments.forEach(comment => {
 		let isBoring = isBorinComment(boringRegexp, comment);
 
 		comment.boring = isBoring;
-		comment.isParentBoring = isParentBoring;
 
-		markBoringComments(comment.children, boringRegexp, isParentBoring || isBoring);
+		markBoringComments(comment.children, boringRegexp);
 	});
 }
 
-function getNewComments (comments) {
-	let output = [];
+function markHasInterestingChild (comments) {
+	comments.forEach(comment => {
+		if (!comment.boring) {
 
-	comments.forEach(function (comment) {
-		if (comment.isNew && !comment.hide) {
-			output.push(comment);
+			let c = comment;
+
+			while (c.parent) {
+				c = c.parent;
+				if (c.hasInterestingChild) {
+					break;
+				}
+
+				c.hasInterestingChild = true;
+			}
 		}
 
-		if (!comment.hide && comment.children.length) {
-			output = output.concat(getNewComments(comment.children));
-		}
+		markHasInterestingChild(comment.children);
 	});
-	return output;
 }
 
 function flatComments (comments) {
@@ -147,11 +152,11 @@ function setScores (comments) {
 
 export {
 	setScores,
-	getNewComments,
 	setPrevNextLinks,
 	setHighlightedComments,
 	markBoringComments,
 	markTrollComments,
 	flatComments,
+	markHasInterestingChild,
 	updateHiddenState
 };

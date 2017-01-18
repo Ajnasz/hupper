@@ -1,4 +1,5 @@
 import * as func from '../../core/func';
+import { log } from '../../core/log';
 
 function createBlockPref (column, block) {
 	return {
@@ -10,8 +11,8 @@ function createBlockPref (column, block) {
 	};
 }
 function mergeBlockPrefsWithBlocks (blocks, blocksPref) {
-	console.log('blocks pref', blocksPref);
-	
+	log.log('blocks pref', blocksPref);
+
 	if (!blocksPref || !blocksPref.length) {
 		blocksPref = blocks.left.map(func.partial(createBlockPref, 'left')).concat(
 			blocks.right.map(func.partial(createBlockPref, 'right')));

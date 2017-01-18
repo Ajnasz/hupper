@@ -26,11 +26,11 @@ function htmlEscape (text) {
 
 function template (tpl, data) {
 	return tpl.replace(/\{(=)?([^}]+)\}/g, (match, prefix, item) => {
-		if (!data[item]) {
-			return item;
+		if (!(item in data) || data[item] === null || typeof data[item] === 'undefined') {
+			return match;
 		}
 
-		item = data[item];
+		item = data[item].toString();
 
 		switch (prefix) {
 		case '=':
@@ -44,5 +44,5 @@ function template (tpl, data) {
 	});
 }
 
-export { template };
+export { template, htmlEscape };
 

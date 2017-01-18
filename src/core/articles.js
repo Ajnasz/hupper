@@ -1,8 +1,8 @@
-function filterNewArticles(article) {
+function filterNewArticles (article) {
 	return article.isNew;
 }
 
-function setNewArticles(newArticles) {
+function setNewArticles (newArticles) {
 	var newArticlesLength = newArticles.length;
 
 	if (newArticlesLength > 1) {
@@ -22,7 +22,7 @@ function setNewArticles(newArticles) {
 	}
 }
 
-function filterHideableArticles(articles, taxonomies) {
+function filterHideableArticles (articles, taxonomies) {
 	return articles.filter(function (art) {
 		return taxonomies.indexOf(art.category) > -1;
 	});

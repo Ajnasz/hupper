@@ -19,7 +19,7 @@ let articleNodeStruct = {
 	header: null
 };
 
-function articleElementToStruct(element) {
+function articleElementToStruct (element) {
 	let categoryElem = element.querySelector('.links.inline > .first.last > a');
 	let category = categoryElem ? categoryElem.textContent : '';
 	let isNew = element.querySelector('.comment_new_comments') !== null;
@@ -33,7 +33,7 @@ function articleElementToStruct(element) {
 	return output;
 }
 
-function articleStructToArticleNodeStruct(article) {
+function articleStructToArticleNodeStruct (article) {
 	let elem = document.getElementById(article.id);
 	let output = Object.create(articleNodeStruct);
 
@@ -43,7 +43,7 @@ function articleStructToArticleNodeStruct(article) {
 	return output;
 }
 
-function insertIntoHnav(article, item) {
+function insertIntoHnav (article, item) {
 	let header = article.header,
 		hnav = header.querySelector('.' + ARTICLE_HNAV_CLASS),
 		hnew = hnav.querySelector('.hnew');
@@ -55,14 +55,14 @@ function insertIntoHnav(article, item) {
 	}
 }
 
-function removeArticleLink(item) {
+function removeArticleLink (item) {
 	let article = articleStructToArticleNodeStruct(item),
 		oldLinks = article.header.querySelectorAll('.prev-next-article');
 
 	func.toArray(oldLinks).forEach(l => l.parentNode.removeChild(l));
 }
 
-function addPrevNextArticleLink(id, relId, text) {
+function addPrevNextArticleLink (id, relId, text) {
 	var article = articleStructToArticleNodeStruct({id: id}),
 		link;
 
@@ -76,7 +76,7 @@ function addPrevNextArticleLink(id, relId, text) {
 	* @param string id Article id
 	* @param string nextArticleId
 	*/
-function addLinkToPrevArticle(id, prevArticleId) {
+function addLinkToPrevArticle (id, prevArticleId) {
 	addPrevNextArticleLink(id, prevArticleId, TEXT_PREV);
 }
 
@@ -84,11 +84,11 @@ function addLinkToPrevArticle(id, prevArticleId) {
 	* @param string id Comment id
 	* @param string nextCommentId
 	*/
-function addLinkToNextArticle(id, nextArticleId) {
+function addLinkToNextArticle (id, nextArticleId) {
 	addPrevNextArticleLink(id, nextArticleId, TEXT_NEXT);
 }
 
-function addCategoryHideButton(article) {
+function addCategoryHideButton (article) {
 	let categoryContainer = article.node.querySelector('.links.inline > .first.last');
 
 	if (!categoryContainer) {
@@ -110,7 +110,7 @@ function addCategoryHideButton(article) {
 /**
 	* @param articleNodeStruct article
 	*/
-function markNewArticle(newArticleText, article) {
+function markNewArticle (newArticleText, article) {
 	if (!article || !article.header || article.header.querySelector('.hnew')) {
 		return;
 	}
@@ -119,7 +119,7 @@ function markNewArticle(newArticleText, article) {
 	article.header.querySelector('.' + ARTICLE_HNAV_CLASS).appendChild(newText);
 }
 
-function parseArticles() {
+function parseArticles () {
 	let elements = document.getElementById('content-both').querySelectorAll('.node');
 	return func.toArray(elements).map(articleElementToStruct);
 }
@@ -136,18 +136,18 @@ function toggleArticles (articles) {
 		});
 }
 
-function onAddCategoryHideButton(items) {
+function onAddCategoryHideButton (items) {
 	items
 		.map(articleStructToArticleNodeStruct)
 		.forEach(addCategoryHideButton);
 }
 
-function onMarkNew(articles) {
+function onMarkNew (articles) {
 	articles.map(articleStructToArticleNodeStruct)
 			.forEach((a, index) => markNewArticle(articles[index].newText, a));
 }
 
-function onArticleAddNextPrev(item) {
+function onArticleAddNextPrev (item) {
 	removeArticleLink(item);
 	if (item.prevId) {
 		addLinkToPrevArticle(item.id, item.prevId);
@@ -158,7 +158,7 @@ function onArticleAddNextPrev(item) {
 	}
 }
 
-function listenToTaxonomyButtonClick(cb) {
+function listenToTaxonomyButtonClick (cb) {
 	document.getElementById('content-both').addEventListener('click', function (e) {
 		if (e.target.classList.contains('taxonomy-button')) {
 			let articleStruct = articleElementToStruct(dom.closest(e.target, '.node'));
