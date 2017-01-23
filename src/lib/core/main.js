@@ -82,7 +82,12 @@ function commentParse (comments) {
 		});
 
 		return flatCommentList;
-	}).then(() => flatCommentList);
+	}).then(() => {
+		flatCommentList.forEach(c => {
+			c.parent = c.parent ? c.parent.id : null;
+		});
+		return flatCommentList;
+	});
 }
 
 function highlightUser (userName) {
