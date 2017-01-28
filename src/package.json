@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "$(npm bin)/babel-tape-runner test/core/*.js"
+    "test": "$(npm bin)/babel-tape-runner test/{lib,core}/**/*.js"
   },
   "repository": {
     "type": "git",
