@@ -1,5 +1,6 @@
 import * as func from '../core/func';
 import { log } from './log';
+import { createEmitter } from './events';
 
 import pref from './pref';
 import storage from './storage';
@@ -66,39 +67,7 @@ function createDefaultPrefs () {
 	/* */
 }
 
-let events = (function () {
-	let listeners = new Map();
-
-	return {
-		on (name, cb) {
-			if (!listeners.has(name)) {
-				listeners.set(name, []);
-			}
-
-			listeners.get(name).push(cb);
-		},
-
-		off (name, cb) {
-			if (listeners.get(name)) {
-				for (let i = 0, ll = listeners.get(name).length; i < ll; i++) {
-					if (listeners.get(name)[i] === cb) {
-						listeners.get(name)[i] = null;
-					}
-				}
-
-				listeners.set(name, listeners[name].filter((listener) => listener !== null));
-			}
-		},
-
-		emit (name, args) {
-			if (listeners.get(name)) {
-				listeners.get(name).forEach((cb) => {
-					cb(args);
-				});
-			}
-		}
-	};
-}());
+let events = createEmitter();
 
 function validateType (prefType, value) {
 	let isValid = false;
