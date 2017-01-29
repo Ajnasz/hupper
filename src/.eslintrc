@@ -21,7 +21,7 @@
 		"no-shadow": 0,
 
 		"dot-notation": 1,
-		"indent": [1, "tab"],
+		"indent": [1, "tab", {"SwitchCase": 1}],
 		"max-len": [1, 160],
 		"no-console": 1,
 		"no-debugger": 1,

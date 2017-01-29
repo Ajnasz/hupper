@@ -115,15 +115,15 @@ function addBlockListeners () {
 			context: modBlocks.getBlocks()
 		}, function (response) {
 			switch (event.action) {
-			case 'up':
-			case 'down':
-			case 'left':
-			case 'right':
-				modBlocks.reorderBlocks(response);
-				break;
-			default:
-				modBlocks.toggleBlock(response);
-				return;
+				case 'up':
+				case 'down':
+				case 'left':
+				case 'right':
+					modBlocks.reorderBlocks(response);
+					break;
+				default:
+					modBlocks.toggleBlock(response);
+					return;
 			}
 		});
 	});
@@ -160,20 +160,20 @@ function addHupperBlockListeners () {
 
 function onPrefChange (pref) {
 	switch (pref.name) {
-	case 'trolls':
-	case 'filtertrolls':
-	case 'highlightusers':
-	case 'hideboringcomments':
-	case 'boringcommentcontents':
-		updateComments();
-		break;
-	case 'hidetaxonomy':
-		updateArticles();
-		break;
+		case 'trolls':
+		case 'filtertrolls':
+		case 'highlightusers':
+		case 'hideboringcomments':
+		case 'boringcommentcontents':
+			updateComments();
+			break;
+		case 'hidetaxonomy':
+			updateArticles();
+			break;
 
-	case 'logenabled':
-		log.enabled = pref.value;
-		break;
+		case 'logenabled':
+			log.enabled = pref.value;
+			break;
 	}
 }
 
@@ -182,20 +182,20 @@ window.addEventListener('DOMContentLoaded', function () {
 		log.log('message', msg.event);
 
 		switch (msg.event) {
-		case 'trolluser':
-		case 'untrolluser':
-		case 'highlightuser':
-		case 'unhighlightuser':
-			sendResponse({event: msg.event, data: getContextUser(msg.data)});
-			break;
+			case 'trolluser':
+			case 'untrolluser':
+			case 'highlightuser':
+			case 'unhighlightuser':
+				sendResponse({event: msg.event, data: getContextUser(msg.data)});
+				break;
 
-		case 'userChange':
-			updateComments();
-			break;
+			case 'userChange':
+				updateComments();
+				break;
 
-		case 'prefChange':
-			onPrefChange(msg.data);
-			break;
+			case 'prefChange':
+				onPrefChange(msg.data);
+				break;
 		}
 	});
 

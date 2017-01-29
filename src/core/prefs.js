@@ -75,30 +75,30 @@ function validateType (prefType, value) {
 
 	switch (prefType) {
 
-	case 'array':
-		isValid = actualType === '[object Array]';
-		break;
+		case 'array':
+			isValid = actualType === '[object Array]';
+			break;
 
-	case 'string':
-		isValid = actualType === '[object String]';
-		break;
+		case 'string':
+			isValid = actualType === '[object String]';
+			break;
 
-	case 'bool':
-		isValid = actualType === '[object Boolean]';
-		break;
+		case 'bool':
+			isValid = actualType === '[object Boolean]';
+			break;
 
-	case 'integer':
-		isValid = actualType === '[object Number]';
-		break;
+		case 'integer':
+			isValid = actualType === '[object Number]';
+			break;
 
-	case 'color':
-		isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
-		break;
+		case 'color':
+			isValid = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
+			break;
 
-	default:
-		isValid = true;
-		log.info('Unknown type %s', prefType);
-		break;
+		default:
+			isValid = true;
+			log.info('Unknown type %s', prefType);
+			break;
 
 	}
 
