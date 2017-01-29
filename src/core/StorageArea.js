@@ -56,6 +56,7 @@ function StorageArea () {
 		},
 
 		getBytesInUse () {
+			throw new Error('Not implemented');
 		},
 
 		set (values, callback) {

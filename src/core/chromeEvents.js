@@ -16,8 +16,8 @@ function create () {
 
 		listeners.push(callback);
 	}
-	function dispatch () {
-		listeners.forEach(listener => listener());
+	function dispatch (...args) {
+		listeners.forEach(listener => listener(...args));
 	}
 
 	return {

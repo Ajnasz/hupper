@@ -1,4 +1,5 @@
 import * as chromeEvents from '../../core/chromeEvents';
+import * as testUtil from '../../core/testUtil';
 
 let test = require('tape');
 
@@ -81,51 +82,52 @@ test('chrome/chromeEvents.removeListener', function (t) {
 });
 
 test('chrome/chromeEvents.dispatch', function (t) {
-	t.plan(1);
+	t.plan(4);
 	const events = chromeEvents.create();
 
-	let called = 0;
-	function listener () {
-		++called;
-	}
+	let listener = testUtil.spy();
 
 	events.addListener(listener);
 	events.dispatch();
 
-	t.equal(called, 1, 'Listener must be called once');
+	t.equal(listener.getCallCount(), 1, 'Listener must be called once');
+	listener.reset();
 
-	t.end();
+	events.dispatch({foo: 1}, ['bar', 2], 3);
+	t.deepEqual(listener.getCalls()[0].args[0], {foo: 1}, 'Listener should get the argument passed to dispatch');
+	t.deepEqual(listener.getCalls()[0].args[1], ['bar', 2], 'Listener should get the argument passed to dispatch');
+	t.deepEqual(listener.getCalls()[0].args[2], 3, 'Listener should get the argument passed to dispatch');
 });
 
 
 test('chrome/chromeEvents flow', function (t) {
 	const events = chromeEvents.create();
 
-	let called = 0;
-	function listener () {
-		++called;
-	}
+
+	let listener = testUtil.spy();
 
 	events.addListener(listener);
 	events.dispatch();
 
-	t.equal(called, 1, 'Listener must be called once');
-	called = 0;
+	t.equal(listener.getCallCount(), 1, 'Listener must be called once');
+	listener.reset();
 
 	if (!events.hasListener(listener)) {
 		events.addListener(listener);
 	}
+
 	events.dispatch();
-	t.equal(called, 1, 'Listener must be called once, has listener returned false');
-	called = 0;
+	t.equal(listener.getCallCount(), 1, 'Listener must be called once, has listener returned false');
+	listener.reset();
 
 	events.addListener(listener);
 	events.dispatch();
-	t.equal(called, 2, 'Listener must be called twice, added listener again');
-	called = 0;
+	t.equal(listener.getCallCount(), 2, 'Listener must be called twice, added listener again');
+	listener.reset();
 
 	events.removeListener(listener);
 	events.dispatch();
-	t.equal(called, 0, 'Listener removed');
+	t.equal(listener.getCallCount(), 0, 'Listener removed');
+
 	t.end();
 });
