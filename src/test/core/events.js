@@ -1,16 +1,32 @@
 import * as events from '../../core/events';
+import * as testUtil from '../../core/testUtil';
 
 let test = require('tape');
 
 test('core/events.createEmitter.on', (t) => {
-	t.plan(1);
+	t.plan(6);
+
 	let emitter = events.createEmitter();
 
-	emitter.on('foo', () => {
-		t.pass('Foo listener called');
-	});
+	let listener = testUtil.spy();
+
+	emitter.on('foo', listener);
+
+	emitter.emit('foo', 1);
+
+	t.equal(listener.getCallCount(), 1, 'listener called');
+
+	t.equal(listener.getCalls()[0].args.length, 2, 'event passes to arguments to the callback');
+	t.equal(listener.getCalls()[0].args[0], 1, 'event passes the args to the callback');
+	t.equal(listener.getCalls()[0].args[1], 'foo', 'event passes the event name to the callback');
+
+	let anyListener = testUtil.spy();
+	emitter.on('*', anyListener);
 
 	emitter.emit('foo');
+
+	t.equal(listener.getCallCount(), 2, 'listener called');
+	t.equal(anyListener.getCallCount(), 1, 'anyListener called');
 
 	t.end();
 });
@@ -37,17 +53,11 @@ test('core/events.createEmitter.off', (t) => {
 });
 
 test('core/events.createEmitter.off specific listener', (t) => {
-	t.plan(1);
+	t.plan(2);
 	let emitter = events.createEmitter();
 
-	let called = 0;
-	function listener () {
-		++called;
-	}
-
-	function listener2 () {
-		++called;
-	}
+	let listener = testUtil.spy();
+	let listener2 = testUtil.spy();
 
 	emitter.on('foo', listener);
 	emitter.on('foo', listener2);
@@ -55,11 +65,8 @@ test('core/events.createEmitter.off specific listener', (t) => {
 	emitter.off('foo', listener);
 	emitter.emit('foo');
 
-	if (called > 1) {
-		t.fail('listener called twice, but it shouldnt');
-	} else {
-		t.pass('listener unsubscribed');
-	}
+	t.equal(listener.getCallCount(), 0, 'Unsubscribed listener should not be called');
+	t.equal(listener2.getCallCount(), 1, 'One remaining listener called');
 
 	t.end();
 });
@@ -68,20 +75,15 @@ test('core/events.createEmitter.emit all listeners', (t) => {
 	t.plan(1);
 	let emitter = events.createEmitter();
 
-	let counter = 0;
-	emitter.on('foo', () => {
-		counter += 1;
-	});
-	emitter.on('foo', () => {
-		counter += 3;
-	});
-	emitter.on('foo', () => {
-		counter += 5;
-	});
+	let listener = testUtil.spy();
+
+	emitter.on('foo', listener);
+	emitter.on('foo', listener);
+	emitter.on('foo', listener);
 
 	emitter.emit('foo');
 
-	t.equal(counter, 9, 'called all listeners');
+	t.equal(listener.getCallCount(), 3, 'called all listeners');
 
 	t.end();
 });

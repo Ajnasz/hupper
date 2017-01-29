@@ -37,8 +37,12 @@ function createEmitter () {
 		},
 
 		emit (name, args) {
+			if (events.has('*')) {
+				events.get('*').forEach((cb) => cb.call(null, args, name));
+			}
+
 			if (events.has(name)) {
-				events.get(name).forEach((cb) => cb.call(null, args));
+				events.get(name).forEach((cb) => cb.call(null, args, name));
 			}
 		}
 	};

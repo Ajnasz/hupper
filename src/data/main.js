@@ -172,7 +172,7 @@ function onPrefChange (pref) {
 		break;
 
 	case 'logenabled':
-		log.enabled = pref.newValue;
+		log.enabled = pref.value;
 		break;
 	}
 }
