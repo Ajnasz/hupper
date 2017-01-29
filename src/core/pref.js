@@ -22,7 +22,7 @@ function oldTrollGetter (trolls) {
 	return trolls.split(',');
 }
 
-var prefs = Object.create(null, {
+var pref = Object.create(null, {
 	getBlocks: {
 		value: function () {
 			return this.getPref('blocks').then(blocks => {
@@ -78,7 +78,7 @@ var prefs = Object.create(null, {
 				return user && user.name && user.color;
 			});
 
-			return prefs.setPref('highlightusers', cleanUsers);
+			return pref.setPref('highlightusers', cleanUsers);
 		}
 	},
 
@@ -207,4 +207,4 @@ var prefs = Object.create(null, {
 	}
 });
 
-export { prefs };
+export default pref;
