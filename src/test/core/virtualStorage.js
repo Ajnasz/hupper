@@ -24,7 +24,7 @@ test('core/virtualStorage onChanged set', function (t) {
 
 	t.equal(callback.getCallCount(), 1, 'setter callback called');
 
-	t.equal(listener.getCallCount(), 1, 'On first set, set called onChanged event listener');
+	t.equal(listener.getCallCount(), 1, 'On first set, set called the onChanged event listener');
 	t.equal(listener.getCalls()[0].args.length, 2, 'On first set, callback an argument');
 	t.equal(typeof listener.getCalls()[0].args[0].foo, 'object', 'On first set, StorageChange object present');
 	t.equal(listener.getCalls()[0].args[0].foo.newValue, 1, 'On first set, StorageChange.newValue is correct');
@@ -50,6 +50,11 @@ test('core/virtualStorage onChanged set', function (t) {
 	t.equal(listener.getCalls()[0].args[0].baz.newValue, 3, 'StorageChange.newValue is correct for third key');
 	t.equal(listener.getCalls()[0].args[0].baz.oldValue, 2, 'Old value is ok for third key');
 
+	listener.reset();
+	storage.local.set({foo: 4, bar: 2, baz: 3});
+
+	t.deepEqual(listener.getCallCount(), 0, 'Should not call change if no change');
+
 	t.end();
 });
 
@@ -64,6 +69,10 @@ test('core/virtualStorage onChanged remove', function (t) {
 	let callback = testUtil.spy();
 
 	storage.local.remove('foo', callback);
+
+	storage.local.get('foo', val => {
+		t.deepEqual(val, {}, 'Removed the value');
+	});
 
 	t.equal(callback.getCallCount(), 1, 'callback called');
 
@@ -81,24 +90,45 @@ test('core/virtualStorage onChanged remove', function (t) {
 
 	t.equal(listener.getCalls()[0].args[0].foo.oldValue, void(0), 'StorageChange.oldValue correct for non existing key');
 	t.equal(listener.getCalls()[0].args[0].foo.newValue, void(0), 'StorageChange.newValue correct for non existing key');
-	t.end();
+
+	storage.local.set({foo: 2});
+	t.doesNotThrow(() => {
+		storage.local.remove('foo');
+	});
+
+	storage.local.set({foo: 2});
+	t.doesNotThrow(() => {
+		storage.local.remove(['foo']);
+	});
+
+	storage.local.get('foo', val => {
+		t.deepEqual(val, {}, 'Removed the value');
+		t.end();
+	});
 });
 
 test('core/virtualStorage onChanged clear', function (t) {
 	let storage = virtualStorage.create();
 
 	storage.local.set({foo: 1});
-	let cb = testUtil.spy();
-	storage.onChanged.addListener(cb);
+	let listener = testUtil.spy();
+	let callback = testUtil.spy();
+	storage.onChanged.addListener(listener);
 
-	storage.local.clear();
+	storage.local.clear(callback);
 
-	t.equal(cb.getCallCount(), 1, 'clear called onChanged');
-	t.equal(typeof cb.getCalls()[0].args[0], 'object', 'Call got argument');
-	t.equal(typeof cb.getCalls()[0].args[0].foo, 'object', 'StorageChange present');
-	t.equal(cb.getCalls()[0].args[0].foo.oldValue, 1, 'StorageChange.oldValue present');
-	t.notOk('newValue' in cb.getCalls()[0].args[0].foo, 'No newValue key in StorageChange');
-	t.equal(cb.getCalls()[0].args[1], 'local', 'namespace set');
+	t.equal(listener.getCallCount(), 1, 'clear called onChanged');
+	t.equal(typeof listener.getCalls()[0].args[0], 'object', 'Call got argument');
+	t.equal(typeof listener.getCalls()[0].args[0].foo, 'object', 'StorageChange present');
+	t.equal(listener.getCalls()[0].args[0].foo.oldValue, 1, 'StorageChange.oldValue present');
+	t.notOk('newValue' in listener.getCalls()[0].args[0].foo, 'No newValue key in StorageChange');
+	t.equal(listener.getCalls()[0].args[1], 'local', 'namespace set');
+
+	t.equal(callback.getCallCount(), 1, 'clear called callback');
+
+	t.doesNotThrow(() => {
+		storage.local.clear();
+	});
 
 	t.end();
 });

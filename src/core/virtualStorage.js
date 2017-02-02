@@ -36,10 +36,15 @@ function attachEventHandler (storageArea, events, ns) {
 	storageArea.set = function (values, callback) {
 		get(Object.keys(values), (oldValues) => {
 			set(values, (...args) => {
+				let changes = createStorageChange(oldValues, values);
 				if (typeof callback === 'function') {
 					callback(...args);
 				}
-				events.dispatch(createStorageChange(oldValues, values), ns);
+
+
+				if (Object.keys(changes).length > 0) {
+					events.dispatch(changes, ns);
+				}
 			});
 		});
 	};
