@@ -139,6 +139,10 @@ function savePref (pref, value) {
 }
 
 var chromePrefs = Object.assign(pref, {
+	getStorage () {
+		return storage;
+	},
+
 	clear () {
 		getStorageArea().clear(createDefaultPrefs);
 	},
