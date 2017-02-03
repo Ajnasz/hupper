@@ -1,9 +1,11 @@
-import { log } from '../../core/log';
+import { createLogger } from '../../core/log';
 
 let test = require('tape');
 
 test('core/log calling logger function', t => {
 	t.plan(2);
+	let log = createLogger();
+
 	log.enabled = true;
 	let called = 0;
 	log.logger = {
@@ -17,14 +19,12 @@ test('core/log calling logger function', t => {
 
 	t.equal(log.info(input), input, 'Called logger');
 	t.equal(called, 1, 'Called logger only once');
-
-	log.logger = null;
-	log.enabled = false;
 	t.end();
 });
 
 test('core/log not calling logger function if logging disabled', t => {
 	t.plan(1);
+	let log = createLogger();
 	log.enabled = false;
 	let called = 0;
 
