@@ -77,18 +77,26 @@ function attachEventHandler (storageArea, events, ns) {
 	};
 }
 
-function create () {
+function createVirtualStorage (storages) {
 	let virtualStorage = Object.create(null);
 	virtualStorage.onChanged = chromeEvents.create();
 
-	['local'].forEach(ns => {
+	storages.forEach(ns => {
 		let localStorageArea = new StorageArea();
 
-		virtualStorage.local = localStorageArea;
+		virtualStorage[ns] = localStorageArea;
 		attachEventHandler(virtualStorage.local, virtualStorage.onChanged, ns);
 	});
 
 	return virtualStorage;
 }
 
-export { create };
+function create () {
+	return createVirtualStorage(['local']);
+}
+
+function createWithSync () {
+	return createVirtualStorage(['local', 'sync']);
+}
+
+export { create, createWithSync };

@@ -1,37 +1,150 @@
-import { prefs } from '../../core/prefs';
+import * as preferences from '../../core/prefs';
 import defaultPrefs from '../../core/defaultPrefs';
+
+const prefs = preferences.prefs;
 
 let test = require('tape');
 
+function getCleanStorage () {
+	return new Promise(resolve => {
+		prefs.getStorage().local.clear(() => resolve());
+	});
+}
+
 test('core/prefs default prefs inserted', function (t) {
-	Promise.all(defaultPrefs.map((pref) => {
-		return prefs.getPref(pref.name).then(value => {
-			switch (pref.type) {
-				case 'bool':
-				case 'string':
-				case 'integer':
-				case 'color':
-					t.equal(value, pref.value);
-					break;
-				case 'array':
-					t.deepEqual(value, pref.value);
-					break;
-				case 'control':
-					t.equal(value, ':noSuchValue');
-					break;
-				default:
-					t.fail('Unknown type ' + pref.type);
-			}
+	t.test('createDefaultPrefs', (t) => {
+		getCleanStorage()
+			.then(() => preferences.createDefaultPrefs())
+			.then(function () {
+				return Promise.all(defaultPrefs.map((pref) => {
+					return prefs.getPref(pref.name).then(value => {
+						switch (pref.type) {
+							case 'bool':
+							case 'string':
+							case 'integer':
+							case 'color':
+								t.equal(value, pref.value, `${pref.name}'s default value inserted`);
+								break;
+							case 'array':
+								t.deepEqual(value, pref.value, `${pref.name}'s default value inserted`);
+								break;
+							case 'control':
+								t.equal(value, ':noSuchValue', `${pref.name}'s noSuchValue inserted`);
+								break;
+							default:
+								t.fail('Unknown type ' + pref.type);
+						}
 
-			return true;
-		});
-	})).then(() => t.end());
+						return true;
+					});
+				}));
+			})
+			.catch(err => t.fail(err))
+			.then(() => t.end());
+	});
 
+	t.test('add defaults, keep existing', (t) => {
+		const newCommentText = 'this is something new';
+		getCleanStorage()
+			.then(() => prefs.setPref('newcommenttext', newCommentText))
+			.then(() => preferences.createDefaultPrefs())
+			.then(function () {
+				return Promise.all(defaultPrefs.map((pref) => {
+					return prefs.getPref(pref.name).then(value => {
+						switch (pref.type) {
+							case 'bool':
+							case 'string':
+							case 'integer':
+							case 'color':
+								if (pref.name === 'newcommenttext') {
+									t.equal(value, newCommentText, 'Changed pref value kept');
+								} else {
+									t.equal(value, pref.value, `${pref.name}'s default value inserted`);
+								}
+								break;
+							case 'array':
+								t.deepEqual(value, pref.value, `${pref.name}'s default value inserted`);
+								break;
+							case 'control':
+								t.equal(value, ':noSuchValue', `${pref.name}'s noSuchValue inserted`);
+								break;
+							default:
+								t.fail('Unknown type ' + pref.type);
+						}
+
+						return true;
+					});
+				}));
+			})
+			.catch(err => t.fail(err))
+			.then(() => t.end());
+	});
+
+	t.end();
+});
+
+test('core/prefs migratePrefsToSync', function (t) {
+	const newCommentText = 'this is something new';
+
+	getCleanStorage()
+		.then(() => prefs.setPref('newcommenttext', newCommentText))
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs validateType', function (t) {
+	t.test('boolean', function (t) {
+		prefs.setPref('setunlimitedlinks', 'yes')
+			.then(() => {
+				t.fail('Should not allow to set boolean type to string');
+			})
+			.catch(() => t.pass('Rejected to set boolean type to string'))
+			.then(() => t.end());
+	});
+
+	t.test('boolean', function (t) {
+		prefs.setPref('style_wider_sidebar', 'hundred')
+			.then(() => {
+				t.fail('Should not allow to set integer type to string');
+			})
+			.catch(() => t.pass('Rejected to set integer type to string'))
+			.then(() => t.end());
+	});
+
+	t.test('color', function (t) {
+		prefs.setPref('huppercolor', 'white')
+			.then(() => {
+				t.fail('Should not allow to set color type to not hex string');
+			})
+			.catch(() => t.pass('Rejected to set color type to string'))
+			.then(() => t.end());
+	});
+
+	t.test('array', function (t) {
+		prefs.setPref('blocks', 'white')
+			.then(() => {
+				t.fail('Should not allow to set array type to string');
+			})
+			.catch(() => t.pass('Rejected to set array type to string'))
+			.then(() => t.end());
+	});
+
+	t.test('control', function (t) {
+		prefs.setPref('edittrolls', 'white')
+			.then(() => {
+				t.pass('For not validated type should not throw error');
+			})
+			.catch(err => t.fail(err, 'Should not throw if the type is not validated'))
+			.then(() => t.end());
+	});
+
+	t.end();
 });
 
 test('core/prefs getPref', function (t) {
-	prefs.getPref('huppercolor')
-		.then((color) => {
+	prefs.setPref('huppercolor', '#B5D7BE')
+		.then(() => prefs.getPref('huppercolor'))
+		.then(color => {
 			t.equal(color, '#B5D7BE', 'Returns a preference value');
 		})
 		.then(() => prefs.getPref('non such property'))
@@ -237,12 +350,203 @@ test('core/prefs addHighlightedUser', function (t) {
 			t.equal(users[0].color, '#ff0f00', 'User color should be #ff0f00');
 		})
 
-		.then(() => prefs.addHighlightedUser('foo', '#ff0f00'))
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					highlightusers: [{name: 'foo', color: '#0000aa'}]
+				}, () => resolve());
+			});
+		})
+
+		.then(() => prefs.addHighlightedUser('foo', '#ffffff'))
 		.then(() => prefs.getCleanHighlightedUsers())
 		.then(users => {
-			t.ok(users.every(u => u.name && u.color), 'Removed not valid users');
 			t.equal(users.length, 1, 'Not added duplicated user');
+			t.equal(users[0].name, 'foo', 'Name not changed');
+			t.equal(users[0].color, '#ffffff', 'Color updated');
 		})
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs getCleanTrolls', function (t) {
+	let trollsExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			trolls: null
+		}, () => resolve());
+	})
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => t.deepEqual(trolls, [], 'If trolls is null, it must return an empty array'))
+
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					trolls: JSON.stringify(trollsExample)
+				}, () => resolve());
+			});
+		})
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => t.deepEqual(trolls, trollsExample, 'Should parse trolls if stored as string'))
+
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					trolls: 'foo,bar,baz'
+				}, () => resolve());
+			});
+		})
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => t.deepEqual(trolls, ['foo', 'bar', 'baz'], 'Should return trolls object'))
+
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					trolls: trollsExample
+				}, () => resolve());
+			});
+		})
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => t.deepEqual(trollsExample, trolls, 'Should return trolls object'))
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs removeTroll', function (t) {
+	let trollsExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			trolls: trollsExample
+		}, () => resolve());
+	})
+		.then(() => prefs.removeTroll('bar'))
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => {
+			t.equal(trolls.length, 1, 'Only one trolls left');
+			t.equal(trolls[0], 'foo', 'Removed troll bar');
+		})
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs addTroll', function (t) {
+	let trollsExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			trolls: trollsExample
+		}, () => resolve());
+	})
+		.then(() => prefs.addTroll('baz'))
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => {
+			t.equal(trolls.length, 3, 'A new troll added');
+			t.equal(trolls[2], 'baz', 'Troll baz added');
+		})
+
+		.then(() => prefs.addTroll('baz'))
+		.then(() => prefs.getCleanTrolls())
+		.then(trolls => {
+			t.equal(trolls.length, 3, 'No duplicated troll added');
+			t.equal(trolls.indexOf('baz'), trolls.lastIndexOf('baz'), 'No duplicated troll added');
+		})
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs getCleanTaxonomies', function (t) {
+	let taxonomiesExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			hidetaxonomy: null
+		}, () => resolve());
+	})
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => t.deepEqual(taxonomies, [], 'If taxonomies is null, it must return an empty array'))
+
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					hidetaxonomy: JSON.stringify(taxonomiesExample)
+				}, () => resolve());
+			});
+		})
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => t.deepEqual(taxonomies, taxonomiesExample, 'Should parse taxonomies if stored as string'))
+
+
+		.then(() => {
+			return new Promise(resolve => {
+				prefs.getStorage().local.set({
+					hidetaxonomy: taxonomiesExample
+				}, () => resolve());
+			});
+		})
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => t.deepEqual(taxonomiesExample, taxonomies, 'Should return taxonomies object'))
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs removeTroll', function (t) {
+	let taxonomiesExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			hidetaxonomy: taxonomiesExample
+		}, () => resolve());
+	})
+		.then(() => prefs.removeTaxonomy('bar'))
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => {
+			t.equal(taxonomies.length, 1, 'Only one taxonomies left');
+			t.equal(taxonomies[0], 'foo', 'Removed taxonomy bar');
+		})
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs addTaxonomy', function (t) {
+	let taxonomiesExample = ['foo', 'bar'];
+
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			hidetaxonomy: taxonomiesExample
+		}, () => resolve());
+	})
+		.then(() => prefs.addTaxonomy('baz'))
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => {
+			t.equal(taxonomies.length, 3, 'A new troll added');
+			t.equal(taxonomies[2], 'baz', 'Troll baz added');
+		})
+
+		.then(() => prefs.addTaxonomy('baz'))
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => {
+			t.equal(taxonomies.length, 3, 'No duplicated troll added');
+			t.equal(taxonomies.indexOf('baz'), taxonomies.lastIndexOf('baz'), 'No duplicated troll added');
+		})
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs setCleanTaxonomies', function (t) {
+	prefs.setCleanTaxonomies(['foo', 'bar', '  ', 'baz'])
+		.then(() => prefs.getCleanTaxonomies())
+		.then(taxonomies => {
+			t.equal(taxonomies.length, 3, 'Empty taxonomy not added');
+		})
+
 		.catch(err => t.fail(err))
 		.then(() => t.end());
 });

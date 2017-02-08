@@ -132,3 +132,12 @@ test('core/virtualStorage onChanged clear', function (t) {
 
 	t.end();
 });
+
+test('core/virtualStorage createWithSync', function (t) {
+	let storage = virtualStorage.createWithSync();
+
+	t.equal(typeof storage.local, 'object', 'has local storage');
+	t.equal(typeof storage.sync, 'object', 'has sync storage');
+
+	t.end();
+});

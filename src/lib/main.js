@@ -1,10 +1,21 @@
 /* global chrome:true */
 
-import { prefs } from '../core/prefs';
+import * as preferences from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
+
 import { log } from '../core/log';
-log.logger = console;
+
+import updater from './updater';
+import update01 from './updates/storage_local_to_sync_u01';
+
+updater([{
+	num: 1,
+	updater: update01
+}], chrome.storage);
+// preferences.migratePrefsToSync();
+
+const prefs = preferences.prefs;
 
 function manageStyles (tabID) {
 	'use strict';

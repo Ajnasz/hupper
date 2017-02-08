@@ -32,41 +32,94 @@ test('core/events.createEmitter.on', (t) => {
 });
 
 test('core/events.createEmitter.off', (t) => {
-	t.plan(1);
-	let emitter = events.createEmitter();
+	t.test('Remove all listeners', (t) => {
+		t.plan(2);
+		let emitter = events.createEmitter();
 
-	let called = false;
-	emitter.on('foo', () => {
-		called = true;
+		let listener = testUtil.spy();
+		let listener2 = testUtil.spy();
+
+		emitter.on('foo', listener);
+		emitter.on('bar', listener2);
+
+		emitter.off();
+		emitter.emit('foo');
+		emitter.emit('bar');
+
+		t.equal(listener.getCallCount(), 0, 'Listener of first event not called');
+		t.equal(listener2.getCallCount(), 0, 'Listener of second event not called');
+
+		t.end();
 	});
 
-	emitter.off('foo');
-	emitter.emit('foo');
+	t.test('Remove all listener by name', (t) => {
+		t.plan(3);
+		let emitter = events.createEmitter();
 
-	if (called) {
-		t.fail('listener called, but it shouldnt');
-	} else {
-		t.pass('listener unsubscribed');
-	}
+		let listener = testUtil.spy();
+		let listener2 = testUtil.spy();
+		let listener3 = testUtil.spy();
 
-	t.end();
-});
+		emitter.on('foo', listener);
+		emitter.on('foo', listener2);
+		emitter.on('bar', listener3);
 
-test('core/events.createEmitter.off specific listener', (t) => {
-	t.plan(2);
-	let emitter = events.createEmitter();
+		emitter.off('foo');
+		emitter.emit('foo');
+		emitter.emit('bar');
 
-	let listener = testUtil.spy();
-	let listener2 = testUtil.spy();
+		t.equal(listener.getCallCount(), 0, 'Listener unsubscribed');
+		t.equal(listener2.getCallCount(), 0, 'Second listener unsubscribed');
+		t.equal(listener3.getCallCount(), 1, 'Other listener kept');
+		t.end();
+	});
 
-	emitter.on('foo', listener);
-	emitter.on('foo', listener2);
 
-	emitter.off('foo', listener);
-	emitter.emit('foo');
+	t.test('core/events.createEmitter.off specific listener', (t) => {
+		t.plan(3);
 
-	t.equal(listener.getCallCount(), 0, 'Unsubscribed listener should not be called');
-	t.equal(listener2.getCallCount(), 1, 'One remaining listener called');
+		let emitter = events.createEmitter();
+
+		let listener = testUtil.spy();
+		let listener2 = testUtil.spy();
+		let listener3 = testUtil.spy();
+
+		emitter.on('foo', listener);
+		emitter.on('foo', listener2);
+		emitter.on('bar', listener3);
+
+		emitter.off('foo', listener);
+		emitter.emit('foo');
+		emitter.emit('bar');
+
+		t.equal(listener.getCallCount(), 0, 'Unsubscribed listener should not be called');
+		t.equal(listener2.getCallCount(), 1, 'One remaining listener called');
+		t.equal(listener3.getCallCount(), 1, 'Other events not removed');
+
+		t.end();
+	});
+
+	t.test('Invlaid argument number', (t) => {
+		t.plan(3);
+		let emitter = events.createEmitter();
+
+		let listener = testUtil.spy();
+		let listener2 = testUtil.spy();
+
+		emitter.on('foo', listener);
+		emitter.on('bar', listener2);
+
+		t.throws(() => {
+			emitter.off('foo', 'bar', 'baz');
+		}, /Invalid number of arguments/, 'Error thrown if too many argument set');
+		emitter.emit('foo');
+		emitter.emit('bar');
+
+		t.equal(listener.getCallCount(), 1, 'Listener of first event not called');
+		t.equal(listener2.getCallCount(), 1, 'Listener of second event not called');
+
+		t.end();
+	});
 
 	t.end();
 });

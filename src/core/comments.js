@@ -5,6 +5,19 @@ const plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 	minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
 	signatureRex = /^[- ]+$/;
 
+function recurse (comments, callback, parent) {
+	return comments.map((comment) => {
+		let output = Object.create(null);
+		Object.assign(output, comment);
+
+		output = callback(output, parent);
+
+		output.children = recurse(comment.children, callback, output);
+
+		return output;
+	});
+}
+
 function setPrevNextLinks (newComments) {
 	let newCommentsLength = newComments.length;
 
@@ -22,10 +35,10 @@ function setPrevNextLinks (newComments) {
 }
 
 function getParagraphs (comment) {
-	return comment.content.split('\n').map(p => p.trim()).filter(p => p !== '');
+	return comment.content ? comment.content.split('\n').map(p => p.trim()).filter(p => p !== '') : [];
 }
 
-function isBorinComment (boringRegexp, comment) {
+function isBoringComment (comment, boringRegexp) {
 	let paragraphs = getParagraphs(comment);
 
 	let signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
@@ -41,86 +54,53 @@ function isTrollComment (trolls, comment) {
 	return func.inArray(trolls, comment.author);
 }
 
-function markTrollComments (comments, trolls, isParentTroll) {
-	comments.forEach(function (comment) {
-		let isTroll = isTrollComment(trolls, comment);
+function markTrollComments (comments, trolls) {
+	let output = recurse(comments, function (comment, parent) {
+		let output = {
+			troll: isTrollComment(trolls, comment),
+			isParentTroll: Boolean(parent && (parent.troll || parent.isParentTroll))
+		};
 
-		comment.troll = isTroll;
-		comment.isParentTroll = isParentTroll;
+		Object.assign(output, comment);
 
-		markTrollComments(comment.children, trolls, isParentTroll || isTroll);
+		return output;
 	});
-}
 
-function updateHiddenState (comments, isParentHidden = false) {
-	comments.forEach(comment => {
-		let isHidden = comment.troll || (comment.boring && !comment.hasInterestingChild);
-
-		comment.hide = isHidden || isParentHidden;
-		comment.isParentHidden = isParentHidden;
-
-		updateHiddenState(comment.children, isParentHidden || isHidden);
-	});
-}
-
-function markBoringComments (comments, boringRegexp) {
-	comments.forEach(comment => {
-		let isBoring = isBorinComment(boringRegexp, comment);
-
-		comment.boring = isBoring;
-
-		markBoringComments(comment.children, boringRegexp);
-	});
-}
-
-function markHasInterestingChild (comments) {
-	comments.forEach(comment => {
-		if (!comment.boring) {
-
-			let c = comment;
-
-			while (c.parent) {
-				c = c.parent;
-				if (c.hasInterestingChild) {
-					break;
-				}
-
-				c.hasInterestingChild = true;
-			}
-		}
-
-		markHasInterestingChild(comment.children);
-	});
-}
-
-function flatComments (comments) {
-	let output = [];
-
-	comments.forEach(function (comment) {
-		output.push(comment);
-
-		if (comment.children.length > 0) {
-			output = output.concat(flatComments(comment.children));
-		}
-	});
 
 	return output;
 }
 
+function markBoringComments (comments, boringRegexp) {
+	return recurse(comments, (comment) => {
+		let output = {boring: isBoringComment(comment, boringRegexp)};
+
+		Object.assign(output, comment);
+
+		return output;
+	});
+}
+
+function setParent (comments, parent) {
+	return comments.map(c => {
+		let output = Object.assign({parent}, c);
+		output.children = setParent(c.children, output);
+		return output;
+	});
+}
+
 function setHighlightedComments (comments, users) {
 	let undef;
-	comments.forEach(function (comment) {
-		let highlightData = func.first(users, function (user) {
+
+	return recurse(comments, (comment) => {
+		let highlightData = func.first(users, (user) => {
 			return user.name === comment.author;
 		});
 
-		if (highlightData) {
-			comment.userColor = highlightData.color;
-		} else {
-			comment.userColor = undef;
-		}
+		let output = {userColor: highlightData ? highlightData.color : undef};
 
-		setHighlightedComments(comment.children, users);
+		Object.assign(output, comment);
+
+		return output;
 	});
 }
 
@@ -150,6 +130,60 @@ function setScores (comments) {
 	});
 }
 
+/**
+ * @method markHasInterestingChild
+ * @mutates
+ */
+function markHasInterestingChild (boringMarkedComments) {
+	boringMarkedComments.forEach(comment => {
+		if (!comment.boring) {
+
+			let c = comment;
+
+			while (c.parent) {
+				c = c.parent;
+				if (c.hasInterestingChild) {
+					break;
+				}
+
+				c.hasInterestingChild = true;
+			}
+		}
+
+		markHasInterestingChild(comment.children);
+	});
+
+	return boringMarkedComments;
+}
+
+function flatComments (comments) {
+	return comments.reduce((acc, comment) => {
+		let clone = {};
+		Object.assign(clone, comment);
+		acc.push(clone);
+
+		if (comment.children.length > 0) {
+			acc = acc.concat(flatComments(comment.children));
+		}
+
+		delete clone.children;
+
+		return acc;
+	}, []);
+}
+
+function updateHiddenState (comments) {
+	return recurse(comments, (comment, parent) => {
+		let output = {
+			hide: (parent && parent.hide) || comment.troll || (comment.boring && !comment.hasInterestingChild),
+			isParentHidden: parent && parent.hide
+		};
+
+		Object.assign(output, comment);
+		return output;
+	});
+}
+
 export {
 	setScores,
 	setPrevNextLinks,
@@ -158,5 +192,6 @@ export {
 	markTrollComments,
 	flatComments,
 	markHasInterestingChild,
-	updateHiddenState
+	updateHiddenState,
+	setParent
 };

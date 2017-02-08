@@ -1,5 +1,4 @@
 import * as func from './func';
-import { log } from './log';
 
 function filterEmpty (array) {
 	return array.map(item => item.trim()).filter(item => item !== '');
@@ -46,8 +45,6 @@ const pref = {
 						try {
 							tmpValue = JSON.parse(highlightusers);
 						} catch (er) {
-							log.logger = console;
-							log.error(er);
 							tmpValue = oldHighlightedUserGetter(highlightusers);
 						}
 					} else {
@@ -101,8 +98,6 @@ const pref = {
 						try {
 							value = JSON.parse(trolls);
 						} catch (e) {
-							// migrating
-							log.log(e);
 							value = oldTrollGetter(trolls);
 						}
 					} else {
@@ -179,7 +174,7 @@ const pref = {
 	},
 
 	setCleanTaxonomies (taxonomies) {
-		return this.setPref('hidetaxonomy', taxonomies);
+		return this.setPref('hidetaxonomy', filterEmpty(taxonomies));
 	}
 };
 

@@ -10,34 +10,6 @@ function getStorageArea () {
 	return storage.sync || storage.local;
 }
 
-function prefToSync (prefName, prefValue) {
-	return new Promise(resolve => {
-		storage.sync.get(prefName, (result) => {
-			if (!(prefName in result)) {
-				let obj = {};
-				obj[prefName] = prefValue;
-				storage.sync.set(obj, resolve);
-			} else {
-				resolve();
-			}
-		});
-	}).then(() => storage.local.remove(prefName));
-}
-
-function migratePrefsToSync () {
-	if (storage.sync) {
-		return new Promise((resolve) => {
-			storage.local.get(resolve);
-		}).then(result => {
-			return Promise.all(Object.keys(result).map((name) => {
-				return prefToSync(name, result[name]);
-			}));
-		});
-	}
-
-	return Promise.resolve(null);
-}
-
 function createDefaultPrefs () {
 	return Promise.all(defaultPrefs.map((pref) => {
 		return new Promise(resolve => {
@@ -148,15 +120,11 @@ var chromePrefs = Object.assign(pref, {
 	},
 
 	setPref (pref, value) {
-		return savePref(pref, value).catch((err) => {
-			throw err;
-		});
+		return savePref(pref, value);
 	},
 
 	getPref (pref) {
-		return findPref(pref).catch((err) => {
-			throw err;
-		});
+		return findPref(pref);
 	},
 
 	getAllPrefs () {
@@ -191,6 +159,4 @@ chromePrefs.on('logenabled', enabled => {
 	log.enabled = enabled;
 });
 
-migratePrefsToSync().then(createDefaultPrefs);
-
-export { chromePrefs as prefs };
+export { chromePrefs as prefs, createDefaultPrefs };

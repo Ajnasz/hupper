@@ -43,3 +43,20 @@ test('core/log not calling logger function if logging disabled', t => {
 	log.enabled = false;
 	t.end();
 });
+
+test('core/log should return undef if trying to get an undefined function', t => {
+	t.plan(1);
+	let log = createLogger();
+
+	log.logger = {
+		info (thing) {
+			return thing;
+		}
+	};
+
+	t.equal(log.nonExistentMethod, void(0), 'undefined method');
+
+	log.logger = null;
+	log.enabled = false;
+	t.end();
+});
