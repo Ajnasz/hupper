@@ -1,4 +1,4 @@
-import { random, padStart, sortBy, maxBy } from './func';
+import { random, padStart, sortBy, maxBy, hex2rgb } from './func';
 
 var colors = new Set();
 colors.add('#000000');
@@ -18,10 +18,6 @@ colors.add('#dddddd');
 colors.add('#eeeeee');
 colors.add('#ffffff');
 
-function getRandomColor () {
-	return '#' + [random(0, 256, true), random(0, 256, true), random(0, 256, true)].map(c => padStart(c.toString('16'), 2, '0')).join('');
-}
-
 function getsRGB (c) {
 	return (c <= 0.03928) ? c / 12.92 : Math.pow(((c + 0.055) / 1.055), 2.4);
 }
@@ -34,21 +30,19 @@ function getLuminanace (r8bit, g8bit, b8bit) {
 	return 0.2126 * getsRGB(r) + 0.7152 * getsRGB(g) + 0.0722 * getsRGB(b);
 }
 
-function hex2rgb (hexcolor) {
-	hexcolor = hexcolor[0] === '#' ? hexcolor.slice(1) : hexcolor;
-
-	return [
-		parseInt(hexcolor.substr(0,2), 16),
-		parseInt(hexcolor.substr(2,2), 16),
-		parseInt(hexcolor.substr(4,2), 16)
-	];
-}
-
 function calculateRatio (colorA, colorB) {
 	let lumiA = getLuminanace(...hex2rgb(colorA));
 	let lumiB = getLuminanace(...hex2rgb(colorB));
 
 	return (lumiA + 0.05) / (lumiB + 0.05);
+}
+
+function getRandomColor () {
+	let r = random(0, 256, true);
+	let g = random(0, 256, true);
+	let b = random(0, 256, true);
+
+	return '#' + [r, g, b].map(c => padStart(c.toString('16'), 2, '0')).join('');
 }
 
 function getContrastColor (hexBGColor) {

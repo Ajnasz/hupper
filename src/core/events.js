@@ -1,27 +1,38 @@
 function createEmitter () {
-	var events = new Map();
+	let events;
+
+	function createEvents () {
+		events = new Map();
+	}
+
+	createEvents();
 
 	return {
 		off (name, cb) {
-			if (!events.has(name) || events.get(name).length === 0) {
-				return;
-			}
-
 			let argLen = arguments.length;
 
-			if (argLen === 1) {
-				events.delete(name);
-			} else if (argLen > 1) {
-				let listeners = events.get(name);
+			switch (argLen) {
+				case 0:
+					createEvents();
+					break;
+				case 1:
+					events.delete(name);
+					break;
+				case 2:
+					let listeners = events.get(name);
 
-				for (var i = 0, el = listeners.length; i < el; i++) {
-					if (listeners[i] === cb) {
-						listeners[i] = null;
+					for (var i = 0, el = listeners.length; i < el; i++) {
+						if (listeners[i] === cb) {
+							listeners[i] = null;
+						}
 					}
-				}
 
-				events.set(name, listeners.filter(l => typeof l === 'function'));
+					events.set(name, listeners.filter(l => typeof l === 'function'));
+					break;
+				default:
+					throw new Error('Invalid number of arguments');
 			}
+
 		},
 
 		on (name, cb) {
@@ -37,8 +48,12 @@ function createEmitter () {
 		},
 
 		emit (name, args) {
+			if (events.has('*')) {
+				events.get('*').forEach((cb) => cb.call(null, args, name));
+			}
+
 			if (events.has(name)) {
-				events.get(name).forEach((cb) => cb.call(null, args));
+				events.get(name).forEach((cb) => cb.call(null, args, name));
 			}
 		}
 	};

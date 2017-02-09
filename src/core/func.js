@@ -69,6 +69,16 @@ function groupBy (array, field) {
 	}, {});
 }
 
+function hex2rgb (hexcolor) {
+	hexcolor = hexcolor[0] === '#' ? hexcolor.slice(1) : hexcolor;
+
+	return [
+		parseInt(hexcolor.substr(0,2), 16),
+		parseInt(hexcolor.substr(2,2), 16),
+		parseInt(hexcolor.substr(4,2), 16)
+	];
+}
+
 function random (min = 0, max = 1, int = false) {
 	if (!int) {
 		return Math.random() * (max - min) + min;
@@ -116,5 +126,6 @@ export {
 	random,
 	padStart,
 	toCamelCase,
-	maxBy
+	maxBy,
+	hex2rgb
 };

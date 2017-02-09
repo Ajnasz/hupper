@@ -99,14 +99,14 @@ function createControl (item) {
 
 function getGroupName (group) {
 	switch (group) {
-	case 'comments':
-		return 'Hozzászólások';
-	case 'articles':
-		return 'Cikkek';
-	case 'blocks':
-		return 'Blokkok';
-	case 'styles':
-		return 'Megjelenés';
+		case 'comments':
+			return 'Hozzászólások';
+		case 'articles':
+			return 'Cikkek';
+		case 'blocks':
+			return 'Blokkok';
+		case 'styles':
+			return 'Megjelenés';
 	}
 }
 
@@ -170,19 +170,19 @@ prefs.getAllPrefs().then((pref) => {
 
 		if (target.dataset.type === 'control') {
 			switch (target.id) {
-			case 'control-edithighlightusers':
+				case 'control-edithighlightusers':
 
-				Promise.all([
-					editHighlightedUsers.open(),
-					prefs.getPref('huppercolor')
-				]).then(([dialog, huppercolor]) => dialog.panel.querySelector('#HighlightedUserColor').value = huppercolor);
-				break;
-			case 'control-edittrolls':
-				editTrolls.open();
-				break;
-			case 'control-edithidetaxonomy':
-				editHidetaxonomy.open();
-				break;
+					Promise.all([
+						editHighlightedUsers.open(),
+						prefs.getPref('huppercolor')
+					]).then(([dialog, huppercolor]) => dialog.panel.querySelector('#HighlightedUserColor').value = huppercolor);
+					break;
+				case 'control-edittrolls':
+					editTrolls.open();
+					break;
+				case 'control-edithidetaxonomy':
+					editHidetaxonomy.open();
+					break;
 			}
 		}
 	});

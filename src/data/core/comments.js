@@ -508,14 +508,14 @@ function getProp (comment, prop) {
 	let undef;
 
 	switch (type) {
-	case 'boolean':
-		return Boolean(value);
-	case 'number':
-		return +value;
-	case 'undefined':
-		return undef;
-	default:
-		return value;
+		case 'boolean':
+			return Boolean(value);
+		case 'number':
+			return +value;
+		case 'undefined':
+			return undef;
+		default:
+			return value;
 	}
 }
 

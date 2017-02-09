@@ -141,12 +141,12 @@ function updateBlock (details, prefName, value) {
 
 function getColumnName (column) {
 	switch (column) {
-	case 'right':
-	case 'sidebar-right':
-		return 'right';
-	case 'left':
-	case 'sidebar-left':
-		return 'left';
+		case 'right':
+		case 'sidebar-right':
+			return 'right';
+		case 'left':
+		case 'sidebar-left':
+			return 'left';
 
 	}
 }
@@ -220,19 +220,19 @@ function onLeftRightAction (details) {
 		let block = func.first(blockPrefs, b => b.id === blockID);
 
 		switch (details.action) {
-		case 'left':
-			if (block.column !== 'left') {
-				block.column = 'left';
-				block.index = -1;
-			}
-			break;
+			case 'left':
+				if (block.column !== 'left') {
+					block.column = 'left';
+					block.index = -1;
+				}
+				break;
 
-		case 'right':
-			if (block.column !== 'right') {
-				block.column = 'right';
-				block.index = -1;
-			}
-			break;
+			case 'right':
+				if (block.column !== 'right') {
+					block.column = 'right';
+					block.index = -1;
+				}
+				break;
 		}
 
 		func.sortBy(blockPrefs.filter(b => b.column === block.column), 'index').forEach((b, i) => b.index = i);
@@ -259,25 +259,25 @@ function handleBlockAction (details, context) {
 
 	switch (details.action) {
 
-	case 'delete':
-		return updateBlock(details, 'hidden', true);
+		case 'delete':
+			return updateBlock(details, 'hidden', true);
 
-	case 'restore-block':
-		return updateBlock(details, 'hidden', false);
+		case 'restore-block':
+			return updateBlock(details, 'hidden', false);
 
-	case 'hide-content':
-		return updateBlock(details, 'contentHidden', true);
+		case 'hide-content':
+			return updateBlock(details, 'contentHidden', true);
 
-	case 'show-content':
-		return updateBlock(details, 'contentHidden', false);
+		case 'show-content':
+			return updateBlock(details, 'contentHidden', false);
 
-	case 'up':
-	case 'down':
-		return onUpDownAction(details, context);
+		case 'up':
+		case 'down':
+			return onUpDownAction(details, context);
 
-	case 'left':
-	case 'right':
-		return onLeftRightAction(details);
+		case 'left':
+		case 'right':
+			return onLeftRightAction(details);
 	}
 
 }

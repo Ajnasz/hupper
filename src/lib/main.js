@@ -1,10 +1,21 @@
 /* global chrome:true */
 
-import { prefs } from '../core/prefs';
+import * as preferences from '../core/prefs';
 import * as pageStyles from './core/pagestyles';
 import * as coreMain from './core/main';
+
 import { log } from '../core/log';
-log.logger = console;
+
+import updater from './updater';
+import update01 from './updates/storage_local_to_sync_u01';
+
+updater([{
+	num: 1,
+	updater: update01
+}], chrome.storage);
+// preferences.migratePrefsToSync();
+
+const prefs = preferences.prefs;
 
 function manageStyles (tabID) {
 	'use strict';
@@ -68,21 +79,21 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 		if (user) {
 			let action;
 			switch (info.menuItemId) {
-			case 'highlightuser':
-				action = coreMain.highlightUser(user.data);
-				break;
+				case 'highlightuser':
+					action = coreMain.highlightUser(user.data);
+					break;
 
-			case 'unhighlightuser':
-				action = coreMain.unhighlightUser(user.data);
-				break;
+				case 'unhighlightuser':
+					action = coreMain.unhighlightUser(user.data);
+					break;
 
-			case 'trolluser':
-				action = coreMain.trollUser(user.data);
-				break;
+				case 'trolluser':
+					action = coreMain.trollUser(user.data);
+					break;
 
-			case 'untrolluser':
-				action = coreMain.untrollUser(user.data);
-				break;
+				case 'untrolluser':
+					action = coreMain.untrollUser(user.data);
+					break;
 			}
 
 			if (!action) {
@@ -98,17 +109,11 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 (function () {
 	let tabs = new Set();
-
-	chrome.storage.onChanged.addListener(function (changes, namespace) {
-		log.log('storage change', changes, namespace);
-
+	prefs.on('*', function (value, name) {
 		tabs.forEach(tab => {
-			Object.keys(changes).forEach(function (name) {
-				chrome.tabs.sendMessage(tab, {event: 'prefChange', data: {
-					name,
-					oldValue: changes[name].oldValue,
-					newValue: changes[name].newValue
-				}});
+			chrome.tabs.sendMessage(tab, {
+				event: 'prefChange',
+				data: { name, value }
 			});
 		});
 	});
@@ -118,61 +123,61 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 		switch (event) {
 
-		case 'register':
-			tabs.add(sender.tab.id);
-			manageStyles(sender.tab.id);
-			Promise.all([
-				prefs.getPref('setunlimitedlinks'),
-				prefs.getPref('parseblocks'),
-				prefs.getPref('logenabled')
-			]).then(settings => {
-				let [setunlimitedlinks, parseblocks, logenabled] = settings;
-				sendResponse({event: 'registered', data: {
-					setunlimitedlinks,
-					parseblocks,
-					logenabled
-				}});
-			});
+			case 'register':
+				tabs.add(sender.tab.id);
+				manageStyles(sender.tab.id);
+				Promise.all([
+					prefs.getPref('setunlimitedlinks'),
+					prefs.getPref('parseblocks'),
+					prefs.getPref('logenabled')
+				]).then(settings => {
+					let [setunlimitedlinks, parseblocks, logenabled] = settings;
+					sendResponse({event: 'registered', data: {
+						setunlimitedlinks,
+						parseblocks,
+						logenabled
+					}});
+				});
 
-			return true;
+				return true;
 
-		case 'requestCommentParse':
-			coreMain.commentParse(data).then(sendResponse);
+			case 'requestCommentParse':
+				coreMain.commentParse(data).then(sendResponse);
 
-			return true;
+				return true;
 
-		case 'requestArticleParse':
-			coreMain.articleParse(data).then(sendResponse);
+			case 'requestArticleParse':
+				coreMain.articleParse(data).then(sendResponse);
 
-			return true;
+				return true;
 
-		case 'requestBlockParse':
-			prefs.getPref('parseblocks').then(parse => {
-				if (parse) {
-					coreMain.blockParse(data).then(sendResponse);
-				} else {
-					sendResponse(null);
-				}
-			});
+			case 'requestBlockParse':
+				prefs.getPref('parseblocks').then(parse => {
+					if (parse) {
+						coreMain.blockParse(data).then(sendResponse);
+					} else {
+						sendResponse(null);
+					}
+				});
 
-			return true;
+				return true;
 
-		case 'block.action':
-			coreMain.handleBlockAction(data, msg.context).then(x => {
-				sendResponse(x);
-			}).catch(e => {
-				log.error(e);
+			case 'block.action':
+				coreMain.handleBlockAction(data, msg.context).then(x => {
+					sendResponse(x);
+				}).catch(e => {
+					log.error(e);
 				// sendResponse(e);
-			});
+				});
 
-			return true;
+				return true;
 
-		case 'article.hide-taxonomy':
-			coreMain.hideArticle(data).then(sendResponse);
+			case 'article.hide-taxonomy':
+				coreMain.hideArticle(data).then(sendResponse);
 
-			return true;
-		default:
-			return false;
+				return true;
+			default:
+				return false;
 		}
 
 	});

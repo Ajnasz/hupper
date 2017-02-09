@@ -23,7 +23,6 @@ var colors = [
 
 
 test('core/color.getContrastColor', (t) => {
-	t.plan(1);
 
 	let ok = colors.every(x => {
 		let a = color.getContrastColor(x);
@@ -45,6 +44,20 @@ test('core/color.getContrastColor', (t) => {
 	if (ok) {
 		t.pass('Correct contrast ratios has been calculated');
 	}
+
+	t.end();
+});
+
+test('core/color.calculateRatio', (t) => {
+	let ratio = color.calculateRatio('#ffffff', '#000000');
+	t.equal(ratio, 21, 'Contrast of white to black is ok');
+	t.end();
+});
+
+test('core/color.getRandomColor', t => {
+	let rndColor = color.getRandomColor();
+
+	t.ok(/^#[0-9a-f]{6}$/.test(rndColor), 'random hex color returned');
 
 	t.end();
 });

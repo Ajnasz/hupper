@@ -43,68 +43,12 @@ function filterContentHidden (block) {
 	return block.contentHidden;
 }
 
-
 function updateBlock (details, prefName, value, blockPrefs) {
 	let block = func.first(blockPrefs, b => b.id === details.id);
 
 	block[prefName] = value;
 
 	return block;
-}
-
-function findNotHiddenIndex (blocks, start, direction) {
-	if (!blocks[start].hidden) {
-		return start;
-	}
-
-	if (direction === 'down') {
-		for (let i = start, bl = blocks.length; i < bl; i++) {
-			if (blocks[i].hidden) {
-				continue;
-			}
-
-			return i;
-		}
-	} else if (direction === 'up') {
-		for (let i = start, bl = blocks.length; i < bl; i--) {
-			if (blocks[i].hidden) {
-				continue;
-			}
-
-			return i;
-		}
-	}
-	return -1;
-}
-
-function onBlockChangeOrder (events, details, blockPrefs) {
-	let columnBlocks = details.column === 'sidebar-right' ? blockPrefs.right : blockPrefs.left;
-	let oldIndex = func.index(columnBlocks, function (block) {
-		return block.id === details.id;
-	});
-
-	if (oldIndex > -1) {
-		let newIndex = findNotHiddenIndex(columnBlocks, details.action === 'up' ? oldIndex - 1 : oldIndex + 1, details.action);
-		let tmpBlock = columnBlocks.splice(newIndex, 1, columnBlocks[oldIndex]);
-
-		columnBlocks.splice(oldIndex, 1, tmpBlock[0]);
-		return columnBlocks;
-	}
-}
-
-function onBlockChangeColumn (events, details, blockPrefs) {
-	let isOnRightSide = details.column === 'sidebar-right';
-	let columnBlocks = isOnRightSide ? blockPrefs.right : blockPrefs.left;
-	let blockIndex = func.index(columnBlocks, function (block) {
-		return block.id === details.id;
-	});
-
-	if (blockIndex > -1) {
-		let tmpBlock = columnBlocks.splice(blockIndex, 1);
-		let otherColumn = isOnRightSide ? blockPrefs.left : blockPrefs.right;
-		otherColumn.unshift(tmpBlock[0]);
-		return blockPrefs;
-	}
 }
 
 function getBlockTitles () {
@@ -149,8 +93,6 @@ export {
 	filterHidden,
 	filterContentHidden,
 	getBlockTitles,
-	onBlockChangeOrder,
-	onBlockChangeColumn,
 	updateBlock,
 	getBlockTitle,
 	createBlockPref

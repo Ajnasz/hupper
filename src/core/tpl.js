@@ -3,21 +3,21 @@ function htmlEscape (text) {
 		let output = text;
 
 		switch (text) {
-		case '&':
-			output = '&amp;';
-			break;
-		case '<':
-			output = '&lt;';
-			break;
-		case '>':
-			output = '&gt;';
-			break;
-		case "'":
-			output = '&apos;';
-			break;
-		case '"':
-			output = '&quot;';
-			break;
+			case '&':
+				output = '&amp;';
+				break;
+			case '<':
+				output = '&lt;';
+				break;
+			case '>':
+				output = '&gt;';
+				break;
+			case "'":
+				output = '&apos;';
+				break;
+			case '"':
+				output = '&quot;';
+				break;
 		}
 
 		return output;
@@ -33,11 +33,11 @@ function template (tpl, data) {
 		item = data[item].toString();
 
 		switch (prefix) {
-		case '=':
-			break;
-		default:
-			item = htmlEscape(item);
-			break;
+			case '=':
+				break;
+			default:
+				item = htmlEscape(item);
+				break;
 		}
 
 		return item;
