@@ -1,4 +1,5 @@
 import * as preferences from '../../core/prefs';
+import * as func from '../../core/func';
 import defaultPrefs from '../../core/defaultPrefs';
 
 const prefs = preferences.prefs;
@@ -546,6 +547,22 @@ test('core/prefs setCleanTaxonomies', function (t) {
 		.then(taxonomies => {
 			t.equal(taxonomies.length, 3, 'Empty taxonomy not added');
 		})
+
+		.catch(err => t.fail(err))
+		.then(() => t.end());
+});
+
+test('core/prefs clear', function (t) {
+	new Promise(resolve => {
+		prefs.getStorage().local.set({
+			newcommenttext: 'A not default text',
+			neverexistingkey: 'value'
+		}, () => resolve());
+	}).then(() => prefs.clear())
+		.then(() => prefs.getPref('newcommenttext'))
+		.then(value => t.equal(value, func.first(defaultPrefs, (p) => p.name === 'newcommenttext').value, 'newcommentext default value restored'))
+		.then(() => prefs.getPref('neverexistingkey'))
+		.then(value => t.equal(value, null, 'non existing key deleted'))
 
 		.catch(err => t.fail(err))
 		.then(() => t.end());

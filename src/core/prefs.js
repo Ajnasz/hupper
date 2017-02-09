@@ -116,7 +116,9 @@ var chromePrefs = Object.assign(pref, {
 	},
 
 	clear () {
-		getStorageArea().clear(createDefaultPrefs);
+		return new Promise((resolve, reject) => {
+			getStorageArea().clear(() => createDefaultPrefs().then(resolve).catch(reject));
+		});
 	},
 
 	setPref (pref, value) {
