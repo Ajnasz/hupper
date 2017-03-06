@@ -394,8 +394,16 @@ function hideBoringComments (comments) {
 	comments.map(commentDataStructToObj).forEach(markBoring);
 }
 
+function hasFooter (comment) {
+	return comment && comment.footer && comment.footer.nodeType === Node.ELEMENT_NODE;
+}
+
 function addFooterLink (comment, link) {
 	var commentObj = commentDataStructToObj(comment);
+	if (!hasFooter(commentObj)) {
+		return;
+	}
+
 	let footer = commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS);
 
 	let href = link.querySelector('a').href;
