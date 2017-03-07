@@ -53,7 +53,8 @@ var commentDataStruct = {
 	author: '',
 	created: 0,
 	id: '',
-	parentID: ''
+	parentID: '',
+	content: null
 };
 
 /**
@@ -182,7 +183,7 @@ function findIndentLevel (comment) {
  *   @param options.content boolean // get comment content too
  * @return commentDataStruct
  */
-function parseComment (node, options) {
+function parseComment (node, options={content: false}) {
 	var output = Object.create(commentDataStruct);
 	var commentObj = getCommentObj(node);
 
