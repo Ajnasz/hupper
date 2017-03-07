@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "$(npm bin)/tape -r babel-register test/{lib,core}/**/*.js",
-	"coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r babel-register test/{core,lib}/*.js"
+    "test": "$(npm bin)/tape -r babel-register test/{lib,core,data}/**/*.js",
+    "testData": "$(npm bin)/tape -r babel-register test/data/**/*.js",
+    "coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r babel-register test/{core,lib}/*.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   "dependencies": {
     "babel-plugin-istanbul": "^3.1.2",
     "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
+    "jsdom": "^9.11.0",
     "tape": "^4.6.3"
   },
   "nyc": {
@@ -41,4 +43,3 @@
     "instrument": true
   }
 }
-
