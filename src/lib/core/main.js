@@ -21,8 +21,6 @@ function commentParse (comments) {
 
 	modComments.setScores(comments);
 
-	let flatCommentList = modComments.flatComments(comments);
-
 	return Promise.all([
 		prefs.getPref('hideboringcomments'),
 		prefs.getPref('boringcommentcontents'),
@@ -31,8 +29,8 @@ function commentParse (comments) {
 
 		if (hideBoringComments) {
 			let boringRex = new RegExp(boringRexStr);
-			modComments.markBoringComments(comments, boringRex);
-			modComments.markHasInterestingChild(comments);
+			comments = modComments.markBoringComments(comments, boringRex);
+			comments = modComments.markHasInterestingChild(comments);
 		}
 
 		return Promise.all([
@@ -43,17 +41,17 @@ function commentParse (comments) {
 		let [filterTrolls, trolls] = results;
 
 		if (filterTrolls) {
-			modComments.markTrollComments(comments, trolls);
+			comments = modComments.markTrollComments(comments, trolls);
 		}
 
-		modComments.updateHiddenState(comments);
+		comments = modComments.updateHiddenState(comments);
 
 		return prefs.getCleanHighlightedUsers();
 	}).then(results => {
 		let [highlightedUsers] = results;
 
 		if (highlightedUsers.length) {
-			modComments.setHighlightedComments(comments, highlightedUsers);
+			comments = modComments.setHighlightedComments(comments, highlightedUsers);
 		}
 
 		return Promise.all([
@@ -63,6 +61,7 @@ function commentParse (comments) {
 	}).then(results => {
 		let [replaceNewCommentText, newCommentText] = results;
 
+		let flatCommentList = modComments.flatComments(comments);
 		let newComments = flatCommentList.filter(c => c.isNew && !c.hide);
 
 		if (replaceNewCommentText) {
@@ -73,6 +72,7 @@ function commentParse (comments) {
 
 		return prefs.getCleanHighlightedUsers();
 	}).then(highlightusers => {
+		let flatCommentList = modComments.flatComments(comments);
 		highlightusers.forEach(user => {
 			let {name, color} = user;
 			flatCommentList.filter(c => c.author === name).forEach(c => {
@@ -82,7 +82,7 @@ function commentParse (comments) {
 		});
 
 		return flatCommentList;
-	}).then(() => {
+	}).then((flatCommentList) => {
 		flatCommentList.forEach(c => {
 			c.parent = c.parent ? c.parent.id : null;
 		});
