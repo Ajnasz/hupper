@@ -13,7 +13,8 @@ updater([{
 	num: 1,
 	updater: update01
 }], chrome.storage);
-// preferences.migratePrefsToSync();
+
+preferences.createDefaultPrefs();
 
 const prefs = preferences.prefs;
 
