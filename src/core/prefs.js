@@ -1,4 +1,5 @@
 import * as func from '../core/func';
+import * as env from './env';
 import { log } from './log';
 import { createEmitter } from './events';
 
@@ -7,13 +8,27 @@ import storage from './storage';
 import defaultPrefs from './defaultPrefs';
 
 function getStorageArea () {
-	return storage.sync || storage.local;
+	if (storage.sync) {
+		return new Promise((resolve) => {
+			// get a key which not exists
+			storage.sync.get('nosuchkey', () => {
+				if (env.hasChromeRuntime() && env.getChromeRuntime().lastError) {
+					resolve(storage.local);
+					return;
+				}
+
+				resolve(storage.sync);
+			});
+		});
+	}
+
+	return Promise.resolve(storage.local);
 }
 
 function createDefaultPrefs () {
-	return Promise.all(defaultPrefs.map((pref) => {
+	return getStorageArea().then(storage => Promise.all(defaultPrefs.map((pref) => {
 		return new Promise(resolve => {
-			getStorageArea().get(pref.name, result => {
+			storage.get(pref.name, result => {
 				if (pref.name in result) {
 					resolve(null);
 				} else {
@@ -22,7 +37,7 @@ function createDefaultPrefs () {
 				}
 			});
 		});
-	})).then(values => {
+	}))).then(values => {
 		let saveObj = values.reduce((prev, curr) => {
 			if (curr !== null) {
 				let [name, value] = curr;
@@ -34,9 +49,8 @@ function createDefaultPrefs () {
 			return prev;
 		}, {});
 
-		return new Promise(resolve => getStorageArea().set(saveObj, () => resolve()));
+		return getStorageArea().then(storage => new Promise(resolve => storage.set(saveObj, () => resolve())));
 	});
-	/* */
 }
 
 let events = createEmitter();
@@ -78,28 +92,26 @@ function validateType (prefType, value) {
 }
 
 function findPref (pref) {
-	return new Promise(function (resolve) {
-		getStorageArea().get(pref, function (results) {
+	return getStorageArea().then(storage => new Promise((resolve) => {
+		storage.get(pref, function (results) {
 			if (typeof results[pref] !== 'undefined') {
 				resolve(results[pref]);
 			} else {
 				resolve(null);
 			}
 		});
-	});
+	}));
 }
 
 function savePref (pref, value) {
 	return new Promise(function (resolve, reject) {
-		let item = func.first(defaultPrefs, (item) => {
-			return item.name === pref;
-		});
+		let item = func.first(defaultPrefs, item => item.name === pref);
 
 		if (item) {
 			if (validateType(item.type, value)) {
 				let newValue = Object.create(null);
 				newValue[pref] = value;
-				getStorageArea().set(newValue);
+				getStorageArea().then(storage => storage.set(newValue));
 				resolve(newValue);
 			} else {
 				reject(new Error(`Pref: ${pref} value is not valid type for: ${item.type}`));
@@ -117,7 +129,7 @@ var chromePrefs = Object.assign(pref, {
 
 	clear () {
 		return new Promise((resolve, reject) => {
-			getStorageArea().clear(() => createDefaultPrefs().then(resolve).catch(reject));
+			getStorageArea().then(storage => storage.clear(() => createDefaultPrefs().then(resolve).catch(reject)));
 		});
 	},
 
