@@ -21,6 +21,8 @@ function commentParse (comments) {
 
 	modComments.setScores(comments);
 
+	let flatCommentList;
+
 	return Promise.all([
 		prefs.getPref('hideboringcomments'),
 		prefs.getPref('boringcommentcontents'),
@@ -61,7 +63,7 @@ function commentParse (comments) {
 	}).then(results => {
 		let [replaceNewCommentText, newCommentText] = results;
 
-		let flatCommentList = modComments.flatComments(comments);
+		flatCommentList = modComments.flatComments(comments);
 		let newComments = flatCommentList.filter(c => c.isNew && !c.hide);
 
 		if (replaceNewCommentText) {
@@ -72,13 +74,15 @@ function commentParse (comments) {
 
 		return prefs.getCleanHighlightedUsers();
 	}).then(highlightusers => {
-		let flatCommentList = modComments.flatComments(comments);
 		highlightusers.forEach(user => {
 			let {name, color} = user;
-			flatCommentList.filter(c => c.author === name).forEach(c => {
-				c.userColor = color;
-				c.userContrastColor = colorModule.getContrastColor(color);
-			});
+
+			flatCommentList
+				.filter(c => c.author === name)
+					.forEach(c => {
+						c.userColor = color;
+						c.userContrastColor = colorModule.getContrastColor(color);
+					});
 		});
 
 		return flatCommentList;
