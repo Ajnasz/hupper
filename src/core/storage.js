@@ -1,11 +1,6 @@
-/* global chrome */
-
 import * as virtualStorage from './virtualStorage';
+import * as env from './env';
 
-function hasChrome () {
-	return typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined';
-}
-
-const storage = hasChrome() ? chrome.storage : virtualStorage.create();
+const storage = env.hasChromeStorage() ? env.getChromeStorage() : virtualStorage.create();
 
 export default storage;
