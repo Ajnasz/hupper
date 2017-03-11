@@ -133,6 +133,11 @@ function getCommentObj (node) {
 	commentObj.header = node.querySelector('.' + COMMENT_HEADER_CLASS);
 	commentObj.footer = node.querySelector('.' + COMMENT_FOOTER_CLASS);
 
+	if (!commentObj.footer && node.nextElementSibling && node.nextElementSibling.classList.contains(COMMENT_FOOTER_CLASS)) {
+		commentObj.footer = node.nextElementSibling;
+		node.appendChild(commentObj.footer);
+	}
+
 	return commentObj;
 }
 

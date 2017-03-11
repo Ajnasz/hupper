@@ -1,3 +1,8 @@
+import * as func from '../../core/func';
+
+const COMMENT_CLASS = 'comment';
+const COMMENT_PARENT_CLASS = 'indented';
+
 function findComments (parent) {
 	var output = [];
 	if (!parent) {
@@ -7,7 +12,7 @@ function findComments (parent) {
 	var child = parent.firstChild;
 
 	while (child) {
-		if (child.nodeType === Node.ELEMENT_NODE && child.classList.contains('comment')) {
+		if (child.nodeType === Node.ELEMENT_NODE && child.classList.contains(COMMENT_CLASS)) {
 			output.push(child);
 		}
 
@@ -53,10 +58,25 @@ function normalizeCommentTree (tree) {
 	});
 }
 
-function getCommentTree () {
-	let root = document.getElementById('comments');
+/**
+ * A comment has parent comment if it's inside an indented div
+ * If the previous node of the indented div is not a .comment div we should
+ * consider it as a root node because the HTML has been scrwed up, and can't
+ * find what is the parent comment
+ */
+function hasParentComment (comment) {
+	const parentNode = comment.parentNode;
+	return parentNode.classList.contains(COMMENT_PARENT_CLASS) &&
+		comment.parentNode.previousElementSibling.classList.contains(COMMENT_CLASS);
+}
 
-	return normalizeCommentTree(recObj(createObj(findComments(root))));
+function getCommentTree () {
+	let rootComments = func.toArray(document.querySelectorAll(`.${COMMENT_CLASS}`))
+		.filter(func.negate(hasParentComment));
+	let tree = normalizeCommentTree(recObj(createObj(rootComments)));
+	// let tree = normalizeCommentTree(recObj(createObj(findComments(document.getElementById('comments')))));
+
+	return tree;
 }
 
 export {
