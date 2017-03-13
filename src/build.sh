@@ -10,13 +10,13 @@ BROWSERIFY=$NPMBIN/browserify
 $ESLINT --ignore-pattern=bundle\.js -c .eslintrc {options,lib,data,core}/**/*.js
 
 echo -n " ."
+rm -f hupper*.zip
+echo -n " ."
 $BROWSERIFY options/main.js -o options/bundle.js -t babelify
 echo -n " ."
 $BROWSERIFY data/main.js -o data/bundle.js -t babelify
 echo -n " ."
 $BROWSERIFY lib/main.js -o lib/bundle.js -t babelify
-echo -n " ."
-rm -f hupper*.zip
 echo -n " ."
 
 PATHS="data/bundle.js data/core/css/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json"
