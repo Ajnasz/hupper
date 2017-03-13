@@ -140,7 +140,7 @@ function addCommentListeners () {
 
 	if (commentsContainer) {
 		document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
-		commentsContainer.addEventListener('click', modComment.onCommentsContainerClick, false);
+		document.querySelector('.main-content').addEventListener('click', modComment.onCommentsContainerClick, false);
 	}
 }
 
