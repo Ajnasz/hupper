@@ -107,6 +107,8 @@ function getGroupName (group) {
 			return 'Blokkok';
 		case 'styles':
 			return 'Megjelenés';
+		default:
+			return null;
 	}
 }
 

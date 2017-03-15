@@ -10,6 +10,7 @@
 	},
 
 	"rules": {
+		"consistent-return": "error",
 		"no-floating-decimal": 0,
 		"no-bitwise": 0,
 		"no-new-func": 0,

@@ -11,7 +11,7 @@ function createLogger () {
 				return nullFunction;
 			}
 
-			return;
+			return void(0);
 		}
 	});
 }

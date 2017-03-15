@@ -15,7 +15,7 @@ function getCommentObjects (options) {
 	let commentsContainer = document.getElementById('comments');
 
 	if (!commentsContainer) {
-		return;
+		return null;
 	}
 
 	return modComment.convertComments(modCommentTree.getCommentTree(), options);

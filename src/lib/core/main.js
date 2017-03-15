@@ -151,7 +151,8 @@ function getColumnName (column) {
 		case 'left':
 		case 'sidebar-left':
 			return 'left';
-
+		default:
+			return null;
 	}
 }
 
@@ -282,6 +283,9 @@ function handleBlockAction (details, context) {
 		case 'left':
 		case 'right':
 			return onLeftRightAction(details);
+
+		default:
+			return null;
 	}
 
 }

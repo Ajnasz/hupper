@@ -11,6 +11,8 @@ function is (element, what) {
 	} else if (element.mozMatchesSelector) {
 		return element.mozMatchesSelector(what);
 	}
+
+	return false;
 }
 
 	/**
