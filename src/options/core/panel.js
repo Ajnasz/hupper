@@ -72,7 +72,10 @@ function closeElem (elem) {
 
 function showElem (elem) {
 	let promise =  transitionTrack(elem);
-	setTimeout(() => elem.classList.add('show', 'visible'), 0);
+
+	// elem.offsetWidth
+	// triggers reflow which needed to fire animation and transition events
+	requestAnimationFrame(() => (elem.offsetWidth, elem.classList.add('show', 'visible')));
 
 	return promise;
 }
