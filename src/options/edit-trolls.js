@@ -15,7 +15,8 @@ function open () {
 				id: 'TrollName',
 				label: 'Troll name',
 				type: 'text',
-				name: 'trollName'
+				name: 'trollName',
+				value: ''
 			}]
 		},
 

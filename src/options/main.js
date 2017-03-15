@@ -173,11 +173,7 @@ prefs.getAllPrefs().then((pref) => {
 		if (target.dataset.type === 'control') {
 			switch (target.id) {
 				case 'control-edithighlightusers':
-
-					Promise.all([
-						editHighlightedUsers.open(),
-						prefs.getPref('huppercolor')
-					]).then(([dialog, huppercolor]) => dialog.panel.querySelector('#HighlightedUserColor').value = huppercolor);
+					prefs.getPref('huppercolor').then(huppercolor => editHighlightedUsers.open({huppercolor}));
 					break;
 				case 'control-edittrolls':
 					editTrolls.open();

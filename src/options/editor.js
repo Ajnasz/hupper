@@ -15,7 +15,7 @@ let editorTPL = `<form action="" method="" id="{formID}">
 
 let controlGroupTPL = `<div class="field-group">
 		<label for="{id}">{label}</label>
-		<input type="{type}" name="{name}" id="{id}">
+		<input type="{type}" name="{name}" id="{id}" value="{value}">
 	</div>`;
 
 

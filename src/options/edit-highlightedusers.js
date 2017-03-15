@@ -8,7 +8,7 @@ function getOrderedUsers ()  {
 	return prefs.getCleanHighlightedUsers().then(users => func.sortBy(users, 'color'));
 }
 
-function open () {
+function open (options) {
 	return editorDialog.open({
 		id: 'EditHighlightedUsersDialog',
 		title: 'Edit highlighted users',
@@ -22,12 +22,14 @@ function open () {
 				id: 'HighlightedUserName',
 				label: 'Name',
 				type: 'text',
-				name: 'userName'
+				name: 'userName',
+				value: ''
 			}, {
 				id: 'HighlightedUserColor',
 				label: 'Color',
 				type: 'color',
-				name: 'userColor'
+				name: 'userColor',
+				value: options.huppercolor
 			}]
 		},
 

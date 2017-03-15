@@ -15,7 +15,8 @@ function open () {
 				id: 'ArticleType',
 				label: 'ArticleType',
 				type: 'text',
-				name: 'articleType'
+				name: 'articleType',
+				value: ''
 			}]
 		},
 
