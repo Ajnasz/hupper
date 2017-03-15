@@ -24,7 +24,7 @@ function transitionTrack (elem) {
 	return new Promise(resolve => {
 		let transitions = new Set();
 
-		function transitionStart (e) {
+		function onTransitionStart (e) {
 			log.log('transtion start', e);
 
 			if (e.target === elem) {
@@ -43,19 +43,19 @@ function transitionTrack (elem) {
 
 			log.log('transitions', transitions);
 			if (transitions.size === 0) {
-				elem.removeEventListener('transitionstart', transitionStart, false);
+				elem.removeEventListener('transitionstart', onTransitionStart, false);
 				elem.removeEventListener('transitionend', onTransitionEnd, false);
 
-				elem.removeEventListener('animationstart', transitionStart, false);
+				elem.removeEventListener('animationstart', onTransitionStart, false);
 				elem.removeEventListener('animationend', onTransitionEnd, false);
 				resolve(elem);
 			}
 		}
 
-		elem.addEventListener('transitionstart', transitionStart), false;
+		elem.addEventListener('transitionstart', onTransitionStart, false);
 		elem.addEventListener('transitionend', onTransitionEnd, false);
 
-		elem.addEventListener('animationstart', transitionStart, false);
+		elem.addEventListener('animationstart', onTransitionStart, false);
 		elem.addEventListener('animationend', onTransitionEnd, false);
 	});
 }
