@@ -114,6 +114,12 @@ function maxBy (array, field) {
 	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, {[field]: -Infinity});
 }
 
+function negate (func) {
+	return function (...args) {
+		return !func(...args);
+	};
+}
+
 export {
 	first,
 	index,
@@ -127,5 +133,6 @@ export {
 	padStart,
 	toCamelCase,
 	maxBy,
-	hex2rgb
+	hex2rgb,
+	negate
 };

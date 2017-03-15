@@ -53,7 +53,8 @@ var commentDataStruct = {
 	author: '',
 	created: 0,
 	id: '',
-	parentID: ''
+	parentID: '',
+	content: null
 };
 
 /**
@@ -132,6 +133,11 @@ function getCommentObj (node) {
 	commentObj.header = node.querySelector('.' + COMMENT_HEADER_CLASS);
 	commentObj.footer = node.querySelector('.' + COMMENT_FOOTER_CLASS);
 
+	if (!commentObj.footer && node.nextElementSibling && node.nextElementSibling.classList.contains(COMMENT_FOOTER_CLASS)) {
+		commentObj.footer = node.nextElementSibling;
+		node.appendChild(commentObj.footer);
+	}
+
 	return commentObj;
 }
 
@@ -182,7 +188,7 @@ function findIndentLevel (comment) {
  *   @param options.content boolean // get comment content too
  * @return commentDataStruct
  */
-function parseComment (node, options) {
+function parseComment (node, options={content: false}) {
 	var output = Object.create(commentDataStruct);
 	var commentObj = getCommentObj(node);
 

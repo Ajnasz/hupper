@@ -116,7 +116,7 @@ const defaultPrefs = Object.freeze([
 	{
 		'name': 'parseblocks',
 		// 'title': 'Parse blocks',
-		'title': 'Blokkok funkciók engedélyezése',
+		'title': 'Blokkokhoz tartozó funkciók engedélyezése',
 		'type': 'bool',
 		'value': true,
 		'group': 'blocks'
