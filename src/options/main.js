@@ -5,18 +5,17 @@ import * as editHighlightedUsers from './edit-highlightedusers';
 import * as editTrolls from './edit-trolls';
 import * as editHidetaxonomy from './edit-hidetaxonomy';
 
-function createControlGroup () {
+function createControlGroup (content) {
 	let div = dom.createElem('div');
 
-	div.classList.add('control-group');
+	dom.addClass('control-group', div);
+	dom.append(div, content);
 
 	return div;
 }
 
-function camelConcat () {
-	return func.toArray(arguments).map((i) => {
-		return i[0].toUpperCase() + i.slice(1);
-	}).join('');
+function camelConcat (...args) {
+	return args.map((i) => i[0].toUpperCase() + i.slice(1)).join('');
 }
 
 function getElemId (item) {
@@ -26,6 +25,8 @@ function getElemId (item) {
 function createInput (item) {
 	let input = dom.createElem('input');
 
+	input.dataset.prefname = item.name;
+
 	input.dataset.type = item.type;
 	input.name = item.name;
 	input.id = getElemId(item);
@@ -34,67 +35,118 @@ function createInput (item) {
 		input.type = 'checkbox';
 		input.value = '1';
 		input.checked = item.value;
+
+		if (item.requiredBy) {
+			input.dataset.requiredby = JSON.stringify(item.requiredBy);
+		}
 	} else {
 		input.value = item.value;
 
+		const setType = func.curry(dom.attr, 'type');
+
+
 		if (item.type === 'integer') {
-			input.type = 'number';
+			setType('number', input);
 		} else if (item.type === 'color') {
-			input.type = 'color';
-			input.classList.add('btn');
+			[[setType, 'color'], [dom.addClass, 'btn']]
+				.forEach(call => call[0](...call.slice(1), input));
 		} else {
-			input.type = 'text';
+			setType('text', input);
 		}
 	}
 
 	return input;
 }
 
-function composeGroup (item) {
-	let fragment = document.createDocumentFragment();
-	let input = createInput(item);
-	let div = createControlGroup();
+function createLabelText (item) {
+	let labelText = dom.createElem('span');
 
-	if (item.type === 'bool') {
-		div.classList.add('control-group-bool');
-		let l = dom.createElem('label');
-		let s = dom.createElem('span');
-		l.appendChild(input);
-		l.appendChild(s);
-		s.textContent = item.title;
-		div.appendChild(l);
-	} else {
-		div.classList.add('control-group-text');
-		let l = dom.createElem('label');
-		let s = dom.createElem('span');
-		l.appendChild(s);
-		l.appendChild(input);
-		s.textContent = item.title + ':';
-		div.appendChild(l);
-	}
+	labelText.textContent = item.title;
+
+	return labelText;
+}
+
+function createCheckboxGroup (item) {
+	let input = createInput(item);
+	let label = dom.createElem('label');
+	let labelText = createLabelText(item);
+
+	const appendToLabel = func.curry(dom.append, label);
+
+	appendToLabel(input);
+	appendToLabel(labelText);
+
+
+	return label;
+}
+
+function createTextGroup (item) {
+	let input = createInput(item);
+	let label = dom.createElem('label');
+	let labelText = createLabelText(item);
+
+	labelText.textContent = `${item.title}:`;
+
+	const appendToLabel = func.curry(dom.append, label);
+
+	appendToLabel(labelText);
+	appendToLabel(input);
+
+	return label;
+}
+
+function createGroupContainer (className, group) {
+	let div = createControlGroup(group);
+
+	dom.addClass(className, div);
+
+	return div;
+}
+
+function createFragment (div) {
+	let fragment = document.createDocumentFragment();
 
 	fragment.appendChild(div);
 
 	return fragment;
 }
 
-function createControl (item) {
-	let fragment = document.createDocumentFragment();
+function groupComposer (groupClassName, groupCreator, item) {
+	return func.compose(
+		func.always(item),
+		groupCreator,
+		func.partial(createGroupContainer, groupClassName),
+		createFragment
+	);
+}
 
+const boolGropuComposer = func.curry(groupComposer, 'control-group-bool', createCheckboxGroup);
+const textGroupComposer = func.curry(groupComposer, 'control-group-text', createTextGroup);
+
+function composeGroup (item) {
+	switch (item.type) {
+		case 'bool':
+			return boolGropuComposer(item);
+		default:
+			return textGroupComposer(item);
+	}
+}
+
+function createControlButton (item) {
 	let button = dom.createElem('button');
-	let div = createControlGroup();
 
-	div.classList.add('control-group-control');
-
-	button.type = 'button';
-	button.id = 'control-' + item.name;
 	button.textContent = item.title;
 	button.dataset.type = item.type;
-	button.classList.add('btn');
+	button.dataset.prefname = item.name;
+	dom.attr('type', 'button', button);
+	dom.attr('id', `control-${item.name}`, button);
+	dom.addClass('btn', button);
 
-	div.appendChild(button);
-	fragment.appendChild(div);
-	return fragment;
+	return button;
+}
+
+function createControl (item) {
+	return func.compose(func.always(item), createControlButton, func.partial(createGroupContainer, 'control-group-control'), createFragment);
 }
 
 function getGroupName (group) {
@@ -112,56 +164,77 @@ function getGroupName (group) {
 	}
 }
 
+const toDisabled = func.curry(dom.attr, 'disabled', true);
+const toEnabled = func.curry(dom.removeAttr, 'disabled');
+
+function toggleRelatives (element) {
+	const value = element.checked;
+	const groupContainer = dom.closest('.group-container', element);
+	const toggler = value ? toEnabled : toDisabled;
+
+	JSON.parse(element.dataset.requiredby)
+		.map(name => func.curry(dom.selectOne, `[data-prefname="${name}"]`))
+		.map(selector => selector(groupContainer))
+		.forEach(toggler);
+}
+
+function getInputValue (elem) {
+	switch (elem.dataset.type) {
+		case 'bool':
+			return elem.checked;
+		case 'string':
+		case 'color':
+			return elem.value;
+		case 'integer':
+			return parseInt(elem.value, 10);
+		default:
+			throw new Error('Unkown type');
+	}
+}
+
 prefs.getAllPrefs().then((pref) => {
-	let msg = document.querySelector('#Messages');
+	let msg = dom.selectOne('#Messages', document);
 
 	let byGroup = func.groupBy(pref, 'group');
 
-	Object.keys(byGroup).forEach(groupName => {
+	const groups = Object.keys(byGroup);
+
+	groups.forEach(groupName => {
 		let pref = byGroup[groupName];
 
-		let group = dom.createElem('div', null, ['group']),
+		let group = dom.createElem('section', null, ['group']),
 			title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName)),
 			groupContainer = dom.createElem('div', null, ['group-container']);
 
 		group.appendChild(title);
 		group.appendChild(groupContainer);
 
-		pref.forEach((x) => {
-			let elem;
-
-			if (x.hidden) {
-				return;
-			}
-
+		pref.filter(x => !x.hidden).map((x) => {
 			if (x.type === 'control') {
-				elem = createControl(x);
-			} else {
-				elem = composeGroup(x);
+				return createControl(x);
 			}
 
-			if (elem) {
-				groupContainer.appendChild(elem);
-			}
-		});
+			return composeGroup(x);
+		}).forEach(elem => groupContainer.appendChild(elem));
 
 		msg.appendChild(group);
+	});
+
+	groups.forEach(groupName => {
+		let pref = byGroup[groupName];
+
+		pref.filter(x => x.type === 'bool' && x.requiredBy)
+			.map(x => dom.selectOne(`[data-prefname="${x.name}"]`, document)).forEach(toggleRelatives);
 	});
 
 	msg.addEventListener('change', (e) => {
 		let target = e.target;
 		let name = target.name;
 		let type = target.dataset.type;
-		let value;
+		let value = getInputValue(target);
 
 		if (type === 'bool') {
-			value = target.checked;
-		} else if (['string', 'color'].indexOf(type) > -1) {
-			value = target.value;
-		} else if (type === 'integer') {
-			value = parseInt(target.value, 10);
-		} else {
-			throw new Error('Unkown type');
+			toggleRelatives(target, value);
 		}
 
 		prefs.setPref(name, value);

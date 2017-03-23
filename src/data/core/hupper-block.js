@@ -4,6 +4,9 @@ import { log } from '../../core/log';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 
+const hasCollapsedClass = func.curry(dom.hasClass, 'collapsed');
+const hasExpandedClass = func.curry(dom.hasClass, 'expanded');
+
 function addHupperBlock () {
 	if (document.getElementById('block-hupper')) {
 		return;
@@ -29,21 +32,23 @@ function addHupperBlock () {
 
 	ul.addEventListener('click', function (e) {
 		let target = e.target.parentNode;
-		let classList = target.classList;
 
-		let collapsed = classList.contains('collapsed');
+		let collapsed = hasCollapsedClass(target);
 
-		let expanded = !collapsed && classList.contains('expanded');
+		let expanded = !collapsed && hasExpandedClass(target);
 
 		if (collapsed || expanded) {
 			e.preventDefault();
 
+			const collapseClasses = ['collapsed', 'hup-collapsed'];
+			const expandClasses = ['expanded', 'hup-expanded'];
+
 			if (collapsed) {
-				classList.remove('collapsed', 'hup-collapsed');
-				classList.add('expanded', 'hup-expanded');
+				collapseClasses.forEach(c => dom.removeClass(c, target));
+				expandClasses.forEach(c => dom.addClass(c, target));
 			} else {
-				classList.remove('expanded', 'hup-expanded');
-				classList.add('collapsed', 'hup-collapsed');
+				collapseClasses.forEach(c => dom.addClass(c, target));
+				expandClasses.forEach(c => dom.removeClass(c, target));
 			}
 		}
 	}, false);
@@ -86,8 +91,8 @@ function addHiddenBlockContainer () {
 			href: '#'
 		});
 
-		li.classList.remove('leaf');
-		li.classList.add('collapsed', 'hup-collapsed');
+		dom.removeClass('leaf', li);
+		['collapsed', 'hup-collapsed'].forEach(c => dom.addClass(c, li));
 
 		let hiddenBlocks = dom.createElem('ul', null, ['hidden-blocks']);
 

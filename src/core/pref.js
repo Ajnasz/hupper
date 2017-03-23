@@ -78,9 +78,9 @@ const pref = {
 			let index = func.index(users, u => u.name === userName);
 
 			if (index > -1) {
-				users[index].color = color;
+				users[index].color = color.toLowerCase();
 			} else {
-				users.push({name: userName, color: color});
+				users.push({name: userName, color: color.toLowerCase()});
 			}
 
 			return this.setCleanHighlightedUsers(users);

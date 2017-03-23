@@ -36,6 +36,11 @@
 	}
 }
 
+input[type="text"],
+input[type="number"] {
+	--bg-color: 250, 250, 250;
+}
+
 .btn {
 	--color: #666;
 	--bg-color: 250, 250, 250;
@@ -76,6 +81,14 @@ input {
 	--focus-border-color: rgba(121, 66, 6, 0.6);
 
 	--color: #666;
+}
+
+.btn[disabled],
+.btn[disabled],
+input[disabled],
+input[readonly] {
+	--color: #999;
+	--bg-color: 235, 235, 228;
 }
 
 * {
@@ -135,7 +148,7 @@ input {
 
 	box-shadow: none;
 	border: 1px solid var(--border-color);
-	transition: box-shadow 0.3s, border-color 0.3s;
+	transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
 
 	color: var(--color);
 }
@@ -187,6 +200,7 @@ button {
 
 input[type="text"],
 input[type="number"] {
+	background-color: rgb(var(--bg-color));
 	max-width: 100%;
 }
 

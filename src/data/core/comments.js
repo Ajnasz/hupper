@@ -77,7 +77,7 @@ function getCommentAuthor (comment) {
 	var output = '',
 		nameLink;
 
-	nameLink = comment.header.querySelector('a');
+	nameLink = dom.selectOne('a', comment.header);
 
 	if (nameLink) {
 		output = nameLink.textContent.trim();
@@ -110,7 +110,7 @@ function getCommentCreateDate (comment) {
  * @return String
  */
 function getCommentId (comment) {
-	var element = dom.prev(comment.node, 'a');
+	var element = dom.prev('a', comment.node);
 
 	if (element) {
 		return element.getAttribute('id');
@@ -130,10 +130,10 @@ function getCommentObj (node) {
 	var commentObj = Object.create(commentStruct);
 
 	commentObj.node = node;
-	commentObj.header = node.querySelector('.' + COMMENT_HEADER_CLASS);
-	commentObj.footer = node.querySelector('.' + COMMENT_FOOTER_CLASS);
+	commentObj.header = dom.selectOne(`.${COMMENT_HEADER_CLASS}`, node);
+	commentObj.footer = dom.selectOne(`.${COMMENT_FOOTER_CLASS}`, node);
 
-	if (!commentObj.footer && node.nextElementSibling && node.nextElementSibling.classList.contains(COMMENT_FOOTER_CLASS)) {
+	if (!commentObj.footer && node.nextElementSibling && dom.hasClass(COMMENT_FOOTER_CLASS, node.nextElementSibling)) {
 		commentObj.footer = node.nextElementSibling;
 		node.appendChild(commentObj.footer);
 	}
@@ -142,18 +142,21 @@ function getCommentObj (node) {
 }
 
 function getCommentContent (comment) {
-	return comment.node.querySelector('.content').textContent;
+	return dom.selectOne('.content', comment.node).textContent;
 }
+
+const findIndentedParent = func.curry(dom.closest, `.${INDENTED_CLASS}`);
+const findParentComment = func.curry(dom.prev, `.${COMMENT_CLASS}`);
 
 /**
  * @param HTMLDOMElement elem
  * @return string
  */
 function findParentId (elem) {
-	let indented = dom.closest(elem, '.' + INDENTED_CLASS);
+	let indented = findIndentedParent(elem);
 
 	if (indented) {
-		let parentComment = dom.prev(indented, '.' + COMMENT_CLASS);
+		let parentComment = findParentComment(indented);
 
 		if (parentComment) {
 			return getCommentId(getCommentObj(parentComment));
@@ -169,14 +172,15 @@ function findParentId (elem) {
  */
 function findIndentLevel (comment) {
 	var level = 0,
-		indented = '.' + INDENTED_CLASS,
 		elem;
 
-	elem = dom.closest(comment.node, indented);
+	// elem = dom.closest(indented, comment.node);
+	elem = findIndentedParent(comment.node);
+
 	while (elem) {
 		++level;
 
-		elem = dom.closest(elem, indented);
+		elem = findIndentedParent(elem);
 	}
 
 	return level;
@@ -192,7 +196,7 @@ function parseComment (node, options={content: false}) {
 	var output = Object.create(commentDataStruct);
 	var commentObj = getCommentObj(node);
 
-	output.isNew = commentObj.node.classList.contains(NEW_COMMENT_CLASS);
+	output.isNew = dom.hasClass(NEW_COMMENT_CLASS, commentObj.node);
 	output.author = getCommentAuthor(commentObj);
 	output.created = getCommentCreateDate(commentObj);
 	output.id = getCommentId(commentObj);
@@ -211,8 +215,11 @@ function parseComment (node, options={content: false}) {
  * @param commentStruct comment
  */
 function getNewMarkerElement (comment) {
-	return comment.node.querySelector('.' + COMMENT_NEW_MARKER_CLASS);
+	return dom.selectOne(`.${COMMENT_NEW_MARKER_CLASS}`, comment.node);
 }
+
+const selectHNav = func.curry(dom.selectOne, `.${COMMENT_HNAV_CLASS}`);
+const selectHNew = func.curry(dom.selectOne, '.hnew');
 
 /**
  * @param commentStruct comment
@@ -226,30 +233,29 @@ function setNew (comment, text) {
 		original.remove(original);
 	}
 
-	if (comment.header.querySelector('.hnew')) {
+	if (selectHNew(comment.header)) {
 		return;
 	}
 
-	var hnav = comment.header.querySelector('.' + COMMENT_HNAV_CLASS);
+	var hnav = selectHNav(comment.header);
 	var span = dom.createElem('span', null, ['hnew'], text);
 	hnav.appendChild(span);
 }
 
 function insertIntoHnav (comment, item) {
 	var header = comment.header,
-		hnew = header.querySelector('.hnew');
+		hnew = selectHNew(header),
+		hnav = selectHNav(header);
 
 	if (hnew) {
-		header.querySelector('.' + COMMENT_HNAV_CLASS)
-			.insertBefore(item, hnew);
+		hnav.insertBefore(item, hnew);
 	} else {
-		header.querySelector('.' + COMMENT_HNAV_CLASS)
-			.appendChild(item);
+		hnav.appendChild(item);
 	}
 }
 
 function commentLink (comment, commentToLinkID, text) {
-	let link = comment.header.querySelector(`a[href="#${commentToLinkID}"]`);
+	let link = dom.selectOne(`a[href="#${commentToLinkID}"]`, comment.header);
 
 	if (link) {
 		link.parentNode.removeChild(link);
@@ -258,9 +264,7 @@ function commentLink (comment, commentToLinkID, text) {
 	link = dom.createElem('a', [{name: 'href', value: '#' + commentToLinkID}], null, text);
 
 	addHNav(comment);
-
 	insertIntoHnav(comment, link);
-	// comment.header.querySelector('.' + COMMENT_HNAV_CLASS).appendChild(link);
 }
 
 /**
@@ -286,7 +290,7 @@ function addLinkToNextComment (comment, nextCommentId) {
 function getCommentFromId (id) {
 	var elem = document.getElementById(id);
 
-	return dom.next(elem, '.' + COMMENT_CLASS);
+	return dom.next(`.${COMMENT_CLASS}`, elem);
 }
 
 /**
@@ -294,22 +298,20 @@ function getCommentFromId (id) {
  * @return commentStruct
  */
 function commentDataStructToObj (comment) {
-	var item = getCommentFromId(comment.id);
-
-	return getCommentObj(item);
+	return func.compose(func.always(comment.id), getCommentFromId, getCommentObj);
 }
 
 /**
  * @param commentStruct comment
  */
 function setTroll (comment) {
-	comment.node.classList.add(TROLL_COMMENT_CLASS);
-	comment.header.classList.add(TROLL_COMMENT_HEADER_CLASS);
+	dom.addClass(TROLL_COMMENT_CLASS, comment.node);
+	dom.addClass(TROLL_COMMENT_HEADER_CLASS, comment.header);
 
-	var replies = dom.next(comment.node, '.' + INDENTED_CLASS);
+	var replies = dom.next(`.${INDENTED_CLASS}`, comment.node);
 
 	if (replies) {
-		replies.classList.add(TROLL_COMMENT_REPLY_CLASS);
+		dom.addClass(TROLL_COMMENT_REPLY_CLASS, replies);
 	}
 }
 
@@ -317,13 +319,13 @@ function setTroll (comment) {
  * @param commentStruct comment
  */
 function unsetTroll (comment) {
-	comment.node.classList.remove(TROLL_COMMENT_CLASS);
-	comment.header.classList.remove(TROLL_COMMENT_HEADER_CLASS);
+	dom.removeClass(TROLL_COMMENT_CLASS, comment.node);
+	dom.removeClass(TROLL_COMMENT_HEADER_CLASS, comment.header);
 
-	var replies = dom.next(comment.node, '.' + INDENTED_CLASS);
+	var replies = dom.next(`.${INDENTED_CLASS}`, comment.node);
 
 	if (replies) {
-		replies.classList.remove(TROLL_COMMENT_REPLY_CLASS);
+		dom.removeClass(TROLL_COMMENT_REPLY_CLASS, replies);
 	}
 }
 
@@ -354,13 +356,15 @@ function setTrolls (trollComments) {
 
 function unsetTrolls () {
 	var trolled = func.toArray(document.querySelectorAll([
-		'.' + TROLL_COMMENT_CLASS,
-		'.' + TROLL_COMMENT_HEADER_CLASS,
-		'.' + TROLL_COMMENT_REPLY_CLASS
+		`.${TROLL_COMMENT_CLASS}`,
+		`.${TROLL_COMMENT_HEADER_CLASS}`,
+		`.${TROLL_COMMENT_REPLY_CLASS}`
 	].join(',')));
 
 	trolled.forEach(function (element) {
-		element.classList.remove(TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS, TROLL_COMMENT_REPLY_CLASS);
+		[TROLL_COMMENT_CLASS, TROLL_COMMENT_HEADER_CLASS, TROLL_COMMENT_REPLY_CLASS]
+			.map(className => func.curry(dom.removeClass, className))
+			.forEach(f => f(element));
 	});
 }
 
@@ -369,7 +373,7 @@ function unsetTrolls () {
  */
 function unhighlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
-	commentObj.node.classList.remove(HIGHLIGHTED_COMMENT_CLASS);
+	dom.removeClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
 	commentObj.header.style.backgroundColor = '';
 	commentObj.header.style.color = '';
 }
@@ -379,7 +383,7 @@ function unhighlightComment (comment) {
  */
 function highlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
-	commentObj.node.classList.add(HIGHLIGHTED_COMMENT_CLASS);
+	dom.addClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
 	commentObj.header.style.backgroundColor = comment.userColor;
 
 	commentObj.header.style.color = comment.userContrastColor;
@@ -390,7 +394,7 @@ function highlightComment (comment) {
  * @param commentStruct comment
  */
 function markBoring (comment) {
-	comment.node.classList.add(BORING_COMMENT_CLASS);
+	dom.addClass(BORING_COMMENT_CLASS, comment.node);
 }
 
 /**
@@ -410,9 +414,9 @@ function addFooterLink (comment, link) {
 		return;
 	}
 
-	let footer = commentObj.footer.querySelector('.' + COMMENT_FOOTER_LINKS_CLASS);
+	let footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
 
-	let href = link.querySelector('a').href;
+	let href = dom.selectOne('a', link).href;
 
 	func.toArray(footer.querySelectorAll('a'))
 		.filter(a => a.href === href)
@@ -424,13 +428,13 @@ function addFooterLink (comment, link) {
 /**
  * @param string text
  * @param href text
- * @param {string[]} classList
+ * @param {string[]} classes
  */
-function createFooterLink (text, href, classList) {
+function createFooterLink (text, href, classes) {
 	var listItem = dom.createElem('li'),
 		link;
 
-	link = dom.createElem('a', [{name: 'href', value: href}], classList, text);
+	link = dom.createElem('a', [{name: 'href', value: href}], classes, text);
 	listItem.appendChild(link);
 
 	return listItem;
@@ -469,26 +473,27 @@ function addExpandLinkToComments (comments) {
  */
 function widenComment (commentId) {
 	var comment = getCommentFromId(commentId);
-	var indentedClass = '.' + INDENTED_CLASS;
+	var indentedClass = `.${INDENTED_CLASS}`;
 	var indented;
 	var skippedOne = false;
 
-	indented = dom.closest(comment, indentedClass);
+	indented = dom.closest(indentedClass, comment);
+
 	while (indented) {
 		if (skippedOne) {
-			indented.classList.add(WIDEN_COMMENT_CLASS);
+			dom.addClass(WIDEN_COMMENT_CLASS, indented);
 		}
 
 		skippedOne = true;
 
-		indented = dom.closest(indented, indentedClass);
+		indented = dom.closest(indentedClass, indented);
 	}
 }
 
 function unwideComments () {
 	func.toArray(document.querySelectorAll('.' + WIDEN_COMMENT_CLASS))
 		.forEach(function (elem) {
-			elem.classList.remove(WIDEN_COMMENT_CLASS);
+			dom.removeClass(WIDEN_COMMENT_CLASS, elem);
 		});
 }
 
@@ -500,11 +505,11 @@ function getComments () {
 }
 
 function hide (comment) {
-	getCommentFromId(comment.id).classList.add('hup-hidden');
+	dom.addClass('hup-hidden', getCommentFromId(comment.id));
 }
 
 function show (comment) {
-	getCommentFromId(comment.id).classList.remove('hup-hidden');
+	dom.removeClass('hup-hidden', getCommentFromId(comment.id));
 }
 
 function setProp (comment, prop, value) {
@@ -547,9 +552,9 @@ function getScoreTitle (votes) {
 
 function showScore (comment) {
 	let elem = commentDataStructToObj(comment);
-	let content = elem.node.querySelector('.content');
+	let content = dom.selectOne('.content', elem.node);
 
-	let scores = elem.node.querySelector('.scores');
+	let scores = dom.selectOne('.scores', elem.node);
 
 	if (!scores) {
 		let scores = dom.createElem('div', [
@@ -561,7 +566,7 @@ function showScore (comment) {
 		elem.node.insertBefore(scores, content);
 	} else {
 		scores.textContent = comment.votes.score;
-		scores.setAttribute('title', getScoreTitle(comment.votes));
+		dom.attr('title', getScoreTitle(comment.votes), scores);
 	}
 }
 
@@ -611,10 +616,10 @@ function onCommentSetNew (newComments) {
 }
 
 function onCommentsContainerClick (e) {
-	if (dom.is(e.target, '.expand-comment')) {
+	if (dom.is('.expand-comment', e.target)) {
 		e.preventDefault();
 		unwideComments();
-		let id = dom.prev(dom.closest(e.target, '.comment'), 'a').getAttribute('id');
+		let id = dom.prev('a', dom.closest('.comment', e.target)).getAttribute('id');
 		widenComment(id);
 
 	}
@@ -625,7 +630,7 @@ function onBodyClick (e) {
 		return;
 	}
 
-	if (dom.closest(e.target, '.comment')) {
+	if (dom.closest('.comment', e.target)) {
 		return;
 	}
 
@@ -633,7 +638,7 @@ function onBodyClick (e) {
 }
 
 function convertComments (comments, opts) {
-	return comments.map(function (opts, comment) {
+	return comments.filter(comment => comment.id !== '').map(function (opts, comment) {
 		let output = parseComment(getCommentFromId(comment.id), {
 			content: opts && opts.content
 		});

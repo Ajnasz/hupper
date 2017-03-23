@@ -151,6 +151,8 @@ var chromePrefs = Object.assign(pref, {
 				output.type = pref.type;
 				output.hidden = pref.hidden;
 				output.group = pref.group;
+				output.requiredBy = pref.requiredBy;
+
 				output.value = value;
 
 				return Promise.resolve(output);

@@ -1,4 +1,5 @@
 import * as dom from '../../core/dom';
+import * as func from '../../core/func';
 import * as editor from '../editor';
 import { createEmitter } from '../../core/events';
 import { log } from '../../core/log';
@@ -19,6 +20,14 @@ function createPanelBg () {
 function getTrackName (e) {
 	e.type.indexOf('animation') === 0 ? e.animationname : e.type;
 }
+
+const hiddenClass = 'hidden';
+const hideClass = 'hide';
+const showClass = 'show';
+const visibleClass = 'visible';
+
+const hide = func.curry(dom.addClass, hiddenClass);
+const show = func.curry(dom.removeClass, hiddenClass);
 
 function transitionTrack (elem) {
 	return new Promise(resolve => {
@@ -43,29 +52,23 @@ function transitionTrack (elem) {
 
 			log.log('transitions', transitions);
 			if (transitions.size === 0) {
-				elem.removeEventListener('transitionstart', onTransitionStart, false);
-				elem.removeEventListener('transitionend', onTransitionEnd, false);
-
-				elem.removeEventListener('animationstart', onTransitionStart, false);
-				elem.removeEventListener('animationend', onTransitionEnd, false);
+				['transitionstart', 'animationstart'].map(ev => func.curry(dom.removeListener, ev, onTransitionStart)).forEach(f => f(elem));
+				['transitionend', 'animationend'].map(ev => func.curry(dom.removeListener, ev, onTransitionEnd)).forEach(f => f(elem));
 				resolve(elem);
 			}
 		}
 
-		elem.addEventListener('transitionstart', onTransitionStart, false);
-		elem.addEventListener('transitionend', onTransitionEnd, false);
+		['transitionstart', 'animationstart'].map(ev => func.curry(dom.addListener, ev, onTransitionStart)).forEach(f => f(elem));
+		['transitionend', 'animationend'].map(ev => func.curry(dom.addListener, ev, onTransitionEnd)).forEach(f => f(elem));
 
-		elem.addEventListener('animationstart', onTransitionStart, false);
-		elem.addEventListener('animationend', onTransitionEnd, false);
 	});
 }
 
 function closeElem (elem) {
-	let promise =  transitionTrack(elem).then(() => {
-		elem.parentNode.removeChild(elem);
-	});
-	elem.classList.remove('show');
-	elem.classList.add('hide');
+	let promise =  transitionTrack(elem).then(() => elem.parentNode.removeChild(elem));
+
+	dom.removeClass(showClass, elem);
+	dom.addClass(hideClass, elem);
 
 	return promise;
 }
@@ -75,10 +78,12 @@ function showElem (elem) {
 
 	// elem.offsetWidth
 	// triggers reflow which needed to fire animation and transition events
-	requestAnimationFrame(() => (elem.offsetWidth, elem.classList.add('show', 'visible')));
+	requestAnimationFrame(() => (elem.offsetWidth, [showClass, visibleClass].map(className => func.curry(dom.addClass, className)).forEach(f => f(elem))));
 
 	return promise;
 }
+
+const selectForm = func.curry(dom.selectOne, 'form');
 
 function createPanel (options, body, events) {
 	let panelContainer = dom.createElem('div', null, ['panel-container']);
@@ -98,7 +103,7 @@ function createPanel (options, body, events) {
 	header.appendChild(close);
 
 	if (options.id) {
-		div.setAttribute('id', options.id);
+		dom.attr('id', options.id, div);
 	}
 
 	panelContent.insertAdjacentHTML('afterbegin', body);
@@ -112,9 +117,13 @@ function createPanel (options, body, events) {
 		events.emit('submit', e);
 	}
 
+	const pulseClass = 'pulse';
+
 	function panelAlert (panel) {
-		let promise = transitionTrack(panel).then(() => panel.classList.remove('pulse'));
-		panel.classList.add('pulse');
+		let promise = transitionTrack(panel).then(() => dom.removeClass(pulseClass, panel));
+
+		dom.addClass(pulseClass, panel);
+
 		return promise;
 	}
 
@@ -123,38 +132,39 @@ function createPanel (options, body, events) {
 		panelAlert(div);
 	}
 
-	function closePanel () {
+	function onKeyup (ev) {
+		if (ev.keyCode === 27) {
+			if (!dom.is('.panel input,.panel textarea,.panel select', ev.target)) {
+				closePanel();
+			}
+		}
+	}
 
+	function closePanel () {
 		let panelBg = document.getElementById('panel-bg');
 
 		closeElem(div).then(function () {
-			div.removeEventListener('click', onClick);
-			div.querySelector('form').removeEventListener('submit', onSubmit);
-			document.getElementById('panel-bg').removeEventListener('click', onPanelBGClick, false);
+			const removeClickListener = func.curry(dom.removeListener, 'click');
+			removeClickListener(onClick, div);
+			removeClickListener(closePanel, close);
+			removeClickListener(onPanelBGClick, dom.selectOne('#panel-bg', document));
+
+			dom.removeListener('submit', onSubmit, selectForm(div));
+			dom.removeListener('keyup', onKeyup, window);
+
 			panelContainer.parentNode.removeChild(panelContainer);
-		}).then(closeElem.bind(null, panelBg)).then(function () {
+		}).then(func.curry(closeElem, panelBg)).then(function () {
 			events.emit('close');
 		});
 	}
 
-	div.addEventListener('click', onClick, false);
-	div.querySelector('form').addEventListener('submit', onSubmit, false);
+	const addClickListner = func.curry(dom.addListener, 'click');
+	addClickListner(onClick, div);
+	addClickListner(closePanel, close);
+	addClickListner(onPanelBGClick, dom.selectOne('#panel-bg', document));
 
-	close.addEventListener('click', function onClose () {
-		close.removeEventListener('click', onClose);
-		closePanel();
-	});
-
-	document.getElementById('panel-bg').addEventListener('click', onPanelBGClick, false);
-
-	window.addEventListener('keyup', function onKeyup (ev) {
-		if (ev.keyCode === 27) {
-			if (!ev.target.matches('.panel input,.panel textarea,.panel select')) {
-				closePanel();
-				window.removeEventListener('keyup', onKeyup);
-			}
-		}
-	}, false);
+	dom.addListener('submit', onSubmit, selectForm(div));
+	dom.addListener('keyup', onKeyup, window);
 
 	document.body.appendChild(panelContainer);
 
@@ -189,26 +199,26 @@ function create (options, body) {
 		show () {
 			return showBg(panelBg)
 				.then(showPanel.bind(null, panel))
-				.then(() => panel.classList.remove('show'));
+				.then(() => show(panel));
 		},
 
 		drawTable (items) {
-			let found = panel.querySelector('.js-found'),
-				notFound = panel.querySelector('.js-not-found');
+			let found = dom.selectOne('.js-found', panel),
+				notFound = dom.selectOne('.js-not-found', panel);
 
 			if (items.length > 0) {
-				let tbody = panel.querySelector('tbody');
+				let tbody = dom.selectOne('tbody', panel);
 				dom.empty(tbody);
 				items.forEach(item => tbody.appendChild(editor.getRow(item)));
 
-				notFound.classList.add('hidden');
-				found.classList.remove('hidden');
+				hide(notFound);
+				show(found);
 			} else {
-				notFound.classList.remove('hidden');
-				found.classList.add('hidden');
+				hide(found);
+				show(notFound);
 			}
 		}
 	};
 }
 
-export { createPanel, createPanelBg, create };
+export { create };

@@ -9,10 +9,10 @@ test('core/dom.is', (t) => {
 	const window = document.defaultView;
 	setGlobals(window);
 
-	t.ok(dom.is(document.querySelector('.foo-bar'), '.foo-bar'), 'class matched');
-	t.ok(dom.is(document.querySelector('.foo-bar'), 'div'), 'element matched');
-	t.ok(dom.is(document.querySelector('.foo-bar'), '[data-foo="bar"]'), 'attribute matched');
-	t.notOk(dom.is(document.querySelector('.foo-bar'), 'span'), 'no false positive element match');
+	t.ok(dom.is('.foo-bar', document.querySelector('.foo-bar')), 'class matched');
+	t.ok(dom.is('div', document.querySelector('.foo-bar')), 'element matched');
+	t.ok(dom.is('[data-foo="bar"]', document.querySelector('.foo-bar')), 'attribute matched');
+	t.notOk(dom.is('span', document.querySelector('.foo-bar')), 'no false positive element match');
 
 	t.end();
 });
@@ -23,8 +23,8 @@ test('core/dom.next', (t) => {
 	const window = document.defaultView;
 	setGlobals(window);
 
-	t.equal(dom.next(document.querySelector('.foo-bar'), 'span').textContent, 'text1', 'next found by tag');
-	t.equal(dom.next(document.querySelector('.foo-bar'), '.baz').textContent, 'text2', 'next found by class');
+	t.equal(dom.next('span', document.querySelector('.foo-bar')).textContent, 'text1', 'next found by tag');
+	t.equal(dom.next('.baz', document.querySelector('.foo-bar')).textContent, 'text2', 'next found by class');
 
 	t.end();
 });
@@ -36,8 +36,8 @@ test('core/dom.prev', (t) => {
 	const window = document.defaultView;
 	setGlobals(window);
 
-	t.equal(dom.prev(document.querySelector('.foo-bar'), 'span').textContent, 'text1', 'prev found by tag');
-	t.equal(dom.prev(document.querySelector('.foo-bar'), '.baz').textContent, 'text2', 'prev found by class');
+	t.equal(dom.prev('span', document.querySelector('.foo-bar')).textContent, 'text1', 'prev found by tag');
+	t.equal(dom.prev('.baz', document.querySelector('.foo-bar')).textContent, 'text2', 'prev found by class');
 
 	t.end();
 });

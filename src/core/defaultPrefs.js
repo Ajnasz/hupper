@@ -15,7 +15,8 @@ const defaultPrefs = Object.freeze([
 		'title': 'Olvasatlan hozzászólásoknál az "új" szöveg lecserélése valami jobban kereshetőre',
 		'type': 'bool',
 		'value': true,
-		'group': 'comments'
+		'group': 'comments',
+		'requiredBy': ['newcommenttext']
 	},
 
 	{
@@ -33,7 +34,8 @@ const defaultPrefs = Object.freeze([
 		'title': 'Trollszűrő engedélyezése',
 		'type': 'bool',
 		'value': true,
-		'group': 'comments'
+		'group': 'comments',
+		'requiredBy': ['edittrolls']
 	},
 
 	{
@@ -174,7 +176,8 @@ const defaultPrefs = Object.freeze([
 		'title': 'Unalmas hozzászólások elrejtése',
 		'type': 'bool',
 		'value': true,
-		'group': 'comments'
+		'group': 'comments',
+		'requiredBy': ['boringcommentcontents']
 	},
 
 	{

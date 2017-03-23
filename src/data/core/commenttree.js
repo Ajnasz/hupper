@@ -1,4 +1,5 @@
 import * as func from '../../core/func';
+import * as dom from '../../core/dom';
 
 const COMMENT_CLASS = 'comment';
 const COMMENT_PARENT_CLASS = 'indented';
@@ -12,7 +13,7 @@ function findComments (parent) {
 	var child = parent.firstChild;
 
 	while (child) {
-		if (child.nodeType === Node.ELEMENT_NODE && child.classList.contains(COMMENT_CLASS)) {
+		if (child.nodeType === Node.ELEMENT_NODE && dom.hasClass(COMMENT_CLASS, child)) {
 			output.push(child);
 		}
 
@@ -22,10 +23,14 @@ function findComments (parent) {
 	return output;
 }
 
+function findID (comment) {
+	return comment.previousElementSibling.id;
+}
+
 function createObj (comments) {
 	return comments.map(function (c) {
 		return {
-			id: c.previousElementSibling.id,
+			id: findID(c),
 			node: c,
 			children: null
 		};
@@ -66,8 +71,8 @@ function normalizeCommentTree (tree) {
  */
 function hasParentComment (comment) {
 	const parentNode = comment.parentNode;
-	return parentNode.classList.contains(COMMENT_PARENT_CLASS) &&
-		comment.parentNode.previousElementSibling.classList.contains(COMMENT_CLASS);
+	return dom.hasClass(COMMENT_PARENT_CLASS, parentNode) &&
+		dom.hasClass(COMMENT_CLASS, comment.parentNode.previousElementSibling);
 }
 
 function getCommentTree () {

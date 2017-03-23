@@ -45,11 +45,9 @@ function sortBy (array, field) {
 	});
 }
 
-function partial (func) {
-	let pArgs = toArray(arguments).slice(1);
-
-	return function () {
-		return func.apply(this, pArgs.concat(toArray(arguments)));
+function partial (func, ...pArgs) {
+	return function (...args) {
+		return func.apply(this, pArgs.concat(args));
 	};
 }
 
@@ -120,6 +118,22 @@ function negate (func) {
 	};
 }
 
+function compose (...args) {
+	return args.reduce((accu, fn) => {
+		return fn(accu);
+	}, null);
+}
+
+function curry (fn, ...args) {
+	return (...args2) => {
+		return fn.apply(null, args.concat(args2));
+	};
+}
+
+function always (arg) {
+	return () => arg;
+}
+
 export {
 	first,
 	index,
@@ -134,5 +148,8 @@ export {
 	toCamelCase,
 	maxBy,
 	hex2rgb,
-	negate
+	negate,
+	compose,
+	curry,
+	always
 };

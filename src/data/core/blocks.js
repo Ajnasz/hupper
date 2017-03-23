@@ -48,7 +48,7 @@ function getBlockElements (sidebar) {
 	* @return string
 	*/
 function getBlockColumn (block) {
-	let sidebar = dom.closest(block, '.' + SIDEBAR_CLASS);
+	let sidebar = dom.closest('.' + SIDEBAR_CLASS, block);
 
 	return sidebar.getAttribute('id');
 }
@@ -125,9 +125,9 @@ function toggleBlockClass (block, cls, add) {
 
 	if (blockElem) {
 		if (add) {
-			blockElem.classList.add(cls);
+			dom.addClass(cls, blockElem);
 		} else {
-			blockElem.classList.remove(cls);
+			dom.removeClass(cls, blockElem);
 		}
 	}
 }
@@ -222,7 +222,7 @@ let blockActionStruct = (function () {
 
 function onBlockControlClick (e) {
 	if (e.target.dataset.action === 'restore-block') {
-		let block = dom.closest(e.target, '.block'),
+		let block = dom.closest('.block', e.target),
 			action = e.target.dataset.action,
 			// column = e.target.dataset.sidebar,
 			event = Object.create(blockActionStruct);
@@ -238,8 +238,8 @@ function onBlockControlClick (e) {
 }
 
 function onBlockButtonClick (e) {
-	if (dom.is(e.target, '.block-button')) {
-		let block = dom.closest(e.target, '.block'),
+	if (dom.is('.block-button', e.target)) {
+		let block = dom.closest('.block', e.target),
 			action = e.target.dataset.action,
 			event = Object.create(blockActionStruct);
 

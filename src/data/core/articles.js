@@ -124,14 +124,16 @@ function parseArticles () {
 	return func.toArray(elements).map(articleElementToStruct);
 }
 
+const hupHiddenClass = 'hup-hidden';
+
 function toggleArticles (articles) {
 	articles
 		.map(articleStructToArticleNodeStruct)
 		.forEach(function (a, index) {
 			if (articles[index].hide) {
-				a.node.classList.add('hup-hidden');
+				dom.addClass(hupHiddenClass, a.node);
 			} else {
-				a.node.classList.remove('hup-hidden');
+				dom.removeClass(hupHiddenClass, a.node);
 			}
 		});
 }
@@ -160,8 +162,8 @@ function onArticleAddNextPrev (item) {
 
 function listenToTaxonomyButtonClick (cb) {
 	document.getElementById('content-both').addEventListener('click', function (e) {
-		if (e.target.classList.contains('taxonomy-button')) {
-			let articleStruct = articleElementToStruct(dom.closest(e.target, '.node'));
+		if (dom.hasClass('taxonomy-button', e.target)) {
+			let articleStruct = articleElementToStruct(dom.closest('.node', e.target));
 
 			cb(articleStruct);
 
