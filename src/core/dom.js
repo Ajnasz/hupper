@@ -18,7 +18,9 @@ function is (what, element) {
 function findRelative (tester, getter, element) {
 	let elem = element;
 
-	return tester(elem) ? findRelative(tester, getter, getter(elem)) : (elem || null);
+	return tester(elem) ?
+		findRelative(tester, getter, getter(elem)) :
+		(elem || null);
 }
 
 /**
@@ -64,16 +66,26 @@ function elemOrClosest (selector, element) {
 }
 
 function remove (element) {
-	return element.parentNode.removeChild(element);
+	element.parentNode.removeChild(element);
+
+	return element;
 }
 
 function addClass (className, elem) {
-	return elem.classList.add(className);
-	// return elem.classList.add.apply(elem.classList, classes);
+	elem.classList.add(className);
+	return elem;
+}
+
+function addClasses (classNames, elem) {
+	classNames.forEach(cn => addClass(cn, elem));
+
+	return elem;
 }
 
 function removeClass (className, elem) {
 	elem.classList.remove(className);
+
+	return elem;
 }
 
 function hasClass (className, elem) {
@@ -81,15 +93,21 @@ function hasClass (className, elem) {
 }
 
 function attr (name, value, elem) {
-	return elem.setAttribute(name, value);
+	elem.setAttribute(name, value);
+
+	return elem;
 }
 
 function removeAttr (attrib, elem) {
-	return elem.removeAttribute(attrib);
+	elem.removeAttribute(attrib);
+
+	return elem;
 }
 
 function text (textContent, element) {
 	element.textContent = textContent;
+
+	return element;
 }
 
 function createElem (nodeType, attributes, classes, textContent) {
@@ -100,7 +118,7 @@ function createElem (nodeType, attributes, classes, textContent) {
 	}
 
 	if (classes && classes.length) {
-		classes.map(className => func.curry(addClass, className)).forEach(f => f(element));
+		addClasses(classes, element);
 	}
 
 	if (textContent) {
@@ -114,10 +132,14 @@ function empty (element) {
 	while (element.firstChild) {
 		element.removeChild(element.firstChild);
 	}
+
+	return element;
 }
 
 function emptyText (element) {
 	func.toArray(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).forEach(remove);
+
+	return element;
 }
 
 function selectOne (selector, element) {
@@ -125,15 +147,38 @@ function selectOne (selector, element) {
 }
 
 function addListener (event, callback, element) {
-	return element.addEventListener(event, callback, false);
+	element.addEventListener(event, callback, false);
+
+	return element;
 }
 
 function removeListener (event, callback, element) {
-	return element.removeEventListener(event, callback, false);
+	element.removeEventListener(event, callback, false);
+
+	return element;
 }
 
 function append (to, elem) {
 	to.appendChild(elem);
+	return elem;
+}
+
+function data (name, value, elem) {
+	elem.dataset[name] = value;
+
+	return elem;
+}
+
+function prop (name, value, elem) {
+	elem[name] = !!value;
+
+	return elem;
+}
+
+function val (value, elem) {
+	elem.value = value;
+
+	return elem;
 }
 
 export {
@@ -147,6 +192,7 @@ export {
 	emptyText,
 	elemOrClosest,
 	addClass,
+	addClasses,
 	removeClass,
 	hasClass,
 	selectOne,
@@ -155,4 +201,8 @@ export {
 	addListener,
 	removeListener,
 	append,
+	data,
+	prop,
+	val,
+	text
 };

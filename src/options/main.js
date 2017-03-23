@@ -22,36 +22,43 @@ function getElemId (item) {
 	return camelConcat('Item', item.name);
 }
 
+const setType = func.curry(dom.attr, 'type');
+const checkboxType = func.curry(setType, 'checkbox');
+const numberType = func.curry(setType, 'number');
+const textType = func.curry(setType, 'text');
+const colorType = func.curry(setType, 'color');
+const buttonType = func.curry(setType, 'button');
+const addButtonClass = func.curry(dom.addClass, 'btn');
+
 function createInput (item) {
 	let input = dom.createElem('input');
 
-	input.dataset.prefname = item.name;
-
-	input.dataset.type = item.type;
-	input.name = item.name;
-	input.id = getElemId(item);
+	dom.data('prefname', item.name, input);
+	dom.data('type', item.type, input);
+	dom.attr('id', getElemId(item), input);
+	dom.attr('name', item.name, input);
 
 	if (item.type === 'bool') {
-		input.type = 'checkbox';
-		input.value = '1';
-		input.checked = item.value;
+		checkboxType(input);
+		dom.val('1', input);
+		dom.prop('checked', item.value, input);
 
 		if (item.requiredBy) {
-			input.dataset.requiredby = JSON.stringify(item.requiredBy);
+			dom.data('requiredby', JSON.stringify(item.requiredBy), input);
 		}
 	} else {
 		input.value = item.value;
 
-		const setType = func.curry(dom.attr, 'type');
-
-
-		if (item.type === 'integer') {
-			setType('number', input);
-		} else if (item.type === 'color') {
-			[[setType, 'color'], [dom.addClass, 'btn']]
-				.forEach(call => call[0](...call.slice(1), input));
-		} else {
-			setType('text', input);
+		switch (item.type) {
+			case 'integer':
+				numberType(input);
+				break;
+			case 'color':
+				colorType(input);
+				addButtonClass(input);
+				break;
+			default:
+				textType(input);
 		}
 	}
 
@@ -61,7 +68,7 @@ function createInput (item) {
 function createLabelText (item) {
 	let labelText = dom.createElem('span');
 
-	labelText.textContent = item.title;
+	dom.text(item.title, labelText);
 
 	return labelText;
 }
@@ -76,7 +83,6 @@ function createCheckboxGroup (item) {
 	appendToLabel(input);
 	appendToLabel(labelText);
 
-
 	return label;
 }
 
@@ -85,7 +91,7 @@ function createTextGroup (item) {
 	let label = dom.createElem('label');
 	let labelText = createLabelText(item);
 
-	labelText.textContent = `${item.title}:`;
+	dom.text(item.title, labelText);
 
 	const appendToLabel = func.curry(dom.append, label);
 
@@ -106,7 +112,7 @@ function createGroupContainer (className, group) {
 function createFragment (div) {
 	let fragment = document.createDocumentFragment();
 
-	fragment.appendChild(div);
+	dom.append(fragment, div);
 
 	return fragment;
 }
@@ -135,18 +141,23 @@ function composeGroup (item) {
 function createControlButton (item) {
 	let button = dom.createElem('button');
 
-	button.textContent = item.title;
-	button.dataset.type = item.type;
-	button.dataset.prefname = item.name;
-	dom.attr('type', 'button', button);
+	dom.text(item.title, button);
+	dom.data('type', item.type, button);
+	dom.data('prefname', item.name, button);
+	buttonType(button);
 	dom.attr('id', `control-${item.name}`, button);
-	dom.addClass('btn', button);
+	addButtonClass(button);
 
 	return button;
 }
 
 function createControl (item) {
-	return func.compose(func.always(item), createControlButton, func.partial(createGroupContainer, 'control-group-control'), createFragment);
+	return func.compose(
+		func.always(item),
+		createControlButton,
+		func.partial(createGroupContainer, 'control-group-control'),
+		createFragment
+	);
 }
 
 function getGroupName (group) {
@@ -164,8 +175,8 @@ function getGroupName (group) {
 	}
 }
 
-const toDisabled = func.curry(dom.attr, 'disabled', true);
-const toEnabled = func.curry(dom.removeAttr, 'disabled');
+const toDisabled = func.curry(dom.prop, 'disabled', true);
+const toEnabled = func.curry(dom.prop, 'disabled', false);
 
 function toggleRelatives (element) {
 	const value = element.checked;
@@ -192,71 +203,77 @@ function getInputValue (elem) {
 	}
 }
 
-prefs.getAllPrefs().then((pref) => {
-	let msg = dom.selectOne('#Messages', document);
+function main () {
 
-	let byGroup = func.groupBy(pref, 'group');
+	prefs.getAllPrefs().then((pref) => {
+		let msg = dom.selectOne('#Messages', document);
 
-	const groups = Object.keys(byGroup);
+		let byGroup = func.groupBy(pref, 'group');
 
-	groups.forEach(groupName => {
-		let pref = byGroup[groupName];
+		const groups = Object.keys(byGroup);
 
-		let group = dom.createElem('section', null, ['group']),
-			title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName)),
-			groupContainer = dom.createElem('div', null, ['group-container']);
+		groups.forEach(groupName => {
+			let pref = byGroup[groupName];
 
-		group.appendChild(title);
-		group.appendChild(groupContainer);
+			let group = dom.createElem('section', null, ['group']),
+				title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName)),
+				groupContainer = dom.createElem('div', null, ['group-container']);
 
-		pref.filter(x => !x.hidden).map((x) => {
-			if (x.type === 'control') {
-				return createControl(x);
+			const appendToGroup = func.curry(dom.append, group);
+			[title, groupContainer].forEach(appendToGroup);
+
+			const appendToGroupContainer = func.curry(dom.append, groupContainer);
+			pref.filter(x => !x.hidden).map((x) => {
+				if (x.type === 'control') {
+					return createControl(x);
+				}
+
+				return composeGroup(x);
+			}).forEach(appendToGroupContainer);
+
+			dom.append(msg, group);
+		});
+
+		groups.forEach(groupName => {
+			let pref = byGroup[groupName];
+
+			pref.filter(x => x.type === 'bool' && x.requiredBy)
+				.map(x => dom.selectOne(`[data-prefname="${x.name}"]`, document)).forEach(toggleRelatives);
+		});
+
+		msg.addEventListener('change', (e) => {
+			let target = e.target;
+			let name = target.name;
+			let type = target.dataset.type;
+			let value = getInputValue(target);
+
+			if (type === 'bool') {
+				toggleRelatives(target, value);
 			}
 
-			return composeGroup(x);
-		}).forEach(elem => groupContainer.appendChild(elem));
+			prefs.setPref(name, value);
+		}, false);
 
-		msg.appendChild(group);
-	});
+		msg.addEventListener('click', (e) => {
+			let target = e.target;
 
-	groups.forEach(groupName => {
-		let pref = byGroup[groupName];
-
-		pref.filter(x => x.type === 'bool' && x.requiredBy)
-			.map(x => dom.selectOne(`[data-prefname="${x.name}"]`, document)).forEach(toggleRelatives);
-	});
-
-	msg.addEventListener('change', (e) => {
-		let target = e.target;
-		let name = target.name;
-		let type = target.dataset.type;
-		let value = getInputValue(target);
-
-		if (type === 'bool') {
-			toggleRelatives(target, value);
-		}
-
-		prefs.setPref(name, value);
-	}, false);
-
-	msg.addEventListener('click', (e) => {
-		let target = e.target;
-
-		if (target.dataset.type === 'control') {
-			switch (target.id) {
-				case 'control-edithighlightusers':
-					prefs.getPref('huppercolor').then(huppercolor => editHighlightedUsers.open({huppercolor}));
-					break;
-				case 'control-edittrolls':
-					editTrolls.open();
-					break;
-				case 'control-edithidetaxonomy':
-					editHidetaxonomy.open();
-					break;
+			if (target.dataset.type === 'control') {
+				switch (target.id) {
+					case 'control-edithighlightusers':
+						prefs.getPref('huppercolor').then(huppercolor => editHighlightedUsers.open({huppercolor}));
+						break;
+					case 'control-edittrolls':
+						editTrolls.open();
+						break;
+					case 'control-edithidetaxonomy':
+						editHidetaxonomy.open();
+						break;
+				}
 			}
-		}
+		});
 	});
-});
 
-document.getElementById('ResetSettings').addEventListener('click', () => prefs.clear());
+	document.getElementById('ResetSettings').addEventListener('click', () => prefs.clear());
+}
+
+main();
