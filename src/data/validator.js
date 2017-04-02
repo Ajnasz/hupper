@@ -21,7 +21,7 @@ function createErrorMessage (message, description, field) {
 	return msg;
 }
 
-function htmlFormatError (field, originalClickedButton) {
+function htmlFormatError (field, originalClickedButton, form) {
 	const message = 'HTML formázási hibát találtam';
 	const description = 'Valószínűleg egy vagy több HTML taget nincs lezárva a' +
 		'hozzászólásban. Ez sok esetben az oldal helytelen megjelenéséhez vezethet.' +
@@ -50,10 +50,7 @@ function htmlFormatError (field, originalClickedButton) {
 
 	dom.addListener('click', () => {
 		dom.addClass('novalidate', field);
-		const click = new MouseEvent('click', {view: window, cancellable: true, bubbles: true});
-		if (originalClickedButton) {
-			originalClickedButton.dispatchEvent(click);
-		}
+		resubmitForm(originalClickedButton, form);
 	}, skipButton);
 
 	return msg;
@@ -64,6 +61,10 @@ function createRule (matcher, validator, message) {
 }
 
 function validateElement (rules, element) {
+	if (dom.is('.novalidate', element)) {
+		return Promise.resolve(element);
+	}
+
 	const rulesToValidate = rules.filter(rule => dom.is(rule.matcher, element));
 	const validations = rulesToValidate.map(rule => rule.validator(element).catch(error => Promise.reject({error, message: rule.message})));
 	return Promise.all(validations)
@@ -88,6 +89,12 @@ function validate (rules, form) {
 
 function attachValidator (form) {
 	dom.addListener('submit', e => {
+		if (dom.is('.novalidate', form)) {
+			return;
+		}
+
+		e.preventDefault();
+
 		let originalClickedButton;
 
 		if (typeof e.explicitOriginalTarget !== 'undefined'){
@@ -96,17 +103,30 @@ function attachValidator (form) {
 			originalClickedButton = document.activeElement;
 		}
 
-
 		validate(rules, form)
 			.then(() => dom.selectAll('.hupper-error-message-container', form).forEach(dom.remove))
+			.then(() => {
+				const toNovalidate = func.curry(dom.addClass, 'novalidate');
+				func.toArray(form.elements).concat([form]).forEach(toNovalidate);
+				resubmitForm(originalClickedButton, form);
+			})
 			.catch((err) => {
-				e.preventDefault();
 				const wrapper = dom.closest('.form-item', err.element);
 
 				dom.selectAll('.hupper-error-message-container', wrapper).forEach(dom.remove);
-				dom.append(wrapper, err.message(err.element, originalClickedButton));
+				dom.append(wrapper, err.message(err.element, originalClickedButton, form));
 			});
 	}, form);
+}
+
+function resubmitForm (originalClickedButton, form) {
+	if (originalClickedButton) {
+		const click = new MouseEvent('click', {view: window, cancellable: true, bubbles: true});
+		originalClickedButton.dispatchEvent(click);
+		return;
+	}
+
+	form.submit();
 }
 
 export {
@@ -115,5 +135,6 @@ export {
 	validateElement,
 	createErrorMessage,
 	rules,
-	attachValidator
+	attachValidator,
+	resubmitForm
 };
