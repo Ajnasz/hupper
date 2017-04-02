@@ -37,7 +37,8 @@ function open (options) {
 
 		get: getOrderedUsers,
 		remove: prefs.removeHighlightedUser.bind(prefs),
-		add: prefs.addHighlightedUser.bind(prefs)
+		add: prefs.addHighlightedUser.bind(prefs),
+		changeField: 'highlightusers'
 	}).then(dialog => {
 		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Random color');
 		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);

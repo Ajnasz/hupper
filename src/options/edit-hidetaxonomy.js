@@ -24,7 +24,8 @@ function open () {
 
 		get: prefs.getCleanTaxonomies.bind(prefs),
 		remove: prefs.removeTaxonomy.bind(prefs),
-		add: prefs.addTaxonomy.bind(prefs)
+		add: prefs.addTaxonomy.bind(prefs),
+		changeField: 'hidetaxonomy'
 	});
 }
 

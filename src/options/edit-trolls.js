@@ -24,7 +24,8 @@ function open () {
 
 		get: prefs.getCleanTrolls.bind(prefs),
 		remove: prefs.removeTroll.bind(prefs),
-		add: prefs.addTroll.bind(prefs)
+		add: prefs.addTroll.bind(prefs),
+		changeField: 'trolls'
 	});
 }
 
