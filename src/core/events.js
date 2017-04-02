@@ -20,6 +20,9 @@ function createEmitter () {
 					break;
 				case 2:
 					let listeners = events.get(name);
+					if (!listeners) {
+						return;
+					}
 
 					for (var i = 0, el = listeners.length; i < el; i++) {
 						if (listeners[i] === cb) {
@@ -55,6 +58,15 @@ function createEmitter () {
 			if (events.has(name)) {
 				events.get(name).forEach((cb) => cb.call(null, args, name));
 			}
+		},
+
+		once (name, cb) {
+			const that = this;
+
+			this.on(name, function callback (...args) {
+				cb(...args);
+				that.off(name, callback);
+			});
 		}
 	};
 }

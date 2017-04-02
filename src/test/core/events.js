@@ -153,3 +153,16 @@ test('core/events.createEmitter.on adds only function listeners', (t) => {
 
 	t.end();
 });
+
+test('core/events.createEmitter.once removes listener after call', (t) => {
+	let emitter = events.createEmitter();
+	let listener = testUtil.spy();
+
+	emitter.once('foo', listener);
+	emitter.emit('foo');
+	emitter.emit('foo');
+
+	t.equal(listener.getCallCount(), 1, 'Called listener only once');
+	t.end();
+
+});
