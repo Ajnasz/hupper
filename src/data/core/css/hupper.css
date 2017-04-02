@@ -219,3 +219,16 @@ a:target + .comment {
 	display: none;
 }
 */
+
+.hupper-error-message-container {
+	background-color: #eee;
+	border: 1px solid #b7b78b;
+	margin-top: 10px;
+	padding: 10px;
+}
+
+.form-item .hupper-error-message-label {
+	font-weight: 400;
+	color: red;
+	margin-bottom: 10px;
+}

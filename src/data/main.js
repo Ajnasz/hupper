@@ -4,10 +4,13 @@ import * as modArticles from './core/articles';
 import * as modHupperBlock  from './core/hupper-block';
 import * as modComment from './core/comments';
 
+import * as validator from './validator';
+
 import * as unlimitedlinks from './core/unlimitedlinks';
 import * as modCommentTree from './core/commenttree';
 
 import { log } from '../core/log';
+import * as dom from '../core/dom';
 
 log.logger = console;
 
@@ -177,6 +180,14 @@ function onPrefChange (pref) {
 	}
 }
 
+function formListener () {
+	dom.selectAll('#comment-form,#node-form', document).forEach((form) => {
+		const textarea = dom.selectOne('textarea', form);
+		dom.addClass('html', textarea);
+		validator.attachValidator(form);
+	});
+}
+
 window.addEventListener('DOMContentLoaded', function () {
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 		log.log('message', msg.event);
@@ -217,6 +228,8 @@ window.addEventListener('DOMContentLoaded', function () {
 			addCommentListeners();
 			addBlockListeners();
 			addArticleListeners();
+
+			formListener();
 		}
 	});
 }, false);
