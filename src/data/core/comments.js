@@ -374,8 +374,11 @@ function unsetTrolls () {
 function unhighlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
 	dom.removeClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
+
 	commentObj.header.style.backgroundColor = '';
 	commentObj.header.style.color = '';
+
+	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = '');
 }
 
 /**
@@ -384,9 +387,10 @@ function unhighlightComment (comment) {
 function highlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
 	dom.addClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
-	commentObj.header.style.backgroundColor = comment.userColor;
 
+	commentObj.header.style.backgroundColor = comment.userColor;
 	commentObj.header.style.color = comment.userContrastColor;
+
 	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = comment.userContrastColor);
 }
 
