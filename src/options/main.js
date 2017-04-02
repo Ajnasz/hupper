@@ -247,7 +247,7 @@ function main () {
 			let type = target.dataset.type;
 			let value = getInputValue(target);
 
-			if (type === 'bool') {
+			if (type === 'bool' && target.dataset.requiredBy) {
 				toggleRelatives(target, value);
 			}
 
