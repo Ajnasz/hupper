@@ -130,12 +130,14 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 				Promise.all([
 					prefs.getPref('setunlimitedlinks'),
 					prefs.getPref('parseblocks'),
+					prefs.getPref('validateForms'),
 					prefs.getPref('logenabled')
 				]).then(settings => {
-					let [setunlimitedlinks, parseblocks, logenabled] = settings;
+					let [setunlimitedlinks, parseblocks, validateForms, logenabled] = settings;
 					sendResponse({event: 'registered', data: {
 						setunlimitedlinks,
 						parseblocks,
+						validateForms,
 						logenabled
 					}});
 				});

@@ -190,6 +190,14 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
+		'name': 'validateForms',
+		'title': 'Hozzászólások formai ellenőrzése beküldés előtt',
+		'type': 'bool',
+		'value': true,
+		'group': 'content_creation'
+	},
+
+	{
 		'name': 'logenabled',
 		// 'title': 'Regular expression to identify boring comments',
 		'title': 'Logolás engedélyezése',

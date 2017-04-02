@@ -170,6 +170,8 @@ function getGroupName (group) {
 			return 'Blokkok';
 		case 'styles':
 			return 'Megjelenés';
+		case 'content_creation':
+			return 'Tartalom létrehozás';
 		default:
 			return null;
 	}

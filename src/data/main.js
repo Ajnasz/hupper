@@ -180,7 +180,7 @@ function onPrefChange (pref) {
 	}
 }
 
-function formListener () {
+function attachFormValidators () {
 	dom.selectAll('#comment-form,#node-form', document).forEach((form) => {
 		const textarea = dom.selectOne('textarea', form);
 		dom.addClass('html', textarea);
@@ -229,7 +229,9 @@ window.addEventListener('DOMContentLoaded', function () {
 			addBlockListeners();
 			addArticleListeners();
 
-			formListener();
+			if (response.data.validateForms) {
+				attachFormValidators();
+			}
 		}
 	});
 }, false);
