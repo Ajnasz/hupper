@@ -34,7 +34,7 @@ function createBody (data) {
 
 function getRow (fields) {
 	let tr = fields.reduce(function (acc, field) {
-		let td = dom.createElem('td', null, null);
+		let td = dom.createElem('td');
 
 		if (isHEX(field)) {
 			let colorSpan = dom.createElem('span', null, ['color']),
@@ -50,10 +50,9 @@ function getRow (fields) {
 		return acc;
 	}, dom.createElem('tr'));
 
-	let btn = dom.createElem('button', [
-		{name: 'data-id', value: fields[0]},
-		{name: 'data-action', value: 'delete'}
-	], ['btn', 'btn-delete', 'btn-warn'], 'Delete');
+	let btn = dom.createElem('button', null, ['btn', 'btn-delete', 'btn-warn'], 'Delete');
+	dom.data('id', fields[0], btn);
+	dom.data('action', 'delete', btn);
 	let td = dom.createElem('td');
 	td.appendChild(btn);
 
