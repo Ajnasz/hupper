@@ -172,10 +172,14 @@ function flatComments (comments) {
 	}, []);
 }
 
+function isHidableComment (comment) {
+	return comment.troll || (comment.boring && !comment.hasInterestingChild);
+}
+
 function updateHiddenState (comments) {
 	return recurse(comments, (comment, parent) => {
 		let output = {
-			hide: (parent && parent.hide) || comment.troll || (comment.boring && !comment.hasInterestingChild),
+			hide: (parent && parent.hide) || isHidableComment(comment),
 			isParentHidden: parent && parent.hide
 		};
 
