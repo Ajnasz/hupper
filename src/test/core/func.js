@@ -305,3 +305,10 @@ test('core/func.hex2rgb', t => {
 	t.deepEqual(func.hex2rgb('ffffff'), [255, 255, 255], 'white converted without hashmark prefix');
 	t.end();
 });
+
+test('core/func.negate', t => {
+	t.ok(func.negate(() => false)(), 'negated false');
+	t.notOk(func.negate(() => true)(), 'negated true');
+
+	t.end();
+});
