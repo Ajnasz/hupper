@@ -43,7 +43,7 @@ function open (options) {
 		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Random color');
 		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);
 		dialog.panel.addEventListener('click', (e) => {
-			let colorElem = dom.elemOrClosest(e.target, '.color');
+			let colorElem = dom.elemOrClosest('.color', e.target);
 
 			if (colorElem) {
 				e.preventDefault();
@@ -52,7 +52,7 @@ function open (options) {
 				return;
 			}
 
-			let randomColor = dom.elemOrClosest(e.target, '.random-color');
+			let randomColor = dom.elemOrClosest('.random-color', e.target);
 
 			if (randomColor) {
 				e.preventDefault();
@@ -66,7 +66,7 @@ function open (options) {
 		return dialog;
 	}).then(dialog => {
 		dialog.panel.addEventListener('click', (e) => {
-			let td = dom.elemOrClosest(e.target, 'td');
+			let td = dom.elemOrClosest('td', e.target);
 
 			if (td && td === td.parentNode.querySelector('td')) {
 				e.preventDefault();

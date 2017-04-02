@@ -68,7 +68,10 @@ test('core/dom.elemOrClosest', (test) => {
 		const window = document.defaultView;
 		setGlobals(window);
 
-		t.equal(dom.elemOrClosest('.close', document.querySelector('.elem')).id, 'Elem', 'Elem span by class found');
+		const actual = dom.elemOrClosest('.close', document.querySelector('.elem'));
+		const expected = document.querySelector('#Elem');
+
+		t.equal(actual, expected, 'Elem span by class found');
 
 		t.end();
 	});
