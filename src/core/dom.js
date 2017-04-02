@@ -93,7 +93,7 @@ function hasClass (className, elem) {
 }
 
 function attr (name, value, elem) {
-	elem.setAttribute(name, value);
+	elem[name] = value;
 
 	return elem;
 }
@@ -104,10 +104,43 @@ function removeAttr (attrib, elem) {
 	return elem;
 }
 
-function text (textContent, element) {
-	element.textContent = textContent;
+const text = func.curry(attr, 'textContent');
+const val = func.curry(attr, 'value');
+
+function prop (name, value, elem) {
+	elem[name] = !!value;
+
+	return elem;
+}
+
+function empty (element) {
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
 
 	return element;
+}
+
+function emptyText (element) {
+	const childNodes = func.toArray(element.childNodes);
+	childNodes.filter(node => node.nodeType === Node.TEXT_NODE).forEach(remove);
+	childNodes.filter(node => node.nodeType === Node.ELEMENT_NODE).forEach(emptyText);
+
+	return element;
+}
+
+function selectOne (selector, element) {
+	return element.querySelector(selector);
+}
+
+function selectAll (selector, element) {
+	return func.toArray(element.querySelectorAll(selector));
+}
+
+function append (to, elem) {
+	to.appendChild(elem);
+
+	return elem;
 }
 
 function createElem (nodeType, attributes, classes, textContent) {
@@ -128,22 +161,16 @@ function createElem (nodeType, attributes, classes, textContent) {
 	return element;
 }
 
-function empty (element) {
-	while (element.firstChild) {
-		element.removeChild(element.firstChild);
-	}
+function fixHTML (html) {
+	const container = document.createElement('div');
 
-	return element;
+	container.innerHTML = html;
+
+	return container.innerHTML;
 }
 
-function emptyText (element) {
-	func.toArray(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).forEach(remove);
-
-	return element;
-}
-
-function selectOne (selector, element) {
-	return element.querySelector(selector);
+function isHTMLValid (html) {
+	return html === fixHTML(html);
 }
 
 function addListener (event, callback, element) {
@@ -158,28 +185,12 @@ function removeListener (event, callback, element) {
 	return element;
 }
 
-function append (to, elem) {
-	to.appendChild(elem);
-	return elem;
-}
-
 function data (name, value, elem) {
 	elem.dataset[name] = value;
 
 	return elem;
 }
 
-function prop (name, value, elem) {
-	elem[name] = !!value;
-
-	return elem;
-}
-
-function val (value, elem) {
-	elem.value = value;
-
-	return elem;
-}
 
 export {
 	next,
@@ -204,5 +215,8 @@ export {
 	data,
 	prop,
 	val,
-	text
+	text,
+	fixHTML,
+	isHTMLValid,
+	selectAll
 };
