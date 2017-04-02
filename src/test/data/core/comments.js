@@ -7,23 +7,7 @@ const jsdom = require('jsdom');
 const test = require('tape');
 
 const fixturesPath = path.resolve(__dirname, '../fixtures');
-
-function setGlobals (window) {
-	global.document = window.document;
-	global.window = window;
-	Object.keys(window).forEach((property) => {
-		if (typeof global[property] === 'undefined') {
-			global[property] = window[property];
-		}
-	});
-
-	global.Node = window.Node;
-
-	global.navigator = {
-		userAgent: 'node.js'
-	};
-
-}
+import { setGlobals } from '../../domHelpers';
 
 function readPage (page) {
 	return new Promise((resolve, reject) => {
