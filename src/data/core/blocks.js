@@ -82,10 +82,10 @@ function getBlocks () {
 }
 
 function createBlockButton (action) {
-	let btn = dom.createElem('button',
-		[{ name: 'data-action', value: action }],
-		['hupper-button', 'block-button', action + '-button']
-	);
+	let btn = dom.createElem('button');
+
+	dom.addClasses(['hupper-button', 'block-button', action + '-button'], btn);
+	dom.data('action', action, btn);
 
 	return btn;
 }

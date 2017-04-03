@@ -115,7 +115,7 @@ function markNewArticle (newArticleText, article) {
 		return;
 	}
 	addHNav(article);
-	let newText = dom.createElem('span', [], ['hnew', 'nnew'], newArticleText);
+	let newText = dom.createElem('span', null, ['hnew', 'nnew'], newArticleText);
 	article.header.querySelector('.' + ARTICLE_HNAV_CLASS).appendChild(newText);
 }
 
