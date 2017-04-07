@@ -108,7 +108,11 @@ function attachValidator (form) {
 			.then(() => {
 				const toNovalidate = func.curry(dom.addClass, 'novalidate');
 				func.toArray(form.elements).concat([form]).forEach(toNovalidate);
-				resubmitForm(originalClickedButton, form);
+			})
+			.then(() => {
+				setTimeout(() => {
+					resubmitForm(originalClickedButton, form);
+				});
 			})
 			.catch((err) => {
 				const wrapper = dom.closest('.form-item', err.element);
@@ -121,7 +125,7 @@ function attachValidator (form) {
 
 function resubmitForm (originalClickedButton, form) {
 	if (originalClickedButton) {
-		const click = new MouseEvent('click', {view: window, cancellable: true, bubbles: true});
+		var click = new MouseEvent('click');
 		originalClickedButton.dispatchEvent(click);
 		return;
 	}
