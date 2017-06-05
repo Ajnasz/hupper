@@ -5,112 +5,71 @@ const plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 	minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
 	signatureRex = /^[- ]+$/;
 
-function recurse (comments, callback, parent) {
-	return comments.map((comment) => {
-		let output = Object.create(null);
-		Object.assign(output, comment);
+function setPrevNextLinks (flatComments) {
+	let lastNew = null;
 
-		output = callback(output, parent);
+	return flatComments.reduce((output, comment, index) => {
+		if (!comment.isNew || comment.hide) {
+			output[index] = comment;
+			return output;
+		}
 
-		output.children = recurse(comment.children, callback, output);
+		if (lastNew !== null) {
+			output[lastNew] = Object.assign({}, output[lastNew], { nextId: comment.id });
+			output[index] = Object.assign({}, comment, {prevId: output[lastNew].id});
+		} else {
+			output[index] = comment;
+		}
+
+		lastNew = index;
 
 		return output;
-	});
+	}, []);
 }
 
-function setPrevNextLinks (newComments) {
-	let newCommentsLength = newComments.length;
-
-	newComments.forEach(function (comment, index, array) {
-		if (index + 1 < newCommentsLength) {
-			comment.nextId = array[index + 1].id;
-		}
-
-		if (index > 0) {
-			comment.prevId = array[index - 1].id;
-		}
-	});
-
-	return newComments;
-}
-
-function getParagraphs (comment) {
-	return comment.content ? comment.content.split('\n').map(p => p.trim()).filter(p => p !== '') : [];
-}
+const getParagraphs = comment => (comment.content ? comment.content.split('\n').map(p => p.trim()).filter(p => p !== '') : []);
 
 function isBoringComment (comment, boringRegexp) {
 	let paragraphs = getParagraphs(comment);
 
-	let signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
+	if (paragraphs.length > 1) {
+		const signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
 
-	if (signatureIndex > -1) {
-		paragraphs.splice(signatureIndex);
+		if (signatureIndex > -1) {
+			paragraphs.splice(signatureIndex);
+		}
 	}
 
 	return paragraphs.length === 1 && boringRegexp.test(paragraphs[0].trim());
 }
 
-function isTrollComment (trolls, comment) {
-	return func.inArray(trolls, comment.author);
-}
+const isTrollComment = (trolls, comment) => func.inArray(trolls, comment.author);
 
-function markTrollComments (comments, trolls) {
-	let output = recurse(comments, function (comment, parent) {
-		let output = {
-			troll: isTrollComment(trolls, comment),
-			isParentTroll: Boolean(parent && (parent.troll || parent.isParentTroll))
-		};
+const markTrollComments = (comments, trolls) => func.recurse(comments, (comment, parent) => Object.assign({}, comment, {
+	troll: isTrollComment(trolls, comment),
+	isParentTroll: Boolean(parent && (parent.troll || parent.isParentTroll))
+}));
 
-		Object.assign(output, comment);
+const markBoringComments = (comments, boringRegexp) => func.recurse(comments, (comment) => Object.assign({}, comment, {
+	boring: isBoringComment(comment, boringRegexp)
+}));
 
-		return output;
-	});
-
-
-	return output;
-}
-
-function markBoringComments (comments, boringRegexp) {
-	return recurse(comments, (comment) => {
-		let output = {boring: isBoringComment(comment, boringRegexp)};
-
-		Object.assign(output, comment);
-
-		return output;
-	});
-}
-
-function setParent (comments, parent) {
-	return comments.map(c => {
-		let output = Object.assign({parent}, c);
-		output.children = setParent(c.children, output);
-		return output;
-	});
-}
+const setParent = (comments) => func.recurse(comments, (comment, parent) => Object.assign({}, comment, { parent }));
 
 function setHighlightedComments (comments, users) {
 	let undef;
 
-	return recurse(comments, (comment) => {
-		let highlightData = func.first(users, (user) => {
+	return func.recurse(comments, (comment) => {
+		const highlightData = func.first(users, (user) => {
 			return user.name === comment.author;
 		});
 
-		let output = {userColor: highlightData ? highlightData.color : undef};
-
-		Object.assign(output, comment);
-
-		return output;
+		return Object.assign({}, comment, {userColor: highlightData ? highlightData.color : undef});
 	});
 }
 
-function isPlusOne (comment) {
-	return plusOneRex.test(getParagraphs(comment)[0]);
-}
-
-function isMinusOne (comment) {
-	return minusOneRex.test(getParagraphs(comment)[0]);
-}
+const isPlusOne = comment => plusOneRex.test(getParagraphs(comment)[0]);
+const isMinusOne = comment => minusOneRex.test(getParagraphs(comment)[0]);
 
 function setScores (comments) {
 	comments.forEach(function (comment) {
@@ -130,63 +89,48 @@ function setScores (comments) {
 	});
 }
 
+function hasInterestingChild (comment) {
+	if (comment.children.some(c => !c.boring)) {
+		return true;
+	}
+
+	return comment.children.some(hasInterestingChild);
+}
+
 /**
  * @method markHasInterestingChild
  * @mutates
  */
-function markHasInterestingChild (boringMarkedComments) {
-	boringMarkedComments.forEach(comment => {
-		if (!comment.boring) {
+function markHasInterestingChild (comments) {
+	return comments.reduce((accu, comment, index) => {
+		accu[index] = Object.assign({}, comment, {
+			hasInterestingChild: hasInterestingChild(comment),
+			children: markHasInterestingChild(comment.children)
+		});
 
-			let c = comment;
-
-			while (c.parent) {
-				c = c.parent;
-				if (c.hasInterestingChild) {
-					break;
-				}
-
-				c.hasInterestingChild = true;
-			}
-		}
-
-		markHasInterestingChild(comment.children);
-	});
-
-	return boringMarkedComments;
+		return accu;
+	}, new Array(comments.length));
 }
 
-function flatComments (comments) {
-	return comments.reduce((acc, comment) => {
-		let clone = {};
-		Object.assign(clone, comment);
-		acc.push(clone);
+const flatComments = comments => comments.reduce((acc, comment) => {
+	const clone = Object.assign({}, comment);
+	acc.push(clone);
 
-		if (comment.children.length > 0) {
-			acc = acc.concat(flatComments(comment.children));
-		}
+	if (comment.children.length > 0) {
+		acc = acc.concat(flatComments(comment.children));
+	}
 
-		delete clone.children;
+	delete clone.children;
 
-		return acc;
-	}, []);
-}
+	return acc;
+}, []);
 
-function isHidableComment (comment) {
-	return comment.troll || (comment.boring && !comment.hasInterestingChild);
-}
+const isHidableComment = comment => (comment.troll || (comment.boring && !comment.hasInterestingChild));
 
-function updateHiddenState (comments) {
-	return recurse(comments, (comment, parent) => {
-		let output = {
-			hide: (parent && parent.hide) || isHidableComment(comment),
-			isParentHidden: parent && parent.hide
-		};
-
-		Object.assign(output, comment);
-		return output;
-	});
-}
+const updateHiddenState = comments => func.recurse(comments, (comment, parent) => Object.assign(comment, {
+	hide: (parent && parent.hide) || isHidableComment(comment),
+	isParentHidden: parent && parent.hide
+}));
 
 export {
 	setScores,

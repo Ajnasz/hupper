@@ -45,12 +45,6 @@ function sortBy (array, field) {
 	});
 }
 
-function partial (func, ...pArgs) {
-	return function (...args) {
-		return func.apply(this, pArgs.concat(args));
-	};
-}
-
 function yesOrNo (isOk, yes, no) {
 	return isOk ? yes() : no();
 }
@@ -112,11 +106,7 @@ function maxBy (array, field) {
 	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, {[field]: -Infinity});
 }
 
-function negate (func) {
-	return function (...args) {
-		return !func(...args);
-	};
-}
+const negate = func => (...args) => !func(...args);
 
 function compose (...args) {
 	return args.reduce((accu, fn) => {
@@ -124,14 +114,28 @@ function compose (...args) {
 	}, null);
 }
 
-function curry (fn, ...args) {
-	return (...args2) => {
-		return fn.apply(null, args.concat(args2));
-	};
-}
+const curry = (fn, ...args) => (...args2) => fn.apply(null, args.concat(args2));
+
+const partial = curry;
 
 function always (arg) {
 	return () => arg;
+}
+
+function recurse (comments, callback, parent) {
+	return comments.reduce((array, comment, index) => {
+		// const output = Object.assign({}, comment, callback(comment, parent));
+		const output = callback(comment, parent);
+
+		output.children = recurse(comment.children, callback, output);
+		array[index] = output;
+
+		return array;
+	}, new Array(comments.length));
+}
+
+function flow (...args) {
+	return args.reduce((acc, cb) => cb(acc), null);
 }
 
 export {
@@ -151,5 +155,7 @@ export {
 	negate,
 	compose,
 	curry,
-	always
+	always,
+	recurse,
+	flow
 };

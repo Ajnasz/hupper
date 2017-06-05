@@ -2,7 +2,7 @@ import * as comments from '../../core/comments';
 
 let test = require('tape');
 
-const BORING_REGEXP = /^(\.)?$/;
+const BORING_REGEXP = /^([-_.]|[+-]1|sub[!]?|subscribe)$/;
 
 function getMockComments () {
 	return [
@@ -186,7 +186,7 @@ function getMockComments () {
 				{
 					id: 26,
 					author: 'boring-2',
-					content: '.',
+					content: '-',
 					children: []
 
 				}
@@ -261,16 +261,17 @@ function getMockComments () {
 
 test('core/comments.setPrevNextLinks', t => {
 	t.plan(4);
+	const isNew = true;
 	let newComments = [
-		{id: 1},
-		{id: 2},
-		{id: 5},
-		{id: 9},
-		{id: 10},
-		{id: 15}
+		{id: 1, isNew},
+		{id: 2, isNew},
+		{id: 5, isNew},
+		{id: 9, isNew},
+		{id: 10, isNew},
+		{id: 15, isNew},
 	];
 
-	comments.setPrevNextLinks(newComments);
+	newComments = comments.setPrevNextLinks(newComments);
 
 	t.equal(newComments[0].prevId, undefined, 'No previous for the first comment');
 	t.equal(newComments[newComments.length - 1].nextId, undefined, 'No previous for the first comment');
@@ -324,9 +325,7 @@ test('core/comments.markBoringComments', (t) => {
 	let processed = comments.markBoringComments(testComments, BORING_REGEXP);
 
 	function allHasBoring (comments) {
-		let output = comments.every(c => {
-			return 'boring' in c;
-		});
+		let output = comments.every(c => 'boring' in c);
 
 		if (output && comments.children) {
 			output = allHasBoring(comments.children);
@@ -397,8 +396,8 @@ test('core/comments.markHasInterestingChild', t => {
 	let boringMarkedComments = comments.markBoringComments(testComments, BORING_REGEXP);
 
 	let interestingMarkedComments = comments.markHasInterestingChild(comments.setParent(boringMarkedComments));
-
 	t.ok(interestingMarkedComments[6].hasInterestingChild, 'Comment has interesting child');
+	t.ok(interestingMarkedComments[6].children[0].hasInterestingChild, 'Comment has interesting child');
 	t.ok(interestingMarkedComments[7].hasInterestingChild, 'Comment has interesting child');
 	t.notOk(interestingMarkedComments[8].hasInterestingChild, 'Comment has interesting child');
 
@@ -517,7 +516,6 @@ test('core/comments.updateHiddenState', t => {
 		];
 
 		let result = comments.updateHiddenState(testComments);
-
 		t.notOk(result[0].hide, 'boring with interesting child not hidden');
 		t.end();
 	});

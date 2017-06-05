@@ -111,12 +111,13 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 (function () {
 	let tabs = new Set();
 	prefs.on('*', function (value, name) {
-		tabs.forEach(tab => {
-			chrome.tabs.sendMessage(tab, {
-				event: 'prefChange',
-				data: { name, value }
-			});
-		});
+		const msg = {
+			event: 'prefChange',
+			data: { name, value }
+		};
+		const sendMessage = tab => chrome.tabs.sendMessage(tab, msg);
+
+		tabs.forEach(sendMessage);
 	});
 
 	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {

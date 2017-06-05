@@ -108,7 +108,7 @@ test('core/func.partial', (t) => {
 			return t.fail(`wrong value of firstArg: expected ${secondArg}, actual: ${b}`);
 		}
 
-		t.pass('Arguments passed to function');
+		return t.pass('Arguments passed to function');
 	}, firstArg, secondArg);
 
 	newFunc();
@@ -134,7 +134,7 @@ test('core/func.partial', (t) => {
 			return t.fail(`when new arg passed on invoke, wrong value of thirdArg: expected ${fourthArg}, actual: ${d}`);
 		}
 
-		t.pass('Arguments passed to function, when new arg passed on invoke');
+		return t.pass('Arguments passed to function, when new arg passed on invoke');
 	}, firstArg, secondArg);
 	newFunc2(thirdArg, fourthArg);
 
@@ -311,4 +311,15 @@ test('core/func.negate', t => {
 	t.notOk(func.negate(() => true)(), 'negated true');
 
 	t.end();
+});
+
+test.only('core/func.flow', t => {
+	t.plan(4);
+	const output = func.flow(
+		() => (t.pass('first function called'), 1),
+		arg => (t.pass('second function called'), arg * 2),
+		arg => (t.pass('third function called'), arg * 2)
+	);
+
+	t.equal(output, 4, 'passed all param');
 });

@@ -26,21 +26,27 @@ function commentParse (comments) {
 	return Promise.all([
 		prefs.getPref('hideboringcomments'),
 		prefs.getPref('boringcommentcontents'),
+		prefs.getPref('filtertrolls'),
+		prefs.getCleanTrolls(),
+		prefs.getCleanHighlightedUsers(),
+		prefs.getPref('replacenewcommenttext'),
+		prefs.getPref('newcommenttext'),
 	]).then(results => {
-		let [hideBoringComments, boringRexStr] = results;
+		let [
+			hideBoringComments, boringRexStr,
+			filterTrolls, trolls,
+			highlightedUsers,
+			replaceNewCommentText, newCommentText,
+		] = results;
 
 		if (hideBoringComments) {
 			let boringRex = new RegExp(boringRexStr);
-			comments = modComments.markBoringComments(comments, boringRex);
-			comments = modComments.markHasInterestingChild(comments);
+			comments = func.flow(
+				func.always(comments),
+				() => modComments.markBoringComments(comments, boringRex),
+				comments => modComments.markHasInterestingChild(comments)
+			);
 		}
-
-		return Promise.all([
-			prefs.getPref('filtertrolls'),
-			prefs.getCleanTrolls(),
-		]);
-	}).then(results => {
-		let [filterTrolls, trolls] = results;
 
 		if (filterTrolls) {
 			comments = modComments.markTrollComments(comments, trolls);
@@ -48,45 +54,33 @@ function commentParse (comments) {
 
 		comments = modComments.updateHiddenState(comments);
 
-		return prefs.getCleanHighlightedUsers();
-	}).then(results => {
-		let [highlightedUsers] = results;
-
 		if (highlightedUsers.length) {
 			comments = modComments.setHighlightedComments(comments, highlightedUsers);
 		}
 
-		return Promise.all([
-			prefs.getPref('replacenewcommenttext'),
-			prefs.getPref('newcommenttext')
-		]);
-	}).then(results => {
-		let [replaceNewCommentText, newCommentText] = results;
-
-		flatCommentList = modComments.flatComments(comments);
-		let newComments = flatCommentList.filter(c => c.isNew && !c.hide);
-
 		if (replaceNewCommentText) {
-			newComments.forEach(c => c.newCommentText = newCommentText);
+			comments = func.recurse(comments, c => c.isNew && !c.hide ? Object.assign({}, c, { newCommentText }) : c);
 		}
 
-		newComments = modComments.setPrevNextLinks(newComments);
 
-		return prefs.getCleanHighlightedUsers();
-	}).then(highlightusers => {
-		highlightusers.forEach(user => {
+		flatCommentList = func.flow(
+			func.always(comments),
+			comments => modComments.flatComments(comments),
+			comments => modComments.setPrevNextLinks(comments)
+		);
+		// let newComments = flatCommentList.filter(c => c.isNew && !c.hide);
+
+		highlightedUsers.forEach(user => {
 			let {name, color} = user;
 
 			flatCommentList
 				.filter(c => c.author === name)
-					.forEach(c => {
-						c.userColor = color;
-						c.userContrastColor = colorModule.getContrastColor(color);
-					});
+				.forEach(c => {
+					c.userColor = color;
+					c.userContrastColor = colorModule.getContrastColor(color);
+				});
 		});
 
-		return flatCommentList;
-	}).then((flatCommentList) => {
 		flatCommentList.forEach(c => {
 			c.parent = c.parent ? c.parent.id : null;
 		});
