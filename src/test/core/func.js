@@ -313,7 +313,7 @@ test('core/func.negate', t => {
 	t.end();
 });
 
-test.only('core/func.flow', t => {
+test('core/func.flow', t => {
 	t.plan(4);
 	const output = func.flow(
 		() => (t.pass('first function called'), 1),
