@@ -1,7 +1,9 @@
 /*jshint moz:true*/
 'use strict';
 import * as func from '../../core/func';
+import url from '../../core/url';
 
+const MAX_COMMENTS_PER_PAGE = 9999;
 const pathNames = [
 	'/cikkek',
 	'/node',
@@ -24,8 +26,9 @@ function isExtendableLink (link) {
 }
 
 function makeExtendable (link) {
-	let search = link.search;
-	link.search = search[0] === '?' ? '&comments_per_page=9999' : '?comments_per_page=9999';
+	let search = url.searchParams(link.search);
+
+	link.search = '?' + search.set('comments_per_page', MAX_COMMENTS_PER_PAGE).toString();
 }
 
 function setUnlimitedLinks () {
