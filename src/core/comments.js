@@ -72,20 +72,21 @@ const isPlusOne = comment => plusOneRex.test(getParagraphs(comment)[0]);
 const isMinusOne = comment => minusOneRex.test(getParagraphs(comment)[0]);
 
 function setScores (comments) {
-	comments.forEach(function (comment) {
-		comment.votes = comment.children.reduce((accu, child) => {
+	return comments.map((comment) => {
+		const votes = comment.children.reduce((accu, child) => {
 			if (isPlusOne(child)) {
-				accu.plusone += 1;
+				return Object.assign({}, accu, { plusone: accu.plusone + 1 });
 			} else if (isMinusOne(child)) {
-				accu.minusone += 1;
+				return Object.assign({}, accu, { minusone: accu.minusone + 1 });
 			}
 
 			return accu;
 		}, { score: null, plusone: 0, minusone: 0 });
 
-		comment.votes.score = comment.votes.plusone - comment.votes.minusone;
-
-		setScores(comment.children);
+		return Object.assign({}, comment, {
+			children: setScores(comment.children),
+			votes: Object.assign({}, votes, { score: votes.plusone - votes.minusone })
+		});
 	});
 }
 

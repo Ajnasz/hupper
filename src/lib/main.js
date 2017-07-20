@@ -167,12 +167,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 				return true;
 
 			case 'block.action':
-				coreMain.handleBlockAction(data, msg.context).then(x => {
-					sendResponse(x);
-				}).catch(e => {
-					log.error(e);
-				// sendResponse(e);
-				});
+				coreMain.handleBlockAction(data, msg.context)
+					.then(sendResponse)
+					.catch(log.error);
 
 				return true;
 

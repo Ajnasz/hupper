@@ -19,7 +19,7 @@ function setParent (comments, parent) {
 function commentParse (comments) {
 	setParent(comments, null);
 
-	modComments.setScores(comments);
+	comments = modComments.setScores(comments);
 
 	let flatCommentList;
 

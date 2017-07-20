@@ -288,7 +288,7 @@ test('core/comments.setScores', t => {
 
 	let items = getMockComments();
 
-	comments.setScores(items);
+	items = comments.setScores(items);
 	t.equal(items[0].votes.score, 1, 'Set score to 1 when an answer contains only +1');
 	t.equal(items[0].votes.plusone, 1, 'Set plusone to 1 when an answer contains only +1');
 	t.equal(items[0].votes.minusone, 0, 'Set minusone to 0 when an answer contains only +1');
