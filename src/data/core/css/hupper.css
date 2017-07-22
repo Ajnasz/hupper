@@ -170,9 +170,10 @@ li:hover .taxonomy-button {
 .scores {
 	float: right;
 	padding: 5px;
-	background-color: #000;
+	background-color: #333;
 	color: #ededed;
 	margin-top: 5px;
+	margin-left: 5px;
 
 	border-radius: 2px 0 0 2px;
 }
@@ -184,6 +185,9 @@ li:hover .taxonomy-button {
 .hup-replies .hup-boring {
 	color: #999 !important;
 }
+.comment.article-author .content {
+	background: top right url('chrome-extension://__MSG_@@extension_id__/images/icons/009-pen.png') no-repeat;
+}
 
 .comment.hup-hidden,
 .comment.hup-hidden + .indented,
@@ -192,7 +196,7 @@ li:hover .taxonomy-button {
 	display: none !important;
 }
 .comment.hup-boring > .submitted {
-	background-color: #EBEBD5;
+	background-color: #EBEBD5 !important;
 }
 .comment.has-children:not(.trollComment),
 a:target + .comment.hup-boring,

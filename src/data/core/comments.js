@@ -74,10 +74,9 @@ var commentStruct = {
  * @return string
  */
 function getCommentAuthor (comment) {
-	var output = '',
-		nameLink;
+	let output = '';
 
-	nameLink = dom.selectOne('a', comment.header);
+	const nameLink = dom.selectOne('a', comment.header);
 
 	if (nameLink) {
 		output = nameLink.textContent.trim();
@@ -578,6 +577,11 @@ function hasScore (comment) {
 	return typeof comment.votes.score !== 'undefined' && comment.votes.score !== 0;
 }
 
+function setAuthorComment (comment) {
+	let elem = commentDataStructToObj(comment);
+	elem.node.classList.add('article-author');
+}
+
 function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
 		setProp(comment, 'boring', comment.boring);
@@ -597,6 +601,10 @@ function onCommentUpdate (comments) {
 
 			if (hasScore(comment)) {
 				showScore(comment);
+			}
+
+			if (comment.authorComment) {
+				setAuthorComment(comment);
 			}
 		}
 	});

@@ -12,6 +12,9 @@ $ESLINT --ignore-pattern=bundle\.js -c .eslintrc {options,lib,data,core}/**/*.js
 echo -n " ."
 rm -f hupper*.zip
 echo -n " ."
+mkdir -p images
+cp ../icons/IconMoon/009-pen.png images/icons/
+echo -n " ."
 $BROWSERIFY options/main.js -o options/bundle.js -t babelify
 echo -n " ."
 $BROWSERIFY data/main.js -o data/bundle.js -t babelify
@@ -19,7 +22,7 @@ echo -n " ."
 $BROWSERIFY lib/main.js -o lib/bundle.js -t babelify
 echo -n " ."
 
-PATHS="data/bundle.js data/core/css/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json"
+PATHS="images/icons/*.png data/bundle.js data/core/css/*.css lib/bundle.js options/bundle.js options/*.css options.html manifest.json"
 
 for icon in 128 48 32 16;do
 	PATHS="icons/$icon.png $PATHS"

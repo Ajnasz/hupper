@@ -7,30 +7,46 @@ const ARTICLE_HNAV_CLASS = 'hnav';
 const TEXT_NEXT = 'következő';
 const TEXT_PREV = 'előző';
 const TEXT_HIDE_ARTICLE_TITLE = 'Cikk kategória elrejtése';
+const ANONYM_ARTICLE_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
 
 let articleStruct = {
 	id: '',
 	category: '',
-	isNew: false
+	isNew: false,
+	author: '',
 };
 
 let articleNodeStruct = {
 	node: null,
-	header: null
+	header: null,
 };
 
-function articleElementToStruct (element) {
-	let categoryElem = element.querySelector('.links.inline > .first.last > a');
-	let category = categoryElem ? categoryElem.textContent : '';
-	let isNew = element.querySelector('.comment_new_comments') !== null;
+function getAuthor (article) {
+	let output = '';
+	const nameLink = dom.selectOne('table > tbody > tr > td:nth-child(1) a', article);
 
-	let output = Object.create(articleStruct);
+	if (nameLink) {
+		output = nameLink.textContent.trim();
+	}
 
-	output.category = category;
-	output.isNew = isNew;
-	output.id = element.getAttribute('id');
+	if (!output) {
+		const titleLine = dom.selectOne('table > tbody > tr > td:nth-child(1)', article);
+		const title = titleLine.textContent;
+
+		output = title.replace(ANONYM_ARTICLE_AUTHOR_REGEXP, '$1');
+	}
 
 	return output;
+}
+
+function articleElementToStruct (element) {
+	const categoryElem = element.querySelector('.links.inline > .first.last > a');
+	const category = categoryElem ? categoryElem.textContent : '';
+	const isNew = element.querySelector('.comment_new_comments') !== null;
+	const id = element.getAttribute('id');
+	const author = getAuthor(element);
+
+	return Object.assign({}, articleStruct, { category, isNew, id, author });
 }
 
 function articleStructToArticleNodeStruct (article) {

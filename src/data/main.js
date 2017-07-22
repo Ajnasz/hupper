@@ -37,15 +37,18 @@ function getContextUser (data) {
 }
 
 function updateComments () {
-	let comments = getCommentObjects({content: true});
+	const comments = getCommentObjects({content: true});
 
 	if (!comments) {
 		return;
 	}
 
+	const article = modArticles.parseArticles()[0];
+
 	chrome.runtime.sendMessage({
 		event: 'requestCommentParse',
-		data: comments
+		data: comments,
+		context: { article },
 	}, function (comments) {
 		if (comments) {
 			let childComments = comments.filter(c => c.parentID !== '');
@@ -72,7 +75,7 @@ function updateComments () {
 function updateArticles () {
 	let articles = modArticles.parseArticles();
 
-	if (!articles) {
+	if (!articles || !articles.length) {
 		return;
 	}
 

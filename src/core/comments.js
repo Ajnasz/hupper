@@ -56,15 +56,27 @@ const markBoringComments = (comments, boringRegexp) => func.recurse(comments, (c
 
 const setParent = (comments) => func.recurse(comments, (comment, parent) => Object.assign({}, comment, { parent }));
 
-function setHighlightedComments (comments, users) {
-	let undef;
-
+function setHighlightedComments (comments = [], users = []) {
 	return func.recurse(comments, (comment) => {
 		const highlightData = func.first(users, (user) => {
 			return user.name === comment.author;
 		});
 
-		return Object.assign({}, comment, {userColor: highlightData ? highlightData.color : undef});
+		if (highlightData) {
+			return Object.assign({}, comment, {userColor: highlightData.color});
+		}
+
+		return comment;
+	});
+}
+
+function markAuthorComments (comments, author) {
+	return func.recurse(comments, (comment) => {
+		if (comment.author === author) {
+			return Object.assign({}, comment, { authorComment: true });
+		}
+
+		return comment;
 	});
 }
 
@@ -137,6 +149,7 @@ export {
 	setScores,
 	setPrevNextLinks,
 	setHighlightedComments,
+	markAuthorComments,
 	markBoringComments,
 	markTrollComments,
 	flatComments,

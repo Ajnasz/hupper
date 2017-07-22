@@ -146,7 +146,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 				return true;
 
 			case 'requestCommentParse':
-				coreMain.commentParse(data).then(sendResponse);
+				coreMain.commentParse(data, msg.context).then(sendResponse);
 
 				return true;
 

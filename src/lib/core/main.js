@@ -16,7 +16,7 @@ function setParent (comments, parent) {
 	});
 }
 
-function commentParse (comments) {
+function commentParse (comments, context) {
 	setParent(comments, null);
 
 	comments = modComments.setScores(comments);
@@ -32,7 +32,7 @@ function commentParse (comments) {
 		prefs.getPref('replacenewcommenttext'),
 		prefs.getPref('newcommenttext'),
 	]).then(results => {
-		let [
+		const [
 			hideBoringComments, boringRexStr,
 			filterTrolls, trolls,
 			highlightedUsers,
@@ -56,6 +56,10 @@ function commentParse (comments) {
 
 		if (highlightedUsers.length) {
 			comments = modComments.setHighlightedComments(comments, highlightedUsers);
+		}
+
+		if (context.article && context.article.author) {
+			comments = modComments.markAuthorComments(comments, context.article.author);
 		}
 
 		if (replaceNewCommentText) {

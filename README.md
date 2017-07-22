@@ -14,3 +14,7 @@ $ ./build.sh
 $ cd src
 $ npm test
 ```
+
+## External resources
+
+Icons from https://icomoon.io
