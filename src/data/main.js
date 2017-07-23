@@ -171,6 +171,7 @@ function onPrefChange (pref) {
 		case 'highlightusers':
 		case 'hideboringcomments':
 		case 'boringcommentcontents':
+		case 'alwaysshownewcomments':
 			updateComments();
 			break;
 		case 'hidetaxonomy':

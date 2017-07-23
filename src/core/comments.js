@@ -138,10 +138,11 @@ const flatComments = comments => comments.reduce((acc, comment) => {
 	return acc;
 }, []);
 
-const isHidableComment = comment => (comment.troll || (comment.boring && !comment.hasInterestingChild));
+const isHidableComment = (comment, alwaysShowNewComments) => (!comment.isNew || !alwaysShowNewComments) &&
+	(comment.troll || (comment.boring && !comment.hasInterestingChild));
 
-const updateHiddenState = comments => func.recurse(comments, (comment, parent) => Object.assign(comment, {
-	hide: (parent && parent.hide) || isHidableComment(comment),
+const updateHiddenState = (comments, alwaysShowNewComments) => func.recurse(comments, (comment, parent) => Object.assign(comment, {
+	hide: (parent && parent.hide) || isHidableComment(comment, alwaysShowNewComments),
 	isParentHidden: parent && parent.hide
 }));
 

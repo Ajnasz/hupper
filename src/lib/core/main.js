@@ -31,12 +31,13 @@ function commentParse (comments, context) {
 		prefs.getCleanHighlightedUsers(),
 		prefs.getPref('replacenewcommenttext'),
 		prefs.getPref('newcommenttext'),
+		prefs.getPref('alwaysshownewcomments'),
 	]).then(results => {
 		const [
 			hideBoringComments, boringRexStr,
 			filterTrolls, trolls,
 			highlightedUsers,
-			replaceNewCommentText, newCommentText,
+			replaceNewCommentText, newCommentText, alwaysShowNewComments,
 		] = results;
 
 		if (hideBoringComments) {
@@ -52,7 +53,7 @@ function commentParse (comments, context) {
 			comments = modComments.markTrollComments(comments, trolls);
 		}
 
-		comments = modComments.updateHiddenState(comments);
+		comments = modComments.updateHiddenState(comments, alwaysShowNewComments);
 
 		if (highlightedUsers.length) {
 			comments = modComments.setHighlightedComments(comments, highlightedUsers);

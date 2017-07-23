@@ -190,6 +190,14 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
+		'name': 'alwaysshownewcomments',
+		'title': 'Olvasatlan hozzászlások sose legyenek elretjve',
+		'type': 'bool',
+		'value': false,
+		'group': 'comments'
+	},
+
+	{
 		'name': 'validateForms',
 		'title': 'Hozzászólások formai ellenőrzése beküldés előtt',
 		'type': 'bool',
