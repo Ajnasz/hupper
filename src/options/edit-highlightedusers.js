@@ -8,6 +8,14 @@ function getOrderedUsers ()  {
 	return prefs.getCleanHighlightedUsers().then(users => func.sortBy(users, 'color'));
 }
 
+function dispatchUserNameChange (target) {
+	const event = new Event('userNameChange', {
+		'bubbles': true,
+		'cancelable': true,
+	});
+	target.dispatchEvent(event);
+}
+
 function open (options) {
 	return editorDialog.open({
 		id: 'EditHighlightedUsersDialog',
@@ -70,12 +78,33 @@ function open (options) {
 
 			if (td && td === td.parentNode.querySelector('td')) {
 				e.preventDefault();
-				dialog.panel.querySelector('#HighlightedUserName').value = td.textContent.trim();
+				const input = dialog.panel.querySelector('#HighlightedUserName');
+				input.value = td.textContent.trim();
+				dispatchUserNameChange(input);
 			}
-
 		});
-
 		return dialog;
+	}).then(dialog => {
+		const onUserNameChange = (e) => {
+			const value = e.target.value;
+			getOrderedUsers().then(users => {
+				const btn = dialog.panel.querySelector('.btn-cta');
+				if (func.index(users, u => u.name === value) > -1) {
+					btn.textContent = 'Update';
+				} else {
+					btn.textContent = 'Add';
+				}
+			});
+		};
+
+		const onValueChange = (e) => {
+			if (dom.is('[name="userName"]', e.target)) {
+				dispatchUserNameChange(e.target);
+			}
+		};
+		dialog.panel.addEventListener('userNameChange', onUserNameChange);
+		dialog.panel.addEventListener('input', onValueChange);
+		dialog.panel.addEventListener('change', onValueChange);
 	});
 }
 
