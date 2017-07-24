@@ -105,6 +105,7 @@ function open (options) {
 		dialog.panel.addEventListener('userNameChange', onUserNameChange);
 		dialog.panel.addEventListener('input', onValueChange);
 		dialog.panel.addEventListener('change', onValueChange);
+		dialog.panel.addEventListener('submit', () => dispatchUserNameChange(dialog.panel.querySelector('#HighlightedUserName')));
 	});
 }
 
