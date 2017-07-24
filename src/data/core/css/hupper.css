@@ -186,7 +186,11 @@ li:hover .taxonomy-button {
 	color: #999 !important;
 }
 .comment.article-author .content {
-	background: top right url('chrome-extension://__MSG_@@extension_id__/images/icons/009-pen.png') no-repeat;
+	background-position: top right;
+	background-image: url('moz-extension://__MSG_@@extension_id__/images/icons/009-pen.png'),
+		url('chrome-extension://__MSG_@@extension_id__/images/icons/009-pen.png'),
+		url('ms-extension://__MSG_@@extension_id__/images/icons/009-pen.png');
+	background-repeat: no-repeat;
 }
 
 .comment.hup-hidden,
