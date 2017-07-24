@@ -4,13 +4,13 @@ import * as editorDialog from './editor-dialog';
 function open () {
 	return editorDialog.open({
 		id: 'EditTaxonomiesDialog',
-		title: 'Edit articles',
+		title: 'Cikk típusok',
 		tableRowValueMap: x => [x],
 		tpl: {
 			formID: 'EditTaxonomyForm',
 			tableID: 'ListOfTaxonomies',
-			tableHead: [ 'Article type', 'Delete' ],
-			notFoundTitle: 'No article types added',
+			tableHead: [ 'Article típus', 'Törlés' ],
+			notFoundTitle: 'Nincsenek cikkek',
 			fields: [{
 				id: 'ArticleType',
 				label: 'ArticleType',

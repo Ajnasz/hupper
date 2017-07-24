@@ -5,7 +5,7 @@ import * as tpl from '../core/tpl';
 let editorTPL = `<form action="" method="" id="{formID}">
 	{=fields}
 	<footer>
-		<button class="btn btn-cta" type="submit">Add</button>
+		<button class="btn btn-cta" type="submit">Hozzáadás</button>
 	</footer>
 </form>
 
@@ -50,7 +50,7 @@ function getRow (fields) {
 		return acc;
 	}, dom.createElem('tr'));
 
-	let btn = dom.createElem('button', null, ['btn', 'btn-delete', 'btn-warn'], 'Delete');
+	let btn = dom.createElem('button', null, ['btn', 'btn-delete', 'btn-warn'], 'Törlés');
 	dom.data('id', fields[0], btn);
 	dom.data('action', 'delete', btn);
 	let td = dom.createElem('td');

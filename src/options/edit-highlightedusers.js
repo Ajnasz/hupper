@@ -19,22 +19,22 @@ function dispatchUserNameChange (target) {
 function open (options) {
 	return editorDialog.open({
 		id: 'EditHighlightedUsersDialog',
-		title: 'Edit highlighted users',
+		title: 'Felhasználó kiemelések szerekesztése',
 		tableRowValueMap: user => [user.name, user.color],
 		tpl: {
 			formID: 'HighlightUserForm',
 			tableID: 'ListOfHighlightedUsers',
-			tableHead: [ 'Name', 'Color', 'Delete' ],
-			notFoundTitle: 'No users added',
+			tableHead: [ 'Név', 'Szín', 'Törlés' ],
+			notFoundTitle: 'Még nincsenek kiemelések hozzáadva',
 			fields: [{
 				id: 'HighlightedUserName',
-				label: 'Name',
+				label: 'Név',
 				type: 'text',
 				name: 'userName',
 				value: ''
 			}, {
 				id: 'HighlightedUserColor',
-				label: 'Color',
+				label: 'Szín',
 				type: 'color',
 				name: 'userColor',
 				value: options.huppercolor
@@ -48,7 +48,7 @@ function open (options) {
 		add: prefs.addHighlightedUser.bind(prefs),
 		changeField: 'highlightusers'
 	}).then(dialog => {
-		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Random color');
+		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Véletlen szín');
 		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);
 		dialog.panel.addEventListener('click', (e) => {
 			let colorElem = dom.elemOrClosest('.color', e.target);
@@ -90,9 +90,9 @@ function open (options) {
 			getOrderedUsers().then(users => {
 				const btn = dialog.panel.querySelector('.btn-cta');
 				if (func.index(users, u => u.name === value) > -1) {
-					btn.textContent = 'Update';
+					btn.textContent = 'Frissítés';
 				} else {
-					btn.textContent = 'Add';
+					btn.textContent = 'Hozzáadás';
 				}
 			});
 		};

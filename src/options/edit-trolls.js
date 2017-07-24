@@ -4,16 +4,16 @@ import * as editorDialog from './editor-dialog';
 function open () {
 	return editorDialog.open({
 		id: 'EditTrollsDialog',
-		title: 'Edit trolls',
+		title: 'Trollok',
 		tableRowValueMap: x => [x],
 		tpl: {
 			formID: 'AddTrollForm',
 			tableID: 'ListOfTrolls',
-			tableHead: [ 'Name', 'Delete' ],
-			notFoundTitle: 'No trolls added',
+			tableHead: [ 'Név', 'Törlés' ],
+			notFoundTitle: 'Nincsenek trollok',
 			fields: [{
 				id: 'TrollName',
-				label: 'Troll name',
+				label: 'Troll neve',
 				type: 'text',
 				name: 'trollName',
 				value: ''
