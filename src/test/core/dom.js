@@ -3,10 +3,11 @@ import * as dom from  '../../core/dom';
 
 const test = require('tape');
 const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 
 test('core/dom.is', (t) => {
-	const document = jsdom.jsdom('<div class="foo-bar" data-foo="bar"></div>');
-	const window = document.defaultView;
+	const window = new JSDOM('<div class="foo-bar" data-foo="bar"></div>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.ok(dom.is('.foo-bar', document.querySelector('.foo-bar')), 'class matched');
@@ -18,9 +19,9 @@ test('core/dom.is', (t) => {
 });
 
 test('core/dom.next', (t) => {
-	const document = jsdom.jsdom('<span>text bad!</span><span class="baz">text2 bad!</span>' +
-		'<div class="foo-bar"></div><span>text1</span><em class="baz">text2</em>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span>text bad!</span><span class="baz">text2 bad!</span>' +
+		'<div class="foo-bar"></div><span>text1</span><em class="baz">text2</em>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.equal(dom.next('span', document.querySelector('.foo-bar')).textContent, 'text1', 'next found by tag');
@@ -30,10 +31,10 @@ test('core/dom.next', (t) => {
 });
 
 test('core/dom.prev', (t) => {
-	const document = jsdom.jsdom('<span>text1</span><em class="baz">text2</em>' +
+	const window = new JSDOM('<span>text1</span><em class="baz">text2</em>' +
 		'<div class="foo-bar"></div>' +
-		'<span>text1 bad</span><span class="baz">text2 bad</span>');
-	const window = document.defaultView;
+		'<span>text1 bad</span><span class="baz">text2 bad</span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.equal(dom.prev('span', document.querySelector('.foo-bar')).textContent, 'text1', 'prev found by tag');
@@ -43,8 +44,8 @@ test('core/dom.prev', (t) => {
 });
 
 test('core/dom.closest', (t) => {
-	const document = jsdom.jsdom('<span class="close" id="Close"><span><span class="elem"></span></span></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="close" id="Close"><span><span class="elem"></span></span></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.equal(dom.closest('.close', document.querySelector('.elem')).id, 'Close', 'Closest span by class found');
@@ -55,8 +56,8 @@ test('core/dom.closest', (t) => {
 
 test('core/dom.elemOrClosest', (test) => {
 	test.test('closest', t => {
-		const document = jsdom.jsdom('<span class="close" id="Close"><span><span class="elem" id="Elem"></span></span></span>');
-		const window = document.defaultView;
+		const window = new JSDOM('<span class="close" id="Close"><span><span class="elem" id="Elem"></span></span></span>').window;
+		const { document } = window;
 		setGlobals(window);
 
 		t.equal(dom.elemOrClosest('.close', document.querySelector('.elem')).id, 'Close', 'Closest span by class found');
@@ -64,8 +65,8 @@ test('core/dom.elemOrClosest', (test) => {
 		t.end();
 	});
 	test.test('elem', t => {
-		const document = jsdom.jsdom('<span class="close" id="Close"><span><span class="close elem" id="Elem"></span></span></span>');
-		const window = document.defaultView;
+		const window = new JSDOM('<span class="close" id="Close"><span><span class="close elem" id="Elem"></span></span></span>').window;
+		const { document } = window;
 		setGlobals(window);
 
 		const actual = dom.elemOrClosest('.close', document.querySelector('.elem'));
@@ -78,8 +79,8 @@ test('core/dom.elemOrClosest', (test) => {
 });
 
 test('core/dom.remove', t => {
-	const document = jsdom.jsdom('<span class="elem1"><span class="elem2"><span class="elem3"></span></span></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"><span class="elem2"><span class="elem3"></span></span></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	dom.remove(document.querySelector('.elem3'));
@@ -90,8 +91,8 @@ test('core/dom.remove', t => {
 });
 
 test('core/dom.addClass', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	dom.addClass('aClass', document.querySelector('.elem1'));
@@ -102,8 +103,8 @@ test('core/dom.addClass', t => {
 });
 
 test('core/dom.addClasses', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -118,8 +119,8 @@ test('core/dom.addClasses', t => {
 });
 
 test('core/dom.removeClass', t => {
-	const document = jsdom.jsdom('<span class="elem1 aClass"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1 aClass"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -132,8 +133,8 @@ test('core/dom.removeClass', t => {
 });
 
 test('core/dom.hasClass', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -145,8 +146,8 @@ test('core/dom.hasClass', t => {
 });
 
 test('core/dom.attr', t => {
-	const document = jsdom.jsdom('<input class="elem1">');
-	const window = document.defaultView;
+	const window = new JSDOM('<input class="elem1">').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -160,8 +161,8 @@ test('core/dom.attr', t => {
 });
 
 test('core/dom.removeAttr', t => {
-	const document = jsdom.jsdom('<input class="elem1" type="text">');
-	const window = document.defaultView;
+	const window = new JSDOM('<input class="elem1" type="text">').window;
+	const document = window.document;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -173,8 +174,8 @@ test('core/dom.removeAttr', t => {
 });
 
 test('core/dom.text', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const document = window.document;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -188,8 +189,8 @@ test('core/dom.text', t => {
 });
 
 test('core/dom.value', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const document = window.document;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -203,8 +204,8 @@ test('core/dom.value', t => {
 });
 
 test('core/dom.empty', t => {
-	const document = jsdom.jsdom('<span class="elem1"><span></span> TEXT<span><span><span></span>Text</span></span></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"><span></span> TEXT<span><span><span></span>Text</span></span></span>').window;
+	const document = window.document;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -218,8 +219,8 @@ test('core/dom.empty', t => {
 });
 
 test('core/dom.emptyText', t => {
-	const document = jsdom.jsdom('<span class="elem1"><span></span> TEXT<span><span><span></span>Text</span></span></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"><span></span> TEXT<span><span><span></span>Text</span></span></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -233,8 +234,8 @@ test('core/dom.emptyText', t => {
 });
 
 test('core/dom.selectOne', t => {
-	const document = jsdom.jsdom('<span class="elem1" id="FirstElem"><span id="SecondElem" class="elem1"></span></span><span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1" id="FirstElem"><span id="SecondElem" class="elem1"></span></span><span class="elem1"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.test('select from document', t => {
@@ -260,8 +261,8 @@ test('core/dom.selectOne', t => {
 });
 
 test('core/dom.prop', t => {
-	const document = jsdom.jsdom('<input type="checkbox" class="elem1">');
-	const window = document.defaultView;
+	const window = new JSDOM('<input type="checkbox" class="elem1">').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -277,8 +278,8 @@ test('core/dom.prop', t => {
 });
 
 test('core/dom.append', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const { document } = window;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');
@@ -293,8 +294,7 @@ test('core/dom.append', t => {
 });
 
 test('core/dom.createElem', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
 	setGlobals(window);
 
 	t.test('just create element', t => {
@@ -345,8 +345,7 @@ test('core/dom.createElem', t => {
 });
 
 test('core/dom.fixHTML', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
 	setGlobals(window);
 
 	t.test('one missing tag', t => {
@@ -371,8 +370,8 @@ test('core/dom.fixHTML', t => {
 });
 
 test.skip('core/dom.data', t => {
-	const document = jsdom.jsdom('<span class="elem1"></span>');
-	const window = document.defaultView;
+	const window = new JSDOM('<span class="elem1"></span>').window;
+	const document = window.document;
 	setGlobals(window);
 
 	const elem = document.querySelector('.elem1');

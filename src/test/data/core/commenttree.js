@@ -2,25 +2,16 @@ import { setGlobals } from '../../domHelpers';
 import * as commenttree from  '../../../data/core/commenttree';
 import * as comments from  '../../../core/comments';
 
-const fs = require('fs');
 const path = require('path');
 
 const test = require('tape');
 const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 
 function loadFixture (fixture) {
-	return new Promise((resolve, reject) => {
-		fs.readFile(path.join(__dirname, `fixtures/${fixture}`), (err, data) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-
-			const document = jsdom.jsdom(data.toString('utf-8'));
-			const window = document.defaultView;
-
-			resolve({document, window});
-		});
+	return JSDOM.fromFile(path.join(__dirname, `fixtures/${fixture}`)).then(dom => dom.window.top).then(window => {
+		setGlobals(window);
+		return window;
 	});
 }
 

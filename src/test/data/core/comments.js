@@ -1,33 +1,18 @@
 import * as comments from '../../../data/core/comments';
 
-const fs = require('fs');
 const path = require('path');
 
 const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 const test = require('tape');
 
 const fixturesPath = path.resolve(__dirname, '../fixtures');
 import { setGlobals } from '../../domHelpers';
 
 function readPage (page) {
-	return new Promise((resolve, reject) => {
-		fs.readFile(path.join(fixturesPath, page), (err, data) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-
-			jsdom.env(data.toString('utf8'), (err, window) => {
-				if (err) {
-					reject(err);
-					return;
-				}
-
-				setGlobals(window);
-
-				resolve(window);
-			});
-		});
+	return JSDOM.fromFile(path.join(fixturesPath, page)).then(dom => dom.window.top).then(window => {
+		setGlobals(window);
+		return window;
 	});
 }
 

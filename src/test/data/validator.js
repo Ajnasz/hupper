@@ -2,13 +2,14 @@ import * as validator from '../../data/validator';
 import { setGlobals } from './../domHelpers';
 
 const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 const test = require('tape');
 
 test('data.validator.validateElement', t => {
-	const document = jsdom.jsdom(`<form action=" " method="" id="Form">
+	const window = new JSDOM(`<form action=" " method="" id="Form">
 		<input type="text" name="elem" required id="Element" value="">
-		</form>`);
-	const window = document.defaultView;
+		</form>`).window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.test('find invalid', t => {
@@ -39,10 +40,10 @@ test('data.validator.validateElement', t => {
 
 });
 test('data.validator.validate', t => {
-	const document = jsdom.jsdom(`<form action=" " method="" id="Form">
+	const window = new JSDOM(`<form action=" " method="" id="Form">
 		<input type="text" name="elem" required id="Element" value="">
-		</form>`);
-	const window = document.defaultView;
+		</form>`).window;
+	const { document } = window;
 	setGlobals(window);
 
 	t.test('find invalid', t => {
