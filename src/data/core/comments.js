@@ -5,7 +5,8 @@ import { addHNav } from './element';
 const TROLL_COMMENT_CLASS = 'trollComment';
 const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
 const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
-const INDENTED_CLASS = 'indented';
+const INDENTED_CLASS_NAME = 'indented';
+const INDENTED_CLASS = `.${INDENTED_CLASS_NAME}`;
 const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
 const BORING_COMMENT_CLASS = 'hup-boring';
 const COMMENT_HEADER_CLASS = 'submitted';
@@ -93,9 +94,9 @@ function getCommentAuthor (comment) {
  * @return Timestamp
  */
 function getCommentCreateDate (comment) {
-	var date, dateMatch;
-	dateMatch = comment.header.textContent.match(COMMENT_DATE_REGEXP);
-	date = new Date();
+	const dateMatch = comment.header.textContent.match(COMMENT_DATE_REGEXP);
+	const date = new Date();
+
 	date.setYear(dateMatch[1]);
 	date.setMonth(COMMENT_MONTH_NAMES[dateMatch[2]]);
 	date.setDate(dateMatch[3]);
@@ -126,11 +127,11 @@ function getCommentId (comment) {
  *   footer: HTMLDOMElement
  */
 function getCommentObj (node) {
-	var commentObj = Object.create(commentStruct);
-
-	commentObj.node = node;
-	commentObj.header = dom.selectOne(`.${COMMENT_HEADER_CLASS}`, node);
-	commentObj.footer = dom.selectOne(`.${COMMENT_FOOTER_CLASS}`, node);
+	const commentObj = Object.assign({}, commentStruct, {
+		node: node,
+		header: dom.selectOne(`.${COMMENT_HEADER_CLASS}`, node),
+		footer: dom.selectOne(`.${COMMENT_FOOTER_CLASS}`, node),
+	});
 
 	if (!commentObj.footer && node.nextElementSibling && dom.hasClass(COMMENT_FOOTER_CLASS, node.nextElementSibling)) {
 		commentObj.footer = node.nextElementSibling;
@@ -140,11 +141,9 @@ function getCommentObj (node) {
 	return commentObj;
 }
 
-function getCommentContent (comment) {
-	return dom.selectOne('.content', comment.node).textContent;
-}
+const getCommentContent = (comment) => dom.selectOne('.content', comment.node).textContent;
 
-const findIndentedParent = func.curry(dom.closest, `.${INDENTED_CLASS}`);
+const findIndentedParent = func.curry(dom.closest, INDENTED_CLASS);
 const findParentComment = func.curry(dom.prev, `.${COMMENT_CLASS}`);
 
 /**
@@ -152,7 +151,7 @@ const findParentComment = func.curry(dom.prev, `.${COMMENT_CLASS}`);
  * @return string
  */
 function findParentId (elem) {
-	let indented = findIndentedParent(elem);
+	const indented = findIndentedParent(elem);
 
 	if (indented) {
 		let parentComment = findParentComment(indented);
@@ -169,17 +168,12 @@ function findParentId (elem) {
  * @param commentStruct comment
  * @return integer
  */
-function findIndentLevel (comment) {
-	var level = 0,
-		elem;
-
+function findIndentLevel (commentNode, level = 0) {
 	// elem = dom.closest(indented, comment.node);
-	elem = findIndentedParent(comment.node);
+	const elem = findIndentedParent(commentNode);
 
-	while (elem) {
-		++level;
-
-		elem = findIndentedParent(elem);
+	if (elem) {
+		return findIndentLevel(elem, level + 1);
 	}
 
 	return level;
@@ -192,30 +186,24 @@ function findIndentLevel (comment) {
  * @return commentDataStruct
  */
 function parseComment (node, options={content: false}) {
-	var output = Object.create(commentDataStruct);
 	var commentObj = getCommentObj(node);
 
-	output.isNew = dom.hasClass(NEW_COMMENT_CLASS, commentObj.node);
-	output.author = getCommentAuthor(commentObj);
-	output.created = getCommentCreateDate(commentObj);
-	output.id = getCommentId(commentObj);
-	output.parentID = findParentId(commentObj.node);
-	output.indentLevel = findIndentLevel(commentObj);
-
-	if (options.content) {
-		output.content = getCommentContent(commentObj);
-	}
-
-	return output;
+	return Object.assign({}, commentDataStruct, {
+		isNew: dom.hasClass(NEW_COMMENT_CLASS, commentObj.node),
+		author: getCommentAuthor(commentObj),
+		created: getCommentCreateDate(commentObj),
+		id: getCommentId(commentObj),
+		parentID: findParentId(commentObj.node),
+		indentLevel: findIndentLevel(commentObj),
+		content: options.content ? getCommentContent(commentObj) : null,
+	});
 }
 
 /**
  *
  * @param commentStruct comment
  */
-function getNewMarkerElement (comment) {
-	return dom.selectOne(`.${COMMENT_NEW_MARKER_CLASS}`, comment.node);
-}
+const getNewMarkerElement = (comment) => dom.selectOne(`.${COMMENT_NEW_MARKER_CLASS}`, comment.node);
 
 const selectHNav = func.curry(dom.selectOne, `.${COMMENT_HNAV_CLASS}`);
 const selectHNew = func.curry(dom.selectOne, '.hnew');
@@ -253,7 +241,7 @@ function insertIntoHnav (comment, item) {
 	}
 }
 
-function commentLink (comment, commentToLinkID, text) {
+function commentLink (text, comment, commentToLinkID) {
 	let link = dom.selectOne(`a[href="#${commentToLinkID}"]`, comment.header);
 
 	if (link) {
@@ -266,91 +254,59 @@ function commentLink (comment, commentToLinkID, text) {
 	insertIntoHnav(comment, link);
 }
 
-/**
- * @param string id Comment id
- * @param string nextCommentId
- */
-function addLinkToPrevComment (comment, prevCommentId) {
-	commentLink(comment, prevCommentId, TEXT_PREV);
-}
-
-/**
- * @param string id Comment id
- * @param string nextCommentId
- */
-function addLinkToNextComment (comment, nextCommentId) {
-	commentLink(comment, nextCommentId, TEXT_NEXT);
-}
+const addLinkToPrevComment = func.curry(commentLink, TEXT_PREV);
+const addLinkToNextComment = func.curry(commentLink, TEXT_NEXT);
 
 /**
  * @param string id Comment id
  * @return HTMLDOMElement Comment element
  */
-function getCommentFromId (id) {
-	var elem = document.getElementById(id);
-
-	return dom.next(`.${COMMENT_CLASS}`, elem);
-}
+const getCommentFromId = (id) => dom.next(`.${COMMENT_CLASS}`, document.getElementById(id));
 
 /**
  * @param commentDataStruct comment
  * @return commentStruct
  */
-function commentDataStructToObj (comment) {
-	return func.compose(func.always(comment.id), getCommentFromId, getCommentObj);
-}
+const commentDataStructToObj = (comment) => func.compose(func.always(comment.id), getCommentFromId, getCommentObj);
 
-/**
- * @param commentStruct comment
- */
-function setTroll (comment) {
-	dom.addClass(TROLL_COMMENT_CLASS, comment.node);
-	dom.addClass(TROLL_COMMENT_HEADER_CLASS, comment.header);
+function toggleTroll (comment, isTroll) {
+	dom.toggleClass(TROLL_COMMENT_CLASS, comment.node, !isTroll);
+	dom.toggleClass(TROLL_COMMENT_HEADER_CLASS, comment.header, !isTroll);
 
-	var replies = dom.next(`.${INDENTED_CLASS}`, comment.node);
+	const replies = dom.next(INDENTED_CLASS, comment.node);
 
 	if (replies) {
-		dom.addClass(TROLL_COMMENT_REPLY_CLASS, replies);
+		dom.toggleClass(TROLL_COMMENT_REPLY_CLASS, replies, !isTroll);
 	}
 }
 
 /**
  * @param commentStruct comment
  */
-function unsetTroll (comment) {
-	dom.removeClass(TROLL_COMMENT_CLASS, comment.node);
-	dom.removeClass(TROLL_COMMENT_HEADER_CLASS, comment.header);
+const setTroll = (comment) => toggleTroll(comment, true);
 
-	var replies = dom.next(`.${INDENTED_CLASS}`, comment.node);
-
-	if (replies) {
-		dom.removeClass(TROLL_COMMENT_REPLY_CLASS, replies);
-	}
-}
+/**
+ * @param commentStruct comment
+ */
+const unsetTroll = (comment) => toggleTroll(comment, false);
 
 /**
  * @return {commentDataStruct[]}
  */
-function getTrollComments () {
-	return func.toArray(document.querySelectorAll('.' + TROLL_COMMENT_CLASS)).map(parseComment);
-}
+const getTrollComments = () => func.toArray(document.querySelectorAll(`.${TROLL_COMMENT_CLASS}`)).map(parseComment);
 
 /**
  * @param {commentDataStruct[]} trollComments
  */
 function setTrolls (trollComments) {
 	getTrollComments()
-		.filter(function (comment) {
-			return trollComments.indexOf(comment.author) === -1;
-		})
-		.map(function (comment) {
-			return getCommentObj(getCommentFromId(comment.id));
-		})
+		.filter((comment) => trollComments.indexOf(comment.author) === -1)
+		.map((comment) => getCommentObj(getCommentFromId(comment.id)))
 		.forEach(unsetTroll);
 
-	trollComments.map(function (comment) {
-		return getCommentObj(getCommentFromId(comment.id));
-	}).forEach(setTroll);
+	trollComments
+		.map((comment) => getCommentObj(getCommentFromId(comment.id)))
+		.forEach(setTroll);
 }
 
 function unsetTrolls () {
@@ -374,8 +330,10 @@ function unhighlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
 	dom.removeClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
 
-	commentObj.header.style.backgroundColor = '';
-	commentObj.header.style.color = '';
+	Object.assign(commentObj.header.style, {
+		backgroundColor: '',
+		color: '',
+	});
 
 	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = '');
 }
@@ -387,8 +345,10 @@ function highlightComment (comment) {
 	var commentObj = commentDataStructToObj(comment);
 	dom.addClass(HIGHLIGHTED_COMMENT_CLASS, commentObj.node);
 
-	commentObj.header.style.backgroundColor = comment.userColor;
-	commentObj.header.style.color = comment.userContrastColor;
+	Object.assign(commentObj.header.style, {
+		backgroundColor: comment.userColor,
+		color: comment.userContrastColor,
+	});
 
 	func.toArray(commentObj.header.querySelectorAll('a')).forEach(l => l.style.color = comment.userContrastColor);
 }
@@ -396,30 +356,25 @@ function highlightComment (comment) {
 /**
  * @param commentStruct comment
  */
-function markBoring (comment) {
-	dom.addClass(BORING_COMMENT_CLASS, comment.node);
-}
+const markBoring = (comment) => dom.addClass(BORING_COMMENT_CLASS, comment.node);
 
 /**
  * @param {commentDataStruct[]} comments
  */
-function hideBoringComments (comments) {
-	comments.map(commentDataStructToObj).forEach(markBoring);
-}
+const hideBoringComments = (comments) => comments.map(commentDataStructToObj).forEach(markBoring);
 
-function hasFooter (comment) {
-	return comment && comment.footer && comment.footer.nodeType === Node.ELEMENT_NODE;
-}
+const hasFooter = (comment) => comment && comment.footer && comment.footer.nodeType === Node.ELEMENT_NODE;
 
 function addFooterLink (comment, link) {
-	var commentObj = commentDataStructToObj(comment);
+	const commentObj = commentDataStructToObj(comment);
+
 	if (!hasFooter(commentObj)) {
 		return;
 	}
 
-	let footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
+	const footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
 
-	let href = dom.selectOne('a', link).href;
+	const href = dom.selectOne('a', link).href;
 
 	func.toArray(footer.querySelectorAll('a'))
 		.filter(a => a.href === href)
@@ -434,10 +389,9 @@ function addFooterLink (comment, link) {
  * @param {string[]} classes
  */
 function createFooterLink (text, href, classes) {
-	var listItem = dom.createElem('li'),
-		link;
+	const listItem = dom.createElem('li');
+	const link = dom.createElem('a', [{name: 'href', value: href}], classes, text);
 
-	link = dom.createElem('a', [{name: 'href', value: href}], classes, text);
 	listItem.appendChild(link);
 
 	return listItem;
@@ -446,41 +400,32 @@ function createFooterLink (text, href, classes) {
 /**
  * @param commentDataStruct comment
  */
-function addParentLinkToComment (comment) {
-	addFooterLink(comment, createFooterLink(TEXT_PARENT, '#' + comment.parentID));
-}
+const addParentLinkToComment = (comment) => addFooterLink(comment, createFooterLink(TEXT_PARENT, '#' + comment.parentID));
 
 /**
  * @param commentDataStruct comment
  */
-function addExpandLinkToComment (comment) {
-	addFooterLink(comment, createFooterLink(TEXT_WIDEN, '#', [EXPAND_COMMENT_CLASS]));
-}
+const addExpandLinkToComment = (comment) => addFooterLink(comment, createFooterLink(TEXT_WIDEN, '#', [EXPAND_COMMENT_CLASS]));
 
 /**
  * @param {commentDataStruct[]} comments
  */
-function addParentLinkToComments (comments) {
-	comments.forEach(addParentLinkToComment);
-}
+const addParentLinkToComments = (comments) => comments.forEach(addParentLinkToComment);
 
 /**
  * @param {commentDataStruct[]} comments
  */
-function addExpandLinkToComments (comments) {
-	comments.forEach(addExpandLinkToComment);
-}
+const addExpandLinkToComments = (comments) => comments.forEach(addExpandLinkToComment);
 
 /**
  * @param string commentId
  */
 function widenComment (commentId) {
-	var comment = getCommentFromId(commentId);
-	var indentedClass = `.${INDENTED_CLASS}`;
+	const comment = getCommentFromId(commentId);
 	var indented;
 	var skippedOne = false;
 
-	indented = dom.closest(indentedClass, comment);
+	indented = dom.closest(INDENTED_CLASS, comment);
 
 	while (indented) {
 		if (skippedOne) {
@@ -489,7 +434,7 @@ function widenComment (commentId) {
 
 		skippedOne = true;
 
-		indented = dom.closest(indentedClass, indented);
+		indented = dom.closest(INDENTED_CLASS, indented);
 	}
 }
 
@@ -503,43 +448,10 @@ function unwideComments () {
 /**
  * @return {HTMLDOMElement[]}
  */
-function getComments () {
-	return func.toArray(document.querySelectorAll('.' + COMMENT_CLASS));
-}
+const getComments = () => func.toArray(document.querySelectorAll(`.${COMMENT_CLASS}`));
 
-function hide (comment) {
-	dom.addClass('hup-hidden', getCommentFromId(comment.id));
-}
-
-function show (comment) {
-	dom.removeClass('hup-hidden', getCommentFromId(comment.id));
-}
-
-function setProp (comment, prop, value) {
-	let elem = getCommentFromId(comment.id);
-
-	elem.dataset[prop] = value;
-	elem.dataset[prop + 'Type'] = typeof value;
-}
-
-function getProp (comment, prop) {
-	let elem = getCommentFromId(comment.id);
-
-	let value = elem.dataset[prop];
-	let type = elem.dataset[prop + 'Type'];
-	let undef;
-
-	switch (type) {
-		case 'boolean':
-			return Boolean(value);
-		case 'number':
-			return +value;
-		case 'undefined':
-			return undef;
-		default:
-			return value;
-	}
-}
+const hide = (comment) => dom.addClass('hup-hidden', getCommentFromId(comment.id));
+const show = (comment) => dom.removeClass('hup-hidden', getCommentFromId(comment.id));
 
 function getScoreTitle (votes) {
 	if (votes.plusone > 0 && votes.minusone > 0) {
@@ -573,9 +485,7 @@ function showScore (comment) {
 	}
 }
 
-function hasScore (comment) {
-	return typeof comment.votes.score !== 'undefined' && comment.votes.score !== 0;
-}
+const hasScore = (comment) => typeof comment.votes.score !== 'undefined' && comment.votes.score !== 0;
 
 function setAuthorComment (comment) {
 	let elem = commentDataStructToObj(comment);
@@ -584,9 +494,6 @@ function setAuthorComment (comment) {
 
 function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
-		setProp(comment, 'boring', comment.boring);
-		setProp(comment, 'troll', comment.troll);
-
 		if (comment.hide) {
 			hide(comment);
 		} else {
@@ -679,13 +586,13 @@ export {
 	unwideComments,
 	hide,
 	show,
-	setProp,
-	getProp,
 	getCommentFromId,
 	showScore,
 	onCommentUpdate,
 	onCommentSetNew,
 	onCommentsContainerClick,
 	onBodyClick,
-	convertComments
+	convertComments,
+	findIndentLevel,
+	findParentId,
 };

@@ -138,6 +138,8 @@ function flow (...args) {
 	return args.reduce((acc, cb) => cb(acc), null);
 }
 
+const invoke = (fn, obj, ...args) => obj[fn](...args);
+
 export {
 	first,
 	index,
@@ -157,5 +159,6 @@ export {
 	curry,
 	always,
 	recurse,
-	flow
+	flow,
+	invoke,
 };

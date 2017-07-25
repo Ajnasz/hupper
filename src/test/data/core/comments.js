@@ -48,5 +48,37 @@ test('data/core/comments', (commentsSuite) => {
 		});
 	});
 
+	commentsSuite.test('findParentId', (t) => {
+		readPage('page_with_comments.html').then(() => {
+			const commentNodes = comments.getComments();
+
+			t.equal(comments.findParentId(commentNodes[0]), '');
+			t.equal(comments.findParentId(commentNodes[1]), commentNodes[0].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[2]), commentNodes[1].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[3]), commentNodes[2].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[4]), commentNodes[3].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[5]), commentNodes[2].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[6]), commentNodes[5].previousElementSibling.id);
+			t.equal(comments.findParentId(commentNodes[7]), '');
+			t.end();
+		});
+	});
+
+	commentsSuite.test('findIndentLevel', (t) => {
+		readPage('page_with_comments.html').then(() => {
+			const commentNodes = comments.getComments();
+
+			t.equal(comments.findIndentLevel(commentNodes[0]), 0);
+			t.equal(comments.findIndentLevel(commentNodes[1]), 1);
+			t.equal(comments.findIndentLevel(commentNodes[2]), 2);
+			t.equal(comments.findIndentLevel(commentNodes[3]), 3);
+			t.equal(comments.findIndentLevel(commentNodes[4]), 4);
+			t.equal(comments.findIndentLevel(commentNodes[5]), 3);
+			t.equal(comments.findIndentLevel(commentNodes[6]), 4);
+			t.equal(comments.findIndentLevel(commentNodes[7]), 0);
+			t.end();
+		});
+	});
+
 	commentsSuite.end();
 });

@@ -88,6 +88,14 @@ function removeClass (className, elem) {
 	return elem;
 }
 
+function toggleClass(className, elem, set) {
+	if (set) {
+		return elem.addClass(className);
+	}
+
+	return elem.removeClass(className);
+}
+
 function hasClass (className, elem) {
 	return elem.classList.contains(className);
 }
@@ -205,6 +213,7 @@ export {
 	addClass,
 	addClasses,
 	removeClass,
+	toggleClass,
 	hasClass,
 	selectOne,
 	attr,
