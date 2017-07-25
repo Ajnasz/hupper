@@ -408,9 +408,14 @@ label {
 	transition: background-color 0.2s ease;
 }
 
-#panel-bg.show {
+#panel-bg.visible {
 	background-color: rgba(255, 255, 255, 0.8);
 	z-index: 1;
+}
+
+#panel-bg.hide {
+	background-color: rgba(255, 255, 255, 0);
+	z-index: 0;
 }
 
 #ListOfTrolls ul {

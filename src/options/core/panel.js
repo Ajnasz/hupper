@@ -65,20 +65,28 @@ function transitionTrack (elem) {
 }
 
 function closeElem (elem) {
-	let promise =  transitionTrack(elem).then(() => elem.parentNode.removeChild(elem));
+	console.log('close elem', elem);
+	let promise =  transitionTrack(elem)
+		.then(() => dom.removeClass(visibleClass, elem))
+		.then(() => elem.parentNode.removeChild(elem));
 
-	dom.removeClass(showClass, elem);
 	dom.addClass(hideClass, elem);
 
 	return promise;
 }
 
 function showElem (elem) {
-	let promise =  transitionTrack(elem);
+	const promise =  transitionTrack(elem);
 
 	// elem.offsetWidth
 	// triggers reflow which needed to fire animation and transition events
 	requestAnimationFrame(() => (elem.offsetWidth, [showClass, visibleClass].map(className => func.curry(dom.addClass, className)).forEach(f => f(elem))));
+
+	const removeShowClass = func.curry(dom.removeClass, showClass);
+	promise.then(x => {
+		removeShowClass(elem);
+		return x;
+	});
 
 	return promise;
 }
