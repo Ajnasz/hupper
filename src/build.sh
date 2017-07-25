@@ -12,7 +12,7 @@ $ESLINT --ignore-pattern=bundle\.js -c .eslintrc {options,lib,data,core}/**/*.js
 echo -n " ."
 rm -f hupper*.zip
 echo -n " ."
-mkdir -p images
+mkdir -p images/icons
 cp ../icons/IconMoon/009-pen.png images/icons/
 echo -n " ."
 $BROWSERIFY options/main.js -o options/bundle.js -t babelify
