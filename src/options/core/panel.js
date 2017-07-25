@@ -65,8 +65,7 @@ function transitionTrack (elem) {
 }
 
 function closeElem (elem) {
-	console.log('close elem', elem);
-	let promise =  transitionTrack(elem)
+	const promise =  transitionTrack(elem)
 		.then(() => dom.removeClass(visibleClass, elem))
 		.then(() => elem.parentNode.removeChild(elem));
 

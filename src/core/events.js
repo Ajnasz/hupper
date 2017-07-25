@@ -10,6 +10,7 @@ function createEmitter () {
 	return {
 		off (name, cb) {
 			let argLen = arguments.length;
+			let listeners;
 
 			switch (argLen) {
 				case 0:
@@ -19,7 +20,7 @@ function createEmitter () {
 					events.delete(name);
 					break;
 				case 2:
-					let listeners = events.get(name);
+					listeners = events.get(name);
 					if (!listeners) {
 						return;
 					}

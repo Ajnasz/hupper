@@ -71,9 +71,9 @@ function blockElemToBlockDataStruct (block, index) {
 
 function getBlocks () {
 	let leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
-			.map(blockElemToBlockDataStruct);
+		.map(blockElemToBlockDataStruct);
 	let rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
-			.map(blockElemToBlockDataStruct);
+		.map(blockElemToBlockDataStruct);
 
 	return {
 		left: leftBlocks,
@@ -185,7 +185,7 @@ function reorderBlocks (blocks) {
 	let sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
 
 	let elementList = getBlockElements(sidebarLeft)
-			.concat(getBlockElements(sidebarRight));
+		.concat(getBlockElements(sidebarRight));
 
 	renderSidebar(sidebarLeft, func.sortBy(blocks.filter(i => i.column === 'left'), 'index'), elementList);
 	renderSidebar(sidebarRight, func.sortBy(blocks.filter(i => i.column === 'right'), 'index'), elementList);

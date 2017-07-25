@@ -7,7 +7,7 @@ const ARTICLE_HNAV_CLASS = 'hnav';
 const TEXT_NEXT = 'következő';
 const TEXT_PREV = 'előző';
 const TEXT_HIDE_ARTICLE_TITLE = 'Cikk kategória elrejtése';
-const ANONYM_ARTICLE_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
+const ANONYM_ARTICLE_AUTHOR_REGEXP = /[^(]+\( ([^ ]+).*/;
 
 let articleStruct = {
 	id: '',
@@ -162,7 +162,7 @@ function onAddCategoryHideButton (items) {
 
 function onMarkNew (articles) {
 	articles.map(articleStructToArticleNodeStruct)
-			.forEach((a, index) => markNewArticle(articles[index].newText, a));
+		.forEach((a, index) => markNewArticle(articles[index].newText, a));
 }
 
 function onArticleAddNextPrev (item) {

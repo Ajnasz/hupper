@@ -69,11 +69,11 @@ function getBlockTitles () {
 		'block-block-15': 'irc://irc.freenode.net/hup.hu',
 		'block-block-12': '/tamogatok',
 		'block-block-7': 'http://www.google.com/custom?ie=UTF-8&' +
-		   	'oe=UTF-8&domains=hup.hu&sa=Keres%C3%A9s&' +
-		   	'cof=%22S%3Ahttp%3A%2F%2Fhup.hu%3BVLC%3A7a7a76%3BAH%3A' +
-		   	'center%3BLH%3A74%3BLC%3A7a7a76%3BGFNT%3A7a7a76%3BL%3A' +
-		   	'http%3A%2F%2Fhup.hu%2Fimages%2Fhup_search.png%3BLW%3A484%3' +
-		   	'BT%3Ablack%3BAWFID%3Ab92ddab1875cce47%3B%22&sitesearch=hup.hu',
+			'oe=UTF-8&domains=hup.hu&sa=Keres%C3%A9s&' +
+			'cof=%22S%3Ahttp%3A%2F%2Fhup.hu%3BVLC%3A7a7a76%3BAH%3A' +
+			'center%3BLH%3A74%3BLC%3A7a7a76%3BGFNT%3A7a7a76%3BL%3A' +
+			'http%3A%2F%2Fhup.hu%2Fimages%2Fhup_search.png%3BLW%3A484%3' +
+			'BT%3Ablack%3BAWFID%3Ab92ddab1875cce47%3B%22&sitesearch=hup.hu',
 		'block-block-6': 'http://www.mozilla.com/firefox?from=sfx&uid=225821&t=308',
 		'block-blog-0': '/blog',
 		'block-comment-0': '/tracker',

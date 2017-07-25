@@ -17,8 +17,8 @@ const EXPAND_COMMENT_CLASS = 'expand-comment';
 const WIDEN_COMMENT_CLASS = 'widen-comment';
 const COMMENT_CLASS = 'comment';
 const COMMENT_NEW_MARKER_CLASS = 'new';
-const ANONYM_COMMENT_AUTHOR_REGEXP = /[^\(]+\( ([^ ]+).*/;
-const COMMENT_DATE_REGEXP = /[\s\|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/;
+const ANONYM_COMMENT_AUTHOR_REGEXP = /[^(]+\( ([^ ]+).*/;
+const COMMENT_DATE_REGEXP = /[\s|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/;
 const COMMENT_MONTH_NAMES = {
 	'január': 0,
 	'február': 1,
