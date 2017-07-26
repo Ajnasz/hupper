@@ -1,3 +1,32 @@
+const semver = require('semver');
+
+function getChromeVersion (version) {
+	const ver = semver(version);
+
+	if (ver.prerelease.length) {
+		const prerelease = ver.prerelease[ver.prerelease.length - 1];
+		ver.minor -= 1;
+
+		ver.prerelease = [100 + prerelease];
+	}
+
+	return ver.format().replace(/-(\d+)$/, '.$1');
+}
+
+function getFirefoxVersion (version) {
+	const ver = semver(version);
+
+	if (ver.prerelease.length) {
+		const prerelease = ver.prerelease[ver.prerelease.length - 1];
+
+		ver.prerelease = ['beta', prerelease];
+	} else {
+		ver.prerelease = [];
+	}
+
+	return ver.format();
+}
+
 module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-eslint');
@@ -7,12 +36,35 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-concurrent');
 
 	grunt.registerMultiTask('manifest', function () {
-		const options = this.options();
 		const target = this.target;
+		const options = this.options({
+			beta: false,
+		});
 
-		let manifest = grunt.file.readJSON('./manifest.json');
+		const manifest = grunt.file.readJSON('./manifest.json');
+		let { version } = grunt.file.readJSON('./package.json');
 
-		grunt.file.write(`manifest_${target}.json`, JSON.stringify(Object.assign({}, manifest, options), null, '\t'));
+		const versionName = version;
+
+		if (typeof options.beta === 'number') {
+			switch (options.versioning) {
+				case 'chrome':
+					version = getChromeVersion(version);
+					break;
+				case 'firefox':
+					version = getFirefoxVersion(version);
+					break;
+			}
+
+			grunt.verbose.writeln(options.versioning, 'version', version, 'versionName', versionName);
+		}
+
+		grunt.file.write(`manifest_${target}.json`, JSON.stringify(Object.assign({}, manifest, {
+			version,
+			/* eslint-disable camelcase */
+			version_name: versionName,
+			/* eslint-enable camelcase */
+		}), null, '\t'));
 	});
 
 	const chromeConfig = {
@@ -165,17 +217,18 @@ module.exports = (grunt) => {
 		},
 
 		manifest: {
+			options: {
+				beta: 4,
+			},
 			chrome: {
 				options: {
-					version: '2.2.102',
-					versionName: '2.3.0beta4',
+					versioning: 'chrome',
 				},
 			},
 
 			firefox: {
 				options: {
-					version: '2.3.0beta4',
-					versionName: '2.3.0beta4',
+					versioning: 'firefox',
 				},
 			}
 		},
@@ -203,7 +256,7 @@ module.exports = (grunt) => {
 	grunt.registerTask('firefox', [
 		'clean:firefox',
 		'concurrent:eslint',
-		'concurrent:browserifyChrome',
+		'concurrent:browserifyFirefox',
 		'copy:manifestBackup',
 		'manifest:firefox',
 		'copy:icons',
