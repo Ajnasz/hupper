@@ -1,12 +1,15 @@
 function searchParams (search) {
 	const searchStr = (search[0] === '?') ?  search.slice(1) : search;
+	let obj = {};
 
-	let obj = searchStr.split('&')
-		.map(item => item.split('='))
-		.reduce((out, item) => {
-			let values = out[item[0]] ? out[item[0]] : [];
-			return Object.assign({}, out, {[item[0]]: values.concat(item[1])});
-		}, {});
+	if (search) {
+		obj = searchStr.split('&')
+			.map(item => item.split('='))
+			.reduce((out, item) => {
+				let values = out[item[0]] ? out[item[0]] : [];
+				return Object.assign({}, out, {[item[0]]: values.concat(item[1])});
+			}, {});
+	}
 
 	return {
 		toString () {
