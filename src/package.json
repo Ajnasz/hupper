@@ -7,9 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "$(npm bin)/tape -r babel-register test/{lib,core,data}/**/*.js",
-    "testData": "$(npm bin)/tape -r babel-register test/data/**/*.js",
-    "coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r babel-register test/{core,lib}/*.js"
+    "test": "$(npm bin)/tape -r ./test/boot.js test/{lib,core,data}/**/*.js",
+    "testData": "$(npm bin)/tape -r ./test/boot.js test/data/**/*.js",
+    "coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r ./test/boot.js test/{core,lib}/*.js"
   },
   "repository": {
     "type": "git",
