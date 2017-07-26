@@ -4,7 +4,7 @@
 **/node_modules
 
 **/bundle.js
-hupper.zip
+hupper*.zip
 
 coverage
 .nyc_output
