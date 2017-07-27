@@ -97,12 +97,6 @@ module.exports = (grunt) => {
 		},
 
 		copy: {
-			icons: {
-				files: [{
-					'images/icons/009-pen.png': '../icons/IconMoon/009-pen.png'
-				}]
-			},
-
 			manifestBackup: {
 				files: {
 					'./manifest.json.bak': './manifest.json',
@@ -259,7 +253,6 @@ module.exports = (grunt) => {
 		'concurrent:browserifyFirefox',
 		'copy:manifestBackup',
 		'manifest:firefox',
-		'copy:icons',
 		'copy:manifestFirefox',
 		'compress:firefox',
 		'copy:manifestRestore',
@@ -274,7 +267,6 @@ module.exports = (grunt) => {
 		'copy:manifestBackup',
 		'manifest:chrome',
 		'copy:manifestChrome',
-		'copy:icons',
 		'compress:chrome',
 		'copy:manifestRestore',
 		'clean:manifestChrome',
