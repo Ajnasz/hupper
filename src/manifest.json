@@ -1,12 +1,14 @@
 {
 	"name": "Hupper",
 	"short_name": "Hupper",
-	"version": "2.2.1",
-	"version_name": "2.2.1",
+	"version": "2.3.0",
+	"version_name": "2.3.0",
 	"manifest_version": 2,
 	"description": "Improve the user experience of HUP.hu",
 	"background": {
-		"scripts": ["lib/bundle.js"]
+		"scripts": [
+			"lib/bundle.js"
+		]
 	},
 	"icons": {
 		"16": "icons/16.png",
@@ -19,20 +21,22 @@
 		"chrome_style": false,
 		"open_in_tab": true
 	},
-	"content_scripts": [{
-		"run_at": "document_start",
-		"matches": [
-			"*://hup.lh/*",
-			"*://hup.hu/*"
-		],
-		"css": [
-			"data/core/css/hupper.css",
-			"data/core/css/indentstyles.css"
-		],
-		"js": [
-			"data/bundle.js"
-		]
-	}],
+	"content_scripts": [
+		{
+			"run_at": "document_start",
+			"matches": [
+				"*://hup.lh/*",
+				"*://hup.hu/*"
+			],
+			"css": [
+				"data/core/css/hupper.css",
+				"data/core/css/indentstyles.css"
+			],
+			"js": [
+				"data/bundle.js"
+			]
+		}
+	],
 	"permissions": [
 		"contextMenus",
 		"tabs",
@@ -40,13 +44,11 @@
 		"*://hup.hu/",
 		"*://hup.lh/"
 	],
-
 	"applications": {
 		"gecko": {
 			"id": "hupper@ajnasz.hu"
 		}
 	},
-
 	"web_accessible_resources": [
 		"images/icons/009-pen.png"
 	]
