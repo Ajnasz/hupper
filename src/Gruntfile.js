@@ -92,8 +92,14 @@ module.exports = (grunt) => {
 			firefox: 'hupper_firefox.zip',
 			chrome: 'hupper_chrome.zip',
 			manifestBackup: 'manifest.json.bak',
-			manifestFirefox: 'manifest_firefox.json',
-			manifestChrome: 'manifest_chrome.json',
+			manifestFirefox: [
+				'manifest_firefox.json',
+				'manifest.json.bak',
+			],
+			manifestChrome: [
+				'manifest_chrome.json',
+				'manifest.json.bak',
+			],
 		},
 
 		copy: {
@@ -249,7 +255,6 @@ module.exports = (grunt) => {
 
 	grunt.registerTask('firefox', [
 		'clean:firefox',
-		'concurrent:eslint',
 		'concurrent:browserifyFirefox',
 		'copy:manifestBackup',
 		'manifest:firefox',
@@ -257,12 +262,10 @@ module.exports = (grunt) => {
 		'compress:firefox',
 		'copy:manifestRestore',
 		'clean:manifestFirefox',
-		'clean:manifestBackup',
 	]);
 
 	grunt.registerTask('chrome', [
 		'clean:chrome',
-		'concurrent:eslint',
 		'concurrent:browserifyChrome',
 		'copy:manifestBackup',
 		'manifest:chrome',
@@ -270,6 +273,7 @@ module.exports = (grunt) => {
 		'compress:chrome',
 		'copy:manifestRestore',
 		'clean:manifestChrome',
-		'clean:manifestBackup',
 	]);
+
+	grunt.registerTask('build', ['concurrent:eslint', 'firefox', 'chrome']);
 };
