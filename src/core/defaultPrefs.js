@@ -191,7 +191,7 @@ const defaultPrefs = Object.freeze([
 
 	{
 		'name': 'alwaysshownewcomments',
-		'title': 'Olvasatlan hozzászlások mindig jelenjenek meg',
+		'title': 'Olvasatlan hozzászólások mindig jelenjenek meg',
 		'type': 'bool',
 		'value': false,
 		'group': 'comments'
