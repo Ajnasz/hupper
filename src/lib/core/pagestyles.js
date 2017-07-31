@@ -4,7 +4,7 @@ function createStyle (elements, rules) {
 	}).join('') + '}';
 }
 
-function getPageStyle (conf) {
+function getPageStyle (conf = {}) {
 	let output = [];
 	if (conf.minFontSize > 0) {
 		output.push(createStyle([
@@ -41,4 +41,4 @@ function getPageStyle (conf) {
 	return output;
 }
 
-export { getPageStyle };
+export default getPageStyle;

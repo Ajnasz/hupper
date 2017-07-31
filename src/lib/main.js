@@ -1,7 +1,7 @@
 /* global chrome:true */
 
 import * as preferences from '../core/prefs';
-import * as pageStyles from './core/pagestyles';
+import getPageStyle from './core/pagestyles';
 import * as coreMain from './core/main';
 
 import { log } from '../core/log';
@@ -28,7 +28,7 @@ function manageStyles (tabID) {
 		prefs.getPref('style_accessibility')
 	]).then((resp) => {
 		let  [ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar, loadStyles ] = resp;
-		let styles = pageStyles.getPageStyle({ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar });
+		let styles = getPageStyle({ minFontSize, minWidth, hideLeftSidebar, hideRightSidebar });
 		if (styles.length) {
 			chrome.tabs.insertCSS(tabID, {
 				code: styles.join('')
