@@ -4,12 +4,12 @@ import * as tpl from '../core/tpl';
 
 let editorTPL = `<form action="" method="" id="{formID}">
 	{=fields}
-	<footer>
+	<footer class="dialog-footer">
 		<button class="btn btn-cta" type="submit">Hozzáadás</button>
 	</footer>
 </form>
 
-<div class="hidden js-not-found"><h2>{notFoundTitle}</h2></div>
+<div class="hidden js-not-found"><h2 class="panel-subtitle">{notFoundTitle}</h2></div>
 
 <table id="{tableID}" class="js-table js-found hidden"><thead>{=tableHead}</thead><tbody></tbody></table>`;
 

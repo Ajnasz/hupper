@@ -96,8 +96,8 @@ function createPanel (options, body, events) {
 	let panelContainer = dom.createElem('div', null, ['panel-container']);
 	let div = dom.createElem('div', null, [ 'panel']);
 	let close = dom.createElem('button', [{name: 'type', value: 'button'}], ['close']);
-	let header = dom.createElem('header');
-	let title = dom.createElem('h1');
+	let header = dom.createElem('header', null, ['panel-header']);
+	let title = dom.createElem('h1', null, ['panel-title']);
 	let panelContent = dom.createElem('div', null, ['panel-content']);
 
 	title.textContent = options.title;

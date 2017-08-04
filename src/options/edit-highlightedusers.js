@@ -48,7 +48,7 @@ function open (options) {
 		add: prefs.addHighlightedUser.bind(prefs),
 		changeField: 'highlightusers'
 	}).then(dialog => {
-		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['button', 'random-color'], 'Véletlen szín');
+		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['btn', 'random-color'], 'Véletlen szín');
 		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);
 		dialog.panel.addEventListener('click', (e) => {
 			let colorElem = dom.elemOrClosest('.color', e.target);
