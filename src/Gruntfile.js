@@ -24,7 +24,14 @@ function getFirefoxVersion (version) {
 		ver.prerelease = [];
 	}
 
-	return ver.format();
+	return ver.format().replace(/(\d+)\.(\d+)\.(\d+)(-?([a-z]+)\.?(\d+))?/, function (match, major, minor, patch, pre, prename, preversion) {
+		let output = `${major}.${minor}.${patch}`;
+		if (pre) {
+			output += `${prename}${preversion}`;
+		}
+
+		return output;
+	});
 }
 
 module.exports = (grunt) => {
