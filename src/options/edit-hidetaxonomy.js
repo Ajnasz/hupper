@@ -9,11 +9,11 @@ function open () {
 		tpl: {
 			formID: 'EditTaxonomyForm',
 			tableID: 'ListOfTaxonomies',
-			tableHead: [ 'Article típus', 'Törlés' ],
+			tableHead: [ 'Cikk típus', 'Törlés' ],
 			notFoundTitle: 'Nincsenek cikkek',
 			fields: [{
 				id: 'ArticleType',
-				label: 'ArticleType',
+				label: 'Cikk típus',
 				type: 'text',
 				name: 'articleType',
 				value: ''
