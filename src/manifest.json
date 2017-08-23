@@ -44,11 +44,6 @@
 		"*://hup.hu/",
 		"*://hup.lh/"
 	],
-	"applications": {
-		"gecko": {
-			"id": "hupper@ajnasz.hu"
-		}
-	},
 	"web_accessible_resources": [
 		"images/icons/009-pen.png"
 	]

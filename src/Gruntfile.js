@@ -53,25 +53,40 @@ module.exports = (grunt) => {
 
 		const versionName = version;
 
+		let manifestOverrides = {};
+
 		if (typeof options.beta === 'number') {
 			switch (options.versioning) {
 				case 'chrome':
-					version = getChromeVersion(version);
+					manifestOverrides = Object.assign(manifestOverrides, {
+						version: getChromeVersion(version),
+						/* eslint-disable camelcase */
+						version_name: versionName,
+						/* eslint-enable camelcase */
+					});
+					manifestOverrides = Object.keys(manifestOverrides)
+						.filter(key => key !== 'applications')
+						.reduce((out, key) => out[key] = manifestOverrides[key], {});
 					break;
 				case 'firefox':
-					version = getFirefoxVersion(version);
+					manifestOverrides = Object.assign(manifestOverrides, {
+						version: getFirefoxVersion(version),
+						/* eslint-disable camelcase */
+						version_name: versionName,
+						/* eslint-enable camelcase */
+						applications: {
+							gecko: {
+								id: 'hupper@ajnasz.hu'
+							},
+						},
+					});
 					break;
 			}
 
 			grunt.verbose.writeln(options.versioning, 'version', version, 'versionName', versionName);
 		}
 
-		grunt.file.write(`manifest_${target}.json`, JSON.stringify(Object.assign({}, manifest, {
-			version,
-			/* eslint-disable camelcase */
-			version_name: versionName,
-			/* eslint-enable camelcase */
-		}), null, '\t'));
+		grunt.file.write(`manifest_${target}.json`, JSON.stringify(Object.assign({}, manifest, manifestOverrides), null, '\t'));
 	});
 
 	const chromeConfig = {
