@@ -1,39 +1,3 @@
-const semver = require('semver');
-
-function getChromeVersion (version) {
-	const ver = semver(version);
-
-	if (ver.prerelease.length) {
-		const prerelease = ver.prerelease[ver.prerelease.length - 1];
-		ver.minor -= 1;
-
-		ver.prerelease = [100 + prerelease];
-	}
-
-	return ver.format().replace(/-(\d+)$/, '.$1');
-}
-
-function getFirefoxVersion (version) {
-	const ver = semver(version);
-
-	if (ver.prerelease.length) {
-		const prerelease = ver.prerelease[ver.prerelease.length - 1];
-
-		ver.prerelease = ['beta', prerelease];
-	} else {
-		ver.prerelease = [];
-	}
-
-	return ver.format().replace(/(\d+)\.(\d+)\.(\d+)(-?([a-z]+)\.?(\d+))?/, function (match, major, minor, patch, pre, prename, preversion) {
-		let output = `${major}.${minor}.${patch}`;
-		if (pre) {
-			output += `${prename}${preversion}`;
-		}
-
-		return output;
-	});
-}
-
 module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-eslint');
@@ -41,53 +5,8 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadTasks('./tasks/');
 
-	grunt.registerMultiTask('manifest', function () {
-		const target = this.target;
-		const options = this.options({
-			beta: false,
-		});
-
-		const manifest = grunt.file.readJSON('./manifest.json');
-		let { version } = grunt.file.readJSON('./package.json');
-
-		const versionName = version;
-
-		let manifestOverrides = {};
-
-		if (typeof options.beta === 'number') {
-			switch (options.versioning) {
-				case 'chrome':
-					manifestOverrides = Object.assign(manifestOverrides, {
-						version: getChromeVersion(version),
-						/* eslint-disable camelcase */
-						version_name: versionName,
-						/* eslint-enable camelcase */
-					});
-					manifestOverrides = Object.keys(manifestOverrides)
-						.filter(key => key !== 'applications')
-						.reduce((out, key) => out[key] = manifestOverrides[key], {});
-					break;
-				case 'firefox':
-					manifestOverrides = Object.assign(manifestOverrides, {
-						version: getFirefoxVersion(version),
-						/* eslint-disable camelcase */
-						version_name: versionName,
-						/* eslint-enable camelcase */
-						applications: {
-							gecko: {
-								id: 'hupper@ajnasz.hu'
-							},
-						},
-					});
-					break;
-			}
-
-			grunt.verbose.writeln(options.versioning, 'version', version, 'versionName', versionName);
-		}
-
-		grunt.file.write(`manifest_${target}.json`, JSON.stringify(Object.assign({}, manifest, manifestOverrides), null, '\t'));
-	});
 
 	const chromeConfig = {
 		transform: [
@@ -240,17 +159,21 @@ module.exports = (grunt) => {
 
 		manifest: {
 			options: {
-				beta: 4,
+				mainifest: grunt.file.readJSON('./manifest.json'),
+				version: grunt.file.readJSON('./package.json').version,
+				applicationID: 'hupper@jnasz.hu',
 			},
 			chrome: {
 				options: {
 					versioning: 'chrome',
+					dest: 'manifest_chrome.json',
 				},
 			},
 
 			firefox: {
 				options: {
 					versioning: 'firefox',
+					dest: 'manifest_firefox.json',
 				},
 			}
 		},
