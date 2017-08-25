@@ -3,12 +3,12 @@
 import * as func from '../../core/func';
 import url from '../../core/url';
 
-const MAX_COMMENTS_PER_PAGE = 9999;
 const pathNames = [
 	'/cikkek',
 	'/node',
 	'/szavazasok',
-	'/promo'
+	'/promo',
+	'/treyblog',
 ];
 
 function isOnHup (hostname) {
@@ -25,16 +25,18 @@ function isExtendableLink (link) {
 	return isOnHup(link.hostname) && isExtendablePath(link.pathname);
 }
 
-function makeExtendable (link) {
+function makeExtendable (MAX_COMMENTS_PER_PAGE, link) {
 	let search = url.searchParams(link.search);
 
 	link.search = '?' + search.set('comments_per_page', MAX_COMMENTS_PER_PAGE).toString();
+
+	return link;
 }
 
-function setUnlimitedLinks () {
-	func.toArray(document.getElementsByTagName('a'))
+function setUnlimitedLinks (links, MAX_COMMENTS_PER_PAGE) {
+	func.toArray(links)
 		.filter(isExtendableLink)
-		.forEach(makeExtendable);
+		.forEach(func.curry(makeExtendable, MAX_COMMENTS_PER_PAGE));
 }
 
 export {

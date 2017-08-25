@@ -219,7 +219,8 @@ window.addEventListener('DOMContentLoaded', function () {
 			log.enabled = response.data.logenabled;
 
 			if (response.data.setunlimitedlinks) {
-				unlimitedlinks.setUnlimitedLinks();
+				const MAX_COMMENTS_PER_PAGE = 9999;
+				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
 			}
 
 			if (response.data.parseblocks) {
