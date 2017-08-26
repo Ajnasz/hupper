@@ -159,9 +159,9 @@ module.exports = (grunt) => {
 
 		manifest: {
 			options: {
-				mainifest: grunt.file.readJSON('./manifest.json'),
+				manifest: grunt.file.readJSON('./manifest.json'),
 				version: grunt.file.readJSON('./package.json').version,
-				applicationID: 'hupper@jnasz.hu',
+				applicationID: 'hupper@ajnasz.hu',
 			},
 			chrome: {
 				options: {
