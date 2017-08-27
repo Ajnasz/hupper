@@ -87,8 +87,32 @@ function setApplications (applicationID) {
 	};
 }
 
+function setPermissions (lh) {
+	return manifest => Object.assign({}, manifest, {
+		permissions: manifest.permissions.filter(perm => {
+			return !/hup\.lh\/?$/.test(perm) || lh;
+		}, [])
+	});
+}
+
+function setContentScripts (lh) {
+	return manifest => Object.assign({}, manifest, {
+		/* eslint-disable camelcase */
+		content_scripts: manifest.content_scripts.map((script) => {
+		/* eslint-enable camelcase */
+			return Object.assign({}, script, {
+				matches: script.matches.filter(match => {
+					return !/hup\.lh\/?/.test(match) || lh;
+				}),
+			});
+		}),
+	});
+}
+
 module.exports = (grunt) => grunt.registerMultiTask('manifest', function () {
-	const options = this.options({});
+	const options = this.options({
+		lhPermission: false,
+	});
 
 	const { manifest, version } = options;
 	const versionName = version;
@@ -104,7 +128,13 @@ module.exports = (grunt) => grunt.registerMultiTask('manifest', function () {
 			reducer(out) :
 			reducer[options.versioning](out), {});
 
-	grunt.verbose.writeln(options.versioning, manifestOverrides);
+	const output = [
+		setPermissions(options.lhPermission),
+		setContentScripts(options.lhPermission),
+		(o) => JSON.stringify(o, null, '\t')
+	].reduce((out, reducer) => reducer(out), Object.assign({}, manifest, manifestOverrides));
 
-	grunt.file.write(options.dest, JSON.stringify(Object.assign({}, manifest, manifestOverrides), null, '\t'));
+	grunt.verbose.writeln(output);
+
+	grunt.file.write(options.dest, output);
 });
