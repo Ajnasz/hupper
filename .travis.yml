@@ -1,4 +1,3 @@
-before_install: cd src
 language: node_js
 node_js:
     - "6"
