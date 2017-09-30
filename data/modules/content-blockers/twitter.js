@@ -1,7 +1,7 @@
 import * as dom from '../../../core/dom';
 import { createEmitter } from '../../../core/events';
 
-const TYPE = Symbol('twitter');
+const TYPE = 'twitter';
 const EVENTS = createEmitter();
 
 function unblock () {
