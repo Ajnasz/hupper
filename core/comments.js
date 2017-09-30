@@ -16,7 +16,7 @@ function setPrevNextLinks (flatComments) {
 
 		if (lastNew !== null) {
 			output[lastNew] = Object.assign({}, output[lastNew], { nextId: comment.id });
-			output[index] = Object.assign({}, comment, {prevId: output[lastNew].id});
+			output[index] = Object.assign({}, comment, { prevId: output[lastNew].id });
 		} else {
 			output[index] = comment;
 		}
@@ -30,7 +30,7 @@ function setPrevNextLinks (flatComments) {
 const getParagraphs = comment => (comment.content ? comment.content.split('\n').map(p => p.trim()).filter(p => p !== '') : []);
 
 function isBoringComment (comment, boringRegexp) {
-	let paragraphs = getParagraphs(comment);
+	const paragraphs = getParagraphs(comment);
 
 	if (paragraphs.length > 1) {
 		const signatureIndex = func.index(paragraphs, p => signatureRex.test(p));
@@ -63,7 +63,7 @@ function setHighlightedComments (comments = [], users = []) {
 		});
 
 		if (highlightData) {
-			return Object.assign({}, comment, {userColor: highlightData.color});
+			return Object.assign({}, comment, { userColor: highlightData.color });
 		}
 
 		return comment;

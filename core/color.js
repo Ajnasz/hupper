@@ -23,32 +23,32 @@ function getsRGB (c) {
 }
 
 function getLuminanace (r8bit, g8bit, b8bit) {
-	let r = r8bit / 255,
-		g = g8bit / 255,
-		b = b8bit / 255;
+	const r = r8bit / 255;
+	const g = g8bit / 255;
+	const b = b8bit / 255;
 
 	return 0.2126 * getsRGB(r) + 0.7152 * getsRGB(g) + 0.0722 * getsRGB(b);
 }
 
 function calculateRatio (colorA, colorB) {
-	let lumiA = getLuminanace(...hex2rgb(colorA));
-	let lumiB = getLuminanace(...hex2rgb(colorB));
+	const lumiA = getLuminanace(...hex2rgb(colorA));
+	const lumiB = getLuminanace(...hex2rgb(colorB));
 
 	return (lumiA + 0.05) / (lumiB + 0.05);
 }
 
 function getRandomColor () {
-	let r = random(0, 256, true);
-	let g = random(0, 256, true);
-	let b = random(0, 256, true);
+	const r = random(0, 256, true);
+	const g = random(0, 256, true);
+	const b = random(0, 256, true);
 
 	return '#' + [r, g, b].map(c => padStart(c.toString('16'), 2, '0')).join('');
 }
 
 function getContrastColor (hexBGColor) {
-	let ratios = [];
-	for (let color of colors) {
-		ratios.push({color, ratio: Math.max(calculateRatio(hexBGColor, color), calculateRatio(color, hexBGColor))});
+	const ratios = [];
+	for (const color of colors) {
+		ratios.push({ color, ratio: Math.max(calculateRatio(hexBGColor, color), calculateRatio(color, hexBGColor)) });
 	}
 
 	sortBy(ratios, 'ratio').reverse();
@@ -56,11 +56,11 @@ function getContrastColor (hexBGColor) {
 	let output = ratios.filter(r => r.ratio >= 7)
 		.reduce(
 			(acc, r) => acc.ratio > r.ratio ? r : acc,
-			{color: null, ratio: Infinity}
+			{ color: null, ratio: Infinity }
 		);
 
 	if (!output || !output.color) {
-		let color = getLuminanace(...hex2rgb(hexBGColor)) >= 128 ? '#000000' : '#ffffff';
+		const color = getLuminanace(...hex2rgb(hexBGColor)) >= 128 ? '#000000' : '#ffffff';
 		output = maxBy([
 			maxBy(ratios, 'ratio'),
 			{

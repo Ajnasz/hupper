@@ -6,8 +6,8 @@ function searchParams (search) {
 		obj = searchStr.split('&')
 			.map(item => item.split('='))
 			.reduce((out, item) => {
-				let values = out[item[0]] ? out[item[0]] : [];
-				return Object.assign({}, out, {[item[0]]: values.concat(item[1])});
+				const values = out[item[0]] ? out[item[0]] : [];
+				return Object.assign({}, out, { [item[0]]: values.concat(item[1]) });
 			}, {});
 	}
 

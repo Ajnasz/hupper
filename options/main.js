@@ -6,7 +6,7 @@ import * as editTrolls from './edit-trolls';
 import * as editHidetaxonomy from './edit-hidetaxonomy';
 
 function createControlGroup (content) {
-	let div = dom.createElem('div');
+	const div = dom.createElem('div');
 
 	dom.addClass('control-group', div);
 	dom.append(div, content);
@@ -31,7 +31,7 @@ const buttonType = func.curry(setType, 'button');
 const addButtonClass = func.curry(dom.addClass, 'btn');
 
 function createInput (item) {
-	let input = dom.createElem('input');
+	const input = dom.createElem('input');
 
 	dom.data('prefname', item.name, input);
 	dom.data('type', item.type, input);
@@ -66,7 +66,7 @@ function createInput (item) {
 }
 
 function createLabelText (item) {
-	let labelText = dom.createElem('span');
+	const labelText = dom.createElem('span');
 
 	dom.text(item.title, labelText);
 
@@ -74,9 +74,9 @@ function createLabelText (item) {
 }
 
 function createCheckboxGroup (item) {
-	let input = createInput(item);
-	let label = dom.createElem('label');
-	let labelText = createLabelText(item);
+	const input = createInput(item);
+	const label = dom.createElem('label');
+	const labelText = createLabelText(item);
 
 	const appendToLabel = func.curry(dom.append, label);
 
@@ -87,9 +87,9 @@ function createCheckboxGroup (item) {
 }
 
 function createTextGroup (item) {
-	let input = createInput(item);
-	let label = dom.createElem('label');
-	let labelText = createLabelText(item);
+	const input = createInput(item);
+	const label = dom.createElem('label');
+	const labelText = createLabelText(item);
 
 	dom.text(item.title, labelText);
 
@@ -102,7 +102,7 @@ function createTextGroup (item) {
 }
 
 function createGroupContainer (className, group) {
-	let div = createControlGroup(group);
+	const div = createControlGroup(group);
 
 	dom.addClass(className, div);
 
@@ -110,7 +110,7 @@ function createGroupContainer (className, group) {
 }
 
 function createFragment (div) {
-	let fragment = document.createDocumentFragment();
+	const fragment = document.createDocumentFragment();
 
 	dom.append(fragment, div);
 
@@ -139,7 +139,7 @@ function composeGroup (item) {
 }
 
 function createControlButton (item) {
-	let button = dom.createElem('button');
+	const button = dom.createElem('button');
 
 	dom.text(item.title, button);
 	dom.data('type', item.type, button);
@@ -208,18 +208,18 @@ function getInputValue (elem) {
 function main () {
 
 	prefs.getAllPrefs().then((pref) => {
-		let msg = dom.selectOne('#Messages', document);
+		const msg = dom.selectOne('#Messages', document);
 
-		let byGroup = func.groupBy(pref, 'group');
+		const byGroup = func.groupBy(pref, 'group');
 
 		const groups = Object.keys(byGroup);
 
 		groups.forEach(groupName => {
-			let pref = byGroup[groupName];
+			const pref = byGroup[groupName];
 
-			let group = dom.createElem('section', null, ['group']),
-				title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName)),
-				groupContainer = dom.createElem('div', null, ['group-container']);
+			const group = dom.createElem('section', null, ['group']);
+			const title = dom.createElem('h2', null, ['group-title'], getGroupName(groupName));
+			const groupContainer = dom.createElem('div', null, ['group-container']);
 
 			const appendToGroup = func.curry(dom.append, group);
 			[title, groupContainer].forEach(appendToGroup);
@@ -237,17 +237,17 @@ function main () {
 		});
 
 		groups.forEach(groupName => {
-			let pref = byGroup[groupName];
+			const pref = byGroup[groupName];
 
 			pref.filter(x => x.type === 'bool' && x.requiredBy)
 				.map(x => dom.selectOne(`[data-prefname="${x.name}"]`, document)).forEach(toggleRelatives);
 		});
 
 		msg.addEventListener('change', (e) => {
-			let target = e.target;
-			let name = target.name;
-			let type = target.dataset.type;
-			let value = getInputValue(target);
+			const target = e.target;
+			const name = target.name;
+			const type = target.dataset.type;
+			const value = getInputValue(target);
 
 			if (type === 'bool' && target.dataset.requiredBy) {
 				toggleRelatives(target, value);
@@ -257,12 +257,12 @@ function main () {
 		}, false);
 
 		msg.addEventListener('click', (e) => {
-			let target = e.target;
+			const target = e.target;
 
 			if (target.dataset.type === 'control') {
 				switch (target.id) {
 					case 'control-edithighlightusers':
-						prefs.getPref('huppercolor').then(huppercolor => editHighlightedUsers.open({huppercolor}));
+						prefs.getPref('huppercolor').then(huppercolor => editHighlightedUsers.open({ huppercolor }));
 						break;
 					case 'control-edittrolls':
 						editTrolls.open();

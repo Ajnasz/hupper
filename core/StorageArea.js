@@ -18,7 +18,7 @@ function StorageArea () {
 	var storage = new Map();
 
 	function mapToObject (map) {
-		let output = {};
+		const output = {};
 
 		map.forEach((value, key) => output[key] = value);
 
@@ -43,7 +43,7 @@ function StorageArea () {
 					return;
 				}
 
-				let result = keys.reduce((acc, key) => {
+				const result = keys.reduce((acc, key) => {
 					if (storage.has(key)) {
 						acc[key] = storage.get(key);
 					}
@@ -64,7 +64,7 @@ function StorageArea () {
 				throw new IncorrectArgumentTypeError();
 			}
 
-			let clearValues = clearSetValues(values);
+			const clearValues = clearSetValues(values);
 
 			Object.keys(clearValues).forEach(key => storage.set(key, clearValues[key]));
 

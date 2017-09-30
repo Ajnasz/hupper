@@ -24,7 +24,7 @@ function open (options) {
 		tpl: {
 			formID: 'HighlightUserForm',
 			tableID: 'ListOfHighlightedUsers',
-			tableHead: [ 'Név', 'Szín', 'Törlés' ],
+			tableHead: ['Név', 'Szín', 'Törlés'],
 			notFoundTitle: 'Még nincsenek kiemelések hozzáadva',
 			fields: [{
 				id: 'HighlightedUserName',
@@ -48,10 +48,10 @@ function open (options) {
 		add: prefs.addHighlightedUser.bind(prefs),
 		changeField: 'highlightusers'
 	}).then(dialog => {
-		let rndBtn = dom.createElem('button', [{name: 'type', value: 'button'}], ['btn', 'random-color'], 'Véletlen szín');
+		const rndBtn = dom.createElem('button', [{ name: 'type', value: 'button' }], ['btn', 'random-color'], 'Véletlen szín');
 		dialog.panel.querySelector('#HighlightedUserColor').parentNode.appendChild(rndBtn);
 		dialog.panel.addEventListener('click', (e) => {
-			let colorElem = dom.elemOrClosest('.color', e.target);
+			const colorElem = dom.elemOrClosest('.color', e.target);
 
 			if (colorElem) {
 				e.preventDefault();
@@ -60,11 +60,11 @@ function open (options) {
 				return;
 			}
 
-			let randomColor = dom.elemOrClosest('.random-color', e.target);
+			const randomColor = dom.elemOrClosest('.random-color', e.target);
 
 			if (randomColor) {
 				e.preventDefault();
-				let newColor = color.getRandomColor();
+				const newColor = color.getRandomColor();
 
 				dialog.panel.querySelector('#HighlightedUserColor').value = newColor;
 			}
@@ -74,7 +74,7 @@ function open (options) {
 		return dialog;
 	}).then(dialog => {
 		dialog.panel.addEventListener('click', (e) => {
-			let td = dom.elemOrClosest('td', e.target);
+			const td = dom.elemOrClosest('td', e.target);
 
 			if (td && td === td.parentNode.querySelector('td')) {
 				e.preventDefault();

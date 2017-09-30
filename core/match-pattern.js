@@ -22,7 +22,7 @@ export default function (pattern) {
 	if (!match) {
 		throw new TypeError(`"${ pattern }" is not a valid MatchPattern`);
 	}
-	const [ , scheme, host, path, ] = match;
+	const [, scheme, host, path,] = match;
 	return new RegExp('^(?:'
 		+ (scheme === '*' ? 'https?' : escape(scheme)) + ':\\/\\/'
 		+ (host === '*' ? '[^\\/]*' : escape(host).replace(/^\*\./g, '(?:[^\\/]+)?'))

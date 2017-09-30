@@ -9,11 +9,11 @@ function draw (get, rowValueMap, dialog) {
 }
 
 function open (config) {
-	const {id, title} = config;
+	const { id, title } = config;
 
-	let tpl = editor.createBody(config.tpl);
-	let dialog = panel.create({id, title}, tpl);
-	let drawLines = draw.bind(null, config.get, config.tableRowValueMap, dialog);
+	const tpl = editor.createBody(config.tpl);
+	const dialog = panel.create({ id, title }, tpl);
+	const drawLines = draw.bind(null, config.get, config.tableRowValueMap, dialog);
 
 	function onChange (...args) {
 		drawLines(...args);
@@ -22,7 +22,7 @@ function open (config) {
 	prefs.events.on(config.changeField, onChange);
 
 	function onClick (e) {
-		let target = e.target;
+		const target = e.target;
 		if (target.dataset.action === 'delete') {
 			config.remove(target.dataset.id);
 		}
@@ -30,8 +30,8 @@ function open (config) {
 
 	function onSubmit (e) {
 		e.preventDefault();
-		let form = dialog.panel.querySelector('form');
-		let values = config.formValueMap.map(name => form.querySelector(`[name="${name}"]`).value);
+		const form = dialog.panel.querySelector('form');
+		const values = config.formValueMap.map(name => form.querySelector(`[name="${name}"]`).value);
 		config.add.apply(null, values);
 		form.reset();
 		form.querySelector('input').focus();

@@ -5,13 +5,13 @@ import { createEmitter } from '../../core/events';
 import { log } from '../../core/log';
 
 function createPanelBg () {
-	let panelBg = document.getElementById('panel-bg');
+	const panelBg = document.getElementById('panel-bg');
 
 	if (panelBg) {
 		return panelBg;
 	}
 
-	let div = dom.createElem('div', [{name: 'id', value: 'panel-bg'}]);
+	const div = dom.createElem('div', [{ name: 'id', value: 'panel-bg' }]);
 	document.body.appendChild(div);
 
 	return div;
@@ -31,7 +31,7 @@ const show = func.curry(dom.removeClass, hiddenClass);
 
 function transitionTrack (elem) {
 	return new Promise(resolve => {
-		let transitions = new Set();
+		const transitions = new Set();
 
 		function onTransitionStart (e) {
 			log.log('transtion start', e);
@@ -93,12 +93,12 @@ function showElem (elem) {
 const selectForm = func.curry(dom.selectOne, 'form');
 
 function createPanel (options, body, events) {
-	let panelContainer = dom.createElem('div', null, ['panel-container']);
-	let div = dom.createElem('div', null, [ 'panel']);
-	let close = dom.createElem('button', [{name: 'type', value: 'button'}], ['close']);
-	let header = dom.createElem('header', null, ['panel-header']);
-	let title = dom.createElem('h1', null, ['panel-title']);
-	let panelContent = dom.createElem('div', null, ['panel-content']);
+	const panelContainer = dom.createElem('div', null, ['panel-container']);
+	const div = dom.createElem('div', null, ['panel']);
+	const close = dom.createElem('button', [{ name: 'type', value: 'button' }], ['close']);
+	const header = dom.createElem('header', null, ['panel-header']);
+	const title = dom.createElem('h1', null, ['panel-title']);
+	const panelContent = dom.createElem('div', null, ['panel-content']);
 
 	title.textContent = options.title;
 
@@ -127,7 +127,7 @@ function createPanel (options, body, events) {
 	const pulseClass = 'pulse';
 
 	function panelAlert (panel) {
-		let promise = transitionTrack(panel).then(() => dom.removeClass(pulseClass, panel));
+		const promise = transitionTrack(panel).then(() => dom.removeClass(pulseClass, panel));
 
 		dom.addClass(pulseClass, panel);
 
@@ -148,7 +148,7 @@ function createPanel (options, body, events) {
 	}
 
 	function closePanel () {
-		let panelBg = document.getElementById('panel-bg');
+		const panelBg = document.getElementById('panel-bg');
 
 		closeElem(div).then(function () {
 			const removeClickListener = func.curry(dom.removeListener, 'click');
@@ -187,17 +187,17 @@ function showPanel (panel) {
 }
 
 function create (options, body) {
-	let id = 'panel-' + options.id;
+	const id = 'panel-' + options.id;
 
 	if (document.getElementById(id)) {
 		throw new Error('Panel already exists');
 	}
 
-	let panelBg = createPanelBg();
+	const panelBg = createPanelBg();
 
-	let events = createEmitter();
+	const events = createEmitter();
 
-	let panel = createPanel(options, body, events);
+	const panel = createPanel(options, body, events);
 
 	return {
 		events,
@@ -210,11 +210,11 @@ function create (options, body) {
 		},
 
 		drawTable (items) {
-			let found = dom.selectOne('.js-found', panel),
-				notFound = dom.selectOne('.js-not-found', panel);
+			const found = dom.selectOne('.js-found', panel);
+			const notFound = dom.selectOne('.js-not-found', panel);
 
 			if (items.length > 0) {
-				let tbody = dom.selectOne('tbody', panel);
+				const tbody = dom.selectOne('tbody', panel);
 				dom.empty(tbody);
 				items.forEach(item => tbody.appendChild(editor.getRow(item)));
 

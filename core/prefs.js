@@ -38,9 +38,11 @@ function createDefaultPrefs () {
 			});
 		});
 	}))).then(values => {
-		let saveObj = values.reduce((prev, curr) => {
+		const saveObj = values.reduce((prev, curr) => {
 			if (curr !== null) {
-				let [name, value] = curr;
+				const name = curr[0];
+				let value = curr[1];
+
 				if (typeof value === 'undefined') {
 					value = ':noSuchValue';
 				}
@@ -53,11 +55,11 @@ function createDefaultPrefs () {
 	});
 }
 
-let events = createEmitter();
+const events = createEmitter();
 
 function validateType (prefType, value) {
 	let isValid = false;
-	let actualType = Object.prototype.toString.call(value);
+	const actualType = Object.prototype.toString.call(value);
 
 	switch (prefType) {
 
@@ -105,11 +107,11 @@ function findPref (pref) {
 
 function savePref (pref, value) {
 	return new Promise(function (resolve, reject) {
-		let item = func.first(defaultPrefs, item => item.name === pref);
+		const item = func.first(defaultPrefs, item => item.name === pref);
 
 		if (item) {
 			if (validateType(item.type, value)) {
-				let newValue = Object.create(null);
+				const newValue = Object.create(null);
 				newValue[pref] = value;
 				getStorageArea().then(storage => storage.set(newValue));
 				resolve(newValue);
@@ -144,7 +146,7 @@ var chromePrefs = Object.assign(pref, {
 	getAllPrefs () {
 		return Promise.all(defaultPrefs.map((pref) => {
 			return findPref(pref.name).then((value) => {
-				let output = Object.create(null);
+				const output = Object.create(null);
 
 				output.name = pref.name;
 				output.title = pref.title;

@@ -66,7 +66,7 @@ const pref = {
 	},
 
 	setCleanHighlightedUsers (users) {
-		let cleanUsers = users.filter((user) => {
+		const cleanUsers = users.filter((user) => {
 			return user && user.name && user.color;
 		});
 
@@ -75,12 +75,12 @@ const pref = {
 
 	addHighlightedUser (userName, color) {
 		return this.getCleanHighlightedUsers().then(users => {
-			let index = func.index(users, u => u.name === userName);
+			const index = func.index(users, u => u.name === userName);
 
 			if (index > -1) {
 				users[index].color = color.toLowerCase();
 			} else {
-				users.push({name: userName, color: color.toLowerCase()});
+				users.push({ name: userName, color: color.toLowerCase() });
 			}
 
 			return this.setCleanHighlightedUsers(users);
@@ -114,7 +114,7 @@ const pref = {
 
 	removeTroll (troll) {
 		return this.getCleanTrolls().then(trolls => {
-			let filteredTrolls = trolls.filter((n) => {
+			const filteredTrolls = trolls.filter((n) => {
 				return n !== troll;
 			});
 			return this.setCleanTrolls(filteredTrolls);
@@ -166,7 +166,7 @@ const pref = {
 
 	removeTaxonomy (taxonomy) {
 		return this.getCleanTaxonomies().then(taxonomies => {
-			let filteredTaxonomies = taxonomies.filter((n) => {
+			const filteredTaxonomies = taxonomies.filter((n) => {
 				return n !== taxonomy;
 			});
 			return this.setCleanTaxonomies(filteredTaxonomies);

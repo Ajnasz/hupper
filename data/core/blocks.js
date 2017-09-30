@@ -29,8 +29,8 @@ function blockDataStructToBlockElement (blockObj) {
 	* @return blockSturct
 	*/
 function blockDataStructToBlockSturct (block) {
-	let output = Object.create(blockSturct),
-		node = blockDataStructToBlockElement(block);
+	const output = Object.create(blockSturct);
+	const node = blockDataStructToBlockElement(block);
 
 	output.node = node;
 	output.header = node ? node.querySelector(BLOCK_HEADER_ELEMENT) : null;
@@ -48,7 +48,7 @@ function getBlockElements (sidebar) {
 	* @return string
 	*/
 function getBlockColumn (block) {
-	let sidebar = dom.closest('.' + SIDEBAR_CLASS, block);
+	const sidebar = dom.closest('.' + SIDEBAR_CLASS, block);
 
 	return sidebar.getAttribute('id');
 }
@@ -60,7 +60,7 @@ function getBlockColumn (block) {
 	*	column string
 	*/
 function blockElemToBlockDataStruct (block, index) {
-	let output = Object.create(blockDataStruct);
+	const output = Object.create(blockDataStruct);
 
 	output.id = block.getAttribute('id');
 	output.column = getBlockColumn(block);
@@ -70,9 +70,9 @@ function blockElemToBlockDataStruct (block, index) {
 }
 
 function getBlocks () {
-	let leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
+	const leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
 		.map(blockElemToBlockDataStruct);
-	let rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
+	const rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
 		.map(blockElemToBlockDataStruct);
 
 	return {
@@ -82,7 +82,7 @@ function getBlocks () {
 }
 
 function createBlockButton (action) {
-	let btn = dom.createElem('button');
+	const btn = dom.createElem('button');
 
 	dom.addClasses(['hupper-button', 'block-button', action + '-button'], btn);
 	dom.data('action', action, btn);
@@ -91,7 +91,7 @@ function createBlockButton (action) {
 }
 
 function decorateBlock (block) {
-	let blockStruct = blockDataStructToBlockSturct(block);
+	const blockStruct = blockDataStructToBlockSturct(block);
 
 	if (blockStruct.header) {
 		['delete', 'hide-content', 'show-content', 'right', 'left', 'down', 'up']
@@ -121,7 +121,7 @@ function decorateBlocks (blocks) {
 }
 
 function toggleBlockClass (block, cls, add) {
-	let blockElem = blockDataStructToBlockElement(block);
+	const blockElem = blockDataStructToBlockElement(block);
 
 	if (blockElem) {
 		if (add) {
@@ -156,19 +156,19 @@ function showBlockContent (block) {
 	*/
 function renderSidebar (sidebar, blocks, elementList) {
 	blocks.forEach(function (block) {
-		let index = func.index(elementList, blockElem => blockElem.id === block.id);
+		const index = func.index(elementList, blockElem => blockElem.id === block.id);
 
 		if (index > -1) {
-			let elem = elementList.splice(index, 1)[0];
+			const elem = elementList.splice(index, 1)[0];
 			sidebar.appendChild(elem);
 		}
 	});
 }
 
 function setBlockOrder (sidebar, blocks) {
-	let sidebarElem = document.getElementById(sidebar);
+	const sidebarElem = document.getElementById(sidebar);
 
-	let blockElements = getBlockElements(sidebarElem);
+	const blockElements = getBlockElements(sidebarElem);
 
 
 	blockElements.forEach(function (element) {
@@ -181,10 +181,10 @@ function setBlockOrder (sidebar, blocks) {
 function reorderBlocks (blocks) {
 	log.log('reorder blocks', blocks);
 
-	let sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
-	let sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
+	const sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
+	const sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
 
-	let elementList = getBlockElements(sidebarLeft)
+	const elementList = getBlockElements(sidebarLeft)
 		.concat(getBlockElements(sidebarRight));
 
 	renderSidebar(sidebarLeft, func.sortBy(blocks.filter(i => i.column === 'left'), 'index'), elementList);
@@ -192,14 +192,14 @@ function reorderBlocks (blocks) {
 }
 
 function setBlockTitleLink (blockId, href) {
-	let block = document.getElementById(blockId);
+	const block = document.getElementById(blockId);
 
 	if (block) {
-		let h2 = block.querySelector(BLOCK_HEADER_ELEMENT);
+		const h2 = block.querySelector(BLOCK_HEADER_ELEMENT);
 		if (h2 && !h2.querySelector('a')) {
-			let title = h2.textContent;
+			const title = h2.textContent;
 			dom.emptyText(h2);
-			h2.appendChild(dom.createElem('a', [{name: 'href', value: href}], null, title));
+			h2.appendChild(dom.createElem('a', [{ name: 'href', value: href }], null, title));
 		}
 	}
 }
@@ -210,8 +210,8 @@ function setTitles (titles) {
 	});
 }
 
-let blockActionStruct = (function () {
-	let obj = Object.create(null);
+const blockActionStruct = (function () {
+	const obj = Object.create(null);
 
 	obj.id = '';
 	obj.action = '';
@@ -222,10 +222,9 @@ let blockActionStruct = (function () {
 
 function onBlockControlClick (e) {
 	if (e.target.dataset.action === 'restore-block') {
-		let block = dom.closest('.block', e.target),
-			action = e.target.dataset.action,
-			// column = e.target.dataset.sidebar,
-			event = Object.create(blockActionStruct);
+		const block = dom.closest('.block', e.target);
+		const action = e.target.dataset.action;
+		const event = Object.create(blockActionStruct);
 
 		event.id = e.target.dataset.blockid;
 		event.action = action;
@@ -239,9 +238,9 @@ function onBlockControlClick (e) {
 
 function onBlockButtonClick (e) {
 	if (dom.is('.block-button', e.target)) {
-		let block = dom.closest('.block', e.target),
-			action = e.target.dataset.action,
-			event = Object.create(blockActionStruct);
+		const block = dom.closest('.block', e.target);
+		const action = e.target.dataset.action;
+		const event = Object.create(blockActionStruct);
 
 		event.id = block.getAttribute('id');
 		event.action = action;
@@ -255,7 +254,7 @@ function onBlockButtonClick (e) {
 
 function onEnableBlockControls (dispatch) {
 	document.getElementById('content').addEventListener('click', function (e) {
-		let event = onBlockButtonClick(e);
+		const event = onBlockButtonClick(e);
 
 		if (event) {
 			dispatch(event);

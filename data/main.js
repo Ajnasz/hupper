@@ -17,7 +17,7 @@ import * as contentBlocker from './modules/content-blocker';
 log.logger = console;
 
 function getCommentObjects (options) {
-	let commentsContainer = document.getElementById('comments');
+	const commentsContainer = document.getElementById('comments');
 
 	if (!commentsContainer) {
 		return null;
@@ -28,7 +28,7 @@ function getCommentObjects (options) {
 
 function getContextUser (data) {
 
-	let url = new URL(data.linkUrl);
+	const url = new URL(data.linkUrl);
 	let elem = document.querySelector(`.comment .submitted > a[href$="${url.pathname}"]`);
 
 	if (elem === null) {
@@ -39,7 +39,7 @@ function getContextUser (data) {
 }
 
 function updateComments () {
-	const comments = getCommentObjects({content: true});
+	const comments = getCommentObjects({ content: true });
 
 	if (!comments) {
 		return;
@@ -53,11 +53,11 @@ function updateComments () {
 		context: { article },
 	}, function (comments) {
 		if (comments) {
-			let childComments = comments.filter(c => c.parentID !== '');
+			const childComments = comments.filter(c => c.parentID !== '');
 			modComment.addParentLinkToComments(childComments);
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
 
-			let newComments = comments.filter(c => c.isNew && !c.hide);
+			const newComments = comments.filter(c => c.isNew && !c.hide);
 
 			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
@@ -75,7 +75,7 @@ function updateComments () {
 }
 
 function updateArticles () {
-	let articles = modArticles.parseArticles();
+	const articles = modArticles.parseArticles();
 
 	if (!articles || !articles.length) {
 		return;
@@ -96,7 +96,7 @@ function updateArticles () {
 }
 
 function updateBlocks () {
-	let blocks = modBlocks.getBlocks();
+	const blocks = modBlocks.getBlocks();
 
 	if (!blocks.left && !blocks.right) {
 		return;
@@ -139,12 +139,12 @@ function addBlockListeners () {
 
 function addArticleListeners () {
 	modArticles.listenToTaxonomyButtonClick(function (article) {
-		chrome.runtime.sendMessage({event: 'article.hide-taxonomy', data: article}, updateArticles);
+		chrome.runtime.sendMessage({ event: 'article.hide-taxonomy', data: article }, updateArticles);
 	});
 }
 
 function addCommentListeners () {
-	let commentsContainer = document.getElementById('comments');
+	const commentsContainer = document.getElementById('comments');
 
 	if (commentsContainer) {
 		document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
@@ -155,17 +155,16 @@ function addCommentListeners () {
 function addHupperBlockListeners () {
 	log.log('add hupper block listeners');
 	document.getElementById('block-hupper').addEventListener('click', function (e) {
-		let event = modBlocks.onBlockControlClick(e);
+		const event = modBlocks.onBlockControlClick(e);
 		if (!event) {
 			return;
 		}
 
-		chrome.runtime.sendMessage({event: 'block.action', data: event}, function (block) {
+		chrome.runtime.sendMessage({ event: 'block.action', data: event }, function (block) {
 			modBlocks.toggleBlock(block);
 		});
 	}, false);
 }
-
 
 
 function onPrefChange (pref) {
@@ -205,7 +204,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			case 'untrolluser':
 			case 'highlightuser':
 			case 'unhighlightuser':
-				sendResponse({event: msg.event, data: getContextUser(msg.data)});
+				sendResponse({ event: msg.event, data: getContextUser(msg.data) });
 				break;
 
 			case 'userChange':
@@ -221,7 +220,7 @@ window.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	chrome.runtime.sendMessage({event: 'register'}, function (response) {
+	chrome.runtime.sendMessage({ event: 'register' }, function (response) {
 		if (response.event === 'registered') {
 			log.enabled = response.data.logenabled;
 

@@ -49,7 +49,7 @@ function recObj (comments) {
 }
 
 function noramlizeCommentTreeItem (item) {
-	let output = Object.create(null);
+	const output = Object.create(null);
 	output.id = item.id;
 
 	return output;
@@ -57,7 +57,7 @@ function noramlizeCommentTreeItem (item) {
 
 function normalizeCommentTree (tree) {
 	return tree.map(function (item) {
-		let normalized = noramlizeCommentTreeItem(item);
+		const normalized = noramlizeCommentTreeItem(item);
 		normalized.children = normalizeCommentTree(item.children);
 		return normalized;
 	});
@@ -76,9 +76,9 @@ function hasParentComment (comment) {
 }
 
 function getCommentTree () {
-	let rootComments = func.toArray(document.querySelectorAll(`.${COMMENT_CLASS}`))
+	const rootComments = func.toArray(document.querySelectorAll(`.${COMMENT_CLASS}`))
 		.filter(func.negate(hasParentComment));
-	let tree = normalizeCommentTree(recObj(createObj(rootComments)));
+	const tree = normalizeCommentTree(recObj(createObj(rootComments)));
 	// let tree = normalizeCommentTree(recObj(createObj(findComments(document.getElementById('comments')))));
 
 	return tree;

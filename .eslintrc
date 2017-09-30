@@ -59,6 +59,11 @@
 		"semi": 2,
 		"space-before-function-paren": 2,
 		"use-isnan": 2,
-		"no-trailing-spaces": "error"
+		"no-trailing-spaces": "error",
+		"space-in-parens": [2, "never"],
+		"object-curly-spacing": ["error", "always"],
+		"array-bracket-spacing": ["error", "never"],
+		"prefer-const": 2,
+		"no-multiple-empty-lines": 2
 	}
 }

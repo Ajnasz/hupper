@@ -36,7 +36,7 @@ function attachEventHandler (storageArea, events, ns) {
 	storageArea.set = function (values, callback) {
 		get(Object.keys(values), (oldValues) => {
 			set(values, (...args) => {
-				let changes = createStorageChange(oldValues, values);
+				const changes = createStorageChange(oldValues, values);
 				if (typeof callback === 'function') {
 					callback(...args);
 				}
@@ -78,11 +78,11 @@ function attachEventHandler (storageArea, events, ns) {
 }
 
 function createVirtualStorage (storages) {
-	let virtualStorage = Object.create(null);
+	const virtualStorage = Object.create(null);
 	virtualStorage.onChanged = chromeEvents.create();
 
 	storages.forEach(ns => {
-		let localStorageArea = new StorageArea();
+		const localStorageArea = new StorageArea();
 
 		virtualStorage[ns] = localStorageArea;
 		attachEventHandler(virtualStorage.local, virtualStorage.onChanged, ns);

@@ -9,7 +9,7 @@ function index (array, cb) {
 }
 
 function first (array, cb) {
-	let i = index(array, cb);
+	const i = index(array, cb);
 
 	if (i > -1) {
 		return array[i];
@@ -32,8 +32,8 @@ function toArray (list) {
 
 function sortBy (array, field) {
 	return array.sort((a, b) => {
-		let aVal = a[field],
-			bVal = b[field];
+		const aVal = a[field];
+		const bVal = b[field];
 
 		if (aVal > bVal) {
 			return 1;
@@ -84,7 +84,7 @@ function random (min = 0, max = 1, int = false) {
 
 function padStart (str, len, padString = ' ') {
 	let output = '';
-	let strLen = str.length;
+	const strLen = str.length;
 
 	while (output.length + strLen < len) {
 		output += padString;
@@ -103,7 +103,7 @@ function toCamelCase (text) {
 }
 
 function maxBy (array, field) {
-	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, {[field]: -Infinity});
+	return array.reduce((acc, i) => acc[field] > i[field] ? acc : i, { [field]: -Infinity });
 }
 
 const negate = func => (...args) => !func(...args);

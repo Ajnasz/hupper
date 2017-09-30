@@ -9,7 +9,7 @@ function open () {
 		tpl: {
 			formID: 'EditTaxonomyForm',
 			tableID: 'ListOfTaxonomies',
-			tableHead: [ 'Cikk típus', 'Törlés' ],
+			tableHead: ['Cikk típus', 'Törlés'],
 			notFoundTitle: 'Nincsenek cikkek',
 			fields: [{
 				id: 'ArticleType',

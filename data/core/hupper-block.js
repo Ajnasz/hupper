@@ -12,30 +12,30 @@ function addHupperBlock () {
 		return;
 	}
 
-	let block = dom.createElem('div', [{
+	const block = dom.createElem('div', [{
 		name: 'id',
 		value: 'block-hupper'
 	}], ['block', 'block-block']);
 
-	let h2 = dom.createElem('h2', null, null, 'Hupper');
-	let content = dom.createElem('div', null, ['content']);
-	let ul = dom.createElem('ul', null, ['menu']);
+	const h2 = dom.createElem('h2', null, null, 'Hupper');
+	const content = dom.createElem('div', null, ['content']);
+	const ul = dom.createElem('ul', null, ['menu']);
 
 	content.appendChild(ul);
 
 	block.appendChild(h2);
 	block.appendChild(content);
 
-	let sidebar = document.getElementById('sidebar-right');
+	const sidebar = document.getElementById('sidebar-right');
 
 	sidebar.insertBefore(block, sidebar.firstChild);
 
 	ul.addEventListener('click', function (e) {
-		let target = e.target.parentNode;
+		const target = e.target.parentNode;
 
-		let collapsed = hasCollapsedClass(target);
+		const collapsed = hasCollapsedClass(target);
 
-		let expanded = !collapsed && hasExpandedClass(target);
+		const expanded = !collapsed && hasExpandedClass(target);
 
 		if (collapsed || expanded) {
 			e.preventDefault();
@@ -55,7 +55,7 @@ function addHupperBlock () {
 }
 
 function getItemList () {
-	let block = document.getElementById('block-hupper');
+	const block = document.getElementById('block-hupper');
 	return block.querySelector('.menu');
 
 }
@@ -63,16 +63,16 @@ function getItemList () {
 function addMenuItem (item, parent) {
 	parent = parent || getItemList();
 
-	let id = func.toCamelCase(item.text);
+	const id = func.toCamelCase(item.text);
 
-	let current = parent.querySelector(`#${id}`);
+	const current = parent.querySelector(`#${id}`);
 	if (current) {
 		dom.remove(current);
 	}
 
-	let li = dom.createElem('li', [{name: 'id', value: id}], ['leaf']);
-	let a = dom.createElem('a', [
-		{name: 'href', value: item.href}
+	const li = dom.createElem('li', [{ name: 'id', value: id }], ['leaf']);
+	const a = dom.createElem('a', [
+		{ name: 'href', value: item.href }
 	], null, item.text);
 
 	li.appendChild(a);
@@ -83,10 +83,10 @@ function addMenuItem (item, parent) {
 }
 
 function addHiddenBlockContainer () {
-	let container = getItemList().querySelector('.hidden-blocks');
+	const container = getItemList().querySelector('.hidden-blocks');
 
 	if (!container) {
-		let li = addMenuItem({
+		const li = addMenuItem({
 			text: TEXT_HIDDEN_BLOCKS,
 			href: '#'
 		});
@@ -94,7 +94,7 @@ function addHiddenBlockContainer () {
 		dom.removeClass('leaf', li);
 		['collapsed', 'hup-collapsed'].forEach(c => dom.addClass(c, li));
 
-		let hiddenBlocks = dom.createElem('ul', null, ['hidden-blocks']);
+		const hiddenBlocks = dom.createElem('ul', null, ['hidden-blocks']);
 
 		li.appendChild(hiddenBlocks);
 
@@ -106,20 +106,20 @@ function addHiddenBlockContainer () {
 
 function addHiddenBlock (block) {
 	log.log('add hidden block', block);
-	let container = addHiddenBlockContainer();
+	const container = addHiddenBlockContainer();
 
-	let element = document.getElementById(block.id);
+	const element = document.getElementById(block.id);
 
 	if (!element) {
 		return;
 	}
 
-	let menuItem = addMenuItem({
+	const menuItem = addMenuItem({
 		href: '#restore-' + block.id,
 		text: element.querySelector('h2').textContent.trim()
 	}, container);
 
-	let link = menuItem.firstChild;
+	const link = menuItem.firstChild;
 
 	link.dataset.action = 'restore-block';
 	link.dataset.sidebar = block.sidebar;
@@ -127,8 +127,8 @@ function addHiddenBlock (block) {
 }
 
 function removeHiddenBlock (block) {
-	let container = addHiddenBlockContainer();
-	let link = container.querySelector('[data-action="restore-block"][data-blockid="' + block.id + '"]');
+	const container = addHiddenBlockContainer();
+	const link = container.querySelector('[data-action="restore-block"][data-blockid="' + block.id + '"]');
 
 	if (link) {
 		dom.remove(link.parentNode);

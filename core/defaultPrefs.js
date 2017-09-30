@@ -81,8 +81,8 @@ const defaultPrefs = Object.freeze([
 		'title': 'Kiemelt felhasználók listája',
 		'type': 'array',
 		'value': [
-			{name: 'username', color: '#fff999'},
-			{name: 'username2', color: '#999fff'}
+			{ name: 'username', color: '#fff999' },
+			{ name: 'username2', color: '#999fff' }
 		],
 		'hidden': true,
 		'group': 'comments'

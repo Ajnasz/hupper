@@ -9,7 +9,7 @@ function createEmitter () {
 
 	return {
 		off (name, cb) {
-			let argLen = arguments.length;
+			const argLen = arguments.length;
 			let listeners;
 
 			switch (argLen) {

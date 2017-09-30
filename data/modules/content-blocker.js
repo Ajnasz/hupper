@@ -6,7 +6,7 @@ const TYPES = {
 };
 
 function unblock (target) {
-	chrome.runtime.sendMessage({event: 'unblock-me', target }, () => {
+	chrome.runtime.sendMessage({ event: 'unblock-me', target }, () => {
 		switch (target) {
 			case TYPES.TWITTER:
 				twitter.unblock();

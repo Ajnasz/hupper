@@ -152,10 +152,10 @@ const findParentComment = func.curry(dom.prev, `.${COMMENT_CLASS}`);
  * @return string
  */
 function findParentId (elem) {
-	let indented = findIndentedParent(elem);
+	const indented = findIndentedParent(elem);
 
 	if (indented) {
-		let parentComment = findParentComment(indented);
+		const parentComment = findParentComment(indented);
 
 		if (parentComment) {
 			return getCommentId(getCommentObj(parentComment));
@@ -191,7 +191,7 @@ function findIndentLevel (comment) {
  *   @param options.content boolean // get comment content too
  * @return commentDataStruct
  */
-function parseComment (node, options={content: false}) {
+function parseComment (node, options={ content: false }) {
 	var output = Object.create(commentDataStruct);
 	var commentObj = getCommentObj(node);
 
@@ -226,7 +226,7 @@ const selectHNew = func.curry(dom.selectOne, '.hnew');
  */
 function setNew (comment, text) {
 	addHNav(comment);
-	let original = getNewMarkerElement(comment);
+	const original = getNewMarkerElement(comment);
 
 	if (original) {
 		original.remove(original);
@@ -260,7 +260,7 @@ function commentLink (comment, commentToLinkID, text) {
 		link.parentNode.removeChild(link);
 	}
 
-	link = dom.createElem('a', [{name: 'href', value: '#' + commentToLinkID}], null, text);
+	link = dom.createElem('a', [{ name: 'href', value: '#' + commentToLinkID }], null, text);
 
 	addHNav(comment);
 	insertIntoHnav(comment, link);
@@ -417,9 +417,9 @@ function addFooterLink (comment, link) {
 		return;
 	}
 
-	let footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
+	const footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
 
-	let href = dom.selectOne('a', link).href;
+	const href = dom.selectOne('a', link).href;
 
 	func.toArray(footer.querySelectorAll('a'))
 		.filter(a => a.href === href)
@@ -437,7 +437,7 @@ function createFooterLink (text, href, classes) {
 	var listItem = dom.createElem('li'),
 		link;
 
-	link = dom.createElem('a', [{name: 'href', value: href}], classes, text);
+	link = dom.createElem('a', [{ name: 'href', value: href }], classes, text);
 	listItem.appendChild(link);
 
 	return listItem;
@@ -516,17 +516,17 @@ function show (comment) {
 }
 
 function setProp (comment, prop, value) {
-	let elem = getCommentFromId(comment.id);
+	const elem = getCommentFromId(comment.id);
 
 	elem.dataset[prop] = value;
 	elem.dataset[prop + 'Type'] = typeof value;
 }
 
 function getProp (comment, prop) {
-	let elem = getCommentFromId(comment.id);
+	const elem = getCommentFromId(comment.id);
 
-	let value = elem.dataset[prop];
-	let type = elem.dataset[prop + 'Type'];
+	const value = elem.dataset[prop];
+	const type = elem.dataset[prop + 'Type'];
 	let undef;
 
 	switch (type) {
@@ -554,13 +554,13 @@ function getScoreTitle (votes) {
 }
 
 function showScore (comment) {
-	let elem = commentDataStructToObj(comment);
-	let content = dom.selectOne('.content', elem.node);
+	const elem = commentDataStructToObj(comment);
+	const content = dom.selectOne('.content', elem.node);
 
-	let scores = dom.selectOne('.scores', elem.node);
+	const scores = dom.selectOne('.scores', elem.node);
 
 	if (!scores) {
-		let scores = dom.createElem('div', [
+		const scores = dom.createElem('div', [
 			{
 				name: 'title',
 				value: getScoreTitle(comment.votes)
@@ -578,7 +578,7 @@ function hasScore (comment) {
 }
 
 function setAuthorComment (comment) {
-	let elem = commentDataStructToObj(comment);
+	const elem = commentDataStructToObj(comment);
 	elem.node.classList.add('article-author');
 }
 
@@ -611,9 +611,9 @@ function onCommentUpdate (comments) {
 }
 
 function onCommentSetNew (newComments) {
-	let obj = newComments.map(commentDataStructToObj);
+	const obj = newComments.map(commentDataStructToObj);
 	obj.forEach((comment, index) => {
-		let commentObj = newComments[index];
+		const commentObj = newComments[index];
 
 		setNew(comment, commentObj.newCommentText || 'új');
 
@@ -631,7 +631,7 @@ function onCommentsContainerClick (e) {
 	if (dom.is('.expand-comment', e.target)) {
 		e.preventDefault();
 		unwideComments();
-		let id = dom.prev('a', dom.closest('.comment', e.target)).getAttribute('id');
+		const id = dom.prev('a', dom.closest('.comment', e.target)).getAttribute('id');
 		widenComment(id);
 
 	}
@@ -651,7 +651,7 @@ function onBodyClick (e) {
 
 function convertComments (comments, opts) {
 	return comments.filter(comment => comment.id !== '').map(function (opts, comment) {
-		let output = parseComment(getCommentFromId(comment.id), {
+		const output = parseComment(getCommentFromId(comment.id), {
 			content: opts && opts.content
 		});
 

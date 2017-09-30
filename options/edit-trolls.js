@@ -9,7 +9,7 @@ function open () {
 		tpl: {
 			formID: 'AddTrollForm',
 			tableID: 'ListOfTrolls',
-			tableHead: [ 'Név', 'Törlés' ],
+			tableHead: ['Név', 'Törlés'],
 			notFoundTitle: 'Nincsenek trollok',
 			fields: [{
 				id: 'TrollName',

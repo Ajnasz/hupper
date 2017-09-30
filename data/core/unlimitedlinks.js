@@ -26,7 +26,7 @@ function isExtendableLink (link) {
 }
 
 function makeExtendable (MAX_COMMENTS_PER_PAGE, link) {
-	let search = url.searchParams(link.search);
+	const search = url.searchParams(link.search);
 
 	link.search = '?' + search.set('comments_per_page', MAX_COMMENTS_PER_PAGE).toString();
 

@@ -9,14 +9,14 @@ const TEXT_PREV = 'előző';
 const TEXT_HIDE_ARTICLE_TITLE = 'Cikk kategória elrejtése';
 const ANONYM_ARTICLE_AUTHOR_REGEXP = /[^(]+\( ([^ ]+).*/;
 
-let articleStruct = {
+const articleStruct = {
 	id: '',
 	category: '',
 	isNew: false,
 	author: '',
 };
 
-let articleNodeStruct = {
+const articleNodeStruct = {
 	node: null,
 	header: null,
 };
@@ -50,8 +50,8 @@ function articleElementToStruct (element) {
 }
 
 function articleStructToArticleNodeStruct (article) {
-	let elem = document.getElementById(article.id);
-	let output = Object.create(articleNodeStruct);
+	const elem = document.getElementById(article.id);
+	const output = Object.create(articleNodeStruct);
 
 	output.node = elem;
 	output.header = elem.querySelector('h2.title');
@@ -60,9 +60,9 @@ function articleStructToArticleNodeStruct (article) {
 }
 
 function insertIntoHnav (article, item) {
-	let header = article.header,
-		hnav = header.querySelector('.' + ARTICLE_HNAV_CLASS),
-		hnew = hnav.querySelector('.hnew');
+	const header = article.header;
+	const hnav = header.querySelector('.' + ARTICLE_HNAV_CLASS);
+	const hnew = hnav.querySelector('.hnew');
 
 	if (hnew) {
 		hnav.insertBefore(item, hnew);
@@ -72,19 +72,19 @@ function insertIntoHnav (article, item) {
 }
 
 function removeArticleLink (item) {
-	let article = articleStructToArticleNodeStruct(item),
-		oldLinks = article.header.querySelectorAll('.prev-next-article');
+	const article = articleStructToArticleNodeStruct(item);
+	const oldLinks = article.header.querySelectorAll('.prev-next-article');
 
 	func.toArray(oldLinks).forEach(l => l.parentNode.removeChild(l));
 }
 
 function addPrevNextArticleLink (id, relId, text) {
-	var article = articleStructToArticleNodeStruct({id: id}),
+	var article = articleStructToArticleNodeStruct({ id: id }),
 		link;
 
 	addHNav(article);
 
-	link = dom.createElem('a', [{name: 'href', value: '#' + relId}], ['prev-next-article'], text);
+	link = dom.createElem('a', [{ name: 'href', value: '#' + relId }], ['prev-next-article'], text);
 	insertIntoHnav(article, link);
 }
 
@@ -105,15 +105,15 @@ function addLinkToNextArticle (id, nextArticleId) {
 }
 
 function addCategoryHideButton (article) {
-	let categoryContainer = article.node.querySelector('.links.inline > .first.last');
+	const categoryContainer = article.node.querySelector('.links.inline > .first.last');
 
 	if (!categoryContainer) {
 		return;
 	}
 
-	let button = dom.createElem('button', [
-		{name: 'type', value: 'button'},
-		{name: 'title', value: TEXT_HIDE_ARTICLE_TITLE}
+	const button = dom.createElem('button', [
+		{ name: 'type', value: 'button' },
+		{ name: 'title', value: TEXT_HIDE_ARTICLE_TITLE }
 	], [
 		'hupper-button',
 		'taxonomy-button',
@@ -131,12 +131,12 @@ function markNewArticle (newArticleText, article) {
 		return;
 	}
 	addHNav(article);
-	let newText = dom.createElem('span', null, ['hnew', 'nnew'], newArticleText);
+	const newText = dom.createElem('span', null, ['hnew', 'nnew'], newArticleText);
 	article.header.querySelector('.' + ARTICLE_HNAV_CLASS).appendChild(newText);
 }
 
 function parseArticles () {
-	let elements = document.getElementById('content-both').querySelectorAll('.node');
+	const elements = document.getElementById('content-both').querySelectorAll('.node');
 	return func.toArray(elements).map(articleElementToStruct);
 }
 
@@ -179,7 +179,7 @@ function onArticleAddNextPrev (item) {
 function listenToTaxonomyButtonClick (cb) {
 	document.getElementById('content-both').addEventListener('click', function (e) {
 		if (dom.hasClass('taxonomy-button', e.target)) {
-			let articleStruct = articleElementToStruct(dom.closest('.node', e.target));
+			const articleStruct = articleElementToStruct(dom.closest('.node', e.target));
 
 			cb(articleStruct);
 

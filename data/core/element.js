@@ -4,7 +4,7 @@ const HNAV_CLASS = 'hnav';
 
 function addHNav (node) {
 	if (node && node.header && !node.header.querySelector(`.${HNAV_CLASS}`)) {
-		let span = dom.createElem('span', null, [HNAV_CLASS]);
+		const span = dom.createElem('span', null, [HNAV_CLASS]);
 
 		node.header.appendChild(span);
 	}

@@ -66,10 +66,10 @@ function validateElement (rules, element) {
 	}
 
 	const rulesToValidate = rules.filter(rule => dom.is(rule.matcher, element));
-	const validations = rulesToValidate.map(rule => rule.validator(element).catch(error => Promise.reject({error, message: rule.message})));
+	const validations = rulesToValidate.map(rule => rule.validator(element).catch(error => Promise.reject({ error, message: rule.message })));
 	return Promise.all(validations)
 		.then(element => element)
-		.catch(error => Promise.reject({error: error.error, element, message: error.message}));
+		.catch(error => Promise.reject({ error: error.error, element, message: error.message }));
 }
 
 const rules = [

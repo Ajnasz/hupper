@@ -16,7 +16,7 @@ function is (what, element) {
 }
 
 function findRelative (tester, getter, element) {
-	let elem = element;
+	const elem = element;
 
 	return tester(elem) ?
 		findRelative(tester, getter, getter(elem)) :
