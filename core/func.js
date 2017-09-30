@@ -138,6 +138,12 @@ function flow (...args) {
 	return args.reduce((acc, cb) => cb(acc), null);
 }
 
+const genID = (() => {
+	let id = 0;
+
+	return () => ++id;
+})();
+
 export {
 	first,
 	index,
@@ -157,5 +163,6 @@ export {
 	curry,
 	always,
 	recurse,
-	flow
+	flow,
+	genID
 };

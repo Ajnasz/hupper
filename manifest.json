@@ -41,6 +41,9 @@
 		"contextMenus",
 		"tabs",
 		"storage",
+		"webRequest",
+		"webRequestBlocking",
+		"*://platform.twitter.com/*",
 		"*://hup.hu/",
 		"*://hup.lh/"
 	],

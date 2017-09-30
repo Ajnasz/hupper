@@ -206,6 +206,14 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
+		'name': 'block-twitter',
+		'title': 'Twitter blokkolás',
+		'type': 'bool',
+		'value': false,
+		'group': 'styles'
+	},
+
+	{
 		'name': 'logenabled',
 		// 'title': 'Regular expression to identify boring comments',
 		'title': 'Logolás engedélyezése',

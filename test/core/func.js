@@ -323,3 +323,15 @@ test('core/func.flow', t => {
 
 	t.equal(output, 4, 'passed all param');
 });
+
+test('core/func.genID', t => {
+	const ids = [
+		func.genID(),
+		func.genID(),
+	];
+
+	t.equal(typeof ids[0], 'number', 'id is a number');
+	t.ok(ids[0] > 0, 'id is greater then 0');
+	t.notEqual(ids[1], ids[0], 'ids not equal');
+	t.end();
+});

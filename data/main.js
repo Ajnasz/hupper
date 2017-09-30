@@ -12,6 +12,8 @@ import * as modCommentTree from './core/commenttree';
 import { log } from '../core/log';
 import * as dom from '../core/dom';
 
+import * as contentBlocker from './modules/content-blocker';
+
 log.logger = console;
 
 function getCommentObjects (options) {
@@ -164,6 +166,8 @@ function addHupperBlockListeners () {
 	}, false);
 }
 
+
+
 function onPrefChange (pref) {
 	switch (pref.name) {
 		case 'trolls':
@@ -211,6 +215,9 @@ window.addEventListener('DOMContentLoaded', function () {
 			case 'prefChange':
 				onPrefChange(msg.data);
 				break;
+			case 'unblocked':
+				contentBlocker.unblock(contentBlocker.TYPES.TWITTER);
+				break;
 		}
 	});
 
@@ -218,24 +225,36 @@ window.addEventListener('DOMContentLoaded', function () {
 		if (response.event === 'registered') {
 			log.enabled = response.data.logenabled;
 
-			if (response.data.setunlimitedlinks) {
+			const {
+				setunlimitedlinks,
+				parseblocks,
+				validateForms,
+				blockTwitter
+			} = response.data;
+
+			if (setunlimitedlinks) {
 				const MAX_COMMENTS_PER_PAGE = 9999;
 				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
 			}
 
-			if (response.data.parseblocks) {
+			if (parseblocks) {
 				modHupperBlock.addHupperBlock();
 				addHupperBlockListeners();
 				updateBlocks();
 			}
+
 			updateComments();
 			updateArticles();
 			addCommentListeners();
 			addBlockListeners();
 			addArticleListeners();
 
-			if (response.data.validateForms) {
+			if (validateForms) {
 				attachFormValidators();
+			}
+
+			if (blockTwitter) {
+				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
 			}
 		}
 	});
