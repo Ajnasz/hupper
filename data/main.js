@@ -216,6 +216,7 @@ window.addEventListener('DOMContentLoaded', function () {
 				break;
 			case 'unblocked':
 				contentBlocker.unblock(contentBlocker.TYPES.TWITTER);
+				contentBlocker.unblock(contentBlocker.TYPES.YOUTUBE);
 				break;
 		}
 	});
@@ -228,7 +229,7 @@ window.addEventListener('DOMContentLoaded', function () {
 				setunlimitedlinks,
 				parseblocks,
 				validateForms,
-				blockTwitter
+				blockEmbed
 			} = response.data;
 
 			if (setunlimitedlinks) {
@@ -252,8 +253,9 @@ window.addEventListener('DOMContentLoaded', function () {
 				attachFormValidators();
 			}
 
-			if (blockTwitter) {
+			if (blockEmbed) {
 				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
+				contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
 			}
 		}
 	});

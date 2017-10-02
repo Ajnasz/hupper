@@ -206,8 +206,8 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
-		'name': 'block-twitter',
-		'title': 'Twitter blokkolás',
+		'name': 'block-embed',
+		'title': 'Embed blokkolás',
 		'type': 'bool',
 		'value': false,
 		'group': 'styles'

@@ -4,6 +4,13 @@ import { createEmitter } from '../../../core/events';
 const TYPE = 'twitter';
 const EVENTS = createEmitter();
 
+function listener (e)  {
+	const embedElem = dom.elemOrClosest('.twitter-embed', e.target);
+	if (embedElem) {
+		EVENTS.emit('unblock');
+	}
+}
+
 function unblock () {
 	window.twttr = (function (d, s, id) {
 		if (window.twttr) {
@@ -29,20 +36,19 @@ function unblock () {
 
 		return t;
 	}(document, 'script', 'twitter-wjs'));
+
 	const main = document.querySelector('.main-content');
-	dom.removeClass('embed-blocked', main);
+
+	dom.selectAll('.twitter-embed', main).forEach(f => dom.removeClass('twitter-embed', f));
+	dom.removeListener('click', listener, main);
 }
 
 function provideUnblock () {
 	const main = document.querySelector('.main-content');
 
-	dom.addListener('click', function listener (e)  {
-		if (dom.elemOrClosest('.twitter-tweet', e.target)) {
-			dom.removeListener('click', listener, main);
-			EVENTS.emit('unblock');
-		}
-	}, main);
-	dom.addClass('embed-blocked', main);
+	dom.addListener('click', listener, main);
+
+	dom.selectAll('.twitter-tweet', main).forEach(f => dom.addClass('twitter-embed', f.parentNode));
 }
 
 export {

@@ -43,7 +43,8 @@
 		"storage",
 		"webRequest",
 		"webRequestBlocking",
-		"*://platform.twitter.com/*",
+		"*://platform.twitter.com/widgets.js",
+		"*://www.youtube.com/embed/*",
 		"*://hup.hu/",
 		"*://hup.lh/"
 	],
