@@ -5,15 +5,16 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadNpmTasks('grunt-template');
 	grunt.loadTasks('./tasks/');
 
 
 	const chromeConfig = {
 		transform: [
 			[
-				'babelify', { presets: [ [
+				'babelify', { presets: [[
 					'env', { targets: { browsers: ['last 5 Chrome versions'] }, },
-				], ], },
+				]], },
 			],
 		],
 	};
@@ -21,14 +22,39 @@ module.exports = (grunt) => {
 	const firefoxConfig = {
 		transform: [
 			[
-				'babelify', { presets: [ [
+				'babelify', { presets: [[
 					'env', { targets: { browsers: ['Firefox 52'] }, },
-				], ], },
+				]], },
 			],
 		],
 	};
 
 	grunt.initConfig({
+		template: {
+			options: {
+				delimiters: 'handlebars-like-delimiters'
+			},
+			'optionsChrome': {
+				options: {
+					data: {
+						platform: 'chrome'
+					}
+				},
+				files: {
+					'options.html': 'options.html.bak',
+				},
+			},
+			'optionsFirefox': {
+				options: {
+					data: {
+						platform: 'firefox'
+					}
+				},
+				files: {
+					'options.html': 'options.html.bak',
+				},
+			}
+		},
 		clean: {
 			firefox: 'hupper_firefox.zip',
 			chrome: 'hupper_chrome.zip',
@@ -40,6 +66,9 @@ module.exports = (grunt) => {
 			manifestChrome: [
 				'manifest_chrome.json',
 				'manifest.json.bak',
+			],
+			optionsHtml: [
+				'options.html.bak',
 			],
 		},
 
@@ -65,6 +94,18 @@ module.exports = (grunt) => {
 			manifestRestore: {
 				files: {
 					'./manifest.json': './manifest.json.bak',
+				},
+			},
+
+			optionsBackup: {
+				files: {
+					'./options.html.bak': './options.html',
+				}
+			},
+
+			optionsRestore: {
+				files: {
+					'./options.html': './options.html.bak',
 				},
 			},
 		},
@@ -106,13 +147,13 @@ module.exports = (grunt) => {
 				ignorePattern: 'bundle\\.js',
 				configFile: '.eslintrc',
 			},
-			opts: [ 'options/**/*.js', ],
+			opts: ['options/**/*.js',],
 
-			lib: [ 'lib/**/*.js', ],
+			lib: ['lib/**/*.js',],
 
-			data: [ 'data/**/*.js', ],
+			data: ['data/**/*.js',],
 
-			core: [ 'core/**/*.js', ]
+			core: ['core/**/*.js',]
 		},
 
 		compress: {
@@ -204,9 +245,13 @@ module.exports = (grunt) => {
 		'copy:manifestBackup',
 		'manifest:firefox',
 		'copy:manifestFirefox',
+		'copy:optionsBackup',
+		'template:optionsFirefox',
 		'compress:firefox',
 		'copy:manifestRestore',
+		'copy:optionsRestore',
 		'clean:manifestFirefox',
+		'clean:optionsHtml',
 	]);
 
 	grunt.registerTask('chrome', [
@@ -215,9 +260,13 @@ module.exports = (grunt) => {
 		'copy:manifestBackup',
 		'manifest:chrome',
 		'copy:manifestChrome',
+		'copy:optionsBackup',
+		'template:optionsChrome',
 		'compress:chrome',
 		'copy:manifestRestore',
+		'copy:optionsRestore',
 		'clean:manifestChrome',
+		'clean:optionsHtml',
 	]);
 
 	grunt.registerTask('build', ['concurrent:eslint', 'firefox', 'chrome']);

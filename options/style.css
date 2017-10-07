@@ -81,6 +81,22 @@ input[type="number"] {
 	--box-shadow-y: 2px;
 }
 
+.btn-donate {
+	--color: #fff;
+	--bg-color: 43, 103, 175;
+	--hover-bg-color: 43, 139, 255;
+
+	--border-color: rgba(0, 0, 0, 0.2);
+	--hover-border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-donate:focus {
+	--color: #fff;
+	--bg-color: 70, 94, 117;
+	--box-shadow-color: rgba(0, 0, 0, 0.2);
+	--box-shadow-y: 2px;
+}
+
 .btn-warn {
 	--color: #fff;
 	--bg-color: 215, 75, 75;
@@ -140,12 +156,12 @@ html {
 .page-header {
 	padding: 2rem 0;
 	margin-bottom: 2rem;
+	margin: auto;
+	max-width: 80%;
 }
 
 .page-title {
 	color: #333;
-	margin: auto;
-	max-width: 80%;
 	letter-spacing: -1px;
 	font-weight: 400;
 	font-size: 2rem;
@@ -196,6 +212,7 @@ input:focus {
 	box-shadow: 0 0 3px var(--focus-box-shadow-color);
 }
 
+.btn,
 input[type="color"],
 button {
 	padding: 0.4rem 0.6rem;
@@ -203,6 +220,7 @@ button {
 	border-radius: 0.2rem;
 	font-size: 1.3rem;
 	line-height: 1.6rem;
+	display: inline-block;
 
 	border: 1px solid;
 }
@@ -210,14 +228,13 @@ button {
 .btn {
 	font-family: inherit;
 	cursor: pointer;
-}
-
-.btn {
 	font-weight: 400;
 	color: var(--color);
 	border-color: var(--border-color);
 	background-color: rgb(var(--bg-color));
 	border-radius: 3px;
+
+	text-decoration: none;
 
 	box-shadow: var(--box-shadow-x) var(--box-shadow-y) var(--box-shadow-blur) var(--box-shadow-spread) var(--box-shadow-color), inset 0 1px 2px var(--inset-box-shadow-color);
 	outline: var(--outline);
@@ -500,4 +517,9 @@ label {
 
 #ListOfHighlightedUsers td:first-child {
 	cursor: pointer;
+}
+
+.fl {
+	display: flex;
+	justify-content: space-between;
 }
