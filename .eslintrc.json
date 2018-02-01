@@ -1,0 +1,58 @@
+{
+	"extends": "eslint:recommended",
+	"env": {
+		"es6": true,
+		"browser": true,
+		"node": true
+	},
+
+	"parserOptions": {
+		"sourceType": "module"
+	},
+
+	"rules": {
+		"consistent-return": "error",
+
+		"dot-notation": "error",
+		"indent": ["error", "tab", {"SwitchCase": 1}],
+		"max-len": ["error", 160],
+		"no-console": "error",
+		"no-debugger": "error",
+		"no-fallthrough": "error",
+		"no-unused-vars": "error",
+		"radix": "error",
+
+		"camelcase": "error",
+		"complexity": ["error", 13],
+		"curly": "error",
+		"eqeqeq": "error",
+		"keyword-spacing": "error",
+		"new-cap": "error",
+		"new-parens": "error",
+		"no-alert": "error",
+		"no-caller": "error",
+		"no-empty": "error",
+		"no-eq-null": "error",
+		"no-eval": "error",
+		"no-extra-semi": "error",
+		"no-implied-eval": "error",
+		"no-loop-func": "error",
+		"no-new-wrappers": "error",
+		"no-octal": "error",
+		"no-shadow-restricted-names": "error",
+		"no-undef": "error",
+		"no-undef-init": "error",
+		"no-unreachable": "error",
+		"no-with": "error",
+		"quotes": ["error", "single", "avoid-escape"],
+		"semi": "error",
+		"space-before-function-paren": "error",
+		"use-isnan": "error",
+		"no-trailing-spaces": "error",
+		"space-in-parens": ["error", "never"],
+		"object-curly-spacing": ["error", "always"],
+		"array-bracket-spacing": ["error", "never"],
+		"prefer-const": "error",
+		"no-multiple-empty-lines": "error"
+	}
+}

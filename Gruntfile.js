@@ -145,14 +145,11 @@ module.exports = (grunt) => {
 		eslint: {
 			options: {
 				ignorePattern: 'bundle\\.js',
-				configFile: '.eslintrc',
+				configFile: '.eslintrc.json',
 			},
 			opts: ['options/**/*.js',],
-
 			lib: ['lib/**/*.js',],
-
 			data: ['data/**/*.js',],
-
 			core: ['core/**/*.js',]
 		},
 
