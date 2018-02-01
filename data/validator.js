@@ -23,10 +23,11 @@ function createErrorMessage (message, description, field) {
 
 function htmlFormatError (field, originalClickedButton, form) {
 	const message = 'HTML formázási hibát találtam';
-	const description = 'Valószínűleg egy vagy több HTML taget nincs lezárva a' +
-		'hozzászólásban. Ez sok esetben az oldal helytelen megjelenéséhez vezethet.' +
-		'Kérlek ellenőrizd, hogy minden formázást jól alkalmaztál-e, esetleg' +
-		'próbáld ki az automatikus javítást!';
+	const description = 'Valószínűleg egy vagy több HTML taget nem zártál le ' +
+		'hozzászólásodban. Ez sok esetben az oldal helytelen megjelenéséhez ' +
+		'vezethet. Kérlek ellenőrizd, hogy minden formázást jól alkalmaztál-e, ' +
+		'esetleg próbáld ki az automatikus javítást!';
+
 	const msg = createErrorMessage(message, description, field);
 
 	const setButtonType = func.curry(dom.attr, 'type', 'button');
@@ -35,7 +36,7 @@ function htmlFormatError (field, originalClickedButton, form) {
 	dom.text('Automatikus javítás', fixButton);
 
 	const skipButton = dom.createElem('button');
-	dom.text('Nem, baj, tovább', skipButton);
+	dom.text('Továbblépek, javitás nélkül', skipButton);
 
 	[fixButton, skipButton].forEach(setButtonType);
 
