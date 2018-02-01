@@ -11,8 +11,11 @@ import * as modCommentTree from './core/commenttree';
 
 import { log } from '../core/log';
 import * as dom from '../core/dom';
+import * as func from '../core/func';
 
 import * as contentBlocker from './modules/content-blocker';
+
+const addClickListener = func.curry(dom.addListener, 'click');
 
 log.logger = console;
 
@@ -147,23 +150,24 @@ function addCommentListeners () {
 	const commentsContainer = document.getElementById('comments');
 
 	if (commentsContainer) {
-		document.querySelector('body').addEventListener('click', modComment.onBodyClick, false);
-		document.querySelector('.main-content').addEventListener('click', modComment.onCommentsContainerClick, false);
+		addClickListener(modComment.onBodyClick, document.querySelector('body'));
+		addClickListener(modComment.onCommentsContainerClick, document.querySelector('.main-content'));
 	}
 }
 
-function addHupperBlockListeners () {
-	log.log('add hupper block listeners');
-	document.getElementById('block-hupper').addEventListener('click', function (e) {
-		const event = modBlocks.onBlockControlClick(e);
-		if (!event) {
-			return;
-		}
+function onHupperBlockClick (e) {
+	const event = modBlocks.onBlockControlClick(e);
+	if (!event) {
+		return;
+	}
 
-		chrome.runtime.sendMessage({ event: 'block.action', data: event }, function (block) {
-			modBlocks.toggleBlock(block);
-		});
-	}, false);
+	chrome.runtime.sendMessage({ event: 'block.action', data: event }, function (block) {
+		modBlocks.toggleBlock(block);
+	});
+}
+
+function addHupperBlockListeners () {
+	addClickListener(onHupperBlockClick, document.getElementById('block-hupper'));
 }
 
 
