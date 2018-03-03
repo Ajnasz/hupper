@@ -570,7 +570,9 @@ function onCommentUpdate (comments) {
 
 			show(comment);
 
-			(comment.userColor) && highlightComment(comment) || unhighlightComment(comment);
+			(comment.userColor) ?
+				highlightComment(comment) :
+				unhighlightComment(comment);
 
 			if (hasScore(comment)) {
 				showScore(comment);
