@@ -11,6 +11,10 @@ function listener (e)  {
 	}
 }
 
+function findTwitterScript () {
+	return dom.selectOne('script[src*="platform.twitter"]', document);
+}
+
 function unblock () {
 	window.twttr = (function (d, s, id) {
 		if (window.twttr) {
@@ -24,9 +28,10 @@ function unblock () {
 
 		const fjs = d.getElementsByTagName(s)[0];
 		const t = {};
+
 		const js = d.createElement(s);
 		js.id = id;
-		js.src = 'https://platform.twitter.com/widgets.js';
+		js.src = findTwitterScript().src;
 		fjs.parentNode.insertBefore(js, fjs);
 
 		t._e = [];
