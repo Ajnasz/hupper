@@ -218,10 +218,6 @@ window.addEventListener('DOMContentLoaded', function () {
 			case 'prefChange':
 				onPrefChange(msg.data);
 				break;
-			case 'unblocked':
-				contentBlocker.unblock(contentBlocker.TYPES.TWITTER);
-				contentBlocker.unblock(contentBlocker.TYPES.YOUTUBE);
-				break;
 		}
 	});
 
