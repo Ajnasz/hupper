@@ -1,6 +1,6 @@
 import * as dom from '../../core/dom';
 import { log } from '../../core/log';
-import modHupBlock from './hup-block';
+import modHupBlock from '../modules/hup-block';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 
