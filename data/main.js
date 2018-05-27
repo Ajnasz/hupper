@@ -235,43 +235,46 @@ function onRegsitered (response) {
 		blockEmbed
 	} = response.data;
 
-	if (setunlimitedlinks) {
-		const MAX_COMMENTS_PER_PAGE = 9999;
-		unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
-	}
+	new Promise((resolve) => {
+		if (parseblocks) {
+			(new Promise(resolve => {
+				const user = getUserData();
 
-	if (parseblocks) {
+				if (user) {
+					return resolve(modTrackerBlock.create(user));
+				}
 
-		(new Promise(resolve => {
-			const user = getUserData();
+				return Promise.resolve();
+			}))
+				.then(() => {
+					modHupperBlock.addHupperBlock();
+					addHupperBlockListeners();
+					updateBlocks();
+				}).then(resolve);
+		}
 
-			if (user) {
-				return resolve(modTrackerBlock.create(user));
+		return Promise.resolve();
+	})
+		.then(() => {
+			updateComments();
+			updateArticles();
+			addCommentListeners();
+			addBlockListeners();
+			addArticleListeners();
+			if (validateForms) {
+				attachFormValidators();
 			}
-
-			return Promise.resolve();
-		}))
-			.then(() => {
-				modHupperBlock.addHupperBlock();
-				addHupperBlockListeners();
-				updateBlocks();
-			});
-	}
-
-	updateComments();
-	updateArticles();
-	addCommentListeners();
-	addBlockListeners();
-	addArticleListeners();
-
-	if (validateForms) {
-		attachFormValidators();
-	}
-
-	if (blockEmbed) {
-		contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
-		contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
-	}
+			if (blockEmbed) {
+				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
+				contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
+			}
+		})
+		.then(() => {
+			if (setunlimitedlinks) {
+				const MAX_COMMENTS_PER_PAGE = 9999;
+				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
+			}
+		});
 }
 
 window.addEventListener('DOMContentLoaded', function () {
