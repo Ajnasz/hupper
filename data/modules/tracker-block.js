@@ -9,7 +9,7 @@ function create (user) {
 		.then((f) => {
 			const block = modHupBlock.create('block-hupper-user-tracker', 'User tracker');
 			f.filter(f => f.answers.new > 0).forEach(f => modHupBlock.addMenuItem({
-				href: f.href,
+				href: `${f.href}#new`,
 				text: `${f.title} (${f.answers.new} új)`,
 			}, dom.selectOne('.menu', block)));
 		});
