@@ -2,6 +2,7 @@
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock  from './core/hupper-block';
+import modHupBlock from './core/hup-block';
 import * as modComment from './core/comments';
 
 import * as validator from './validator';
@@ -14,6 +15,9 @@ import * as dom from '../core/dom';
 import * as func from '../core/func';
 
 import * as contentBlocker from './modules/content-blocker';
+import { getUserData } from './modules/user-data';
+import getPage from './modules/get-page';
+import userTrakcer from './modules/tracker';
 
 const addClickListener = func.curry(dom.addListener, 'click');
 
@@ -107,7 +111,10 @@ function updateBlocks () {
 
 	chrome.runtime.sendMessage({
 		event: 'requestBlockParse',
-		data: blocks
+		data: {
+			blocks,
+			user: getUserData(),
+		}
 	}, function (blocks) {
 		log.log('block responses', blocks);
 		if (blocks) {
@@ -221,7 +228,14 @@ window.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	chrome.runtime.sendMessage({ event: 'register' }, function (response) {
+	chrome.runtime.sendMessage({
+		event: 'register',
+		data: {
+			user: getUserData(),
+		},
+	}, function (response) {
+		const user = getUserData();
+
 		if (response.event === 'registered') {
 			log.enabled = response.data.logenabled;
 
@@ -241,6 +255,18 @@ window.addEventListener('DOMContentLoaded', function () {
 				modHupperBlock.addHupperBlock();
 				addHupperBlockListeners();
 				updateBlocks();
+			}
+
+			if (user) {
+				getPage(`/user/${user.id}/track`)
+					.then(page => userTrakcer.getContents(page.querySelector('#tracker')))
+					.then((f) => {
+						const block = modHupBlock.create('hupper-user-tracker', 'User tracker');
+						f.filter(f => f.answers.new > 0).forEach(f => modHupBlock.addMenuItem({
+							href: f.href,
+							text: `${f.title} (${f.answers.new} új)`,
+						}, dom.selectOne('.menu', block)));
+					});
 			}
 
 			updateComments();
