@@ -3,7 +3,8 @@
 
 node_modules
 
-*/bundle.js
+**/bundle.js
+**/bundle.js.map
 hupper*.zip
 
 coverage

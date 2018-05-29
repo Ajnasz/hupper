@@ -1,7 +1,7 @@
 const path = require('path');
+const set = require('lodash.set');
 
 module.exports = (grunt) => {
-	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-eslint');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-contrib-clean');
@@ -9,7 +9,10 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-template');
 	grunt.loadNpmTasks('grunt-aws-s3');
+	grunt.loadNpmTasks('grunt-webpack');
 	grunt.loadTasks('./tasks/');
+
+	const webpackBrowserPath = 'module.rules[0].use.options.presets[0][1].targets.browsers[0]';
 
 	const FILES = [
 		{ src: 'images/icons/*.png', dest: '/', expand: true },
@@ -198,36 +201,11 @@ module.exports = (grunt) => {
 			},
 		},
 
-		browserify: {
-			chromeOptions: {
-				options: chromeConfig,
-				files: { 'options/bundle.js': 'options/main.js', },
-			},
-
-			chromeLib: {
-				options: chromeConfig,
-				files: { 'lib/bundle.js': 'lib/main.js', },
-			},
-
-			chromeData: {
-				options: chromeConfig,
-				files: { 'data/bundle.js': 'data/main.js', },
-			},
-
-			firefoxOptions: {
-				options: firefoxConfig,
-				files: { 'options/bundle.js': 'options/main.js', },
-			},
-
-			firefoxLib: {
-				options: firefoxConfig,
-				files: { 'lib/bundle.js': 'lib/main.js', },
-			},
-
-			firefoxData: {
-				options: firefoxConfig,
-				files: { 'data/bundle.js': 'data/main.js', },
-			},
+		webpack: {
+			chrome: set(Object.assign({}, require('./webpack.config')),
+				webpackBrowserPath, 'last 5 Chrome versions'),
+			firefox: set(Object.assign({}, require('./webpack.config')),
+				webpackBrowserPath, 'Firefox 52'),
 		},
 
 		eslint: {
@@ -317,16 +295,6 @@ module.exports = (grunt) => {
 				'eslint:data',
 				'eslint:core',
 			],
-			browserifyChrome: [
-				'browserify:chromeOptions',
-				'browserify:chromeLib',
-				'browserify:chromeData',
-			],
-			browserifyFirefox: [
-				'browserify:firefoxOptions',
-				'browserify:firefoxLib',
-				'browserify:firefoxData',
-			],
 		},
 	});
 
@@ -347,7 +315,7 @@ module.exports = (grunt) => {
 
 	grunt.registerTask('firefox', [
 		'clean:firefox',
-		'concurrent:browserifyFirefox',
+		'webpack:firefox',
 		'copy:manifestBackup',
 		'manifest:firefox',
 		'copy:manifestFirefox',
@@ -363,7 +331,7 @@ module.exports = (grunt) => {
 
 	grunt.registerTask('chrome', [
 		'clean:chrome',
-		'concurrent:browserifyChrome',
+		'webpack:chrome',
 		'copy:manifestBackup',
 		'manifest:chrome',
 		'copy:manifestChrome',
