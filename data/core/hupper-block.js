@@ -1,85 +1,20 @@
 import * as dom from '../../core/dom';
-import * as func from '../../core/func';
 import { log } from '../../core/log';
+import modHupBlock from '../modules/hup-block';
 
 const TEXT_HIDDEN_BLOCKS = 'Rejtett dobozok';
 
-const hasCollapsedClass = func.curry(dom.hasClass, 'collapsed');
-const hasExpandedClass = func.curry(dom.hasClass, 'expanded');
-
 function addHupperBlock () {
-	if (document.getElementById('block-hupper')) {
-		return;
-	}
-
-	const block = dom.createElem('div', [{
-		name: 'id',
-		value: 'block-hupper'
-	}], ['block', 'block-block']);
-
-	const h2 = dom.createElem('h2', null, null, 'Hupper');
-	const content = dom.createElem('div', null, ['content']);
-	const ul = dom.createElem('ul', null, ['menu']);
-
-	content.appendChild(ul);
-
-	block.appendChild(h2);
-	block.appendChild(content);
-
-	const sidebar = document.getElementById('sidebar-right');
-
-	sidebar.insertBefore(block, sidebar.firstChild);
-
-	ul.addEventListener('click', function (e) {
-		const target = e.target.parentNode;
-
-		const collapsed = hasCollapsedClass(target);
-
-		const expanded = !collapsed && hasExpandedClass(target);
-
-		if (collapsed || expanded) {
-			e.preventDefault();
-
-			const collapseClasses = ['collapsed', 'hup-collapsed'];
-			const expandClasses = ['expanded', 'hup-expanded'];
-
-			if (collapsed) {
-				collapseClasses.forEach(c => dom.removeClass(c, target));
-				expandClasses.forEach(c => dom.addClass(c, target));
-			} else {
-				collapseClasses.forEach(c => dom.addClass(c, target));
-				expandClasses.forEach(c => dom.removeClass(c, target));
-			}
-		}
-	}, false);
+	return modHupBlock.create('block-hupper', 'Hupper');
 }
 
 function getItemList () {
 	const block = document.getElementById('block-hupper');
 	return block.querySelector('.menu');
-
 }
 
 function addMenuItem (item, parent) {
-	parent = parent || getItemList();
-
-	const id = func.toCamelCase(item.text);
-
-	const current = parent.querySelector(`#${id}`);
-	if (current) {
-		dom.remove(current);
-	}
-
-	const li = dom.createElem('li', [{ name: 'id', value: id }], ['leaf']);
-	const a = dom.createElem('a', [
-		{ name: 'href', value: item.href }
-	], null, item.text);
-
-	li.appendChild(a);
-
-	parent.appendChild(li);
-
-	return li;
+	return modHupBlock.addMenuItem(item, parent || getItemList());
 }
 
 function addHiddenBlockContainer () {

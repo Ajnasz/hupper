@@ -1,7 +1,8 @@
 /* global chrome:true */
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
-import * as modHupperBlock  from './core/hupper-block';
+import * as modHupperBlock from './core/hupper-block';
+import modTrackerBlock from './modules/tracker-block';
 import * as modComment from './core/comments';
 
 import * as validator from './validator';
@@ -14,6 +15,7 @@ import * as dom from '../core/dom';
 import * as func from '../core/func';
 
 import * as contentBlocker from './modules/content-blocker';
+import { getUserData } from './modules/user-data';
 
 const addClickListener = func.curry(dom.addListener, 'click');
 
@@ -107,7 +109,10 @@ function updateBlocks () {
 
 	chrome.runtime.sendMessage({
 		event: 'requestBlockParse',
-		data: blocks
+		data: {
+			blocks,
+			user: getUserData(),
+		}
 	}, function (blocks) {
 		log.log('block responses', blocks);
 		if (blocks) {
@@ -199,64 +204,89 @@ function attachFormValidators () {
 	});
 }
 
-window.addEventListener('DOMContentLoaded', function () {
-	chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-		log.log('message', msg.event);
+function onRuntimMessage (msg, sender, sendResponse) {
+	log.log('message', msg.event);
 
-		switch (msg.event) {
-			case 'trolluser':
-			case 'untrolluser':
-			case 'highlightuser':
-			case 'unhighlightuser':
-				sendResponse({ event: msg.event, data: getContextUser(msg.data) });
-				break;
+	switch (msg.event) {
+		case 'trolluser':
+		case 'untrolluser':
+		case 'highlightuser':
+		case 'unhighlightuser':
+			sendResponse({ event: msg.event, data: getContextUser(msg.data) });
+			break;
 
-			case 'userChange':
-				updateComments();
-				break;
+		case 'userChange':
+			updateComments();
+			break;
 
-			case 'prefChange':
-				onPrefChange(msg.data);
-				break;
+		case 'prefChange':
+			onPrefChange(msg.data);
+			break;
+	}
+}
+
+function onRegsitered (response) {
+	log.enabled = response.data.logenabled;
+
+	const {
+		setunlimitedlinks,
+		parseblocks,
+		validateForms,
+		blockEmbed
+	} = response.data;
+
+	new Promise((resolve) => {
+		if (parseblocks) {
+			(new Promise(resolve => {
+				const user = getUserData();
+
+				if (user) {
+					return resolve(modTrackerBlock.create(user));
+				}
+
+				return Promise.resolve();
+			}))
+				.then(() => {
+					modHupperBlock.addHupperBlock();
+					addHupperBlockListeners();
+					updateBlocks();
+				}).then(resolve);
 		}
-	});
 
-	chrome.runtime.sendMessage({ event: 'register' }, function (response) {
-		if (response.event === 'registered') {
-			log.enabled = response.data.logenabled;
-
-			const {
-				setunlimitedlinks,
-				parseblocks,
-				validateForms,
-				blockEmbed
-			} = response.data;
-
-			if (setunlimitedlinks) {
-				const MAX_COMMENTS_PER_PAGE = 9999;
-				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
-			}
-
-			if (parseblocks) {
-				modHupperBlock.addHupperBlock();
-				addHupperBlockListeners();
-				updateBlocks();
-			}
-
+		return Promise.resolve();
+	})
+		.then(() => {
 			updateComments();
 			updateArticles();
 			addCommentListeners();
 			addBlockListeners();
 			addArticleListeners();
-
 			if (validateForms) {
 				attachFormValidators();
 			}
-
 			if (blockEmbed) {
 				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
 				contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
 			}
+		})
+		.then(() => {
+			if (setunlimitedlinks) {
+				const MAX_COMMENTS_PER_PAGE = 9999;
+				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
+			}
+		});
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+	chrome.runtime.onMessage.addListener(onRuntimMessage);
+	chrome.runtime.sendMessage({
+		event: 'register',
+		data: {
+			user: getUserData(),
+		},
+	}, (response) => {
+		if (response.event === 'registered') {
+			onRegsitered(response);
 		}
 	});
 }, false);
