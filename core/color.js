@@ -38,9 +38,9 @@ function calculateRatio (colorA, colorB) {
 }
 
 function getRandomColor () {
-	const r = random(0, 256, true);
-	const g = random(0, 256, true);
-	const b = random(0, 256, true);
+	const r = random(0, 255, true);
+	const g = random(0, 255, true);
+	const b = random(0, 255, true);
 
 	return '#' + [r, g, b].map(c => padStart(c.toString('16'), 2, '0')).join('');
 }
