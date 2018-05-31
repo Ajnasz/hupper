@@ -8,6 +8,20 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-template');
 	grunt.loadTasks('./tasks/');
 
+	const FILES = [
+		{ src: 'images/icons/*.png', dest: '/', expand: true },
+		{ src: 'data/bundle.js', dest: '/', expand: true },
+		{ src: 'data/core/css/*.css', dest: '/', expand: true },
+		{ src: 'lib/bundle.js', dest: '/', expand: true },
+		{ src: 'options/bundle.js', dest: '/', expand: true },
+		{ src: 'options/*.css', dest: '/', expand: true },
+		{ src: 'options.html', dest: '/', expand: true },
+		{ src: 'manifest.json', dest: '/', expand: true },
+		{ src: 'icons/128.png', dest: '/', expand: true },
+		{ src: 'icons/48.png', dest: '/', expand: true },
+		{ src: 'icons/32.png', dest: '/', expand: true },
+		{ src: 'icons/16.png', dest: '/', expand: true },
+	];
 
 	const chromeConfig = {
 		transform: [
@@ -63,6 +77,10 @@ module.exports = (grunt) => {
 				'manifest_firefox.json',
 				'manifest.json.bak',
 			],
+			manifestFirefoxBeta: [
+				'manifest_firefox_beta.json',
+				'manifest.json.bak',
+			],
 			manifestChrome: [
 				'manifest_chrome.json',
 				'manifest.json.bak',
@@ -82,6 +100,12 @@ module.exports = (grunt) => {
 			manifestChrome: {
 				files: {
 					'./manifest.json': './manifest_chrome.json',
+				},
+			},
+
+			manifestFirefoxBeta: {
+				files: {
+					'./manifest.json': './manifest_firefox_beta.json',
 				},
 			},
 
@@ -107,6 +131,10 @@ module.exports = (grunt) => {
 				files: {
 					'./options.html': './options.html.bak',
 				},
+			},
+
+			build: {
+				files: FILES.map(f => Object.assign({}, f, { dest: 'build/' }))
 			},
 		},
 
@@ -159,18 +187,7 @@ module.exports = (grunt) => {
 					archive: 'hupper_chrome.zip',
 				},
 				files: [
-					{ src: 'images/icons/*.png', dest: '/', expand: true },
-					{ src: 'data/bundle.js', dest: '/', expand: true },
-					{ src: 'data/core/css/*.css', dest: '/', expand: true },
-					{ src: 'lib/bundle.js', dest: '/', expand: true },
-					{ src: 'options/bundle.js', dest: '/', expand: true },
-					{ src: 'options/*.css', dest: '/', expand: true },
-					{ src: 'options.html', dest: '/', expand: true },
-					{ src: 'manifest.json', dest: '/', expand: true },
-					{ src: 'icons/128.png', dest: '/', expand: true },
-					{ src: 'icons/48.png', dest: '/', expand: true },
-					{ src: 'icons/32.png', dest: '/', expand: true },
-					{ src: 'icons/16.png', dest: '/', expand: true },
+					{ src: './**', cwd: 'build/', dest: '/', expand: true },
 				],
 			},
 
@@ -179,18 +196,7 @@ module.exports = (grunt) => {
 					archive: 'hupper_firefox.zip',
 				},
 				files: [
-					{ src: 'images/icons/*.png', dest: '/', expand: true },
-					{ src: 'data/bundle.js', dest: '/', expand: true },
-					{ src: 'data/core/css/*.css', dest: '/', expand: true },
-					{ src: 'lib/bundle.js', dest: '/', expand: true },
-					{ src: 'options/bundle.js', dest: '/', expand: true },
-					{ src: 'options/*.css', dest: '/', expand: true },
-					{ src: 'options.html', dest: '/', expand: true },
-					{ src: 'manifest.json', dest: '/', expand: true },
-					{ src: 'icons/128.png', dest: '/', expand: true },
-					{ src: 'icons/48.png', dest: '/', expand: true },
-					{ src: 'icons/32.png', dest: '/', expand: true },
-					{ src: 'icons/16.png', dest: '/', expand: true },
+					{ src: ['**'], cwd: 'build/', dest: '/', expand: true },
 				],
 			},
 		},
@@ -199,12 +205,19 @@ module.exports = (grunt) => {
 			options: {
 				manifest: grunt.file.readJSON('./manifest.json'),
 				version: grunt.file.readJSON('./package.json').version,
-				applicationID: 'hupper@ajnasz.hu',
 			},
 			chrome: {
 				options: {
 					versioning: 'chrome',
 					dest: 'manifest_chrome.json',
+					applicationID: 'hupper@ajnasz.hu',
+				},
+			},
+
+			firefoxBeta: {
+				options: {
+					versioning: 'firefox',
+					dest: 'manifest_firefox_beta.json',
 				},
 			},
 
@@ -212,6 +225,7 @@ module.exports = (grunt) => {
 				options: {
 					versioning: 'firefox',
 					dest: 'manifest_firefox.json',
+					applicationID: 'hupper@ajnasz.hu',
 				},
 			}
 		},
@@ -236,6 +250,22 @@ module.exports = (grunt) => {
 		},
 	});
 
+	grunt.registerTask('firefoxBeta', [
+		'clean:firefox',
+		'concurrent:browserifyFirefox',
+		'copy:manifestBackup',
+		'manifest:firefoxBeta',
+		'copy:manifestFirefoxBeta',
+		'copy:optionsBackup',
+		'template:optionsFirefox',
+		'copy:build',
+		'compress:firefox',
+		'copy:manifestRestore',
+		'copy:optionsRestore',
+		'clean:manifestFirefoxBeta',
+		'clean:optionsHtml',
+	]);
+
 	grunt.registerTask('firefox', [
 		'clean:firefox',
 		'concurrent:browserifyFirefox',
@@ -244,6 +274,7 @@ module.exports = (grunt) => {
 		'copy:manifestFirefox',
 		'copy:optionsBackup',
 		'template:optionsFirefox',
+		'copy:build',
 		'compress:firefox',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
@@ -259,6 +290,7 @@ module.exports = (grunt) => {
 		'copy:manifestChrome',
 		'copy:optionsBackup',
 		'template:optionsChrome',
+		'copy:build',
 		'compress:chrome',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
