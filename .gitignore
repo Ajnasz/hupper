@@ -1,10 +1,12 @@
 *.xpi
 *.swp
 
-**/node_modules
+node_modules
 
-**/bundle.js
+*/bundle.js
 hupper*.zip
 
 coverage
 .nyc_output
+
+build/
