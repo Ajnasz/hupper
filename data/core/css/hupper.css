@@ -47,7 +47,12 @@
 	cursor: pointer !important;
 	color: #000 !important;
 }
-.hup-hidden {display: none !important;}
+
+.hup-content-no-content,
+.hup-content-loading,
+.hup-hidden {
+	display: none !important;
+}
 .block h2 {
 	position: relative !important;
 }

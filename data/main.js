@@ -241,7 +241,7 @@ function onRegsitered (response) {
 				const user = getUserData();
 
 				if (user) {
-					return resolve(modTrackerBlock.create(user));
+					return resolve(modTrackerBlock.create());
 				}
 
 				return Promise.resolve();
@@ -273,6 +273,12 @@ function onRegsitered (response) {
 			if (setunlimitedlinks) {
 				const MAX_COMMENTS_PER_PAGE = 9999;
 				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
+			}
+
+			if (parseblocks) {
+				const user = getUserData();
+
+				modTrackerBlock.fill(user);
 			}
 		});
 }

@@ -4,6 +4,9 @@ import * as func from '../../core/func';
 const hasCollapsedClass = func.curry(dom.hasClass, 'collapsed');
 const hasExpandedClass = func.curry(dom.hasClass, 'expanded');
 
+const collapseClasses = ['collapsed', 'hup-collapsed'];
+const expandClasses = ['expanded', 'hup-expanded'];
+
 function create (id, title, target = 'sidebar-right') {
 	let block = document.getElementById(id);
 	if (block) {
@@ -13,7 +16,7 @@ function create (id, title, target = 'sidebar-right') {
 	block = dom.createElem('div', [{
 		name: 'id',
 		value: id
-	}], ['block', 'block-block']);
+	}], ['block', 'block-block', 'hup-content-loading']);
 
 	const h2 = dom.createElem('h2', null, null, title);
 	const content = dom.createElem('div', null, ['content']);
@@ -37,9 +40,6 @@ function create (id, title, target = 'sidebar-right') {
 
 		if (collapsed || expanded) {
 			e.preventDefault();
-
-			const collapseClasses = ['collapsed', 'hup-collapsed'];
-			const expandClasses = ['expanded', 'hup-expanded'];
 
 			if (collapsed) {
 				collapseClasses.forEach(c => dom.removeClass(c, target));

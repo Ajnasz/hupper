@@ -1,3 +1,4 @@
+import cache from '../../core/cache';
 import * as dom from '../../core/dom';
 
 const USER_LINK_REGEXP = /^\/user\/(\d+)$/;
@@ -16,17 +17,27 @@ function getUserIdFromLink (link) {
 }
 
 function getUserData () {
+	if (cache.has('userData')) {
+		return cache.get('userData');
+	}
+
 	const userBlock = dom.selectOne('#block-user-1', document);
 
 	let userData = Object.assign({}, userDataStruct);
 
 	if (userBlock) {
-		const name = dom.selectOne('h2', userBlock).textContent;
 		const id = dom.selectAll('.leaf a', userBlock)
 			.filter(isUserLink)
 			.reduce((id, link) => id || getUserIdFromLink(link), 0);
 
+		if (!id) {
+			return null;
+		}
+
+		const name = dom.selectOne('h2', userBlock).textContent;
+
 		userData = Object.assign({}, userData, { name ,id });
+		cache.set('userData', userData);
 	}
 
 	return userData;
