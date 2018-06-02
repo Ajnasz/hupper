@@ -44,6 +44,17 @@ module.exports = (grunt) => {
 	};
 
 	grunt.initConfig({
+		webext: {
+			beta: {
+				options: {
+					id: 'hupper_beta@koszti.hu',
+					apiSecret: process.env.AMO_JWT_SECRET,
+					apiKey: process.env.AMO_JWT_ISSUER,
+					sourceDir: 'build',
+					artifactsDir: 'web-ext-artifacts'
+				},
+			}
+		},
 		template: {
 			options: {
 				delimiters: 'handlebars-like-delimiters'
@@ -191,6 +202,15 @@ module.exports = (grunt) => {
 				],
 			},
 
+			firefoxBeta: {
+				options: {
+					archive: 'hupper_firefox.zip',
+				},
+				files: [
+					{ src: ['**'], cwd: 'build/', dest: '/', expand: true },
+				],
+			},
+
 			firefox: {
 				options: {
 					archive: 'hupper_firefox.zip',
@@ -259,7 +279,7 @@ module.exports = (grunt) => {
 		'copy:optionsBackup',
 		'template:optionsFirefox',
 		'copy:build',
-		'compress:firefox',
+		'webext:beta',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
 		'clean:manifestFirefoxBeta',
