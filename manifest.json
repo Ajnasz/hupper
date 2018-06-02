@@ -25,7 +25,6 @@
 		{
 			"run_at": "document_start",
 			"matches": [
-				"*://hup.lh/*",
 				"*://hup.hu/*"
 			],
 			"css": [
@@ -45,10 +44,12 @@
 		"webRequestBlocking",
 		"*://platform.twitter.com/widgets.js",
 		"*://www.youtube.com/embed/*",
-		"*://hup.hu/",
-		"*://hup.lh/"
+		"*://hup.hu/"
 	],
 	"web_accessible_resources": [
 		"images/icons/009-pen.png"
-	]
+	],
+	"applications": {
+		"gecko": {}
+	}
 }
