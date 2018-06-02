@@ -198,7 +198,7 @@ module.exports = (grunt) => {
 					archive: 'hupper_chrome.zip',
 				},
 				files: [
-					{ src: './**', cwd: 'build/', dest: '/', expand: true },
+					{ src: ['**'], cwd: 'build/', dest: '/', expand: true },
 				],
 			},
 
