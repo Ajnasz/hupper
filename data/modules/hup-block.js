@@ -16,7 +16,7 @@ function create (id, title, target = 'sidebar-right') {
 	block = dom.createElem('div', [{
 		name: 'id',
 		value: id
-	}], ['block', 'block-block', 'hup-content-loading']);
+	}], ['block', 'block-block']);
 
 	const h2 = dom.createElem('h2', null, null, title);
 	const content = dom.createElem('div', null, ['content']);

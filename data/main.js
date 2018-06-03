@@ -241,7 +241,8 @@ function onRegsitered (response) {
 				const user = getUserData();
 
 				if (user) {
-					return resolve(modTrackerBlock.create());
+					const block = resolve(modTrackerBlock.create());
+					dom.addClass('hup-content-loading', block);
 				}
 
 				resolve();
