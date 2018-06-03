@@ -246,6 +246,7 @@ function onRegsitered (response) {
 
 				resolve();
 			}))
+				.catch(log.error)
 				.then(() => {
 					modHupperBlock.addHupperBlock();
 					addHupperBlockListeners();
