@@ -244,7 +244,7 @@ function onRegsitered (response) {
 					return resolve(modTrackerBlock.create());
 				}
 
-				return Promise.resolve();
+				resolve();
 			}))
 				.then(() => {
 					modHupperBlock.addHupperBlock();
