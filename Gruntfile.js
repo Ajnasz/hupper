@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-eslint');
@@ -6,6 +8,7 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-template');
+	grunt.loadNpmTasks('grunt-aws-s3');
 	grunt.loadTasks('./tasks/');
 
 	const FILES = [
@@ -44,6 +47,49 @@ module.exports = (grunt) => {
 	};
 
 	grunt.initConfig({
+		aws_s3: {
+			options: {
+				accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+				bucket: 'ajnasz',
+				endpoint: 'ams3.digitaloceanspaces.com'
+			},
+
+			push: {
+				files: [
+					{
+						get src () {
+							const { version } = require('./build/manifest.json');
+							return path.join(`hupper-${version}*`)
+						},
+						cwd: 'web-ext-artifacts',
+						expand: true,
+						dest: 'hupper/',
+						action: 'upload'
+					},
+					{
+						src: 'beta-updates.json',
+						cwd: 'meta',
+						expand: true,
+						dest: 'hupper/',
+						action: 'upload'
+					}
+				]
+			}
+		},
+		createUpdateJSON: {
+			beta: {
+				options: {
+					id: 'hupper_beta@koszti.hu',
+					json: './meta/beta-updates.json',
+					updateLink: 'https://ajnasz.ams3.digitaloceanspaces.com/hupper/beta-updates.json',
+					get version () {
+						const manifest = require('./build/manifest.json');
+						return manifest.version;
+					}
+				}
+			}
+		},
 		webext: {
 			beta: {
 				options: {
@@ -285,6 +331,7 @@ module.exports = (grunt) => {
 		'copy:optionsRestore',
 		'clean:manifestFirefoxBeta',
 		'clean:optionsHtml',
+		'aws_s3:push',
 	]);
 
 	grunt.registerTask('firefox', [

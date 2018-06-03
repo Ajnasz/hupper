@@ -1,0 +1,12 @@
+{
+	"addons": {
+		"hupper_beta@koszti.hu": {
+			"updates": [
+				{
+					"version": "2.7.0beta4",
+					"update_link": "https://ajnasz.ams3.digitaloceanspaces.com/hupper/beta-updates.json"
+				}
+			]
+		}
+	}
+}
