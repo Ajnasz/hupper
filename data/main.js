@@ -115,8 +115,8 @@ function updateBlocks () {
 		}
 	}, function (blocks) {
 		log.log('block responses', blocks);
+
 		if (blocks) {
-			log.log(blocks);
 			modBlocks.reorderBlocks(blocks);
 			modBlocks.decorateBlocks(blocks);
 		}
