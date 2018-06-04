@@ -186,7 +186,7 @@ function parseComment (node, options={ content: false }) {
 		created: getCommentCreateDate(commentObj),
 		id: getCommentId(commentObj),
 		parentID: findParentId(commentObj.node),
-		indentLevel: findIndentLevel(commentObj),
+		indentLevel: findIndentLevel(commentObj.node),
 		content: options.content ? getCommentContent(commentObj) : commentDataStruct.content,
 	});
 }
