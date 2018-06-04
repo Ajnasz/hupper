@@ -235,42 +235,42 @@ function onRegsitered (response) {
 		blockEmbed
 	} = response.data;
 
-	new Promise((resolve) => {
-		if (parseblocks) {
-			(new Promise(resolve => {
-				const user = getUserData();
+	let promise;
+	if (parseblocks) {
+		promise = (new Promise(resolve => {
+			const user = getUserData();
 
-				if (user) {
-					const block = resolve(modTrackerBlock.create());
-					dom.addClass('hup-content-loading', block);
-				}
+			if (user) {
+				const block = resolve(modTrackerBlock.create());
+				dom.addClass('hup-content-loading', block);
+			}
 
-				resolve();
-			}))
-				.catch(log.error)
-				.then(() => {
-					modHupperBlock.addHupperBlock();
-					addHupperBlockListeners();
-					updateBlocks();
-				}).then(resolve);
+			resolve();
+		}))
+			.catch(log.error)
+			.then(() => {
+				modHupperBlock.addHupperBlock();
+				addHupperBlockListeners();
+				updateBlocks();
+			});
+	} else {
+		promise = Promise.resolve();
+	}
+
+	promise.then(() => {
+		updateComments();
+		updateArticles();
+		addCommentListeners();
+		addBlockListeners();
+		addArticleListeners();
+		if (validateForms) {
+			attachFormValidators();
 		}
-
-		return Promise.resolve();
+		if (blockEmbed) {
+			contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
+			contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
+		}
 	})
-		.then(() => {
-			updateComments();
-			updateArticles();
-			addCommentListeners();
-			addBlockListeners();
-			addArticleListeners();
-			if (validateForms) {
-				attachFormValidators();
-			}
-			if (blockEmbed) {
-				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
-				contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
-			}
-		})
 		.then(() => {
 			if (setunlimitedlinks) {
 				const MAX_COMMENTS_PER_PAGE = 9999;
