@@ -43,6 +43,17 @@ function getContextUser (data) {
 	return elem ? elem.textContent : null;
 }
 
+function shouldGoToComment () {
+	return window.location.hash === '#new';
+}
+
+function goToComment (commentId) {
+	const url = new URL(window.location.href);
+	url.hash = `#${commentId}`;
+
+	window.location.replace(url.href);
+}
+
 function updateComments () {
 	const comments = getCommentObjects({ content: true });
 
@@ -70,10 +81,15 @@ function updateComments () {
 			modComment.onCommentUpdate(comments);
 
 			if (newComments.length > 0) {
+				const commentId = newComments[0].id;
 				modHupperBlock.addMenuItem({
-					href: '#' + newComments[0].id,
+					href: `#${commentId}`,
 					text: 'Első olvasatlan hozzászólás'
 				});
+
+				if (shouldGoToComment()) {
+					goToComment(commentId);
+				}
 			}
 		}
 	});
