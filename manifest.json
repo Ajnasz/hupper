@@ -1,8 +1,8 @@
 {
 	"name": "Hupper",
 	"short_name": "Hupper",
-	"version": "2.7.5",
-	"version_name": "2.7.5",
+	"version": "2.8.0beta0",
+	"version_name": "2.8.0-0",
 	"manifest_version": 2,
 	"description": "Improve the user experience of HUP.hu",
 	"background": {
@@ -50,6 +50,8 @@
 		"images/icons/009-pen.png"
 	],
 	"applications": {
-		"gecko": {}
+		"gecko": {
+			"id": "hupper@ajnasz.hu"
+		}
 	}
 }
