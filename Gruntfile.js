@@ -238,6 +238,7 @@ module.exports = (grunt) => {
 				options: {
 					versioning: 'firefox',
 					dest: 'manifest_firefox_beta.json',
+					applicationID: null,
 				},
 			},
 
