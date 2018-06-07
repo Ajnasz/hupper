@@ -72,18 +72,23 @@ function setVersion (version) {
 }
 
 function setApplications (applicationID) {
-	return {
-		chrome: manifest => Object.keys(manifest)
-			.filter(key => key !== 'applications')
-			.reduce((out, key) => Object.assign(out, {[key]: manifest[key]}), {}),
+	const remove = manifest => Object.keys(manifest)
+		.filter(key => key !== 'applications')
+		.reduce((out, key) => Object.assign(out, { [key]: manifest[key] }), {});
 
-		firefox: manifest => Object.assign({}, manifest, {
-			applications: {
-				gecko: {
-					id: applicationID
-				},
+	const set = manifest => Object.assign({}, manifest, {
+		applications: {
+			gecko: {
+				id: applicationID
 			},
-		}),
+		},
+	});
+	return {
+		chrome: remove,
+
+		firefox: manifest => applicationID ?
+			set(manifest) :
+			remove(manifest),
 	};
 }
 
@@ -117,22 +122,19 @@ module.exports = (grunt) => grunt.registerMultiTask('manifest', function () {
 	const { manifest, version } = options;
 	const versionName = version;
 
-	const reducers = [
+
+	const output = [
 		setVersionName(versionName),
 		setVersion(version),
 		setApplications(options.applicationID),
-	];
-
-	const manifestOverrides = reducers.reduce((out, reducer) =>
-		(typeof reducer === 'function') ?
-			reducer(out) :
-			reducer[options.versioning](out), {});
-
-	const output = [
 		setPermissions(options.lhPermission),
 		setContentScripts(options.lhPermission),
 		(o) => JSON.stringify(o, null, '\t')
-	].reduce((out, reducer) => reducer(out), Object.assign({}, manifest, manifestOverrides));
+	].reduce((out, reducer) => {
+		return (typeof reducer === 'function') ?
+			reducer(out) :
+			reducer[options.versioning](out);
+	}, Object.assign({}, manifest));
 
 	grunt.verbose.writeln(output);
 
