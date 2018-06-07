@@ -318,5 +318,13 @@ module.exports = (grunt) => {
 		'clean:optionsHtml',
 	]);
 
+	grunt.registerTask('bumpVersion', [
+		'clean:chrome',
+		'clean:firefox',
+		'manifest:firefox',
+		'copy:manifestFirefox',
+		'clean:manifestFirefox',
+	]);
+
 	grunt.registerTask('build', ['concurrent:eslint', 'firefox', 'chrome']);
 };
