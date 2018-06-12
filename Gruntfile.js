@@ -47,7 +47,9 @@ module.exports = (grunt) => {
 	};
 
 	grunt.initConfig({
+		/* eslint-disable camelcase */
 		aws_s3: {
+		/* eslint-enable camelcase */
 			options: {
 				accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -326,12 +328,10 @@ module.exports = (grunt) => {
 		'copy:optionsBackup',
 		'template:optionsFirefox',
 		'copy:build',
-		'webext:beta',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
 		'clean:manifestFirefoxBeta',
 		'clean:optionsHtml',
-		'aws_s3:push',
 	]);
 
 	grunt.registerTask('firefox', [
@@ -365,6 +365,13 @@ module.exports = (grunt) => {
 		'clean:manifestChrome',
 		'clean:optionsHtml',
 	]);
+
+	grunt.registerTask('deployFirefoxBeta', [
+		'firefoxBeta',
+		'webext:beta',
+		'createUpdateJSON',
+		'aws_s3:push',
+	]),
 
 	grunt.registerTask('bumpVersion', [
 		'clean:chrome',
