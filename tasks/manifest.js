@@ -71,22 +71,33 @@ function setVersion (version) {
 	};
 }
 
-function setApplications (applicationID) {
+function setApplications (applicationID, updateURL) {
 	const remove = manifest => Object.keys(manifest)
 		.filter(key => key !== 'applications')
 		.reduce((out, key) => Object.assign(out, { [key]: manifest[key] }), {});
 
-	const set = manifest => Object.assign({}, manifest, {
-		applications: {
-			gecko: {
-				id: applicationID
-			},
-		},
-	});
+	const set = manifest => {
+		let gecko = {};
+
+		if (applicationID) {
+			gecko = Object.assign({}, gecko, { id: applicationID });
+		}
+
+		if (updateURL) {
+			/* eslint-disable camelcase */
+			gecko = Object.assign({}, gecko, { update_url: updateURL });
+			/* eslint-enable camelcase */
+		}
+
+		return Object.assign({}, manifest, {
+			applications: { gecko },
+		});
+	};
+
 	return {
 		chrome: remove,
 
-		firefox: manifest => applicationID ?
+		firefox: manifest => applicationID || updateURL ?
 			set(manifest) :
 			remove(manifest),
 	};
@@ -126,7 +137,7 @@ module.exports = (grunt) => grunt.registerMultiTask('manifest', function () {
 	const output = [
 		setVersionName(versionName),
 		setVersion(version),
-		setApplications(options.applicationID),
+		setApplications(options.applicationID, options.updateURL),
 		setPermissions(options.lhPermission),
 		setContentScripts(options.lhPermission),
 		(o) => JSON.stringify(o, null, '\t')

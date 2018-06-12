@@ -286,6 +286,7 @@ module.exports = (grunt) => {
 				options: {
 					versioning: 'firefox',
 					dest: 'manifest_firefox_beta.json',
+					updateURL: 'https://ams3.digitaloceanspaces.com/ajnasz/hupper/beta-updates.json',
 					applicationID: null,
 				},
 			},
