@@ -82,7 +82,7 @@ module.exports = (grunt) => {
 				options: {
 					id: 'hupper_beta@koszti.hu',
 					json: './meta/beta-updates.json',
-					updateLink: 'https://ajnasz.ams3.digitaloceanspaces.com/hupper/beta-updates.json',
+					updateLink: 'https://ajnasz.ams3.digitaloceanspaces.com/hupper/xFILEx',
 					get version () {
 						const manifest = require('./build/manifest.json');
 						return manifest.version;

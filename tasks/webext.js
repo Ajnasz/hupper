@@ -40,16 +40,18 @@ const createUpdateJSON = grunt => function () {
 	assert(options.json, 'JSON field is required');
 	assert(options.version, 'version field is required');
 	assert(options.updateLink, 'update_link field is required');
+
 	const json = grunt.file.readJSON(options.json);
 
 	const data = {
 		version: options.version,
 		/* eslint-disable camelcase */
-		update_link: options.updateLink,
+		update_link: options.updateLink.replace('xFILEx', `hupper-${options.version}-an+fx.xpi`),
 		/* eslint-enable camelcase */
 	};
 
-	const currentIndex = json.addons[options.id].updates.findIndex(e => e.version === options.version);
+	const currentIndex = json.addons[options.id].updates
+		.findIndex(e => e.version === options.version);
 
 	if (currentIndex === -1) {
 		json.addons[options.id].updates = [data].concat(json.addons[options.id].updates);
