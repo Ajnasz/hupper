@@ -57,7 +57,7 @@ module.exports = (grunt) => {
 				endpoint: 'ams3.digitaloceanspaces.com'
 			},
 
-			push: {
+			xpi: {
 				files: [
 					{
 						src: '*.xpi',
@@ -66,6 +66,10 @@ module.exports = (grunt) => {
 						dest: 'hupper/',
 						action: 'upload'
 					},
+				],
+			},
+			updateJSON: {
+				files: [
 					{
 						src: 'beta-updates.json',
 						cwd: 'meta',
@@ -376,8 +380,9 @@ module.exports = (grunt) => {
 	grunt.registerTask('deployFirefoxBeta', [
 		'firefoxBeta',
 		'webext:beta',
+		'aws_s3:push:xpi',
 		'createUpdateJSON',
-		'aws_s3:push',
+		'aws_s3:push:updateJSON',
 	]),
 
 	grunt.registerTask('bumpVersion', [
