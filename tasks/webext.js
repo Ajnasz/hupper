@@ -65,7 +65,7 @@ const createUpdateJSON = grunt => function () {
 			.filter(f => f.endsWith('.xpi'))
 			.reverse()
 			.map(file => ({
-				version: file.replace(/^.+hupper-(\d+\.\d+\.\dbeta\d+).+/, '$1'),
+				version: file.replace(/^.+[^\d]+(\d+\.\d+\.\dbeta\d+).+/, '$1'),
 				/* eslint-disable camelcase */
 				update_link: options.updateLink.replace('xFILEx', file),
 				/* eslint-enable camelcase */
