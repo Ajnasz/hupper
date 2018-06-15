@@ -269,6 +269,15 @@ module.exports = (grunt) => {
 			},
 		},
 
+		packageLock: {
+			options: {
+				file: 'package-lock.json',
+				version: grunt.file.readJSON('./package.json').version,
+			},
+
+			all: {},
+		},
+
 		manifest: {
 			options: {
 				manifest: grunt.file.readJSON('./manifest.json'),
@@ -378,6 +387,7 @@ module.exports = (grunt) => {
 		'clean:chrome',
 		'clean:firefox',
 		'manifest:firefox',
+		'packageLock',
 		'copy:manifestFirefox',
 		'clean:manifestFirefox',
 	]);
