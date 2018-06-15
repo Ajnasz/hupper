@@ -1,9 +1,28 @@
 language: node_js
 node_js:
 - '6'
+
 env:
   global:
   - secure: PySqoFdFGmU3XmxiWXZBGY3YIN+gc7H/CdpE5ltgW9e2VJPVOzJ8p6wYhLkdjbv6ZntNQZtYckqX+ArI+4RHb/3q5t1BnI+7iGKxKVAkTw6pPNUa+9gj5YMM0Guvw23NXjlbNaVtUcRJYZbZE3PNwC/MbP1tGmmJZ1bQ40TMvTM=
   - secure: G+ShW4GbRmblpEMkzk0ijUJ9EWvJNYpCSCHWmzIuwGh8VNnt6dn9ZCdnwElNKZ+I6TZ9qPCpzzJMA0xU7bI2qOYqkdr+PnoptDvCi8RvGkXhV6LCFtR98Dj5Zh8LZe49EkXYHZ/D16n7otZd0laQlBCB9qP0zUDFaU0DIco9e2I=
   - secure: F2ZN0p4gv/BM/G57PisUJ3NYip+A54NVQpQLYiZ6Dzi8rjYVeCQ8GjneaEv/izQOmKhv3fplt0g5uaW+bCNo2wEvJ021+VkdQ3LXs76mEPpOr0rejqoAagd1DcJ3gXRUpa+l1fi7KwAiITVzCijlrQMXcsyaXtOjkDsIqx1tUcA=
   - secure: nEyhHtLNRkLNiBkqEgIirVFYtVPaXfe1YoAxxIsF+S5XkUYz1Ini1Zvzx/qW2ehPv0JYcU99vxA86KUYIgFOhlnqbh6hES3byyyhf7leZx3P+gTYBf6aHjCqpWZyoTyfwoEykSQLS4dFVG2jf0bkKQnlz8J4OJQXvJfkt78Pv3o=
+
+before_install: npm install -g grunt-cli
+
+install:
+  - npm install
+
+test:
+  - provider: script
+    script: npm test
+
+deploy:
+  - provider: script
+    script: grunt firefoxBeta && grunt deployFirefoxBeta
+    repo: Ajnasz/hupper
+    on:
+      tags: true
+
+# vi:sw=2:tabstop=2
