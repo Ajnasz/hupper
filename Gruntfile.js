@@ -380,9 +380,9 @@ module.exports = (grunt) => {
 	grunt.registerTask('deployFirefoxBeta', [
 		'firefoxBeta',
 		'webext:beta',
-		'aws_s3:push:xpi',
+		'aws_s3:xpi',
 		'createUpdateJSON',
-		'aws_s3:push:updateJSON',
+		'aws_s3:updateJSON',
 	]),
 
 	grunt.registerTask('bumpVersion', [
