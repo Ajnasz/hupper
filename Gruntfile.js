@@ -60,10 +60,7 @@ module.exports = (grunt) => {
 			push: {
 				files: [
 					{
-						get src () {
-							const { version } = require('./build/manifest.json');
-							return path.join(`hupper-${version}*`)
-						},
+						src: '*.xpi',
 						cwd: 'web-ext-artifacts',
 						expand: true,
 						dest: 'hupper/',
@@ -83,12 +80,12 @@ module.exports = (grunt) => {
 			beta: {
 				options: {
 					id: 'hupper_beta@koszti.hu',
-					json: './meta/beta-updates.json',
-					updateLink: 'https://ajnasz.ams3.digitaloceanspaces.com/hupper/xFILEx',
-					get version () {
-						const manifest = require('./build/manifest.json');
-						return manifest.version;
-					}
+					updateLink: 'https://ajnasz.ams3.digitaloceanspaces.com/xFILEx',
+					accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+					secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+					bucket: 'ajnasz',
+					endpoint: 'ams3.digitaloceanspaces.com',
+					prefix: 'hupper/',
 				}
 			}
 		},
