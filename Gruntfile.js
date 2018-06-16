@@ -300,7 +300,7 @@ module.exports = (grunt) => {
 
 	grunt.registerTask('firefoxBeta', [
 		'clean:firefox',
-		'concurrent:browserifyFirefox',
+		'webpack:firefox',
 		'copy:manifestBackup',
 		'manifest:firefoxBeta',
 		'copy:manifestFirefoxBeta',
