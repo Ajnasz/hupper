@@ -1,17 +1,23 @@
 import * as func from  '../core/func';
 import * as dom from  '../core/dom';
 
+const CLASS_NAMES = {
+	ERROR_LABEL: 'hupper-error-message-label',
+	ERROR_DESCRIPTION: 'hupper-error-description',
+	ERROR_CONTAINER: 'hupper-error-message-container',
+};
+
 function createErrorMessage (message, description, field) {
 	const msg = dom.createElem('div');
-	dom.addClass('hupper-error-message-container', msg);
+	dom.addClass(CLASS_NAMES.ERROR_CONTAINER, msg);
 
 	const label = dom.createElem('label');
-	dom.addClass('hupper-error-message-label', label);
+	dom.addClass(CLASS_NAMES.ERROR_LABEL, label);
 	dom.attr('htmlFor', field.id, label);
 	dom.text(message, label);
 
 	const desc = dom.createElem('p');
-	dom.addClass('hupper-error-description', desc);
+	dom.addClass(CLASS_NAMES.ERROR_DESCRIPTION, desc);
 	dom.text(description, desc);
 
 	const appendToMsg = func.curry(dom.append, msg);
@@ -141,5 +147,6 @@ export {
 	createErrorMessage,
 	rules,
 	attachValidator,
-	resubmitForm
+	resubmitForm,
+	CLASS_NAMES,
 };

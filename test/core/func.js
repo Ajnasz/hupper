@@ -141,7 +141,6 @@ test('core/func.partial', (t) => {
 	t.end();
 });
 
-
 test('core/func.yesOrNo', (t) => {
 	t.plan(2);
 	func.yesOrNo(true, () => {
@@ -333,5 +332,41 @@ test('core/func.genID', t => {
 	t.equal(typeof ids[0], 'number', 'id is a number');
 	t.ok(ids[0] > 0, 'id is greater then 0');
 	t.notEqual(ids[1], ids[0], 'ids not equal');
+	t.end();
+});
+
+test('core/func.always', t => {
+
+	[1, 'a', undefined, 1.2212].forEach(item => {
+		t.deepEqual(func.always(item)(), item, `returns ${typeof item}`);
+	});
+
+	let item;
+
+	item = null;
+	t.deepEqual(func.always(item)(), item, 'returns null');
+	item = { foo: 'bar', a: 1, b: null };
+	t.deepEqual(func.always(item)(), item, 'returns object');
+
+	item = [{ foo: 'bar', a: 1, b: null }, 1, 3, 'a', null];
+	t.deepEqual(func.always(item)(), item, 'returns array');
+	t.end();
+});
+
+test('core/func.compose', t => {
+	t.ok(func.compose((arg) => {
+		if (arg !== null) {
+			throw new Error('Compose should pass null as argument to first function');
+		}
+
+		return true;
+	}), 'First argument must be null');
+
+	const rand = Math.random();
+	t.ok(func.compose(() => rand, (r) => r === rand), 'it should pass returned argument to next function');
+
+	const i = 0;
+	const ret = func.compose(() => i + 1, (e) => e + 1, (e) => e + 1, (e) => e + 1);
+	t.equal(ret, i + 4, 'should call all function');
 	t.end();
 });

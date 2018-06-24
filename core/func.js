@@ -109,9 +109,7 @@ function maxBy (array, field) {
 const negate = func => (...args) => !func(...args);
 
 function compose (...args) {
-	return args.reduce((accu, fn) => {
-		return fn(accu);
-	}, null);
+	return args.reduce((accu, fn) => fn(accu), null);
 }
 
 const curry = (fn, ...args) => (...args2) => fn.apply(null, args.concat(args2));

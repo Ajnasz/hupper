@@ -10,7 +10,7 @@
     "version": "grunt bumpVersion && git add manifest.json package-lock.json",
     "test": "$(npm bin)/tape -r ./test/boot.js test/{lib,core,data}/**/*.js",
     "testData": "$(npm bin)/tape -r ./test/boot.js test/data/**/*.js",
-    "coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r ./test/boot.js test/{core,lib}/*.js"
+    "coverage": "$(npm bin)/nyc --reporter=lcov --reporter=text $(npm bin)/tape -r ./test/boot.js test/{core,lib,data}/*.js"
   },
   "repository": {
     "type": "git",
