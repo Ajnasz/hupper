@@ -462,32 +462,6 @@ function show (comment) {
 	dom.removeClass('hup-hidden', getCommentFromId(comment.id));
 }
 
-function setProp (comment, prop, value) {
-	const elem = getCommentFromId(comment.id);
-
-	elem.dataset[prop] = value;
-	elem.dataset[prop + 'Type'] = typeof value;
-}
-
-function getProp (comment, prop) {
-	const elem = getCommentFromId(comment.id);
-
-	const value = elem.dataset[prop];
-	const type = elem.dataset[prop + 'Type'];
-	let undef;
-
-	switch (type) {
-		case 'boolean':
-			return Boolean(value);
-		case 'number':
-			return +value;
-		case 'undefined':
-			return undef;
-		default:
-			return value;
-	}
-}
-
 function getScoreTitle (votes) {
 	if (votes.plusone > 0 && votes.minusone > 0) {
 		return `${votes.plusone} hupper adott +1 pontot\n${votes.minusone} hupper adott -1 pontot`;
@@ -531,13 +505,9 @@ function setAuthorComment (comment) {
 
 function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
-		setProp(comment, 'boring', comment.boring);
-		setProp(comment, 'troll', comment.troll);
-
 		if (comment.hide) {
 			hide(comment);
 		} else {
-
 			show(comment);
 
 			(comment.userColor) ?
@@ -623,8 +593,6 @@ export {
 	unwideComments,
 	hide,
 	show,
-	setProp,
-	getProp,
 	getCommentFromId,
 	showScore,
 	onCommentUpdate,
