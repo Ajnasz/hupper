@@ -16,9 +16,9 @@ function readPage (page) {
 	});
 }
 
-test('data/core/comments', (commentsSuite) => {
+test.only('data/core/comments', (commentsSuite) => {
 	commentsSuite.test('getComments', (t) => {
-		readPage('page_with_comments.html').then(window => {
+		readPage('page_with_comments.html').then((window) => {
 			const commentNodes = comments.getComments();
 			t.ok(commentNodes.length > 0, 'comments found');
 			t.ok(commentNodes.every(c => c.nodeType === window.Node.ELEMENT_NODE), 'all comment is an element node');
@@ -28,22 +28,79 @@ test('data/core/comments', (commentsSuite) => {
 	});
 
 	commentsSuite.test('parseComment', (t) => {
+		t.test('authenticated', (t) => {
+			readPage('page_with_comments.html').then(() => {
+				const commentNodes = comments.getComments();
+
+				const firstParsedComment = comments.parseComment(commentNodes[0]);
+
+				t.equal(typeof firstParsedComment, 'object', 'parsed first comment');
+				t.equal(typeof firstParsedComment.isNew, 'boolean', 'isNew property added');
+				t.equal(typeof firstParsedComment.author, 'string', 'author property added');
+				t.ok(firstParsedComment.author.length > 0, 'author property not empty');
+				t.equal(typeof firstParsedComment.created, 'number', 'created');
+				t.assert(!isNaN(firstParsedComment.created), 'Got valid created date');
+				t.equal(typeof firstParsedComment.indentLevel, 'number', 'indentLevel property added');
+				t.assert(!isNaN(firstParsedComment.indentLevel), 'indentLevel valid');
+				t.equal(typeof firstParsedComment.parentID, 'string', 'parentID property added');
+				t.equal(firstParsedComment.content, null, 'content is null');
+
+				const secondParsedComment = comments.parseComment(commentNodes[1], { content: true });
+				t.equal(typeof secondParsedComment.content, 'string', 'content is string');
+				t.end();
+			}).catch((err) => {
+				t.fail(err);
+				t.end();
+			});
+		});
+
+		t.test('non authenticated', (t) => {
+			readPage('page_with_comments_unauth.html').then(() => {
+				const commentNodes = comments.getComments();
+
+				const firstParsedComment = comments.parseComment(commentNodes[0]);
+
+				t.equal(typeof firstParsedComment, 'object', 'parsed first comment');
+				t.equal(typeof firstParsedComment.isNew, 'boolean', 'isNew property added');
+				t.equal(typeof firstParsedComment.author, 'string', 'author property added');
+				t.ok(firstParsedComment.author.length > 0, 'author property not empty');
+				t.equal(typeof firstParsedComment.created, 'number', 'created');
+				t.assert(!isNaN(firstParsedComment.created), 'Got valid created date');
+				t.equal(typeof firstParsedComment.indentLevel, 'number', 'indentLevel property added');
+				t.assert(!isNaN(firstParsedComment.indentLevel), 'indentLevel valid');
+				t.equal(typeof firstParsedComment.parentID, 'string', 'parentID property added');
+				t.equal(firstParsedComment.content, null, 'content is null');
+
+				const secondParsedComment = comments.parseComment(commentNodes[1], { content: true });
+				t.equal(typeof secondParsedComment.content, 'string', 'content is string');
+				t.end();
+			}).catch((err) => {
+				t.fail(err);
+				t.end();
+			});
+		});
+
+		t.end();
+	});
+
+	commentsSuite.test('filterNewComments', (t) => {
 		readPage('page_with_comments.html').then(() => {
-			const commentNodes = comments.getComments();
+			const commentOjbects = comments.getComments().map(c => comments.parseComment(c)).map((c, i) => {
+				if (i % 3 === 0) {
+					return Object.assign({}, c, { hide: true });
+				}
 
-			const firstParsedComment = comments.parseComment(commentNodes[0]);
+				if (i % 4 === 0) {
+					return Object.assign({}, c, { isNew: false });
+				}
 
-			t.equal(typeof firstParsedComment, 'object', 'parsed first comment');
-			t.equal(typeof firstParsedComment.isNew, 'boolean', 'isNew property added');
-			t.equal(typeof firstParsedComment.author, 'string', 'author property added');
-			t.equal(typeof firstParsedComment.created, 'number', 'created');
-			t.assert(!isNaN(firstParsedComment.created), 'Got valid created date');
-			t.equal(typeof firstParsedComment.indentLevel, 'number', 'indentLevel property added');
-			t.equal(typeof firstParsedComment.parentID, 'string', 'parentID property added');
-			t.equal(firstParsedComment.content, null, 'content is null');
+				return c;
+			});
+			const newComments = comments.filterNewComments(commentOjbects);
 
-			const secondParsedComment = comments.parseComment(commentNodes[1], {content: true});
-			t.equal(typeof secondParsedComment.content, 'string', 'content is string');
+			t.ok(newComments.length > 0, 'New comments found');
+			t.ok(newComments.every(c => c.isNew), 'All comments isNew property is true');
+			t.ok(newComments.every(c => !c.hide), 'All comments hide property is false');
 			t.end();
 		});
 	});

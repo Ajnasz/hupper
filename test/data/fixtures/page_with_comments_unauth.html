@@ -1,0 +1,1926 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="//www.google-analytics.com/urchin.js" type="text/javascript"></script>
+  <script type="text/javascript"> _uacct = "UA-74941-1"; urchinTracker();</script>
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta property="og:image" content="http://hup.hu/themes/B7/hup.jpg"/>
+  <meta name="keywords" content="UNIX, Solaris, HP-UX, AIX, Linux, Mac OS X, BSD, FreeBSD, OpenBSD, NetBSD, Open Source, GNU, Kernel, Free Software, MySQL, PostgreSQL, Ubuntu, Mandriva, Red Hat, Fedora, Slackware, SUSE, openSUSE, Debian, GNOME, KDE, Sun Microsystems, Hewlett-Packard, IBM, SGI, Internet, Mozilla" />
+  <meta name="viewport" content="width=device-width" /> 
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="/themes/B7/favicon.ico" type="image/x-icon" />
+   <title> Puppet, Chef vagy Salt? | HUP </title>
+   <style type="text/css" media="all">@import "/modules/aggregator/aggregator.css";</style>
+<style type="text/css" media="all">@import "/modules/book/book.css";</style>
+<style type="text/css" media="all">@import "/modules/checkbox_validate/checkbox_validate.css";</style>
+<style type="text/css" media="all">@import "/modules/node/node.css";</style>
+<style type="text/css" media="all">@import "/modules/poll/poll.css";</style>
+<style type="text/css" media="all">@import "/modules/system/defaults.css";</style>
+<style type="text/css" media="all">@import "/modules/system/system.css";</style>
+<style type="text/css" media="all">@import "/modules/tagadelic/tagadelic.css";</style>
+<style type="text/css" media="all">@import "/modules/user/user.css";</style>
+<style type="text/css" media="all">@import "/modules/forum/forum.css";</style>
+<style type="text/css" media="all">@import "/modules/comment/comment.css";</style>
+<style type="text/css" media="all">@import "/themes/B7/style.css";</style>
+   <![if gte IE 9]>
+   <link rel="stylesheet" type="text/css" media="only screen and (max-width:760px)" href="/themes/B7/mobile.css" />
+   <![endif]>
+   </head>
+<body  >
+<div id="all">
+
+  <div id="top-nav">
+   <ul id="primary"><li  class="first menu-1-1-101"><a href="/" title="főoldal" class="menu-1-1-101">főoldal</a></li>
+<li  class="menu-1-2-101"><a href="/blog" title="az olvasók naplói" class="menu-1-2-101">blogok</a></li>
+<li  class="menu-1-3-101"><a href="/forum" title="fórumok" class="menu-1-3-101">fórumok</a></li>
+<li  class="menu-1-4-101"><a href="/poll" title="korábbi szavazások" class="menu-1-4-101">szavazások</a></li>
+<li  class="last menu-1-5-101"><a href="http://wiki.hup.hu" title="a HUP lexikon" class="menu-1-5-101">HupWiki</a></li>
+</ul>     </div>
+
+<table id="content"><tbody style="border: none !important;">
+  <tr>
+           <td class="sidebar" id="sidebar-left">
+         <div id="block-block-17" class="block block-block">
+
+
+  <div class="content"><table style="border: hidden" width="140">
+<tr>
+<td align="center"><a href="//hup.hu/"><img src="/images/powered/hup_main.png" alt="" border="0"></a></td>
+</tr>
+</table>
+</div>
+</div>
+<div id="block-block-3" class="block block-block">
+
+  <h2>ls -1</h2>
+
+  <div class="content"><div class="item-list">
+<ul>
+<li><a href="/">/boot</a></li>
+<li><a href="/blog">/blogok</a></li>
+<li><a href="/cikkturkalo">/cikkturkáló</a>
+<li><a target="_blank" href="https://www.scribd.com/user/23419040/HUP/uploads">/dokumentumok</a>
+<li><a href="/elerhetosegek">/elérhetőségek</a>
+<li><a href="/faq">/faq</a></li>
+<li><a href="/150">/fórum friss</a></li>
+<li><a href="/forum">/fórumok</a></li>
+<li><a target="_blank" href="ftp://ftp.fsn.hu/pub/">/ftp</a></li>
+<li><a href="//hup.hu/tracker/">/friss tartalom</a></li>
+<li><a href="//hup.hu/hircsatornak">/hírcsatornák</a></li>
+<li><a href="/node/add/story">/hír küldése</a></li>
+<li><a href="/hup_polo">/hup póló</a></li>
+<li><a target="_blank" href="https://www.flickr.com/photos/h_u_p/sets/72157603221683740/">/képek</a>
+<li><a href="//hup.hu/modlog">/modlog</a>
+<li><a href="//hup.hu/regisztracio">/regisztráció</a></li>
+<li><a href="/poll">/szavazások</a></li>
+<li><a href="/szerver">/szerver</a></li>
+<li><a href="/tamogatok">/támogatók</a></li>
+<li><a target="_blank" href="https://www.youtube.com/hungarianunixportal">/videók</a>
+<li><a href="/visszajelzes">/visszajelzés</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="block-block-45" class="block block-block">
+
+  <h2>Itt lakik a HUP</h2>
+
+  <div class="content"><p><center><a target="_blank" href="https://rackforest.com/"><img src="/images/powered/rackforest.jpg" alt=" a rackforestes fiúk jófejek, szeretjük őket!" title="Szerverbérlés, hoszting, VPS - a rackforestes fiúk jófejek, szeretjük őket!" border="0" vspace="4" hspace="4"></img></a></center></p>
+</div>
+</div>
+<div id="block-block-35" class="block block-block">
+
+  <h2>Partnerünk</h2>
+
+  <div class="content"><table style="border: hidden;">
+<tr>
+<td align="center">
+<a target="_blank" href="http://www.szerver.hu/"><img src="/images/misc/szerver_hu_120x40.gif" alt="Intel szerverek raktárról" title="Intel szerverek raktárról" border="0" vspace="4" hspace="4"></img></a>
+</td>
+</tr>
+<tr>
+<td align="center">
+<a target="_blank" href="https://https.hu/"><img src="/images/misc/httpshu_logo.png" alt="Bitdefender" title="Bitdefender" border="0" vspace="4" hspace="4"></img></a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="block-block-12" class="block block-block">
+
+  <h2>HUP tweetjei</h2>
+
+  <div class="content"><p><a class="twitter-timeline" data-chrome="noscrollbar noborders transparent noheader nofooter" data-lang="hu" data-width="180" data-height="1500" data-dnt="true" href="https://twitter.com/search?q=from%3Ahuphu%20AND%20-%23onhup" data-widget-id="902513224129671169">Tweets about from:huphu AND -#onhup</a></p>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>
+</div>
+<div id="block-tagadelic-1" class="block block-tagadelic">
+
+  <h2>Népszerű témák</h2>
+
+  <div class="content"><a href="/Apple" class="tagadelic level2">Apple</a> 
+<a href="/Bejelentes" class="tagadelic level3">Bejelentés</a> 
+<a href="/Bug" class="tagadelic level3">Bug</a> 
+<a href="/RedHat" class="tagadelic level1">CentOS, Fedora, Red Hat, Scientific Linux</a> 
+<a href="/Debian" class="tagadelic level3">Debian</a> 
+<a href="/Egyeb" class="tagadelic level2">Egyéb</a> 
+<a href="/FreeBSD" class="tagadelic level5">FreeBSD</a> 
+<a href="/Hardver" class="tagadelic level3">Hardver</a> 
+<a href="/hirdetes" class="tagadelic level1">Hirdetés</a> 
+<a href="/taxonomy/term/237" class="tagadelic level1">HUP</a> 
+<a href="/Internet" class="tagadelic level3">Internet</a> 
+<a href="/Jatek" class="tagadelic level3">Játék</a> 
+<a href="/Kernel" class="tagadelic level4">Kernel</a> 
+<a href="/Linux" class="tagadelic level6">Linux</a> 
+<a href="/Microsoft" class="tagadelic level3">Microsoft, Windows</a> 
+<a href="/Mozilla" class="tagadelic level3">Mozilla</a> 
+<a href="/NetBSD" class="tagadelic level1">NetBSD</a> 
+<a href="/OpenBSD" class="tagadelic level3">OpenBSD</a> 
+<a href="/OpenSource" class="tagadelic level1">Open Source</a> 
+<a href="/PDA" class="tagadelic level1">PDA, Mobil, Tablet</a> 
+<a href="/Sun" class="tagadelic level1">Sun Microsystems</a> 
+<a href="/Szerszam" class="tagadelic level2">Szerszám</a> 
+<a href="/Biztonsag" class="tagadelic level3">Titkosítás, biztonság</a> 
+<a href="/Ubuntu" class="tagadelic level4">Ubuntu</a> 
+<a href="/X" class="tagadelic level2">X, Wayland, Mir</a> 
+<div class='more-link'><a href="/Temak">tovább</a></div></div>
+</div>
+<div id="block-tagadelic-2" class="block block-tagadelic">
+
+  <h2>Népszerű fórum témák</h2>
+
+  <div class="content"><a href="/taxonomy/term/174" class="tagadelic level6">Adás - vétel - csere</a> 
+<a href="/taxonomy/term/135" class="tagadelic level4">Debian GNU/Linux</a> 
+<a href="/taxonomy/term/144" class="tagadelic level1">Flame</a> 
+<a href="/taxonomy/term/186" class="tagadelic level1">Hálózatok egyéb</a> 
+<a href="/taxonomy/term/148" class="tagadelic level4">Linux-haladó</a> 
+<a href="/taxonomy/term/145" class="tagadelic level5">Linux-kezdő</a> 
+<a href="/taxonomy/term/214" class="tagadelic level2">Microsoft Windows</a> 
+<a href="/taxonomy/term/184" class="tagadelic level4">Offtopic</a> 
+<a href="/taxonomy/term/197" class="tagadelic level3">Ubuntu Linux</a> 
+<a href="/taxonomy/term/190" class="tagadelic level3">Web, mail, IRC, IM, hálózatok</a> 
+<a href="/taxonomy/term/168" class="tagadelic level1">Állást kínál</a> 
+<div class='more-link'><a href="/Temak">tovább</a></div></div>
+</div>
+<div id="block-user-2" class="block block-user">
+
+  <h2>Új felhasználók</h2>
+
+  <div class="content"><div class="item-list"><ul><li>ssarosi</li><li>merky</li><li>feher.z</li><li>andras1</li><li>Zolee001</li></ul></div></div>
+</div>
+      </td>
+             <td class="main-content" id="content-both">
+             <div class="breadcrumb"><a href="/">Címlap</a> » <a href="/forum">Fórum</a> » <a href="/forum/205">Linux</a> » <a href="/forum/148">Linux-haladó</a></div>                        <h2 class="content-title"> Puppet, Chef vagy Salt? </h2>
+                                                     <!-- start main content -->
+                  <div id="node-138188" class="node ">
+        <table style="border: hidden;" width="100%"><tr><td>&nbsp;( KAMI911 | 2015. január 21., szerda - 14:37 )</td><td align="right"><ul class="links inline"><li  class="first last taxonomy_term_148"><a href="/taxonomy/term/148" rel="tag" title="Linux-alapú operációs rendszerekkel kapcsolatos, általános problémákkal foglalkozó haladó fórum." class="taxonomy_term_148">Linux-haladó</a></li>
+</ul></td></tr></table>
+  <div class="content">
+     <p>Ti melyik konfigmenedzsment szoftvert, használjátok és miért? Jelenleg Puppeten vagyok, de lehet váltani lenne érdemes.<br />
+Linux szerveren mondjuk jól megy, Windows klienseken viszont vannak furcsaságok. Kinek mi a tapasztalata?</p>
+<p>Furcsa nekem, hogy ha hibára fut egy modulban, akkor a többit vagy megcsinálja vagy nem (nem a függőségeknél, mert nyilván az úgy jó). Nem tudom ez a többinél is így van? Puppetben lehet valahogy pusholni a configot? Most kb 4 óránként fut (úgy álítottam át), de néha jó lenne azonnal kiküldeni a változtatásokat, vagy parancsokat futtatni a klienseken.</p>
+<p>Jelenleg kb 50 Linux szerverrel viaskodik és 25 windows-os klienssel.</p>
+<p>Kicsit úgy érzem sok tapasztalat és ötlet kapcsán, hogy illene leírni az én tapasztalataimat is.<br />
+* Alapvetően jól működik (server 3.4, kliensek 3.7.3)<br />
+* Case sensitive problémába ütköztem ( C:\abcd != C:\ABcd) és sehogy nem tudom rávenni a pulletet, hogy ilyenkor írja felül az adott fájlt mappát, hibával elszáll.<br />
+* Ha hiba van akkor bizonytalan hogy melyik modulok futnak le és melyikek nem<br />
+* Nem lehet olyat mondani, hogy egy telepítés max 1 órát fusson, ha nem sikerül akkor nyilván valami gond volt.<br />
+* A klienseken 4 óránként fut le az ellenőrzés /így konfoltam/<br />
+* Nincs mód rá hogy a szerverről kinyomjunk egy frissítést vagy lefuttassunk parancsokat az összes vagy megadott gépeken<br />
+* Nem tudom (vagy nem tudom hogy tudhatom meg egyszerűen), hogy hol sikerültek a frissítések vagy hol van valami baj.</p>
+<p>Ugyanúgy használom Linux szerverek (Ubuntu, Debian, SUSE, Orcle Linux) menedzselésére, ott a problémák egy része nem lép fel, de a Puppet szerverről kiadott parancsok futtatása (a klienseken) ott is hiányzik. Vagy csak nem találtam rá módot?</p>
+<div class="forum-topic-navigation clear-block"><a href="/node/149832" class="topic-previous" title="Ugrás az előző fórum témára">‹ Naptár megosztás, kiszolgálás linuxon</a> <a href="/node/149725" class="topic-next" title="Ugrás a következő fórum témára">pppd sstp + passprompt.so plugin ›</a></div>  </div>
+  <div class="links">
+        &nbsp;&raquo;<ul class="links inline"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last statistics_counter"><span class="statistics_counter">10299 olvasás</span></li>
+</ul>      </div>
+</div>
+<div id="comments"><form action="/node/138188"  accept-charset="UTF-8" method="post" id="comment-controls">
+<div><div class="box">
+
+  <h2 class="title">Hozzászólás megjelenítési lehetőségek</h2>
+  <div class="content"><div class="container-inline"><input type="hidden" name="form_id" id="edit-comment-controls" value="comment_controls"  />
+<div class="form-item" id="edit-mode-wrapper">
+ <select name="mode" class="form-select" id="edit-mode" ><option value="1">Egyszerű (csak címek)</option><option value="2">Egyszerű (teljes)</option><option value="3">Beágyazott (csak címek)</option><option value="4" selected="selected">Beágyazott (teljes)</option></select>
+</div>
+<div class="form-item" id="edit-order-wrapper">
+ <select name="order" class="form-select" id="edit-order" ><option value="1">Dátum - újabbak elöl</option><option value="2" selected="selected">Dátum - régebbiek elöl</option></select>
+</div>
+<div class="form-item" id="edit-comments-per-page-wrapper">
+ <select name="comments_per_page" class="form-select" id="edit-comments-per-page" ><option value="10">10 egy oldalon</option><option value="30">30 egy oldalon</option><option value="50">50 egy oldalon</option><option value="70">70 egy oldalon</option><option value="90">90 egy oldalon</option><option value="150">150 egy oldalon</option><option value="200">200 egy oldalon</option><option value="250">250 egy oldalon</option><option value="300">300 egy oldalon</option><option value="1000">1000 egy oldalon</option><option value="3000" selected="selected">3000 egy oldalon</option></select>
+</div>
+<input type="submit" name="op" id="edit-submit" value="Beállítás"  class="form-submit" />
+</div><div class="description">A választott hozzászólás megjelenítési mód a „Beállítás” gombbal rögzíthető.</div></div>
+</div>
+
+</div></form>
+<a id="comment-1828368"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mrmartin | 2015. január 21., szerda - 15:03 )</div>
+  <div class="content"><p>Kami,</p>
+<p>ez: <a href="https://docs.puppetlabs.com/references/stable/man/kick.html">https://docs.puppetlabs.com/references/stable/man/kick.html</a> ?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828368" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828801"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( fraque | 2015. január 22., csütörtök - 14:01 )</div>
+  <div class="content"><p>a puppet kicket tudtommal evek ota probaljak kiirtani:<br />
+<code><br />
+# puppet kick<br />
+Warning: Puppet kick is deprecated. See <a href="http://links.puppetlabs.com/puppet-kick-deprecation">http://links.puppetlabs.com/puppet-kick-deprecation</a><br />
+Warning: Failed to load ruby LDAP library. LDAP functionality will not be available<br />
+Finished<br />
+</code><br />
+ de mco-val, pssh-val, ansible-lel vagy barmivel tudsz egy 'puppet agent --test'-et nyomni, vagy ha van helyi checkout, akkor `puppet apply /path/to/site.pp`</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828801" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829243"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 23., péntek - 16:05 )</div>
+  <div class="content"><p>Ezert en is eleg morcos vagyok, ha mar ott van a nyomorult puppet master, miert nem lehet kiforcoltatni a frissitest? Persze, belepkedhetek akar egyesevel is a gepekre, meg hasznalhatok tizenotfajta kulonbozo toolt, de maga az infra benne van a puppetben, miert akarnek en barmi mast hasznalni erre?<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829243" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829268"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( onyx | 2015. január 23., péntek - 16:50 )</div>
+  <div class="content"><p>Nincs benne, mert mindig a kliens epiti ki a kapcsolatot, a puppetmaster nem kezdemenyez tranzakciot, tehat a puppet agent pull metodussal mukodik.<br />
+Az mar mas kerdes, hogy akar lehetne ilyen lehetoseg beepitve.<br />
+Mondjuk szerintem nem rossz, ha rendelkezesre all egy Mcollective telepites is a puppet melle, amivel aztan lehet a puppetrunt pocogtetni, meg meg millio mas dolgot csinalni.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829268" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829677"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 25., vasárnap - 1:47 )</div>
+  <div class="content"><p>Az infra alatt a feltetelekre gondoltam, a puppetmaster tobbe-kevesbe ismeri az osszes node-t, azok elerhetosegeit, le lehet gyujtetni a factokat, meg a jo eg tudja, mennyi infot tud a master, ennyibol mar csak ossze lehetne loni egy vissziranyu kommunikaciot. </p>
+<p>Nezegettem ezt az MCollective cuccot, viccesnek tunik, de sajnos elesben meg nem tudtam kiprobalni.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829677" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1829302"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( fraque | 2015. január 23., péntek - 19:22 )</div>
+  <div class="content"><p>az AWS ugy hozta ossze a zonakban a gepeimet, hogy 2s-es RTT volt az eu-west-1a es eu-west-1c kozott es egy sima agent run 40 perc volt, amikor epp nem timeout-olt, en akkor alltam at mco+apply-ra:)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829302" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829676"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 25., vasárnap - 1:45 )</div>
+  <div class="content"><p>Nekem halistennek ilyen bajaim nincsenek, a puppet agent szokott kopogosra fagyni, olyankor bele kell rugni egy embereset, ezen felul semmi.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829676" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2024228"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( slinky | 2016. szeptember 27., kedd - 13:10 )</div>
+  <div class="content"><p>igen, ez ismeros ;)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024228" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div><a id="comment-1828410"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( jupiter2005ster | 2015. január 21., szerda - 16:20 )</div>
+  <div class="content"><p>mi eppen Salt-ot vezetünk be. Jelenleg nem tudok nyilatkozni.</p>
+<p>puppet-t es chef mar csak a hype miatt sem akartunk :)</p>
+<p>a dokumentációja meggyőző és ez volt az első amit olvastunk. ha lesz olyat amit nem tudunk megoldani vele akkor lehet majd migrálunk.</p>
+<p>bár kapásból tudok egyet. <br />
+nincs modul a kávé főzésre ;)<br />
+--<br />
+A legértékesebb idő a pillanat amelyben élsz.<br />
+<a href="https://sites.google.com/site/jupiter2005ster/">https://sites.google.com/site/jupiter2005ster/</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828410" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828414"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kallo | 2015. január 21., szerda - 16:22 )</div>
+  <div class="content"><p>miért, hány kávéfőzőtök van? hány kávét kell lefőzzél? :D</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828414" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1828413"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kallo | 2015. január 21., szerda - 16:21 )</div>
+  <div class="content"><p>Én még csak a salt-stack-et ismerem jobban, azért döntöttem mellette mert gyorsan üzembe lehet helyezni és pont arra jó amit írtál, hogy gyorsan pusholni tudd a dolgokat, azonnal lefut minden a kiadás pillanatába(ha elérhető a kliens)de azonnal kapsz értesítést arról is, hogy mi történt..<br />
+Sajnos nem tökéletes vannak apróbb hibái, de sztem vállalható.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828413" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828415"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dap | 2015. január 21., szerda - 16:28 )</div>
+  <div class="content"><p>Puppet, de nem ajánlom, én ilyen bugos szoftverrel korábban sose találkoztam. Greenfield projectnél a Chef-et nézném meg először. Sajnos nem csak implementációs, hanem tervezési problémák is vannak.</p>
+<p>Mondjuk lehet hogy az a gond, hogy erősen szimpatizálok a Rails-szel, a DRY nagyon erősen él bennem. Ha nem zavar a redundancia akkor a problémák jó részét megkerülöd, mert legtöbb gond a rosszul kigondolt öröklés miatt van, de ugye nem kötelező örökölni.</p>
+<p>~41k sornyi megírt .pp alapján alakult ki ez a véleményem.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828415" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829174"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Madman | 2015. január 23., péntek - 12:59 )</div>
+  <div class="content"><p>te most hasznalni szeretned vagy fejleszteni? Szerintem a kerdes a hasznalatara vonatkozott</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829174" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829212"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dap | 2015. január 23., péntek - 14:21 )</div>
+  <div class="content"><p>Ez a puppet manifest-ekre vonatkozik.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829212" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-1828419"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( elod | 2015. január 21., szerda - 16:26 )</div>
+  <div class="content"><p>Puppet kezdő vagyok Windows-on.</p>
+<p>Ami nálam felmerült:<br />
+- néha a jogosultságok kliens oldalon a fejük tetejére állnak, pontosan nem jöttem rá mitől van, azután is megtörtént hogy explicit beállítottam mi legyen<br />
+- néha beragad a processz és újraindításkor nem törlődik a lock file<br />
+- push-ot nem használom, félóránta fut, alapvetően jól megy<br />
+- push-ot tud, csak az mcollective kell hozzá mintha<br />
+- scheduled task-ok kezelése még nem az igazi</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828419" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828554"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Kayapo | 2015. január 21., szerda - 22:01 )</div>
+  <div class="content"><p>- A saltstack nagyon friss, túl új, kevés (viszonylag) a use case.<br />
+- A puppet nagyon flexibilis sokat tud, nagyon könnyű rávenni bármire, ha magadévá teszed a szemléletét.<br />
+- A chef nem ekkora hálózatra van optimalizálva. Annak a pozitívumai lenginkáb a néhány száztól néhány ezer node -ból álló rendszereken mutatkozik meg.<br />
+- A cfengine2/3 szinte bármekkora hálózatban bevezethető ez az első (tudomásom szerint) ilyen célú alkalmazás. A tanulhatósága, viszont hagy némi kívánni valót maga után. A syntaxisa és a configurálás elve (főképp a 3 esetében) meglehetősen bakafántos</p>
+<p>Mindent össze vetve nekem jelenleg a puppet előtte a cfengine2/3 a kedvencem.</p>
+<p>Kávé főzéshez ezt a kiegészítőt javaslom: <a href="http://www.mrcoffee.com/coffeemakers/BVMC-PSTX91WE.html">http://www.mrcoffee.com/coffeemakers/BVMC-PSTX91WE.html</a> </p>
+<p>----<br />
+올드보이<br />
+<a href="http://molnaristvan.eu/">http://molnaristvan.eu/</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828554" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828573"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zsolt.k | 2015. január 21., szerda - 22:35 )</div>
+  <div class="content"><p>Én próbáltam mindhármat, a SaltStack vált be legjobban:<br />
+- villámgyorsan üzembe helyezhető<br />
+- minimális tanulási fázis, átlátható config fájlok<br />
+- kevés erőforrást eszik</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828573" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828606"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Mico | 2015. január 22., csütörtök - 1:38 )</div>
+  <div class="content"><p>puppet - ahogy fentebb is írták, bugos. de egy idő után megszokod és nem tűnik fel.</p>
+<p>a salt nagyon megtetszett, de az is néha ugyanolyan bugos. a filozófia zsír. kár, hogy kicsit is komolyabb konfignál, gépszámnál már olyan dolgokat kellett feltalálni, hogy utoljára akkor fájt annyira a fejem, amikor egy éjszakát rászántam a brainfuck-ra. ha egy kicsit még fejlődik, akkor ez javulni fog. a sebesség nem tudom, mitől javulna, mert nem is valami gyors. egyszer rászántam egy kis időt játszani, bekonfolja az RSA II-t, feltelepíti a bubuntut, berakja nagiosba, haproxy-ba, mókol az LSI kártyával, amennyit néztem, hogy csinálja, az alatt 100 szerver is elkészült volna, de megnyugtat a tudat, hogy ez mostanában így cool.</p>
+<p>a cfengine-ről annyit tudok, hogy úgy döntöttünk, hogy elfelejtjük. :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828606" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829019"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( jupiter2005ster | 2015. január 22., csütörtök - 22:48 )</div>
+  <div class="content"><p>ez mikor volt?<br />
+--<br />
+A legértékesebb idő a pillanat amelyben élsz.<br />
+<a href="https://sites.google.com/site/jupiter2005ster/">https://sites.google.com/site/jupiter2005ster/</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829019" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1828614"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( bigpojnt | 2015. január 22., csütörtök - 7:04 )</div>
+  <div class="content"><p>Ha van idod sokat foglalkozni vele, cserebe sok gepes kornyezetben gyorsan futo konfigmenedzsmentet akarsz akkor cfengine.</p>
+<p>Ha gyorsan akarsz latvanyos eredmenyt elerni akkor puppet.</p>
+<p>Ha penzt is szeretnel raszanni, akkor chef.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828614" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828616"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mhmxs | 2015. január 22., csütörtök - 8:02 )</div>
+  <div class="content"><p>Velos kis osszefoglalo.<br />
+-<br />
+<a href="http://jpattern.blogspot.hu/2014/11/valtozekony-grails-alkalmazas.html" class="bb-url">Változékony Grails alkalmazás konfiguráció facepalm</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828616" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829050"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( bigpojnt | 2015. január 23., péntek - 1:43 )</div>
+  <div class="content"><p>pozitivumkent irtad es egyet ertesz vele? :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829050" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1829245"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 23., péntek - 16:07 )</div>
+  <div class="content"><p>Miert kellene a chef-hez penz? Tudtommal mukodik ingyenesen is, a cookbookok meg free elerhetok.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829245" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829317"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( bigpojnt | 2015. január 23., péntek - 20:44 )</div>
+  <div class="content"><p>A penzes feature-k miatt erheti meg hasznalni.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829317" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1830439"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 27., kedd - 11:05 )</div>
+  <div class="content"><p>Attol fugg, mi a cel. Szerintem az ingyenes feature-k is vannak olyan jok, hogy megerje hasznalni. Nehol sokkal okosabb, mint a Puppet, raadasul managelni is egyszerubb.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1830439" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div><a id="comment-1828617"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mhmxs | 2015. január 22., csütörtök - 8:09 )</div>
+  <div class="content"><p>Mi chef-et hasznalunk. Leginkabb azért mert ezt tamogatja az amazon opsworks. </p>
+<p><a href="http://jpattern.blogspot.hu/2014/11/valtozekony-grails-alkalmazas.html" class="bb-url">Változékony Grails alkalmazás konfiguráció facepalm</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828617" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828659"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dragi | 2015. január 22., csütörtök - 15:01 )</div>
+  <div class="content"><p>Nem használtam még egyiket sem, csak olvasgatok róluk, de az ansible beleillik ebbe a hármasba, vagy más kategória?</p>
+<p>--<br />
+<a href="http://pyftpadmin.earthquake.hu">http://pyftpadmin.earthquake.hu</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828659" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829746"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2015. január 25., vasárnap - 12:09 )</div>
+  <div class="content"><p>Bele, bar szorosabban nezve a saltstack es az ansible kicsit jobban osszeillik, vmint chef vs. puppet.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829746" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829856"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dragi | 2015. január 25., vasárnap - 16:52 )</div>
+  <div class="content"><p>Köszi</p>
+<p>--<br />
+<a href="http://pyftpadmin.earthquake.hu">http://pyftpadmin.earthquake.hu</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829856" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-1828663"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( onyx | 2015. január 22., csütörtök - 10:36 )</div>
+  <div class="content"><p>Nalunk Puppet, csak ajanlani tudom. Mondjuk erdemes elszakadni a tipikus package-file-service triotol es egy kis logikat tenni a manifestjeidbe. Ha ez megy, akkor szerintem nagyon jo.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828663" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828727"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( o_O | 2015. január 22., csütörtök - 12:04 )</div>
+  <div class="content"><p>+1 </p>
+<p>Mi is jo par helyen hasznaljuk. Vannak neha eleg fura bugok fentebb emelitette valaki de a 3.5.x eddig egesz stabbilnak tunik.<br />
+--<br />
+"ssh in a for loop is not a solution" – Luke Kanies, Puppet developer</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828727" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1830441"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 27., kedd - 11:06 )</div>
+  <div class="content"><p>Illetve logikat lehet tenni ruby-ban is, ha a manifest lehetosegei szukosnek bizonyulnak.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1830441" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1828665"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( siposa | 2015. január 22., csütörtök - 10:38 )</div>
+  <div class="content"><p>sub</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828665" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829141"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Hydro | 2015. január 23., péntek - 11:50 )</div>
+  <div class="content"><p>+1</p>
+<p>- - - - -<br />
+<a href="http://xethost.hu" target="_blank">XetHost</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829141" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2024206"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( veresh | 2016. szeptember 27., kedd - 11:27 )</div>
+  <div class="content"><p>+1</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024206" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1828715"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( pirate | 2015. január 22., csütörtök - 11:46 )</div>
+  <div class="content"><p>Esetleg ansible?</p>
+<p>---<br />
+"Már nem csak tehetségekből, de a hülyékből is kifogytunk..."</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828715" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828768"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Zsugabubus | 2015. január 22., csütörtök - 13:06 )</div>
+  <div class="content"><p>+ nagyonsok, csak Windowsra azért még elég kezdetlegesnek tűnik.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828768" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828791"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( pirate | 2015. január 22., csütörtök - 13:49 )</div>
+  <div class="content"><p>Az MS sajat eszkozei nem jok Win-re (AD+GPO)?</p>
+<p>---<br />
+"Már nem csak tehetségekből, de a hülyékből is kifogytunk..."</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828791" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828862"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( elod | 2015. január 22., csütörtök - 15:32 )</div>
+  <div class="content"><p>Nem portable a skill set és nem sexy.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828862" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1828913"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kallo | 2015. január 22., csütörtök - 17:41 )</div>
+  <div class="content"><p>vagy ha van pénz SCCM.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828913" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025037"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( traktor | 2016. szeptember 30., péntek - 10:47 )</div>
+  <div class="content"><p>Meg ido, hogy valaki felkonfiguralja...</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025037" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1829042"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Zizi | 2015. január 23., péntek - 0:55 )</div>
+  <div class="content"><p>A linuxos konfig menedzsment eszközök párja windowson inkább a PowerShell DSC (Desired State Configuration). Ha barátod a .NET, akkor elég jó dolgokat össze lehet rakni vele.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829042" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1830443"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 27., kedd - 11:07 )</div>
+  <div class="content"><p>Bizonyos szempontbol korlatozott a kepessege a GPO-nak, a 3rdparty alkalmazasok supportja eleg kezdetleges egy fuggetlen implementaciohoz kepest.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1830443" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div><a id="comment-1828828"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Herakleitos | 2015. január 22., csütörtök - 14:26 )</div>
+  <div class="content"><p>ANSIBLE<br />
+Egyszerű.<br />
+SSH-n megy.<br />
+Nem kell neki a kezelt eszközön előre telepített szoftver.<br />
+Gyors.<br />
+Verziózható (git, mercurial, stb) a CM állomány.</p>
+<p>"Csak a változás állandó." - Herakleitos</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828828" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829043"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Zsugabubus | 2015. január 23., péntek - 1:14 )</div>
+  <div class="content"><p>+ rengeteg modul van hozzá, de ha hiányzik valami, sima Pythonban megirhatod magadnak.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829043" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1829222"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sibike | 2015. január 23., péntek - 15:03 )</div>
+  <div class="content"><p>És még mindig csak pusholni lehet konfigot?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829222" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829246"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 23., péntek - 16:08 )</div>
+  <div class="content"><p>Tekintve, hogy a master csinal mindent, es nincs agent...<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829246" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1829292"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Zsugabubus | 2015. január 23., péntek - 18:40 )</div>
+  <div class="content"><p>Ha írsz elé valami wrappert, ami lehúzza, akkor lehet local-ban futtatni. Akár csomagot is csinálhatsz a playbook gyűjteményből. Vagy ott az ansible-pull, én még nem próbáltam, a push konfiguráció eddig tökéletesen bejött nekem.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829292" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1829310"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Zizi | 2015. január 23., péntek - 20:16 )</div>
+  <div class="content"><p>Van ansible-pull, és telepítheted pl. így:</p>
+<p><a href="https://github.com/ansible/ansible-examples/blob/master/language_features/ansible_pull.yml">https://github.com/ansible/ansible-examples/blob/master/language_features/ansible_pull.yml</a></p>
+<p>Viszont az ansible nem nagyon van kihegyezve erre a működési módra, nem lesz központi naplód arról, hogy mi történik meg ilyenek.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829310" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829320"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sibike | 2015. január 23., péntek - 20:55 )</div>
+  <div class="content"><p>Nézegettem már korábban az ansible-t és tényleg tesztett, hogy milyen egyszerű. De pont a naplózás hiánya miatt tűnt nekem eddig valódi életben használhatatlannak. De lehet hogy csak én vagyok kiváncsi, hogy a node-okon valóban megtörtént-e a konfiguráció változtatás</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829320" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div><a id="comment-1828863"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( egmont | 2015. január 22., csütörtök - 15:34 )</div>
+  <div class="content"><p>Némi utánaolvasás után a Salt-ot választottuk. A többit nem tanulmányoztam (vö. <a href="http://xkcd.com/1445/">http://xkcd.com/1445/</a>).</p>
+<p>Az jött le nekem a cikkek alapján, hogy a maga módján mindegyik szopás. (Ha valamelyik nem lenne az, azt használná mindenki.) A kérdés leginkább az, hogy a te esetedre melyik hátrányok a leginkább lenyelhetők, illetve megéri-e váltani.</p>
+<p>A hibákat jobban észreveszi az ember, hülyeség lenne most leírnom hogy "megkértem valamire, és jé megcsinálta". Szóval szubjektív lista az engem idegesítő hibáiról:</p>
+<p>- A hagyományos Unix filozófia, miszerint akkor dumálunk ha baj van, tökéletes pofonbaszása. Rengeteget rizsázik a sikerről is; többezer sor output-ot kell visszatekerned hogy kiderítsd, volt-e hiba. Sőt! Ha valamelyik klienst nem tudta elérni, arról semmit nem jelez! (Lehet hogy átkonfigurálható, de bakker, hadd ne kelljen ezzel foglalkoznom!)</p>
+<p>- Sokszor nem talál rá egy kliensre. Ha sokáig nem csinálsz semmit, és megkéred valamire, van hogy csak a kliensek egy része hallgat, aztán újra megkéred, meg harmadszor is, akkor már mindenki.</p>
+<p>- Közel azonos verzió kell kliens és szerver oldalon. Például az Ubuntu Trusty által szállított szerver és az Utopic által szállított kliens nem kompatibilis.</p>
+<p>- TAB completion a kliensekhez fordul az elérhető kiegészítésekért, és baromi hosszú a timeout ha bármelyik nem elérhető, vagyis gyakorlatilag használhatatlan.</p>
+<p>- Számomra totál káosz az egyszeri parancsok és a konfig fájlba írható dolgok közti összefüggés; hasonló, de nem teljesen ugyanaz az elérhető dolgok listája.</p>
+<p>- A konfig fájl struktúrája szörnyű, például rendszeres hogy egy lista elemei egyelemű map-ek diszjunkt kulccsal - miért nem egyetlen többelemű map? Ezen felül is szerintem erőltetett, bonyolult - bár pont ennek az ellenkezőjét mondják sokan. A függőségeket, például konfig fájl változása vagy gitből frissítés esetén szerver újraindítása, elég nehéz megérteni és nehézkes megcsinálni.</p>
+<p>- Az elérhető funkciókban sok hiányosságot találtam, olyan dolgokat nem tud amik számomra alapok lettek volna. Például patch-et alkalmazni csak akkor tud, ha megadom a kiindulási fájl md5-jét. De ha pontosan ismerem a kiindulási fájlt, akkor akár a teljes új verziót is letárolhatnám, szóval ennek semmi értelmét nem látom; annak lenne értelme hogy kissé eltérő fájlokra is megpróbálja alkalmazni.</p>
+<p>- Amíg olyat akarsz csinálni, amire ők is gondoltak, addig elég nagy segítség. Ha bármi speciálisabbra van szükséged, akkor szenvedni fogsz, és visszasírod a kézi ssh-val szkriptezést :)</p>
+<p>- Szűkszavú, nehezen érthető dokumentáció.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828863" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828867"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( onyx | 2015. január 22., csütörtök - 15:42 )</div>
+  <div class="content"><p>Ezek alapjan a Salt ismerete nelkul nekem egyertelmu, hogy ezt _nem_ valasztanam :)<br />
+Persze mindenki maskepp gondolkodik.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828867" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828875"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( egmont | 2015. január 22., csütörtök - 16:05 )</div>
+  <div class="content"><p>Mivel sok cikk a salt-ot hozza ki nyerőnek, ezért feltételezem, hogy a többinek is vannak ehhez hasonló betegségei. Jó lenne ha valaki hozzám hasonló kritikus szemmel kiemelné a többi megoldás gyengéit.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828875" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1828958"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zsolt.k | 2015. január 22., csütörtök - 19:44 )</div>
+  <div class="content"><p>Puppet:<br />
+- erőforrásigényes, sokszor elkezdi enni a memóriát<br />
+- (számomra) undorító config fájlok, 1 hétig szenvedtem velük, Salt-nál 1 nap után készségszinten használtam<br />
+- van sok modul, de nekem eddig egyiket sem sikerült használni, mert: nem volt kompatibilis az OS-el, nem volt kompatibilis annak a szolgáltatásnak a legfrissebb verziójával amit kezelnie kellett volna, bele kellett volna nyúlni a modulba, mert pont olyan konfigurációs lehetőség nem volt, mint ami kellett volna. Elkapott az ideg, amikor már 6 órája próbálgattam egy adott dolog elvégzésére való modulokat.<br />
+- az agent-ek beállítása a Salt-hoz képest kínszenvedés, a salt minionok generálnak maguknak kulcsot, és bejelentkeznek a masterhez, Puppetnél (mikor használtam) ezt kézzel kellett megtenni<br />
+- a Puppet dokumentációja elég szűkszavú, sok dologra nem tér ki</p>
+<p>Hozzáteszem a Salt-nak is megvannak az egmont által leírt hiányosságai, de alapvetően egy gyorsan tanulható, gyorsan üzembehelyezhető, szerethető eszköz.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1828958" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829035"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( o_O | 2015. január 23., péntek - 0:26 )</div>
+  <div class="content"><p>Nah nem mintha vedeni akarnam a puppetet de azert jo lenne tisztazni par dolgot.</p>
+<p>- Ez 2.x sorozatban igaz volt 3.5.x folott mar nem.</p>
+<p>- Inkabb rubyhoz hasonlo konfigja valaki szereti valaki nem de az 1 het eleg tulzo.<br />
+- Nagyon egzotikus OS-t hasznalhatsz puppetlabs altal kiadot modulok Ubuntu/Centos/Redhat kompt. altalaban. Ja ,hogy programozni kellet volna egy kicsit? Azert ez nem a kategoria ,hogy googleozol es talalsz mindenre magadnak modulet.<br />
+- Puppet agentek is maguknak a kezdetek oda maguknak kulcsot az elso indulasnal.<br />
+- bullshit.</p>
+<p>Itt alapvetoen szerintem nem a puppetel volt a gond hanem veled. Mert ezek nem a puppet hibai voltak hanem ,hogy nem erteted meg a mukodest hanem azt vartad ,hogy letoltesz valami es egybol mukodni fog.</p>
+<p>--<br />
+"ssh in a for loop is not a solution" – Luke Kanies, Puppet developer</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829035" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829036"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( onyx | 2015. január 23., péntek - 0:28 )</div>
+  <div class="content"><p>Egyetertek. Kar ebbol is vallashaborut csinalni, mindenki azzal szivatja magat amivel akarja. Annyit tudok mondani, hogy a fenti jelensegeket en meg 2.6-2.7 verzional sem tapasztaltam.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829036" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1829048"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zsolt.k | 2015. január 23., péntek - 1:42 )</div>
+  <div class="content"><p>Na álljon meg a menet, tisztázzunk akkor tényleg pár dolgot:</p>
+<p>1. az általam leírt dolgok a szubjektív véleményemet, tapasztalatomat tükrözik. A kérdező többek között erre volt kíváncsi.<br />
+Mellesleg nem mondtam, hogy bármelyik tökéletes, vagy jobb a másiknál. Alapvetően nem vagyok csőlátású, azt vallom, hogy a feladathoz/célhoz/projekthez kell eszközt választani. Van ahol a SaltStack, van ahol a Puppet, van ahol a cfengine, van ahol teljesen más a jó megoldás.</p>
+<p>2. "Inkabb rubyhoz hasonlo konfigja valaki szereti valaki nem de az 1 het eleg tulzo."<br />
+Nem tudom, programozok Ruby-ban, de nekem a Puppet config fájljai a Salt-éhoz képest átláthatatlanok. Az 1 hét 1 hét volt, lehet másnak fele annyi, az is lehet, hogy másnak a Salt-é nem fog tetszeni. Ismétlem, csak, hogy megértsd: szubjektív vélemény, tapasztalat.</p>
+<p>3. "Nagyon egzotikus OS-t hasznalhatsz puppetlabs altal kiadot modulok Ubuntu/Centos/Redhat kompt. altalaban."<br />
+Így van, csak a PuppetLabs nem gyárt a világ minden szoftveréhez modult. Sajnos vannak egzotikusabb dolgok is, amiket kénytelenek vagyunk használni, és nincs hozzá official modul.</p>
+<p>4. "Ja ,hogy programozni kellet volna egy kicsit? Azert ez nem a kategoria ,hogy googleozol es talalsz mindenre magadnak modulet."<br />
+Ne haragudj, de nem hiszem, hogy ismerjük egymást, így nem tudom mire vélni ezt a megjegyzésed. Két cég vezető fejlesztőjeként programozok eleget (nem rendszergazda vagyok), mellesleg a vége az lett, hogy minden modult megírtunk magunknak.</p>
+<p>5. "Puppet agentek is maguknak a kezdetek oda maguknak kulcsot az elso indulasnal."<br />
+Anno én mikor elkezdtem belemélyedni, az official guide úgy kezdte az adott részt, hogy "generáljunk kulcsot". Persze lehet rosszul emlékszem, ez benne van a pakliban.</p>
+<p>6. "bullshit"<br />
+Szerintem ez itt egy szakmai fórum. Ha nem vagy képes kulturáltan vitatkozni egy témáról, akkor ne szólj hozzá. Ha igen, akkor támaszd alá érvekkel, és ha jogos, akkor meggyőzöl, vagy beszélgethetünk róla tovább.</p>
+<p>"Itt alapvetoen szerintem nem a puppetel volt a gond hanem veled. Mert ezek nem a puppet hibai voltak hanem ,hogy nem erteted meg a mukodest hanem azt vartad ,hogy letoltesz valami es egybol mukodni fog."</p>
+<p>Szerintem nem ismerjük egymást, így nem tudom milyen alapon írod ezt. Nem vártam semmi ilyesmit, egyrészt mint fentebb is részleteztem, a végén megírtuk mi magunk a szükséges modulokat tokkal, vonóval, másrészt pedig már ne haragudj, de ha fent volt a Puppet Forge-on a modul, akkor gondoltuk előbb megnézzük, mielőtt elkezdünk munkaórákat beleölni a saját modulok megírásába. Tudod vannak emberek akik ilyen munkahely nevű izében dolgoznak (majd próbáld ki egyszer, adnak pénzt a munkádért meg minden), és sajnos bizonyos külső tényezők behatárolják az erőforrásokat (menedzsment, ügyfél, stb).</p>
+<p>ui.: bocs ha elragadtattam magam, de nem igazán bírom felfogni, hogy egyes emberek egy szakmai fórumon elkezdenek okoskodni/személyeskedni, nem képesek elfogadni, hogy nem csak az ő nézőpontjuk létezik, és képtelenek kulturált szakmai vitát folytatni. Ilyenkor én is felveszem az ő stílusukat.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829048" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829065"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dap | 2015. január 23., péntek - 4:35 )</div>
+  <div class="content"><p>Én nem igazán hiszek a 3rd party, előregyártott puppet modulokban. A saját modulok rövidebbek, egységes elvek mentén működnek, így egyszerűbb belenyúlni és karbantartani. Először persze sok kész modult kezdünk el használni, aztán ezek elkezdtek kikopni, mert gyakran több idő ment el rájuk mint megírni a nulláról. Ezt számomra összességében pozitívum: ennyire könnyű modult írni.</p>
+<p>Én nem találkoztam a többi felsorolt hátránnyal se. Üzemeltetési szempontból jó a puppet, stabilan, megbízhatóan fut a gépeken, könnyű telepíteni és monitorozni.</p>
+<p>Szerintem a puppet jó eszköz, az öröklést és a nyelv egyes elemeit leszámítva. A probléma állatorvosi lova a <a href="http://projects.puppetlabs.com/issues/5517">#5517</a>. Nem ez az egyetlen probléma vele, de legszebb példája annak, hogy mennyire nem volt (jól) kitalálva amikor megalkották és ettől azóta sem szabadultak. És ez nem csak az én véleményem;</p>
+<blockquote><p>
+ Status: Accepted<br />
+ Priority: High<br />
+ Added by Peter Meier about 4 years ago
+</p></blockquote></p>
+<p>( és nem, a Hiera nem váltja ki az öröklést. :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829065" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829199"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zolo | 2015. január 23., péntek - 13:43 )</div>
+  <div class="content"><p>Egyetertek veled a sajat modulok vs mar megirtakban.</p>
+<p>A regebbi 2.7 elotti Puppetnel volt egy szep bug, neha, elrontotta a serveren a fileok jogait...Nagyon orvendetes vele szembesulni :)<br />
+Upgrade utan elmult ez a problema. Csak ugy megjegyzeskent:)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829199" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1829307"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( fraque | 2015. január 23., péntek - 19:37 )</div>
+  <div class="content"><p>altalaban a kodujrahasznositast tamogato nyelvi elemek hianya/hianyossagai olik meg a forge-rol letoltheto modulok nagy reszet, lasd params pattern vs module_data, meg a hiera hasznalatanak olyan korlatai, amik miatt gyakorlatilag _mindenhez_ kell egy wrapper, amit onnan toltesz le.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829307" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829355"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dap | 2015. január 24., szombat - 0:26 )</div>
+  <div class="content"><p>Igen, de ugye nem csak a forge-os modulok felhasználhatóságát érinti ez a hiányosság, a saját fejlesztéseket is bekorlátozza, az jobban fáj.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829355" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-1829250"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 23., péntek - 16:16 )</div>
+  <div class="content"><p>Csak amihez en is hozza tudok vau.</p>
+<p>5) Ez szerencsere eleg sokat valtozott: <a href="https://docs.puppetlabs.com/guides/install_puppet/post_install.html">https://docs.puppetlabs.com/guides/install_puppet/post_install.html</a> a node-k automatikusan generalnak maguknak kulcsot es beposztolnak egy CSR-t, neked a master oldalan csak egy darab paranccsal approve-olni kell, ami mellesleg general egy publik kulcsot a node-nak, majd a puppet agent ujboli futtatasaval automatan telepul is a cert. </p>
+<p>6) Szerintem is nagyon regen nezted mar a puppet doksijat. A docs.puppetlabs.com -nal keves reszletesebb dokumentaciot olvastam, igazabol sok szoftverhez ennek a tizede sincs. Lehet, hogy regen keves doksi volt hozza, de ez ma mar egyaltalan nem igaz.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829250" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829305"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( fraque | 2015. január 23., péntek - 19:30 )</div>
+  <div class="content"><p>5) meg kezzel sem kell hozzanyulni, van autosign, policy-based autosign, szoval eleg jol le is vedheto.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829305" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-1829756"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2015. január 25., vasárnap - 12:19 )</div>
+  <div class="content"><p>&gt; Szerintem ez itt egy szakmai fórum. Ha nem vagy képes kulturáltan vitatkozni egy témáról, akkor ne szólj hozzá.</p>
+<p>Szakmai forum es kulturaltam forumozott, total relevans volt a hozzaszolasa.<br />
+Mielott felhuzod az orrod egy szakmai forumon, gondold vegig, h lehet, megis veled van a prolema, pl. ez:</p>
+<p>"Két cég vezető fejlesztőjeként programozok eleget (nem rendszergazda vagyok)"</p>
+<p>Nem a te hibad, h nem rendszergazda vagy, de talan nem is a puppet-e:)</p>
+<p>t<br />
+ui.: Egy nagyreszt elegedetlen puppet felhasznalo vagyok.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829756" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829767"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zsolt.k | 2015. január 25., vasárnap - 13:21 )</div>
+  <div class="content"><p>"Szakmai forum es kulturaltam forumozott, total relevans volt a hozzaszolasa."</p>
+<p>Rendben, akkor idézek:</p>
+<p>- "bullshit."<br />
+Ez nekem nem egy szakmai, érvekkel alátámasztott állítás.</p>
+<p>- "Itt alapvetoen szerintem nem a puppetel volt a gond hanem veled. Mert ezek nem a puppet hibai voltak hanem ,hogy nem erteted meg a mukodest hanem azt vartad ,hogy letoltesz valami es egybol mukodni fog."<br />
+Ez eléggé személyeskedésnek tűnik. Nem hiszem, hogy kulturált viselkedés bárkiről ismeretlenül, és a helyzet ismerete nélkül egy publikus fórumon ilyesmit írni. És ez se tűnik se túl szakmainak, sem érvekkel alátámasztottnak.</p>
+<p>- "Ja ,hogy programozni kellet volna egy kicsit? Azert ez nem a kategoria ,hogy googleozol es talalsz mindenre magadnak modulet."<br />
+Ez is eléggé személyeskedésnek tűnik, lásd előző az előző pontot.</p>
+<p>"Mielott felhuzod az orrod egy szakmai forumon, gondold vegig, h lehet, megis veled van a prolema"<br />
+Nem húztam fel az orrom, de én a kérdező kérdésére feleltem, és nem álltam neki másokat ócsárolni.</p>
+<p>"Nem a te hibad, h nem rendszergazda vagy, de talan nem is a puppet-e:)"<br />
+Az észrevételeim egy részét amiket leírtam a Puppet-el kapcsolatban, mások is megerősítették ebben a thread-ben. Tény, hogy amit leírtam, nem túl up-to-date, régebben foglalkoztam vele, azóta egy-két dolog változott.<br />
+Az, hogy vezető fejlesztő pozícióban dolgozok két cégnél, nem jelenti azt, hogy a tudásom lekorlátozódik erre, nem írtam le, de tudok például főzni, barkácsolni, és menedzseltem Puppet-el anno pár gépet, és jelenleg SaltStack-el egy 46 főt számláló gépparkot (Heartbeat, Pacemaker, Varnish, nginx, PHP-FPM, node.js, Java, Gearman, MariaDB Galera Cluster, memcached, Redis, ElasticSearch, Hadoop, Exim, Icinga, Logstash), de olyan cégek rendszereihez is közöm van, amit jó eséllyel az itt fórumozók ettek, vagy ittak már. Amúgy nem hibáztattam a Puppet-et, mint korábban is írtam, a saját szubjektív véleményeimet, tapasztalataimat írtam le, a kérdező erre volt kíváncsi. És mint írtam, a többinek is vannak hibái.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829767" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829908"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2015. január 25., vasárnap - 19:20 )</div>
+  <div class="content"><p>&gt;&gt;&gt;  - a Puppet dokumentációja elég szűkszavú, sok dologra nem tér ki<br />
+&gt;&gt; - "bullshit."<br />
+&gt; Ez nekem nem egy szakmai, érvekkel alátámasztott állítás.</p>
+<p>Vazold fel kerlek, h amit te irtal, az miert relevansabb:)</p>
+<p>&gt; Amúgy nem hibáztattam a Puppet-et</p>
+<p>Nekem pedig ez jott le.</p>
+<p>Kaptal egy eleg nyers, de korrekt es szerintem relevans valaszt az irasodra. Nincs ezzel semmi baj, nem kell tulcizellalni a dolgokat. Tovabba szerintem a hataron belul is maradt es amit irt, szemelyeskedes sem volt.<br />
+Ahogy szoktak mondani, just my 2 cents:)</p>
+<p>t</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829908" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829917"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( zsolt.k | 2015. január 25., vasárnap - 20:00 )</div>
+  <div class="content"><p>Jó, akkor gondold azt amit szeretnél. :)<br />
+Szokták mondani, hülyékkel nem érdemes vitatkozni.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829917" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1829932"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2015. január 25., vasárnap - 20:32 )</div>
+  <div class="content"><p>Akkor ez a ki szemelyeskedik, ki nem temat at is targyaltuk.<br />
+Legalabb kiderult, h jol gondoltam..</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829932" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div><a id="comment-1830309"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( o_O | 2015. január 26., hétfő - 21:29 )</div>
+  <div class="content"><p>Bocs en se akartam nyers lenni.Csak probaltam bemutatni ,hogy amiket leirtal az nem feltetlen alja meg a helyet a valosagban.</p>
+<p>--<br />
+"ssh in a for loop is not a solution" – Luke Kanies, Puppet developer</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1830309" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div></div></div><a id="comment-1829251"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. január 23., péntek - 16:19 )</div>
+  <div class="content"><p>OFF: Je, azt hittem eltuntel...</p>
+<p>ON: a puppet es a chef kozott vagyok feluton. Rettenetesen imadom a puppetet, bar a ruby nyelvu alaprogramozast csak nemregiben kezdtem el elsajatitani, a manifestekben azert meg igy is rengeteg mindent el lehet intezni. A chef ket dolog miatt tetszik igazabol: sokkal jobban van megcsinalva a kozponti node management, illetoleg a ruby szintaxis kozelebb all a szivemhez. De azert meg a puppet fele huzok.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1829251" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1834395"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( KAMI911 | 2015. február 6., péntek - 16:00 )</div>
+  <div class="content"><p>Frissítettem a kiírást a tapasztalataimmal.</p>
+<p>KAMI | 神<br />
+Firefox OS: <a href="https://is.gd/fxoshu">https://is.gd/fxoshu</a> Linux Mint: <a href="http://linuxmint.hu">http://linuxmint.hu</a> LibreOffice: <a href="http://libreoffice.hu">http://libreoffice.hu</a> SeaMonkey : <a href="http://is.gd/smhun">http://is.gd/smhun</a><br />
+Legyél Te is <a href="http://is.gd/onkentes">Mozilla</a> és <a href="http://is.gd/lmkoz">Linux Mint</a> önkéntes!</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1834395" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1834426"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( dap | 2015. február 6., péntek - 17:17 )</div>
+  <div class="content"><p>A felsorolt pontok közül nekem több is oprendszerfüggetlennek tűnik;</p>
+<p><em>&gt; Ha hiba van akkor bizonytalan hogy melyik modulok futnak le és melyikek nem</em><br />
+Itt igazából arra gondolsz, hogy tranzakció alapú apply kéne, hogy a rendszer mindig egy működőképes állapotban maradjon? Szép lenne, de ezt szerintem egyik SCM se tudja jelenleg automatikusan. Ha nem erre gondolsz, akkor nem értem a problémát.</p>
+<p><em>&gt; Nem lehet olyat mondani, hogy egy telepítés max 1 órát fusson, ha nem sikerül akkor nyilván valami gond volt.</em><br />
+Linuxon cron-ból futtasd, ne agent-ként: <code class="bb-code">timeout 1h puppet agent --no-daemonize --onetime</code><br />
+Így egy csomó RAM-ot is megspórolsz. A Windows-t nem ismerem, de gondolom ott is van ezen az elven megoldás.</p>
+<p><em>&gt; Nincs mód rá hogy a szerverről kinyomjunk egy frissítést vagy lefuttassunk parancsokat az összes vagy megadott gépeken</em><br />
+Erre más eszközök vannak, pl a distributed shell-ek. Azzal lehet triggerelni az instant frissítést is. Én nem vagyok meggyőződve arról, hogy ez az SCM dolga, annak a hiányossága lenne.<br />
+Kicsit olyan, mint számonkérni a http szerveren, hogy miért nem frissíti a brózeremben a lapot ha változott a tartalom a szerveren. Pull vs push ugye.</p>
+<p><em>&gt; Nem tudom (vagy nem tudom hogy tudhatom meg egyszerűen), hogy hol sikerültek a frissítések vagy hol van valami baj</em><br />
+<a href="https://docs.puppetlabs.com/guides/reporting.html">https://docs.puppetlabs.com/guides/reporting.html</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1834426" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-1834427"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( o_O | 2015. február 6., péntek - 17:31 )</div>
+  <div class="content"><p>"Nincs mód rá hogy a szerverről kinyomjunk egy frissítést vagy lefuttassunk parancsokat az összes vagy megadott gépeken"<br />
+De erre van lehetoseg mcollectivenek hivjak linuxon megy windowson nem hasznalom. Csak alapbol a puppet nemtudja regen volt kick de az mar nem hasznalatos.</p>
+<p>Amugy manageles szempontjabol erdemes lenne megismerkedned foremannal.</p>
+<p>--<br />
+"ssh in a for loop is not a solution" – Luke Kanies, Puppet developer</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1834427" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1835344"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. február 9., hétfő - 10:16 )</div>
+  <div class="content"><p>A PuppetDB-hez van valami ertelmes frontend? En elkezdtem a PuppetDB-t hasznalni, de a dashboard elegge gyer, egy foreman szintu felulet kellene legalabb.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1835344" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1835348"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sherpa | 2015. február 9., hétfő - 10:23 )</div>
+  <div class="content"><p>Ha találsz valami ne tartsd magadban! <br />
+Zabbix-hoz próbálok plugin-okat írni ami a PuppetDB-t kérdezi le , de egyenlőre még csak a fejemet vakarom... <br />
+Félek fordítva ülök a lovon :)</p>
+<p>Üdv!</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1835348" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1835565"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. február 9., hétfő - 17:53 )</div>
+  <div class="content"><p>Most egyelore hanyagolom a PuppetDB-t, ez a foreman viccesnek tunik, legalabbis elso latasra. Egy turhetoen kinezot talaltam <a href="https://github.com/puppet-community/puppetboard" class="bb-url">itt</a>, kiprobalni en se probaltam meg ki, de a leiras alapjan egesz jo.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1835565" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1835623"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sherpa | 2015. február 9., hétfő - 21:32 )</div>
+  <div class="content"><p>A katello-t már nézed? Azért hőköltem vissza, mert elég régiek voltak a komponensek.<br />
+Mindig az van, hogy jól körbenézek meg csorgatom a nyálam, hogy mi jó lenne egy ilyesmi, aztán előbb utóbb előjönnek a korlátok, és rájövök, hogy mezítláb "kényelmesebb"</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1835623" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1836062"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2015. február 11., szerda - 10:32 )</div>
+  <div class="content"><p>Ahogy nezem, ez valami foreman-fork, legalabb a feluletet atbrandelhettek volna, de whatever. Mindenesetre en most zoldmezos beruhazast inditottam, szoval szinte barmi jo lehetne, de a foreman azert tetszik nagyon, mert GUI-bol tudom odakattintani a classokat, szinte nem is kell konfigolni rajta tul sok mindent. Ha kell majd valami "mezitlabas", akkor csinalok ra kulon modult, oszt' csokolom.<br />
+--<br />
+Ki oda vágyik, hol száll a galamb, elszalasztja a kincset itt alant:</p>
+<p><pre class="bb-code-block">
+()=() 
+('Y') <a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a>
+C . C <a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a>
+()_()
+</pre></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1836062" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-1836113"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kroozo | 2015. február 11., szerda - 12:48 )</div>
+  <div class="content"><p>Itt a srácok nézegetik, ha jól értem kb foreman, plusz valami izé, ami a spacewalkot hivatott leváltani repo management ügyileg.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1836113" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div><a id="comment-1835363"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( o_O | 2015. február 9., hétfő - 10:48 )</div>
+  <div class="content"><p>En nem PuppetDB-vel hasznalom hanem hieraval.</p>
+<p>Szoval sajnos nemtudom.</p>
+<p>--<br />
+"ssh in a for loop is not a solution" – Luke Kanies, Puppet developer</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-1835363" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div><a id="comment-2024185"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mogorva | 2016. szeptember 27., kedd - 9:46 )</div>
+  <div class="content"><p>Sziasztok,</p>
+<p>Így a topic nyitása után másfél évvel rákérdeznék, hogy mit ajánlanátok kombinált windows és linux konfig managementre?<br />
+Nincs szükség űrtechnikára, legyen inkább megbízható/átlátható és könnyen (akár pár nap alatt) bevezethető.</p>
+<p>Köszi!</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024185" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024189"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Vizibirka | 2016. szeptember 27., kedd - 10:22 )</div>
+  <div class="content"><p>Puppet + hiera<br />
+Nalunk az megy, linux, win, meg OSX</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024189" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024208"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mogorva | 2016. szeptember 27., kedd - 11:32 )</div>
+  <div class="content"><p>Köszi, felírtam.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024208" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2024335"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( atya | 2016. szeptember 27., kedd - 20:27 )</div>
+  <div class="content"><p>sub</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024335" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024568"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( xclusiv | 2016. szeptember 28., szerda - 15:28 )</div>
+  <div class="content"><p>+1</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024568" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-2024243"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 14:07 )</div>
+  <div class="content"><p>A "par nap alatt bevezetheto" nagyban fugg a kornyezet bonyolultsagatol. :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024243" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-2024211"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sz332 | 2016. szeptember 27., kedd - 11:44 )</div>
+  <div class="content"><p>Sziasztok, akkor én is kérdeznék :)</p>
+<p>Van egy rakás különböző szoftver komponensük, változatos nyelvben írva (java, cpp, python, php, stb.) Amire szükség lenne, hogy a fejlesztők (linux, win7/10, etc.)<br />
+egy parancs leütésével kapjanak egy virtuális gépet, ami futtat egy általuk megadott svn branchbeli kódot + konfigurációt. Hogy egy ilyen virtuális környezet 1 óra<br />
+alatt áll elő, az önmagában nem gond, a fejlesztés úgy szokott kinézni, hogy fogjuk a cpp szervert, összerakjuk, az elfut magában, és mi kódoljuk hozzá a klienseket.</p>
+<p>Az első ötletem az volt, hogy mindent külön docker container-be rakok, de aztán belefutottam abba, hogy bizonyos komponensek általunk buildelendő kernel modulokat<br />
+használnak. Úgyhogy most van egy vagrant file-om, ami kb. így néz ki:</p>
+<p><code></p>
+<p>#Core files</p>
+<p>config.vm.provision "shell", path: "core/increase_swap.sh"<br />
+config.vm.provision "shell", path: "core/packages.sh"<br />
+config.vm.provision "shell", path: "core/postgresql.sh"<br />
+config.vm.provision "shell", path: "core/java.sh"<br />
+config.vm.provision "shell", path: "core/maven.sh"<br />
+config.vm.provision "shell", path: "core/tomcat.sh"</p>
+<p>#Server files</p>
+<p>config.vm.provision "shell", path: "server/packages.sh"<br />
+config.vm.provision "shell", path: "server/wanpipe.sh"<br />
+config.vm.provision "shell", path: "server/ace.sh"<br />
+...<br />
+config.vm.provision "file", source: "server/production.cfg", destination: "/home/vagrant/production.cfg"<br />
+config.vm.provision "shell", path: "server/build.sh"</p>
+<p>...</p>
+<p></code></p>
+<p>Ez így falura jó lesz, viszont nem tudom, nem-e lehetne ezt valahogy szebben megoldani, erre várnék ötleteket, tanácsokat. A használat kb. az, hogy minden fejlesztő kicheckolja az SVN-ből<br />
+a test könyvtárat, majd egy konzolt nyitva végrehajt egy vagrant up-ot, utána pedig elmegy ebédelni. Ebéd után ott lesz neki a szépen futó rendszer. :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024211" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024242"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 14:05 )</div>
+  <div class="content"><p>En ezt ugy oldom meg, hogy ansible-ben van egy playbookom (3 role: create route53_dns, create_security_zone, create_instances)<br />
+Ez felporget par szervert AWS-ben (a szerverek szama, feladata, stb. a playbook parameterektol fugg, es taggelem oket ennek megfeleloen project= env= serverrole= )<br />
+A kovetkezo playbook var amig a szerverek talpra allnak (kb 3-5 perc), aztan lefuttat egy common (apt-update, user-mgmt install xyz packages)<br />
+Idokozben a hatterben amig a fentiek mennek Jenkins mar epiti a csomagokat es ha keszen vannak felkuldi a binarisokat S3 bucketbe<br />
+Az installalo playbook lerantja a binarisokat, kicsomagolja oket a megfelelo szerverre, alkalmazza a J2 templateket (valtozok ansible-ben) a konfiguraciora es elinditja a szervert.<br />
+Az utolso playbook beallitja a front-end proxy Virt-hostjat az eppen felallt kornyezetre es reloadolja a proxy-t.</p>
+<p>A fentiekket egy Jenkins Jobba fuzve - ha a fejlesztok keszitenek egy uj branchet a masterbol es a jenkins pipeline triggerelve van akkor 15 perc mulva a kornyezet elerheto a <a href="https://BRANCH-NAME.endomainem.com">https://BRANCH-NAME.endomainem.com</a> -on, teljes integracioval vagy stubokkal attol fugg hogy parameterezik a Jenkins Job-ot.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024242" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024278"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sz332 | 2016. szeptember 27., kedd - 16:27 )</div>
+  <div class="content"><p>Na, akkor rögtön egy kérdés. A jenkins az hol fut, különálló szerveren? Ha pl. linux kernellel kell modult összeforgatni, akkor azt hogy oldanád meg? Mert ha jól értem, akkor a szerverek itt tényleg csak kb. containerek, tehát van bennük max egy tomcat, azt annyi, és a jenkinsről töltik lefele a binárisaikat.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024278" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024336"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 20:48 )</div>
+  <div class="content"><p>Az AWS kuon VPC-k vannak:<br />
+  Services: itt van jenkins, logstash, selenuim, jmeter - mittomenmegmi... (services na :) )<br />
+  Playground: ide mindeki kedvere cimbalhatja fel a hostokat es a stackeket... (webstack, app, db stb...)<br />
+  Developmet:<br />
+  Performance: itt futtatja a jenkins a loadtesteket<br />
+  preprod<br />
+  prod</p>
+<p>Ezekben a VPC-ben mind mind tobb kulonbozo "fuggeloeges" (FE,app,db,stb) kornyeztet kepzelj el sec-groupokkal elvalasztva. (PL prodban van egy Live-instaces taggolt stak kulon ELB-ben meg egy standby... Lehet mas is csak nincs ertelme...</p>
+<p>A jenkins maga a master nem egy erogep, de van neki ugyanott a servicesben jopar slave-je akik epitenek latastol mikulasig es keszitik a csomagokat az ansible/jenkins kombonak... </p>
+<p>  A te esetedbe nem igazan tudom mit mondjak - nalunk java appok vannak amiket epitunk, mondjuk ha linux kernelt akarsz forgatni legyen egy olyan jenkins slave-ed ami kulon van tagelve es a kuloleges dolgokat azon epitsd... Teszteleni lehet tobb fele AMI (geptipus) template-ed amire a create_instance ansible playbook hivatkozik es eppen azt rantja be amelyik neked tetszik es abbol a template-bol epit neked 1-2-4-8 magos X gigas gepet... (tesztelni sztem eleg a micro is)... Mondjuk ameddig a konkret kovetelmenyeket nem tudom nem igazan tudok mit mondani - en csak leirtam en hogyan oldottam meg ezt (most ez volt a feladat)...</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024336" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024339"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( sz332 | 2016. szeptember 27., kedd - 20:58 )</div>
+  <div class="content"><p>Ez nagyon komoly, most elég hülyének érzem magam, de próbálom szépen felszívni a tudást :D Kb. mennyi idő volt ezt ilyen szépen összerakni?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024339" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024340"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 21:10 )</div>
+  <div class="content"><p>KB 2 - 3 het... </p>
+<p>Nem olyan bonyolult mint elsore hangzik... A kulcs a jo tervezes :)</p>
+<p>Csomag es binaris epites: Jenkins - eredmeny tarolva S3... </p>
+<p>Playbook hogy epitsen egy VPC-t (sec groupok, route53, elb) <br />
+Playbook hogy felrants egy instancet (parameterzheto) {{ env }} {{ serverrole }} { egyebparameter }}<br />
+Playbook hogy installja a cuccot az S3-bol (parametterezheto - {{ Bin_version }}, {{ conf_version }}, {{ appname }}</p>
+<p>ansible-ben ez nem tul bonyolult - az AWS-re tok jo moduljai vannak...</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024340" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024457"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 28., szerda - 10:45 )</div>
+  <div class="content"><p>Mondjuk a fentiek nem teljesen fedik a valosagot... Maga a playbookok megirasa valoban 2-3 het volt, de a teljes kialakitas, monitoring, infrastruktura tervezes, configuracio templatezes, standardizalas, teszteles egy rakat trial-and-error, integralas, 3rd party kapcsolatok kialakitasa, stb. korulbelul 6 honapnyi munka 2 embernek. Ha megvan a terv, megvan egy jo build process, a fentiek akkor maga a megvalositas kb 2-3 het volt...</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024457" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div></div></div><a id="comment-2024220"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( KAMI911 | 2016. szeptember 27., kedd - 12:43 )</div>
+  <div class="content"><p>Elkezdtem Ansible-lel játszani. Tetszik, hasznos, gyors és gyorsan tanulható.</p>
+<p>KAMI | 神<br />
+Linux Mint: <a href="https://linuxmint.hu">https://linuxmint.hu</a> LibreOffice: <a href="http://libreoffice.hu">http://libreoffice.hu</a> SeaMonkey : <a href="http://is.gd/smhun">http://is.gd/smhun</a><br />
+Legyél Te is <a href="http://is.gd/onkentes">Mozilla</a> és <a href="http://is.gd/lmkoz">Linux Mint</a> önkéntes</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024220" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024222"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mogorva | 2016. szeptember 27., kedd - 12:52 )</div>
+  <div class="content"><p>Akárhogy nézem, ez fizetős. :/</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024222" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024224"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kroozo | 2016. szeptember 27., kedd - 12:58 )</div>
+  <div class="content"><p>nem, csak a tower az. Maga az ansible opensource.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024224" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2024240"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 13:50 )</div>
+  <div class="content"><p>1. apt-get install ansible<br />
+2. ird meg a playbookodat<br />
+3. ansible-playbook xyz.yml<br />
+4. Orul :)</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024240" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-2024238"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 27., kedd - 13:49 )</div>
+  <div class="content"><p>+1 Puppetrol valtottunk sokkal egyszerubb, gyorsabb es attekinthetobb. Jenkins jobokbol hivogatom a playbookokat a klikkelos fejlesztoknek, minden git repobol jon, a templatezes j2 (jinja2 ) hasznal... Gyors, egyszeru, kulon modulja az AWS dinamikus inventory, route53, sec-group stb... Teszi a dolgat</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024238" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024613"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Sixday | 2016. szeptember 28., szerda - 17:28 )</div>
+  <div class="content"><p>+1 tokeletes leiras <br />
+Nalunk Puppet+Hiera volt elotte, nagysagrendekkel jobb megoldas az Ansible</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024613" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div><a id="comment-2024567"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2016. szeptember 28., szerda - 15:22 )</div>
+  <div class="content"><p>Tetszik, hogy YAML, de meg a Puppetnel is kevesbe termeszetesnek erzem. Mindenesetre en elkezdtem hasznalni, de csak arra, hogy egyszerre sok gepen ussem le ugyanazt az 1-2 parancsot. <br />
+--<br />
+<a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a><br />
+<a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024567" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024740"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( uid_17558 | 2016. szeptember 29., csütörtök - 8:14 )</div>
+  <div class="content"><p>Sajnos ugyanezt látom minden nap, pedig _ehhez_ teljesen felesleges az Ansible, megteszi egy pssh is.</p>
+<p>(Kiegészítés: én személy szerint a Chef-ben hiszek és inkompatibilis vagyok a YAML-lel.)<br />
+------------------------<br />
+<cite>{0} ok boto<br />
+boto ?</cite></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024740" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024776"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2016. szeptember 29., csütörtök - 10:57 )</div>
+  <div class="content"><p>Nekem ez reszben azert is jo, mert nyoma marad, igy ha valamit ismet meg kell csinalni, csak eloveszem a korabbi playbookot, atfazonirozom, aztan hadd szoljon. Tipikusan ilyen a user lockdown.<br />
+--<br />
+<a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a><br />
+<a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024776" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024808"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( uid_17558 | 2016. szeptember 29., csütörtök - 12:53 )</div>
+  <div class="content"><p>Hja, ez teljesen rendben is van. Félreértettelek: azt hittem, ad-hoc parancsok tömeges végrehajtására használod. (Erre is alkalmas, erre látok sok rossz példát. Teljesen playbook-menteseket.)<br />
+------------------------<br />
+<cite>{0} ok boto<br />
+boto ?</cite></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024808" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div><a id="comment-2024848"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mogorva | 2016. szeptember 29., csütörtök - 15:05 )</div>
+  <div class="content"><p>Teljesen szakmai alapon (melyik weblap design-ja tetszik jobban) úgy döntöttem, Ansible-lel indulunk.</p>
+<p>Megnéztem pár videót, elolvastam ezt-azt, de egyelőre nem világos, hogy milyen user nevében kellene ügyködnie a remote gépen.<br />
+Kényelem szempontjából nyilván a root (Administrator) lenne a legjobb, de nem tartom túl jó ötletnek.<br />
+Van erre valami best practice?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024848" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2024849"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2016. szeptember 29., csütörtök - 15:08 )</div>
+  <div class="content"><p>Csinalhatsz egy masik usert es ahhoz wrappert, forcecommand (vagymias).</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024849" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2024879"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( lmarton | 2016. szeptember 29., csütörtök - 16:33 )</div>
+  <div class="content"><p>nalunk egy egy kulon user erre - a Privat kulcsa vaultban. Aztan ha mondjuk mas userkent kell ugykodni a gepen akkor become:yes es mar rootkent teszi a tovabbiakat a remote node-on...</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2024879" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<a id="comment-2025026"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Webappz | 2016. szeptember 30., péntek - 10:21 )</div>
+  <div class="content"><p><a href="http://docs.ansible.com/ansible/become.html" title="become">Become (Privilege Escalation)</a></p>
+<p>Security szempontbol erosen javasolt, hogy a root userrel ne tudj besshzni egy szerverre, ezert celszeru nevesitett user(eke)t es/vagy management user(eke)t letrehozni es ezeknek a userek szamara biztositani a megfelelo szintu adminisztratori szintu jogokat sudoval.</p>
+<p>Az Ansible kezdetben csak Linux/Unix rendszerek menedzselesere volt alkalmas es azt is csak SSH-n keresztul, ezert ott a su es a sudo tokeletesen eleg volt, de 1.7-tol mar megjelent a Windows rendszerek tamogatasanak csiraja, amit WinRM-en keresztul valositanak meg, illetve itt mar nem mukodik a su, sudoval valo jogosultsag megszerzesenek a lehetoseg.</p>
+<p>Ennek a problemanak a megoldasara jott letre a become, amelyben a korabbi su es sudo mar csak egy jogosultsagi modszer.</p>
+<p>Az Ansiblet en dedikalt management gep(ek)en futtatom, management userrel, amely SSH-n keresztul, kulccsal kapcsolodik a menedzselni kivant gephez, szinten egy management userrel, amelynek az adott sudoers fajlban engedelyezem, hogy sudo jelszo nelkul tudjon a root user neveben tevekenykedni.</p>
+<p>Termeszetesen - paranoia szinttol fuggoen - lehet szabalyozni, hogy a menedzsement user az egyes feladatokat milyen linux vagy sudo userrel/csoporttal tudja ellatni.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025026" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025034"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2016. szeptember 30., péntek - 10:40 )</div>
+  <div class="content"><p>&gt;  root user neveben tevekenykedni.</p>
+<p>Pontosan hogyan, mindent engedelyezel?<br />
+En is igy csinalom, de mindig megvan az az erzesem, h adtam a szarnak egy pofont.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025034" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025053"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kroozo | 2016. szeptember 30., péntek - 11:13 )</div>
+  <div class="content"><p>legalább az ssh root@ jellegű okoskáktól véded magad.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025053" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025078"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2016. szeptember 30., péntek - 12:14 )</div>
+  <div class="content"><p>Hogyan ved?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025078" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025084"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( kroozo | 2016. szeptember 30., péntek - 12:33 )</div>
+  <div class="content"><p>úgy, hogy ha le tudod kapcsolni a root-tal való direkt logint, akkor az ismert usernévvel próbálkozó biztosabban nem jut be, mintha lenne elméleti esélye, hogy mondjuk megtörik a kulcsot, vagy a root jelszavát. (ráadásul viszonylag egyszerűen lehet mondjuk fail2banolni)</p>
+<p>Nem nagy ügy ez egyébként inkább csak junk control.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025084" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-2025085"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Webappz | 2016. szeptember 30., péntek - 12:35 )</div>
+  <div class="content"><p>Igen, mindent.<br />
+<code><br />
+echo "mgmtusr ALL=(ALL) NOPASSWD: ALL" &gt; /etc/sudoers.d/mgmtusr<br />
+</code></p>
+<p>Ahogy irtam, termeszetesen lehet tovabb fokozni a jogosultsagok szabalyozasat,<br />
+illetve lehet sudo passwordot is megadni, ha szeretned.</p>
+<p>Noveli a biztonsag erzetet:<br />
+- Ha az SSH hozzaferesek szamat lecsokkented (csak limitalt gepekrol lehet hozzafereni az adott szerverhez).<br />
+- Ha csak megadott accountokkal lehet csatlakozni.<br />
+- Ha az engedelyezett accountok csak SSH kulccsal tudnak kapcsolodni.<br />
+- Ha a hozzaferesek kozpontilag loggolva vannak.
+ </p>
+<p>Kitol vagy mitol szeretned jobban megvedeni magad?</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025085" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025087"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( tompos | 2016. szeptember 30., péntek - 12:44 )</div>
+  <div class="content"><p>&gt;  tovabb fokozni</p>
+<p>Errol beszelek, hogy bar ez a bevett modszer, valojaban senki nem fokozott itt meg semmit.</p>
+<p>&gt;  - Ha csak megadott accountokkal lehet csatlakozni.</p>
+<p>Ez konkretan mi? Amugy nemcsak megadott accountokkal lehet?;)</p>
+<p>&gt; Kitol vagy mitol szeretned jobban megvedeni magad?</p>
+<p>Egyelore ott tartunk, hogy a fentivel a direkt root loginhoz kepest elobbre van-e a user.<br />
+Ugy alapbol szerintem nem, fuggetlenul attol, hogy ez a bevalt eljaras.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025087" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025128"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Webappz | 2016. szeptember 30., péntek - 14:36 )</div>
+  <div class="content"><p>&gt; tovabb fokozni<br />
+Minden attol fugg, hogy mire szeretned hasznalni az Ansiblet.</p>
+<p>Mivel az Ansible konfiguracio menedzsment es ad-hoc feladatok vegrehajtasat vegzo tool,<br />
+ezert az eredeti alapkerdesedet, hogy mit, milyen userrel kell vegrehajtani nem az Ansible fogja megoldani.</p>
+<p>Az Ansible abban fog Teged tamogatni, hogy az altalad elore megalmodott es implementalt sudo jogosultsagokat<br />
+kepes leszel hasznalni az Ansible playbookjaidban.</p>
+<p>Amennyiben a sudo jogosultsagok/szabalyok letrehozasat is Ansible segitsegevel szeretned elvegezni, akkor<br />
+meg kell nezni, hogy mi az a minimalis jogosultsag keszlet, illetve beallitas, ami ahhoz kell, hogy ezt <br />
+vegre tud hajtani.</p>
+<p>Egy szerver szuletesenek/telepitesenek pillanata alkalmas arra, hogy megteremtsuk a lehetoseget annak, hogy<br />
+kozponti menedzsment (kozponti yum tarolobol telepiteni, kozponti logszerverbe logoljon, kozponti monitorozasba keruljon)<br />
+ala lehessen vonni.</p>
+<p>&gt; - Ha csak megadott accountokkal lehet csatlakozni.<br />
+Bocs, itt nem jol fejeztem ki magam, illetve ez az elotte levo ponthoz kapcsolodott szorosan.<br />
+Ha peldaul SFTP-t szolgaltatsz, akkor kell adnod hozzaferest az SSHhoz, de nem szukseges teljes erteku SHELL-t adnod (/sbin/nologin vagy valami korlatozott SHELL ha pl.: sftp es scp-t szolgaltatsz).</p>
+<p>Ezek alapjan az adminisztrator/menedzsment accountokat IP alapjan, vagy csoport tagsag alapjan is kulon tudod kezelni az sshd konfigjaban.</p>
+<p>&gt; Egyelore ott tartunk, hogy a fentivel a direkt root loginhoz kepest elobbre van-e a user.<br />
+Mindenkeppen, mert alapvetoen nem szukseges hogy rootkent kozlekedjen ki-be a rendszerben.<br />
+A root szintu jogokat akkor vesszuk elo, amikor szukseges.<br />
+Az adott feladat elvegzesehez szukseges minimalis jogosultsag donti el, hogy milyen feladatot milyen userrel,<br />
+vagy annak a usernek a jogosultsagi szintjevel megegyezo jogkorrel vegezzuk el. Illetve van olyan, hogy nem<br />
+eleg maga a jogosultsag szintje, szukseg van meg kornyezeti beallitasok egyezosegere is.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025128" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025619"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( mogorva | 2016. október 3., hétfő - 10:43 )</div>
+  <div class="content"><p>Ok, a lényeg tehát röviden annyi, hogy a managelt linuxokon kell egy tech user, aminek jelszó nélkül full access-t kell adni a sudoers-ben és amihez a manager szerver kulcsos ssh autentikációval kapcsolódik.</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025619" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+<div class="indented"><a id="comment-2025649"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( Webappz | 2016. október 3., hétfő - 11:41 )</div>
+  <div class="content"><p>Ha nagyon leegyszerusited, akkor igen.</p>
+<p>Ahogy korabban mondtam, minden attol fugg, hogy mire szeretned hasznalni az Ansiblet, illtve hogyan szeretned megoldani a jelszavak/kulcsok menedzseleset (teriteset,cserejet).</p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025649" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div><a id="comment-2025140"></a>
+<div class="comment">
+
+    <div class="submitted">&nbsp;( hrgy84 | 2016. szeptember 30., péntek - 15:13 )</div>
+  <div class="content"><p>Egyszerusitem es atfogalmazom a problmeat. Az, hogy root user nem lephet be a szerverre, elsosorban nem a biztonsag noveleseert van, hanem az auditalhatosag noveleseert. Maskepp fogalmazva, lehet, hogy az adminoknak amugy full-access no-password joguk van a sudoban, de a belepesuk teljesen perszonalizaltan van logolva, emiatt ha valahol karosodas eri a rendszert, visszakovethetove valik, hogy a megadott idointervallumban ki es mikor lepett be a rendszerbe, emiatt a felelos megtalalasa biztosabban megtortenik. (Nyilvan ennek ki nem mondott feltetele az, hogy az audit logok replikalva legyenek egy fuggetlen tarolorendszerben is)</p>
+<p>Ennek egy mellekhatasa, benefitje, hogy amugy az internetrol erkezo tamadasokat is nagyban csokkenti az a teny, hogy a root account AMUGY nem hozzaferheto egyszeru loginnel, mert mar egy sokkal korabbi ponton elszall az egesz a francba. </p>
+<p>Egyetlen esetben tartom indokoltnak a root hozzaferes (kizarolag kulcs alapu) engedelyezeset: ha rsync alapu push menteseket vegzunk (rsnapshot, rdiff-backup, duplicity, you name it), de itt megfontolas targyava kell tenni, hogy ez esetben ez egy alternativ porton futo, erre dedikalt SSH szerverre tortenjen.<br />
+--<br />
+<a href="http://hron.me/" class="bb-url">Blog</a> | <a href="https://twitter.com/hron84" class="bb-url">@hron84</a><br />
+<a href="https://www.opsbears.com/" class="bb-url">Üzemeltető macik</a></p>
+</div>
+    <div class="link"><ul class="links"><li  class="first comment_forbidden"><span class="comment_forbidden">A hozzászóláshoz <a href="/user/login?destination=comment/reply/138188%2523comment-form">belépés</a> szükséges</span></li>
+<li  class="last comment_permalink"><a href="/node/138188#comment-2025140" class="comment_permalink active">permalink</a></li>
+</ul></div>
+</div>
+</div></div></div></div></div></div>        <!-- end main content -->
+        </td><!-- mainContent -->
+         <td class="sidebar" id="sidebar-right">
+         <div id="block-block-7" class="block block-block">
+
+  <h2>Keresés</h2>
+
+  <div class="content"><table style="border: hidden;" width="140">
+<tr>
+<td align="center">
+</p>
+<form action="https://www.google.com/cse" id="cse-search-box" target="_blank">
+<input type="hidden" name="cx" value="000068101928879461224:o7a4cozxtvg" /><input type="hidden" name="ie" value="UTF-8" /><input type="text" name="q" size="15" /><br />
+<input type="submit" name="sa" value="»»" /></form>
+<p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="block-user-1" class="block block-user">
+
+  <h2>Navigáció</h2>
+
+  <div class="content">
+<ul class="menu">
+<li class="leaf"><a href="/tracker">friss tartalom</a></li>
+<li class="collapsed"><a href="/aggregator">hírolvasó</a></li>
+
+</ul>
+</div>
+</div>
+<div id="block-user-0" class="block block-user">
+
+  <h2>Belépés</h2>
+
+  <div class="content"><form action="/node/138188?destination=node%2F138188"  accept-charset="UTF-8" method="post" id="user-login-form">
+<div><div class="form-item" id="edit-name-wrapper">
+ <label for="edit-name">Felhasználói név: <span class="form-required" title="Szükséges mező.">*</span></label>
+ <input type="text" maxlength="60" name="name" id="edit-name"  size="15" value="" class="form-text required" />
+</div>
+<div class="form-item" id="edit-pass-wrapper">
+ <label for="edit-pass">Jelszó: <span class="form-required" title="Szükséges mező.">*</span></label>
+ <input type="password" name="pass" id="edit-pass"  maxlength="60"  size="15"  class="form-text required" />
+</div>
+<input type="submit" name="op" id="edit-submit" value="Belépés"  class="form-submit" />
+<div class="item-list"><ul><li><a href="/user/password" title="Új jelszó igénylése emailben.">Elfelejtett jelszó</a></li></ul></div><input type="hidden" name="form_id" id="edit-user-login-block" value="user_login_block"  />
+
+</div></form>
+</div>
+</div>
+<div id="block-aggregator-feed-50" class="block block-aggregator">
+
+  <h2>Állásajánlatok</h2>
+
+  <div class="content"><div class="item-list"><ul><li><a href="http://hup.hu/node/159803">Informatikai hálózat üzemeltetést támogató munkatárs -KIFÜ</a>
+</li><li><a href="http://hup.hu/node/159595">Remote Web Developer - BPresent Ltd</a>
+</li><li><a href="http://hup.hu/node/159394">Cloud ügyfélkapcsolati munkatárs - BlazeArts Kft</a>
+</li><li><a href="http://hup.hu/node/159392">Projekt manager - BlazeArts Kft</a>
+</li><li><a href="http://hup.hu/node/159372">Villamos (automatika) mérnök</a>
+</li></ul></div><div class="more-link"><a href="/allasajanlatok" title="A csatorna új híreinek megtekintése.">tovább</a></div></div>
+</div>
+<div id="block-aggregator-feed-44" class="block block-aggregator">
+
+  <h2>HWSW</h2>
+
+  <div class="content"><div class="item-list"><ul><li><a href="https://www.hwsw.hu/hirek/59009/google-arcore-measure-virtualis-meroszalag.html">A Google beelőzte &quot;AR-mérőszalagjával&quot; az Apple-t</a>
+</li><li><a href="https://www.hwsw.hu/hirek/59005/microsoft-bing-visual-search-kepkereso-ai.html">Google Lens-szerű képkeresővel bővül a Bing</a>
+</li><li><a href="https://www.hwsw.hu/hirek/59007/paypal-felvasarlas-akvizicio-hyperwallet-simility-fintech.html">Ezen a héten félmilliárd dollárért vásárolt be a PayPal</a>
+</li></ul></div><div class="more-link"><a href="/aggregator/sources/44" title="A csatorna új híreinek megtekintése.">tovább</a></div></div>
+</div>
+<div id="block-blog-0" class="block block-blog">
+
+  <h2>Friss blogbejegyzések</h2>
+
+  <div class="content"><div class="item-list"><ul><li><a href="/node/159859">Google AMP hatranyai x+1</a></li><li><a href="/node/159845">Budapest fut Windowson is!</a></li><li><a href="/node/159841">Hány az óra, vekker úr?</a></li><li><a href="/node/159835">MÁV Menetrend vagy mi ez</a></li><li><a href="/node/159830">Kabitoszer generaciok - Re: Anya, betéptem és kibasztak a suliból...</a></li><li><a href="/node/159828">Ma 30 éves az AS/400 :)</a></li><li><a href="/node/159824">OpenStack + SRIOV tapasztalatok és tanuló konfiguráció</a></li><li><a href="/node/159811">A NYÁK és A PÁKa napja</a></li><li><a href="/node/159804">Ez kemény</a></li><li><a href="/node/159801">Raspberry Pi - Plotter lencsével vagy filctollal</a></li></ul></div><div class="more-link"><a href="/blog" title="Friss blogbejegyzések megtekintése.">tovább</a></div></div>
+</div>
+<div id="block-block-13" class="block block-block">
+
+  <h2>HUP napi hírlevél</h2>
+
+  <div class="content"><form style="text-align:center;" action="https://www.feedburner.com/fb/a/emailverify" method="post" target="popupwindow" onsubmit="window.open('http://www.feedburner.com', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+<p>Email cím:</p>
+<p>
+<input type="text" size="15" maxlenght="150" name="email"/></p>
+<p><input type="hidden" value="https://feeds.feedburner.com/~e?ffid=832276" name="url"/><input type="hidden" value="Hungarian Unix Portal" name="title"/><input type="submit" value="Feliratkozás" /></form>
+</div>
+</div>
+<div id="block-block-5" class="block block-block">
+
+  <h2>Információ</h2>
+
+  <div class="content"><table style="border: hidden;" width="140" cellpadding="6" cellspacing="0">
+<tr>
+<td align="center"><a title="Linux" target="_blank" href="http://kernel.org/"><img src="/images/powered/linux_powered.png" alt="Linux" border="0" width="80" height="15"></img></a><br />
+<a title="Docker" target="_blank" href="http://docker.com/"><img src="/images/powered/docker_powered.png" alt="Docker" border="0" width="80" height="15"></img></a><br />
+<a title="Apache" target="_blank" href="http://httpd.apache.org/"><img src="/images/powered/apache_powered.png" alt="Apache" border="0" width="80" height="15"></img></a><br />
+<a title="NGINX" target="_blank" href="http://nginx.org/"><img src="/images/powered/nginx_powered.png" alt="NGINX" border="0" width="80" height="15"></img></a><br />
+<a title="MySQL" target="_blank" href="http://www.mysql.org/"><img src="/images/powered/mysql_powered.png" alt="MySQL" border="0" width="80" height="15"></img></a><br />
+<a title="PHP" target="_blank" href="http://www.php.net/"><img src="/images/powered/php_powered.png" alt="PHP" border="0"></img></a><br />
+<a title="RackForest" target="_blank" href="http://www.rackforest.hu/"><img src="/images/powered/rackforest_powered.png" alt="RackForesf" border="0" width="80" height="15"></img></a><br />
+<a title="HTTPS" target="_blank" href="https://hup.hu"><img src="/images/powered/https_ready.png" alt="HTTPS" border="0" width="80" height="15"></img></a><br />
+<a title="IPv6" target="_blank" href="/ipv6"><img src="/images/powered/ipv6_ready.png" alt="IPv6" border="0" width="80" height="15"></img></a><br />
+<a title="Drupal" target="_blank" href="http://www.drupal.org/"><img src="/images/powered/drupal_powered.png" alt="Drupal" border="0" width="80" height="15"></img></a><br />
+<a title="Hacker" target="_blank" href="http://www.catb.org/hacker-emblem/"><img src="/images/powered/hacker.png" alt="Hacker" border="0" width="80" height="15"></img></a></td>
+</tr>
+</table>
+</div>
+</div>
+<div id="block-block-30" class="block block-block">
+
+  <h2>Kövess minket!</h2>
+
+  <div class="content"><table style="border: hidden;">
+<tr>
+<td align="center">
+<a target="_blank" title="RSS" href="//hup.hu/node/feed"><img src="/images/powered/rss.png" alt="RSS" border="0"></a> <a target="_blank" title="Twitter" href="https://twitter.com/huphu"><img src="/images/powered/twitter.png" alt="" border="0"></a> <a target="_blank" title="Facebook" href="https://fb.me/huphuportal"><img src="/images/powered/facebook.png" alt="" border="0"></a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+    </td>
+       </tr>
+</tbody></table>
+    </div>
+  <div id="footer">
+          HUP logó és tartalom © 2000-2018 Micskó Gábor<br />
+[ <a target="_blank" href="https://hup.hu/elerhetosegek">impresszum</a> | <a target="_blank" href="https://hup.hu/adatvedelmi_tajekoztato">adatvédelem</a> | <a target="_blank" href="https://hup.hu/moderalas">moderálási irányelvek</a> | <a target="_blank" href="https://hup.hu/moderalasi_kerelem">moderálási kérelem</a> ]
+      </div><!-- footer -->
+  </body>
+</html>
+

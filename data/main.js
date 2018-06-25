@@ -73,7 +73,7 @@ function updateComments () {
 			modComment.addParentLinkToComments(childComments);
 			modComment.addExpandLinkToComments(childComments.filter(c => c.indentLevel > 1));
 
-			const newComments = comments.filter(c => c.isNew && !c.hide);
+			const newComments = modComment.filterNewComments(comments);
 
 			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);

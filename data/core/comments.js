@@ -1,5 +1,6 @@
 import * as dom from '../../core/dom';
 import * as func from '../../core/func';
+import { getCommentObj } from './comment-obj';
 import { addHNav } from './element';
 
 const TROLL_COMMENT_CLASS = 'trollComment';
@@ -8,8 +9,6 @@ const TROLL_COMMENT_REPLY_CLASS = 'trollCommentAnswer';
 const INDENTED_CLASS = 'indented';
 const HIGHLIGHTED_COMMENT_CLASS = 'highlighted';
 const BORING_COMMENT_CLASS = 'hup-boring';
-const COMMENT_HEADER_CLASS = 'submitted';
-const COMMENT_FOOTER_CLASS = 'link';
 const COMMENT_FOOTER_LINKS_CLASS = 'links';
 const COMMENT_HNAV_CLASS = 'hnav';
 const NEW_COMMENT_CLASS = 'comment-new';
@@ -58,18 +57,6 @@ const commentDataStruct = {
 };
 
 /**
- * @type commentStruct
- *   node: HTMLCommentNode
- *   header: HTMLDOMElement
- *   footer: HTMLDOMElement
- */
-const commentStruct = {
-	node: null,
-	header: null,
-	footer: null
-};
-
-/**
  * @param commentStruct comment
  * @return string
  */
@@ -85,6 +72,7 @@ function getCommentAuthor (comment) {
 	if (output === '') {
 		output = comment.header.textContent.replace(ANONYM_COMMENT_AUTHOR_REGEXP, '$1');
 	}
+
 	return output;
 }
 
@@ -110,28 +98,6 @@ function getCommentId (comment) {
 	}
 
 	return '';
-}
-
-/**
- * @param HTMLCommentNode node
- * @return Object
- *   node: HTMLCommentNode
- *   header: HTMLDOMElement
- *   footer: HTMLDOMElement
- */
-function getCommentObj (node) {
-	const commentObj = Object.create(commentStruct);
-
-	commentObj.node = node;
-	commentObj.header = dom.selectOne(`.${COMMENT_HEADER_CLASS}`, node);
-	commentObj.footer = dom.selectOne(`.${COMMENT_FOOTER_CLASS}`, node);
-
-	if (!commentObj.footer && node.nextElementSibling && dom.hasClass(COMMENT_FOOTER_CLASS, node.nextElementSibling)) {
-		commentObj.footer = node.nextElementSibling;
-		node.appendChild(commentObj.footer);
-	}
-
-	return commentObj;
 }
 
 function getCommentContent (comment) {
@@ -484,6 +450,10 @@ function getComments () {
 	return func.toArray(document.querySelectorAll('.' + COMMENT_CLASS));
 }
 
+function filterNewComments (comments) {
+	return comments.filter(c => c.isNew && !c.hide);
+}
+
 function hide (comment) {
 	dom.addClass('hup-hidden', getCommentFromId(comment.id));
 }
@@ -638,6 +608,7 @@ function convertComments (comments, opts) {
 
 export {
 	getComments,
+	filterNewComments,
 	parseComment,
 	setNew,
 	commentDataStructToObj,
