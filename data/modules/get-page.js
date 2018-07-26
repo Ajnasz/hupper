@@ -1,3 +1,5 @@
+import DOMpurify from 'dompurify';
+
 function createDocument (text) {
 	const lines = text.split('\n');
 	const mainStart = lines.findIndex(l =>
@@ -7,7 +9,7 @@ function createDocument (text) {
 
 	const content = lines.slice(mainStart, mainEnd + 1).filter(l => !l.includes('<script') && !l.includes('</script>')).join('\n');
 	const fragment = document.createElement('div');
-	fragment.innerHTML = content;
+	fragment.innerHTML = DOMpurify.sanitize(content);
 	return fragment;
 }
 
