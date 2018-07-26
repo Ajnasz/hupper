@@ -2,7 +2,7 @@
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock from './core/hupper-block';
-import modTrackerBlock from './modules/tracker-block';
+import modTrackerBlock from './modules/unread-block';
 import * as modComment from './core/comments';
 
 import * as validator from './validator';

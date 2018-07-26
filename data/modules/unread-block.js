@@ -2,7 +2,7 @@ import { log } from '../../core/log';
 import * as dom from '../../core/dom';
 import modHupBlock from './hup-block';
 import getPage from './get-page';
-import userTrakcer from './tracker';
+import userTrakcer from './unread-collector';
 
 const BLOCK_ID = 'block-hupper-user-tracker';
 const BLOCK_TITLE = 'User tracker';
@@ -31,7 +31,7 @@ function fill (user) {
 
 			dom.removeClass('hup-content-loading', block);
 		})
-		.catch(err => log.error('tracker-block', err));
+		.catch(err => log.error('unread-block', err));
 }
 
 export default { create, fill };
