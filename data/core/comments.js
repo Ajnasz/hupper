@@ -1,5 +1,6 @@
 import * as dom from '../../core/dom';
 import * as func from '../../core/func';
+import { getCommentId } from './comment-data';
 import { getCommentObj } from './comment-obj';
 import { addHNav } from './element';
 
@@ -15,6 +16,7 @@ const NEW_COMMENT_CLASS = 'comment-new';
 const EXPAND_COMMENT_CLASS = 'expand-comment';
 const WIDEN_COMMENT_CLASS = 'widen-comment';
 const COMMENT_CLASS = 'comment';
+const ARTICLE_AUTHOR_CLASS = 'article-author';
 const COMMENT_NEW_MARKER_CLASS = 'new';
 const ANONYM_COMMENT_AUTHOR_REGEXP = /[^(]+\( ([^ ]+).*/;
 const COMMENT_DATE_REGEXP = /[\s|]+([0-9]+)\.\s([a-zúőűáéóüöí]+)\s+([0-9]+)\.,\s+([a-zűáéúőóüöí]+)\s+-\s+(\d+):(\d+).*/;
@@ -86,20 +88,6 @@ function getCommentCreateDate (comment) {
 	return date.getTime();
 }
 
-/**
- * @param commentStruct comment
- * @return String
- */
-function getCommentId (comment) {
-	const element = dom.prev('a', comment.node);
-
-	if (element) {
-		return element.getAttribute('id');
-	}
-
-	return '';
-}
-
 function getCommentContent (comment) {
 	return dom.selectOne('.content', comment.node).textContent;
 }
@@ -168,6 +156,8 @@ function getNewMarkerElement (comment) {
 const selectHNav = func.curry(dom.selectOne, `.${COMMENT_HNAV_CLASS}`);
 const selectHNew = func.curry(dom.selectOne, '.hnew');
 
+const hasHNew = header => !!selectHNew(header);
+
 /**
  * @param commentStruct comment
  * @param string text
@@ -180,7 +170,7 @@ function setNew (comment, text) {
 		original.remove(original);
 	}
 
-	if (selectHNew(comment.header)) {
+	if (hasHNew(comment.header)) {
 		return;
 	}
 
@@ -500,7 +490,7 @@ function hasScore (comment) {
 
 function setAuthorComment (comment) {
 	const elem = commentDataStructToObj(comment);
-	elem.node.classList.add('article-author');
+	elem.node.classList.add(ARTICLE_AUTHOR_CLASS);
 }
 
 function onCommentUpdate (comments) {
@@ -546,18 +536,17 @@ function onCommentsContainerClick (e) {
 	if (dom.is('.expand-comment', e.target)) {
 		e.preventDefault();
 		unwideComments();
-		const id = dom.prev('a', dom.closest('.comment', e.target)).getAttribute('id');
+		const id = dom.prev('a', dom.closest(`${COMMENT_CLASS}`, e.target)).getAttribute('id');
 		widenComment(id);
-
 	}
 }
 
 function onBodyClick (e) {
-	if (e.target.nodeName === 'A') {
+	if (dom.is('a', e.tearget)) {
 		return;
 	}
 
-	if (dom.closest('.comment', e.target)) {
+	if (dom.closest(`.${COMMENT_CLASS}`, e.target)) {
 		return;
 	}
 

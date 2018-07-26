@@ -16,7 +16,7 @@ function readPage (page) {
 	});
 }
 
-test.only('data/core/comments', (commentsSuite) => {
+test('data/core/comments', (commentsSuite) => {
 	commentsSuite.test('getComments', (t) => {
 		readPage('page_with_comments.html').then((window) => {
 			const commentNodes = comments.getComments();

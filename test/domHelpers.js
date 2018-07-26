@@ -1,4 +1,4 @@
-function setGlobals (window) {
+export function setGlobals (window) {
 	global.document = window.document;
 	global.window = window;
 	Object.keys(window).forEach((property) => {
@@ -14,5 +14,3 @@ function setGlobals (window) {
 	};
 
 }
-
-export { setGlobals };

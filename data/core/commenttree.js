@@ -48,6 +48,10 @@ function recObj (comments) {
 	return comments;
 }
 
+const commentTreeItemStruct = Object.create(null);
+commentTreeItemStruct.id = '';
+commentTreeItemStruct.children = '';
+
 function noramlizeCommentTreeItem (item) {
 	const output = Object.create(null);
 	output.id = item.id;
@@ -79,11 +83,11 @@ function getCommentTree () {
 	const rootComments = func.toArray(document.querySelectorAll(`.${COMMENT_CLASS}`))
 		.filter(func.negate(hasParentComment));
 	const tree = normalizeCommentTree(recObj(createObj(rootComments)));
-	// let tree = normalizeCommentTree(recObj(createObj(findComments(document.getElementById('comments')))));
 
 	return tree;
 }
 
 export {
 	getCommentTree
+
 };

@@ -32,8 +32,8 @@ function getCommentObjects (options) {
 }
 
 function getContextUser (data) {
-
 	const url = new URL(data.linkUrl);
+
 	let elem = document.querySelector(`.comment .submitted > a[href$="${url.pathname}"]`);
 
 	if (elem === null) {

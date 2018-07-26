@@ -6,6 +6,10 @@ import * as func from './func';
  * @return boolean
  */
 function is (what, element) {
+	if (!element) {
+		return false;
+	}
+
 	if (element.matches) {
 		return element.matches(what);
 	} else if (element.mozMatchesSelector) {
