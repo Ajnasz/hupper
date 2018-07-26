@@ -165,10 +165,12 @@ function createElem (nodeType, attributes, classes, textContent) {
 	return element;
 }
 
+import DOMpurify from 'dompurify';
+
 function fixHTML (html) {
 	const container = document.createElement('div');
 
-	container.innerHTML = html;
+	container.innerHTML = DOMpurify.sanitize(html);
 
 	return container.innerHTML;
 }
