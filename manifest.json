@@ -1,8 +1,8 @@
 {
 	"name": "Hupper",
 	"short_name": "Hupper",
-	"version": "2.8.0beta9",
-	"version_name": "2.8.0-9",
+	"version": "2.8.0beta10",
+	"version_name": "2.8.0-10",
 	"manifest_version": 2,
 	"description": "Improve the user experience of HUP.hu",
 	"background": {
