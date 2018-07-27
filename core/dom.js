@@ -1,3 +1,4 @@
+import createDOMPurify from 'dompurify';
 import * as func from './func';
 
 /**
@@ -165,9 +166,9 @@ function createElem (nodeType, attributes, classes, textContent) {
 	return element;
 }
 
-import DOMpurify from 'dompurify';
-
 function fixHTML (html) {
+	const DOMpurify = createDOMPurify(window);
+
 	const container = document.createElement('div');
 
 	container.innerHTML = DOMpurify.sanitize(html);

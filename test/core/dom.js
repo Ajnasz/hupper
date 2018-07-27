@@ -1,3 +1,4 @@
+import DOMpurify from 'dompurify';
 import { setGlobals } from './../domHelpers';
 import * as dom from  '../../core/dom';
 
