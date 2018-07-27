@@ -60,13 +60,9 @@ function setVersion (version) {
 			return manifest;
 		},
 		firefox: manifest => {
-			if (beta) {
-				return Object.assign({}, manifest, {
-					version: getFirefoxVersion(version),
-				});
-			}
-
-			return manifest;
+			return Object.assign({}, manifest, {
+				version: getFirefoxVersion(version),
+			});
 		},
 	};
 }
