@@ -1,31 +1,9 @@
 import * as func from './func';
-
+import setPrevNextLinks from './setprevnext';
 
 const plusOneRex = new RegExp('(?:^|\\s)\\+1(?:$|\\s|\\.|,)'),
 	minusOneRex = new RegExp('(?:^|\\s)-1(?:$|\\s|\\.|,)'),
 	signatureRex = /^[- ]+$/;
-
-function setPrevNextLinks (flatComments) {
-	let lastNew = null;
-
-	return flatComments.reduce((output, comment, index) => {
-		if (!comment.isNew || comment.hide) {
-			output[index] = comment;
-			return output;
-		}
-
-		if (lastNew !== null) {
-			output[lastNew] = Object.assign({}, output[lastNew], { nextId: comment.id });
-			output[index] = Object.assign({}, comment, { prevId: output[lastNew].id });
-		} else {
-			output[index] = comment;
-		}
-
-		lastNew = index;
-
-		return output;
-	}, []);
-}
 
 const getParagraphs = comment => (comment.content ? comment.content.split('\n').map(p => p.trim()).filter(p => p !== '') : []);
 
