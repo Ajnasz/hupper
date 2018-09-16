@@ -14,12 +14,19 @@
 #tags h4 {margin: 0 !important;padding: 0 !important; }
 #tags ul {list-style: none !important;padding: 0 !important;margin: 0 !important;}
 #tags li {padding-left: 5px !important;margin: 0 !important;}
-.hnew { color: red !important; font-weight: bold !important; }
+.hnew {
+	display: inline-block;
+	border-radius: 3px 0;
+	background-color: rgba(255, 0, 0, 0.5);
+	padding: 2px 5px;
+	color: #fff;
+	font-weight: bold;
+	font-size: 0.7em;
+}
 .hnav {
 	float: right !important;
 }
 .hnav * { margin-left: 2px !important; margin-right: 2px !important; }
-.hnav .nnew,
 .node .hnav a {
 	font-size: 0.8em !important;
 }
