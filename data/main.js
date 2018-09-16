@@ -108,7 +108,7 @@ function updateArticles () {
 	}, function (articles) {
 		if (articles) {
 			modArticles.toggleArticles(articles);
-			modArticles.onMarkNew(articles);
+			modArticles.onMarkNew(articles.filter(article => article.isNew && !article.hide));
 			articles.filter(a => a.hasOwnProperty('nextId') || a.hasOwnProperty('prevId'))
 				.forEach(modArticles.onArticleAddNextPrev);
 			modArticles.onAddCategoryHideButton(articles);
