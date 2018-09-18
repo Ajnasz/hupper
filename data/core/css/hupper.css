@@ -18,21 +18,35 @@
 	display: inline-block;
 	border-radius: 3px 0;
 	background-color: rgba(255, 0, 0, 0.5);
-	padding: 2px 5px;
 	color: #fff;
 	font-weight: bold;
+}
+
+.node .title {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+}
+
+.node .hnew {
+	padding: 2px 5px;
 	font-size: 0.7em;
 }
+
 .hnav {
-	float: right !important;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: start;
 }
 .hnav * { margin-left: 2px !important; margin-right: 2px !important; }
 .node .hnav a {
 	font-size: 0.8em !important;
 }
+
 .comment .hnav a {
 	font-size: 1em !important;
 }
+
 .hnav a {
 	font-weight: normal !important;
 	margin-left: 5px !important;
@@ -48,6 +62,16 @@
 	width: 100%;
 	clear: both;
 	visibility: hidden;
+}
+
+.submitted .hnav {
+	float: right;
+}
+
+.submitted .hnew {
+	padding: 1px 3px;
+	font-size: 0.8em;
+	line-height: 1.1em
 }
 
 .mark {
