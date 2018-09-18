@@ -1,4 +1,3 @@
-const path = require('path');
 const set = require('lodash.set');
 
 module.exports = (grunt) => {
@@ -29,25 +28,6 @@ module.exports = (grunt) => {
 		{ src: 'icons/16.png', dest: '/', expand: true },
 	];
 
-	const chromeConfig = {
-		transform: [
-			[
-				'babelify', { presets: [[
-					'env', { targets: { browsers: ['last 5 Chrome versions'] }, },
-				]], },
-			],
-		],
-	};
-
-	const firefoxConfig = {
-		transform: [
-			[
-				'babelify', { presets: [[
-					'env', { targets: { browsers: ['Firefox 52'] }, },
-				]], },
-			],
-		],
-	};
 
 	grunt.initConfig({
 		/* eslint-disable camelcase */
