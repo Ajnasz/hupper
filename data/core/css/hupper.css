@@ -17,7 +17,7 @@
 .hnew {
 	display: inline-block;
 	border-radius: 3px 0;
-	background-color: rgba(255, 0, 0, 0.5);
+	background-color: #b34747;
 	color: #fff;
 	font-weight: bold;
 }
@@ -69,9 +69,8 @@
 }
 
 .submitted .hnew {
-	padding: 1px 3px;
-	font-size: 0.8em;
-	line-height: 1.1em
+	padding: 0 3px 0 5px;
+	font-size: 0.87em;
 }
 
 .mark {
