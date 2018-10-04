@@ -1,9 +1,7 @@
 export default function setPrevNextLinks (flatNodes) {
 	let lastNew = null;
-	console.log('set next prev', flatNodes); /* eslint-disable-line */
 
 	return flatNodes.reduce((output, node, index) => {
-		console.log('reduce', node, lastNew); /* eslint-disable-line */
 		if (!node.isNew || node.hide) {
 			output[index] = node;
 			return output;
