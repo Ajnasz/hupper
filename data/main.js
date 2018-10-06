@@ -2,7 +2,7 @@
 import * as modBlocks from './core/blocks';
 import * as modArticles from './core/articles';
 import * as modHupperBlock from './core/hupper-block';
-import modTrackerBlock from './modules/unread-block';
+import * as modTrackerBlock from './modules/unread-block';
 import * as modComment from './core/comments';
 
 import * as validator from './validator';
@@ -19,6 +19,7 @@ import { getUserData } from './modules/user-data';
 
 import attachSubmitNowButton from './modules/attach-submit-now-button';
 
+const MAX_COMMENTS_PER_PAGE = 9999;
 const addClickListener = func.curry(dom.addListener, 'click');
 
 log.logger = console;
@@ -275,32 +276,43 @@ function onRegsitered (response) {
 		promise = Promise.resolve();
 	}
 
-	promise.then(() => {
-		updateComments();
-		updateArticles();
-		addCommentListeners();
-		addBlockListeners();
-		addArticleListeners();
-		if (validateForms) {
-			attachFormValidators();
-		}
-		attachSubmitNowButton();
-		if (blockEmbed) {
-			contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
-			contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
-		}
-	})
+	promise
 		.then(() => {
+			updateComments();
+			updateArticles();
+			addCommentListeners();
+			addBlockListeners();
+			addArticleListeners();
+			attachSubmitNowButton();
+
+			if (validateForms) {
+				attachFormValidators();
+			}
+
+			if (blockEmbed) {
+				contentBlocker.provideUnblock(contentBlocker.TYPES.TWITTER);
+				contentBlocker.provideUnblock(contentBlocker.TYPES.YOUTUBE);
+			}
+
 			if (setunlimitedlinks) {
-				const MAX_COMMENTS_PER_PAGE = 9999;
 				unlimitedlinks.setUnlimitedLinks(document.getElementsByTagName('a'), MAX_COMMENTS_PER_PAGE);
 			}
 
 			if (parseblocks) {
 				const user = getUserData();
 
-				modTrackerBlock.fill(user);
+				return modTrackerBlock
+					.fill(user)
+					.then(() => {
+						if (setunlimitedlinks) {
+							const links = document.getElementById(modTrackerBlock.BLOCK_ID)
+								.getElementsByTagName('a');
+							unlimitedlinks.setUnlimitedLinks(links, MAX_COMMENTS_PER_PAGE);
+						}
+					});
 			}
+
+			return Promise.resolve();
 		});
 }
 

@@ -4,14 +4,14 @@ import modHupBlock from './hup-block';
 import getPage from './get-page';
 import userTrakcer from './unread-collector';
 
-const BLOCK_ID = 'block-hupper-user-tracker';
 const BLOCK_TITLE = 'User tracker';
+export const BLOCK_ID = 'block-hupper-user-tracker';
 
-function create () {
+export function create () {
 	return modHupBlock.create(BLOCK_ID, BLOCK_TITLE);
 }
 
-function fill (user) {
+export function fill (user) {
 	return getPage(`https://hup.hu/user/${user.id}/track`)
 		.then(page => userTrakcer.getContents(page.querySelector('#tracker')))
 		.then((f) => {
@@ -33,5 +33,3 @@ function fill (user) {
 		})
 		.catch(err => log.error('unread-block', err));
 }
-
-export default { create, fill };
