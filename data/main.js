@@ -17,8 +17,6 @@ import * as func from '../core/func';
 import * as contentBlocker from './modules/content-blocker';
 import { getUserData } from './modules/user-data';
 
-import attachSubmitNowButton from './modules/attach-submit-now-button';
-
 const MAX_COMMENTS_PER_PAGE = 9999;
 const addClickListener = func.curry(dom.addListener, 'click');
 
@@ -283,7 +281,6 @@ function onRegsitered (response) {
 			addCommentListeners();
 			addBlockListeners();
 			addArticleListeners();
-			attachSubmitNowButton();
 
 			if (validateForms) {
 				attachFormValidators();
