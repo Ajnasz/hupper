@@ -3,6 +3,8 @@ import * as func from '../../core/func';
 import { getCommentId } from './comment-data';
 import { getCommentObj } from './comment-obj';
 import { addHNav } from './element';
+import getCommentFromId from './get-comment-from-id';
+import viewComment from './view-comment';
 
 const TROLL_COMMENT_CLASS = 'trollComment';
 const TROLL_COMMENT_HEADER_CLASS = 'trollHeader';
@@ -217,16 +219,6 @@ const addLinkToPrevComment = func.curry(commentLink, TEXT_PREV);
 const addLinkToNextComment = func.curry(commentLink, TEXT_NEXT);
 
 /**
- * @param string id Comment id
- * @return HTMLDOMElement Comment element
- */
-function getCommentFromId (id) {
-	var elem = document.getElementById(id);
-
-	return dom.next(`.${COMMENT_CLASS}`, elem);
-}
-
-/**
  * @param commentDataStruct comment
  * @return commentStruct
  */
@@ -366,11 +358,17 @@ function addFooterLink (comment, link) {
  * @param href text
  * @param {string[]} classes
  */
-function createFooterLink (text, href, classes) {
-	var listItem = dom.createElem('li'),
-		link;
+function createFooterLink (content, href, classes) {
+	const listItem = dom.createElem('li');
+	let link;
 
-	link = dom.createElem('a', [{ name: 'href', value: href }], classes, text);
+	if (content && content.nodeType === Node.ELEMENT_NODE) {
+		link = dom.createElem('a', [{ name: 'href', value: href }], classes);
+		link.appendChild(content);
+	} else {
+		link = dom.createElem('a', [{ name: 'href', value: href }], classes, content);
+	}
+
 	listItem.appendChild(link);
 
 	return listItem;
@@ -493,6 +491,18 @@ function setAuthorComment (comment) {
 	elem.node.classList.add(ARTICLE_AUTHOR_CLASS);
 }
 
+function createIcon (name) {
+	const icon = dom.createElem('span', null, [`hupper-icon-${name}`]);
+	return icon;
+}
+
+function addViewCommentButton (comment) {
+	const icon = createIcon('bubbles2');
+	const footerLink = createFooterLink(icon, `#${comment.parentID}`, ['show-parent']);
+	dom.data('parent', comment.parentID, footerLink);
+	addFooterLink(comment, footerLink);
+}
+
 function onCommentUpdate (comments) {
 	comments.forEach((comment) => {
 		if (comment.hide) {
@@ -510,6 +520,10 @@ function onCommentUpdate (comments) {
 
 			if (comment.authorComment) {
 				setAuthorComment(comment);
+			}
+
+			if (comment.parentID) {
+				addViewCommentButton(comment);
 			}
 		}
 	});
@@ -533,11 +547,20 @@ function onCommentSetNew (newComments) {
 }
 
 function onCommentsContainerClick (e) {
+	const commentID = dom.prev('a', dom.closest(`.${COMMENT_CLASS}`, e.target)).getAttribute('id');
+
 	if (dom.is('.expand-comment', e.target)) {
 		e.preventDefault();
 		unwideComments();
-		const id = dom.prev('a', dom.closest(`${COMMENT_CLASS}`, e.target)).getAttribute('id');
-		widenComment(id);
+
+		widenComment(commentID);
+	} else {
+		const showParent = dom.elemOrClosest('.show-parent', e.target);
+
+		if (showParent) {
+			e.preventDefault();
+			viewComment(dom.closest('li', showParent).dataset.parent);
+		}
 	}
 }
 

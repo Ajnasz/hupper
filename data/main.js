@@ -78,7 +78,6 @@ function updateComments () {
 
 			const newComments = modComment.filterNewComments(comments);
 
-			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
 
 			modComment.onCommentUpdate(comments);
@@ -251,7 +250,7 @@ function onRegsitered (response) {
 		setunlimitedlinks,
 		parseblocks,
 		validateForms,
-		blockEmbed
+		blockEmbed,
 	} = response.data;
 
 	let promise;

@@ -29,7 +29,8 @@
 			],
 			"css": [
 				"data/core/css/hupper.css",
-				"data/core/css/indentstyles.css"
+				"data/core/css/indentstyles.css",
+				"data/core/css/icons.css"
 			],
 			"js": [
 				"data/bundle.js"
@@ -47,7 +48,8 @@
 		"*://hup.hu/"
 	],
 	"web_accessible_resources": [
-		"images/icons/009-pen.png"
+		"images/icons/009-pen.png",
+		"fonts/icomoon.woff"
 	],
 	"applications": {
 		"gecko": {

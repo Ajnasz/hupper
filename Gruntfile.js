@@ -15,6 +15,7 @@ module.exports = (grunt) => {
 
 	const FILES = [
 		{ src: 'images/icons/*.png', dest: '/', expand: true },
+		{ src: 'fonts/*.woff', dest: '/', expand: true },
 		{ src: 'data/bundle.js', dest: '/', expand: true },
 		{ src: 'data/core/css/*.css', dest: '/', expand: true },
 		{ src: 'lib/bundle.js', dest: '/', expand: true },
