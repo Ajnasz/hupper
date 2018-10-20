@@ -108,14 +108,16 @@
 	background-repeat: no-repeat;
 	border: 0;
 	cursor: pointer;
-	height: 16px;
-	width: 16px;
 
 	-moz-appearance: none;
+	-webkit-appearance: none;
 }
 
 .block-button {
-	background-image: url('data:image/gif;base64,R0lGODlhMABgAOMJALu7qM3Nv8/OwePj3Orq5O3t6PHx7fv7+v39/MfHsMfHsMfHsMfHsMfHsMfHsMfHsCwAAAAAMABgAAAE/nCESWsd0uqJ95bEgYxkiRSTYa4HGqhr2U5ibNK2jOfjMfGlH8IjLBJHQlIyGEAeh02ox8mM3qzAoi2apGyxPG2MS94owTnxiuw0U4FvNPIt/cLjW3p9LR9z81BXfneBQ4BLYX18bW47WYqCdxMFNTkuBXAEk5kBGUQUHZ+gnqKhop2knwMCpxytr7CxsrO0XmkWiY2fubZfGme1uFNuUsEVxce/vrXIXsp+wc0/xMa/w9TVzmZP2drW3ae84OPkr6lEpqXnHumq6x/vGhKYPAeaL0AzhHNwPgGVOXzsMySJTSRIawYxaVOFHyE5vQrt6YXwhq8zVSJWDAJMGaJj/hz3WeEGBqSSgX0oYnlG8CG0hQz3tJSkEKPMiSgfGoS58WQ/RGlQ0gt4idPAeBbaoTtqDukFlOWAihsHVRYjIz2v2npSDFhVXFpVdvwKVhrQsgWlhl3CEo5JPsSakTXJtWNWs3bpjozoVhe2LmqXwdIaU2fUueCYtlLKTvEpxh+EAmRxb6ilu/9+9sS8KJLbnBk92wzpMi/M0z5L49XDeuZnKtP2diZNUzSd2BI5285NDTRqPSx1/5bIyKJInbNT1+47OYZAkZZtXGouQ5Njdeauu8suMipm74jXDu7+tlVYsnBJou2rVtR58n8IupcW3uxWfm/Zg5yfvn64K3w9FQKWeabBR8t7hpWDWDfaoeMUKANFAAA7');
+	background-color: #fff;
+	color: #d8d8c4;
+	margin: 0 1px;
+	/* background-image: url('data:image/gif;base64,R0lGODlhMABgAOMJALu7qM3Nv8/OwePj3Orq5O3t6PHx7fv7+v39/MfHsMfHsMfHsMfHsMfHsMfHsMfHsCwAAAAAMABgAAAE/nCESWsd0uqJ95bEgYxkiRSTYa4HGqhr2U5ibNK2jOfjMfGlH8IjLBJHQlIyGEAeh02ox8mM3qzAoi2apGyxPG2MS94owTnxiuw0U4FvNPIt/cLjW3p9LR9z81BXfneBQ4BLYX18bW47WYqCdxMFNTkuBXAEk5kBGUQUHZ+gnqKhop2knwMCpxytr7CxsrO0XmkWiY2fubZfGme1uFNuUsEVxce/vrXIXsp+wc0/xMa/w9TVzmZP2drW3ae84OPkr6lEpqXnHumq6x/vGhKYPAeaL0AzhHNwPgGVOXzsMySJTSRIawYxaVOFHyE5vQrt6YXwhq8zVSJWDAJMGaJj/hz3WeEGBqSSgX0oYnlG8CG0hQz3tJSkEKPMiSgfGoS58WQ/RGlQ0gt4idPAeBbaoTtqDukFlOWAihsHVRYjIz2v2npSDFhVXFpVdvwKVhrQsgWlhl3CEo5JPsSakTXJtWNWs3bpjozoVhe2LmqXwdIaU2fUueCYtlLKTvEpxh+EAmRxb6ilu/9+9sS8KJLbnBk92wzpMi/M0z5L49XDeuZnKtP2diZNUzSd2BI5285NDTRqPSx1/5bIyKJInbNT1+47OYZAkZZtXGouQ5Njdeauu8suMipm74jXDu7+tlVYsnBJou2rVtR58n8IupcW3uxWfm/Zg5yfvn64K3w9FQKWeabBR8t7hpWDWDfaoeMUKANFAAA7'); */
 }
 
 .block-button,
@@ -138,23 +140,7 @@
 	right: 18px !important;
 }
 .delete-button {
-	background-position: -16px -32px !important;
 	right: 0 !important;
-}
-.delete-button:hover {
-	background-position: -16px -48px !important;
-}
-.hide-content-button {
-	background-position: -16px 0 !important;
-}
-.hide-content-button:hover {
-	background-position: -16px -16px !important;
-}
-.show-content-button {
-	background-position: -32px -0px !important;
-}
-.show-content-button:hover {
-	background-position: -32px -16px !important;
 }
 .show-content-button {
 	display: none !important;
@@ -166,36 +152,20 @@
 	display: block !important;
 }
 .up-button {
-	background-position: 0 -64px !important;
 	left: 0 !important;
-}
-.up-button:hover {
-	background-position: 0 -80px !important;
 }
 
 .down-button {
-	background-position: -16px -64px !important;
 	left: 18px !important;
 }
-.down-button:hover {
-	background-position: -16px -80px !important;
-}
-
 .left-button {
-	background-position: 0 0 !important;
 	left: 36px !important;
-}
-.left-button:hover {
-	background-position: 0 -16px !important;
 }
 
 .right-button {
-	background-position: 0 -32px !important;
 	left: 36px !important;
 }
-.right-button:hover {
-	background-position: 0 -48px !important;
-}
+
 #sidebar-left .left-button,
 #sidebar-right .right-button {
 	display: none !important;
@@ -377,6 +347,7 @@ a:target + .comment {
 	background-color: #d8d8c4;
 	color: #363636;
 }
+
 .hupper-icon-button:hover,
 .comment .link .hupper-icon-button:hover {
 	background-color: #363636;

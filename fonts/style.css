@@ -1,10 +1,11 @@
 @font-face {
   font-family: 'icomoon';
-  font-style: normal;
+  src:
+    url('fonts/icomoon.ttf?byhce9') format('truetype'),
+    url('fonts/icomoon.woff?byhce9') format('woff'),
+    url('fonts/icomoon.svg?byhce9#icomoon') format('svg');
   font-weight: normal;
-  src: url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff');
-  src: url('moz-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff');
-  /* src: url('ms-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff'); */
+  font-style: normal;
 }
 
 [class^="hupper-icon-"], [class*=" hupper-icon-"] {

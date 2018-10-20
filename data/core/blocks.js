@@ -81,10 +81,20 @@ function getBlocks () {
 	};
 }
 
+const ACTION_CLASS_NAMES = Object.freeze({
+	right: 'arrow-right',
+	left: 'arrow-left',
+	up: 'arrow-up',
+	down: 'arrow-down',
+	delete: 'cross',
+	'show-content': 'enlarge',
+	'hide-content': 'shrink',
+});
+
 function createBlockButton (action) {
 	const btn = dom.createElem('button');
 
-	dom.addClasses(['hupper-button', 'block-button', action + '-button'], btn);
+	dom.addClasses(['hupper-button', `hupper-icon-${ACTION_CLASS_NAMES[action]}`, 'block-button', action + '-button'], btn);
 	dom.data('action', action, btn);
 
 	return btn;
