@@ -229,6 +229,27 @@ module.exports = (grunt) => {
 			},
 		},
 
+		fixCSSrules: {
+			chrome: {
+				options: {
+					type: 'chrome',
+				},
+				files: [
+					{ src: 'build/data/core/css/hupper.css' },
+					{ src: 'build/data/core/css/icons.css' },
+				],
+			},
+			firefox: {
+				options: {
+					type: 'moz',
+				},
+				files: [
+					{ src: 'build/data/core/css/hupper.css' },
+					{ src: 'build/data/core/css/icons.css' },
+				],
+			},
+		},
+
 		packageLock: {
 			options: {
 				file: 'package-lock.json',
@@ -303,6 +324,7 @@ module.exports = (grunt) => {
 		'copy:optionsBackup',
 		'template:optionsFirefox',
 		'copy:build',
+		'fixCSSrules:firefox',
 		'compress:firefox',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
@@ -319,6 +341,7 @@ module.exports = (grunt) => {
 		'copy:optionsBackup',
 		'template:optionsChrome',
 		'copy:build',
+		'fixCSSrules:chrome',
 		'compress:chrome',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
