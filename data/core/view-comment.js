@@ -43,6 +43,7 @@ function createDialog (id) {
 	const container = dom.createElem('div', null, [VIEW_COMMENT_CLASS]);
 
 	container.appendChild(createHeader());
+	container.appendChild(dom.createElem('a', [{ name: 'id', value: `#${id}` }]));
 	container.appendChild(clone);
 
 	return container;

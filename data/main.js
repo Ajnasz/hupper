@@ -174,7 +174,7 @@ function addCommentListeners () {
 
 	if (commentsContainer) {
 		addClickListener(modComment.onBodyClick, document.querySelector('body'));
-		addClickListener(modComment.onCommentsContainerClick, document.querySelector('.main-content'));
+		addClickListener(modComment.onCommentsContainerClick, document.querySelector('body'));
 	}
 }
 

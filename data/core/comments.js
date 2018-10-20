@@ -547,7 +547,12 @@ function onCommentSetNew (newComments) {
 }
 
 function onCommentsContainerClick (e) {
-	const commentID = dom.prev('a', dom.closest(`.${COMMENT_CLASS}`, e.target)).getAttribute('id');
+	const commentLink = dom.prev('a', dom.closest(`.${COMMENT_CLASS}`, e.target));
+	if (!commentLink) {
+		return;
+	}
+
+	const commentID = commentLink.getAttribute('id');
 
 	if (dom.is('.expand-comment', e.target)) {
 		e.preventDefault();
