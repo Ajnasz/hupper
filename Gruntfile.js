@@ -185,7 +185,7 @@ module.exports = (grunt) => {
 			chrome: set(Object.assign({}, require('./webpack.config')),
 				webpackBrowserPath, 'last 5 Chrome versions'),
 			firefox: set(Object.assign({}, require('./webpack.config')),
-				webpackBrowserPath, 'Firefox 52'),
+				webpackBrowserPath, 'Firefox 60'),
 		},
 
 		eslint: {
