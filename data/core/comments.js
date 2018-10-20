@@ -498,7 +498,7 @@ function createIcon (name) {
 
 function addViewCommentButton (comment) {
 	const icon = createIcon('bubbles2');
-	const footerLink = createFooterLink(icon, `#${comment.parentID}`, ['show-parent']);
+	const footerLink = createFooterLink(icon, `#${comment.parentID}`, ['show-parent', 'hupper-button', 'hupper-icon-button', 'hupper-icon-button--inverse']);
 	dom.data('parent', comment.parentID, footerLink);
 	addFooterLink(comment, footerLink);
 }
