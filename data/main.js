@@ -76,7 +76,6 @@ function updateComments () {
 
 			const newComments = modComment.filterNewComments(comments);
 
-			// newComments.forEach(modComment.onCommentAddNextPrev);
 			modComment.onCommentSetNew(newComments);
 
 			modComment.onCommentUpdate(comments);
@@ -173,7 +172,7 @@ function addCommentListeners () {
 
 	if (commentsContainer) {
 		addClickListener(modComment.onBodyClick, document.querySelector('body'));
-		addClickListener(modComment.onCommentsContainerClick, document.querySelector('.main-content'));
+		addClickListener(modComment.onCommentsContainerClick, document.querySelector('body'));
 	}
 }
 
@@ -249,7 +248,7 @@ function onRegsitered (response) {
 		setunlimitedlinks,
 		parseblocks,
 		validateForms,
-		blockEmbed
+		blockEmbed,
 	} = response.data;
 
 	let promise;
