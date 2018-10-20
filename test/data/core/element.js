@@ -2,24 +2,19 @@ import { getCommentObj } from '../../../data/core/comment-obj';
 import * as element from '../../../data/core/element';
 
 const test = require('tape');
-const jsdom = require('jsdom');
 const path = require('path');
 
-const { JSDOM } = jsdom;
 const fixturesPath = path.resolve(__dirname, './fixtures');
-import { setGlobals } from '../../domHelpers';
+import { readPage } from '../../domHelpers';
 
-function readPage (page) {
-	return JSDOM.fromFile(path.join(fixturesPath, page)).then(dom => dom.window.top).then(window => {
-		setGlobals(window);
-		return window;
-	});
+function readFixturePage (page) {
+	return readPage(path.join(fixturesPath, page));
 }
 
 test('data/core/element', (suite) => {
 	suite.test('addHNav', (t) => {
 		t.test('optimal way', (t) => {
-			readPage('ok_comments.html').then(win => {
+			readFixturePage('ok_comments.html').then(win => {
 				const { document } = win;
 				const comments = Array.from(document.querySelectorAll('.comment'));
 
@@ -31,7 +26,7 @@ test('data/core/element', (suite) => {
 		});
 
 		t.test('add only once', (t) => {
-			readPage('ok_comments.html').then(win => {
+			readFixturePage('ok_comments.html').then(win => {
 				const { document } = win;
 				const comments = Array.from(document.querySelectorAll('.comment'));
 
@@ -44,7 +39,7 @@ test('data/core/element', (suite) => {
 		});
 
 		t.test('add only once', (t) => {
-			readPage('ok_comments.html').then(win => {
+			readFixturePage('ok_comments.html').then(win => {
 				const { document } = win;
 				const comments = Array.from(document.querySelectorAll('.comment'));
 
