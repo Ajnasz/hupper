@@ -343,11 +343,10 @@ function addFooterLink (comment, link) {
 	}
 
 	const footer = dom.selectOne(`.${COMMENT_FOOTER_LINKS_CLASS}`, commentObj.footer);
-
-	const href = dom.selectOne('a', link).href;
+	const { href, className } = dom.selectOne('a', link);
 
 	func.toArray(footer.querySelectorAll('a'))
-		.filter(a => a.href === href)
+		.filter(a => a.href === href && a.className === className)
 		.forEach(a => footer.removeChild(a.parentNode));
 
 	footer.appendChild(link);
