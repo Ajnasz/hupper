@@ -382,3 +382,23 @@ a:target + .comment {
 	background-color: #363636;
 	color: #d8d8c4;
 }
+
+.comment:active .username_postfix,
+.comment:focus .username_postfix {
+	width: 16px !important;
+}
+.comment:active .username_postfix:before,
+.comment:focus .username_postfix:before {
+	content: 'v' !important;
+    width: 8px !important;
+}
+
+.comment .username_postfix:active,
+.comment .username_postfix:focus {
+	width: 56px !important;
+}
+.comment .username_postfix:active:before,
+.comment .username_postfix:focus:before {
+	content: 'veterán' !important;
+    width: 48px !important;
+}
