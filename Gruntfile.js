@@ -309,6 +309,7 @@ module.exports = (grunt) => {
 		'copy:optionsBackup',
 		'template:optionsFirefox',
 		'copy:build',
+		'fixCSSrules:firefox',
 		'copy:manifestRestore',
 		'copy:optionsRestore',
 		'clean:manifestFirefoxBeta',
