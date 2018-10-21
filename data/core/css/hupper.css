@@ -237,9 +237,9 @@ li:hover .taxonomy-button {
 }
 .comment.article-author .content {
 	background-position: top right;
-	background-image: url('moz-extension://__MSG_@@extension_id__/images/icons/009-pen.png'),
-		url('chrome-extension://__MSG_@@extension_id__/images/icons/009-pen.png'),
-		url('ms-extension://__MSG_@@extension_id__/images/icons/009-pen.png');
+	background-image: url('moz-extension://__MSG_@@extension_id__/images/icons/009-pen.png');
+	background-image: url('chrome-extension://__MSG_@@extension_id__/images/icons/009-pen.png');
+	background-image: url('ms-extension://__MSG_@@extension_id__/images/icons/009-pen.png');
 	background-repeat: no-repeat;
 }
 

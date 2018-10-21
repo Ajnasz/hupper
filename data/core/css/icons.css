@@ -4,7 +4,7 @@
   font-weight: normal;
   src: url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff');
   src: url('moz-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff');
-  /* src: url('ms-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff'); */
+  src: url('ms-extension://__MSG_@@extension_id__/fonts/icomoon.woff?vn6i6') format('woff');
 }
 
 [class^="hupper-icon-"], [class*=" hupper-icon-"] {
