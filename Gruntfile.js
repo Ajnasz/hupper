@@ -75,7 +75,7 @@ module.exports = (grunt) => {
 					endpoint: 'ams3.digitaloceanspaces.com',
 					prefix: 'hupper/',
 				}
-			}
+			},
 		},
 		webext: {
 			beta: {
