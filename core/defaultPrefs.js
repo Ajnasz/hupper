@@ -144,9 +144,9 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
-		'name': 'style_min_comment_width',
+		'name': 'style_max_indent_level',
 		// 'title': 'Width of sidebars',
-		'title': 'Hozzászólások minimum szélessége',
+		'title': 'Hozzászólások maximális behúzása',
 		'type': 'integer',
 		'value': 0,
 		'group': 'styles'
