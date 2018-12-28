@@ -144,6 +144,15 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
+		'name': 'style_min_comment_width',
+		// 'title': 'Width of sidebars',
+		'title': 'Hozzászólások minimum szélessége',
+		'type': 'integer',
+		'value': 0,
+		'group': 'styles'
+	},
+
+	{
 		'name': 'style_accessibility',
 		// 'title': 'Load accessibility styles',
 		'title': 'Használatot segítő stílusok betöltése',

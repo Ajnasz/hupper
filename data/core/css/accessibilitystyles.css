@@ -42,7 +42,7 @@
 }
 
 .comment {
-	max-width: 100% !important;
+	max-width: 100%;
 }
 
 .block-button, .block-move-button {
