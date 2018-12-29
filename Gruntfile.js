@@ -86,6 +86,15 @@ module.exports = (grunt) => {
 					sourceDir: 'build',
 					artifactsDir: 'web-ext-artifacts'
 				},
+			},
+			stable: {
+				options: {
+					id: 'hupper@ajnasz.hu',
+					apiSecret: process.env.AMO_JWT_SECRET,
+					apiKey: process.env.AMO_JWT_ISSUER,
+					sourceDir: 'build',
+					artifactsDir: 'web-ext-artifacts'
+				},
 			}
 		},
 		template: {
@@ -356,6 +365,11 @@ module.exports = (grunt) => {
 		'aws_s3:xpi',
 		'createUpdateJSON',
 		'aws_s3:updateJSON',
+	]),
+
+	grunt.registerTask('deployFirefox', [
+		'firefox',
+		'webext:stable',
 	]),
 
 	grunt.registerTask('bumpVersion', [
