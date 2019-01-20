@@ -144,6 +144,15 @@ const defaultPrefs = Object.freeze([
 	},
 
 	{
+		'name': 'style_max_indent_level',
+		// 'title': 'Width of sidebars',
+		'title': 'Hozzászólások maximális behúzása',
+		'type': 'integer',
+		'value': 0,
+		'group': 'styles'
+	},
+
+	{
 		'name': 'style_accessibility',
 		// 'title': 'Load accessibility styles',
 		'title': 'Használatot segítő stílusok betöltése',

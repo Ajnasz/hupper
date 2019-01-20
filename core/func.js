@@ -142,6 +142,33 @@ const genID = (() => {
 	return () => ++id;
 })();
 
+function getToFixed (num) {
+	const numStr = String(num);
+	const dotIndex = numStr.indexOf('.');
+
+	if (dotIndex === -1) {
+		return 0;
+	}
+
+	return numStr.slice(dotIndex + 1).length;
+}
+
+function range (min = 0, max = 1, step = 1) {
+	const output = new Array(Math.floor((max - min) / step));
+	const fixed = getToFixed(step);
+	const stepFloat = parseFloat(step);
+
+	for (let i = min, index = 0; i < max; i = parseFloat((i + stepFloat).toFixed(fixed)), index++) {
+		output[index] = i;
+	}
+
+	return output;
+}
+
+function times (str, times = 1) {
+	return range(0, times).map(() => str);
+}
+
 export {
 	first,
 	index,
@@ -162,5 +189,7 @@ export {
 	always,
 	recurse,
 	flow,
-	genID
+	genID,
+	range,
+	times,
 };
