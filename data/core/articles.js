@@ -1,13 +1,18 @@
 import * as dom from '../../core/dom';
 import * as func from '../../core/func';
 import { addHNav } from './element';
+import { log } from '../../core/log';
 
 const ARTICLE_HNAV_CLASS = 'hnav';
+const ARTICLES_CONTAINER = '#block-hup-theme-content';
+const ARTICLE_SELECTOR = '.node';
+const ARTICLE_HEADER_SELECTOR = 'h2';
+const ARTICLE_CATEGORY_SELECTOR = '.field--type-entity-reference [property="schema:about"]';
+const ARTICLE_NAME_ELEMENT_SELECTOR = '.node__submitted [property="schema:name"][typeof="schema:Person"]';
 
 const TEXT_NEXT = 'következő';
 const TEXT_PREV = 'előző';
 const TEXT_HIDE_ARTICLE_TITLE = 'Cikk kategória elrejtése';
-const ANONYM_ARTICLE_AUTHOR_REGEXP = /[^(]+\( ([^ ]+).*/;
 
 const articleStruct = {
 	id: '',
@@ -21,40 +26,36 @@ const articleNodeStruct = {
 	header: null,
 };
 
+/**
+ * @param {HTMLArticleNode} article
+ * @returns string
+ */
 function getAuthor (article) {
-	let output = '';
-	const nameLink = dom.selectOne('table > tbody > tr > td:nth-child(1) a', article);
-
-	if (nameLink) {
-		output = nameLink.textContent.trim();
+	const nameElement = dom.selectOne(ARTICLE_NAME_ELEMENT_SELECTOR, article);
+	if (nameElement) {
+		return nameElement.textContent.trim();
 	}
 
-	if (!output) {
-		const titleLine = dom.selectOne('table > tbody > tr > td:nth-child(1)', article);
-		const title = titleLine.textContent;
-
-		output = title.replace(ANONYM_ARTICLE_AUTHOR_REGEXP, '$1');
-	}
-
-	return output;
+	log.error('Author not found for article', article);
+	return '';
 }
 
 function articleElementToStruct (element) {
-	const categoryElem = element.querySelector('.links.inline > .first.last > a');
+	const categoryElem = element.querySelector(ARTICLE_CATEGORY_SELECTOR);
 	const category = categoryElem ? categoryElem.textContent : '';
-	const isNew = element.querySelector('.comment_new_comments') !== null;
-	const id = element.getAttribute('id');
+	const isNew = dom.selectOne('.comment-new-comments', element) !== null;
+	const id = element.dataset.historyNodeId;
 	const author = getAuthor(element);
 
 	return Object.assign({}, articleStruct, { category, isNew, id, author });
 }
 
 function articleStructToArticleNodeStruct (article) {
-	const elem = document.getElementById(article.id);
+	const elem = dom.selectOne(`article[data-history-node-id="${article.id}"]`);
 	const output = Object.create(articleNodeStruct);
 
 	output.node = elem;
-	output.header = elem.querySelector('h2.title');
+	output.header = dom.selectOne(ARTICLE_HEADER_SELECTOR, elem);
 
 	return output;
 }
@@ -136,8 +137,8 @@ function markNewArticle (newArticleText, article) {
 }
 
 function parseArticles () {
-	const elements = document.getElementById('content-both').querySelectorAll('.node');
-	return func.toArray(elements).map(articleElementToStruct);
+	const elements = dom.selectAll(ARTICLE_SELECTOR, dom.selectOne(ARTICLES_CONTAINER));
+	return elements.map(articleElementToStruct);
 }
 
 const hupHiddenClass = 'hup-hidden';
@@ -177,14 +178,20 @@ function onArticleAddNextPrev (item) {
 }
 
 function listenToTaxonomyButtonClick (cb) {
-	document.getElementById('content-both').addEventListener('click', function (e) {
+	const rootNode = dom.selectOne(ARTICLES_CONTAINER);
+
+	if (!rootNode) {
+		log.error('root node not found');
+	}
+
+	dom.addListener('click', function (e) {
 		if (dom.hasClass('taxonomy-button', e.target)) {
 			const articleStruct = articleElementToStruct(dom.closest('.node', e.target));
 
 			cb(articleStruct);
 
 		}
-	}, false);
+	}, rootNode);
 
 }
 

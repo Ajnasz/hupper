@@ -4,10 +4,11 @@ import * as modHupperBlock  from './hupper-block';
 
 import { log } from '../../core/log';
 
-const BLOCK_CLASS = 'block';
-const SIDEBAR_CLASS = 'sidebar';
-const SIDEBAR_LEFT_CLASS = 'sidebar-left';
-const SIDEBAR_RIGHT_CLASS = 'sidebar-right';
+const BLOCK_CLASS = '.block';
+const SIDEBAR_LEFT_CLASS = '.region-sidebar-first';
+const SIDEBAR_RIGHT_CLASS = '.region-sidebar-second';
+const BLOCKS_ROOT_ELEMENT = '.sidebars_wrapper';
+const SIDEBAR_CLASS = [SIDEBAR_LEFT_CLASS, SIDEBAR_RIGHT_CLASS].join(',');
 const BLOCK_HEADER_ELEMENT = 'h2';
 
 var blockDataStruct = {
@@ -21,7 +22,7 @@ var blockSturct = {
 };
 
 function blockDataStructToBlockElement (blockObj) {
-	return document.getElementById(blockObj.id);
+	return dom.selectOne(`#${blockObj.id}`, document);
 }
 
 /**
@@ -40,7 +41,7 @@ function blockDataStructToBlockSturct (block) {
 }
 
 function getBlockElements (sidebar) {
-	return func.toArray(sidebar.querySelectorAll('.' + BLOCK_CLASS));
+	return dom.selectAll(BLOCK_CLASS, sidebar);
 }
 
 /**
@@ -48,7 +49,7 @@ function getBlockElements (sidebar) {
 	* @return string
 	*/
 function getBlockColumn (block) {
-	const sidebar = dom.closest('.' + SIDEBAR_CLASS, block);
+	const sidebar = dom.closest(SIDEBAR_CLASS, block);
 
 	return sidebar.getAttribute('id');
 }
@@ -60,6 +61,10 @@ function getBlockColumn (block) {
 	*	column string
 	*/
 function blockElemToBlockDataStruct (block, index) {
+	if (!block) {
+		log.error('BLOCK IS NULL', block, index);
+		return null;
+	}
 	const output = Object.create(blockDataStruct);
 
 	output.id = block.getAttribute('id');
@@ -70,9 +75,9 @@ function blockElemToBlockDataStruct (block, index) {
 }
 
 function getBlocks () {
-	const leftBlocks = getBlockElements(document.getElementById(SIDEBAR_LEFT_CLASS))
+	const leftBlocks = getBlockElements(dom.selectOne(SIDEBAR_LEFT_CLASS, document))
 		.map(blockElemToBlockDataStruct);
-	const rightBlocks = getBlockElements(document.getElementById(SIDEBAR_RIGHT_CLASS))
+	const rightBlocks = getBlockElements(dom.selectOne(SIDEBAR_RIGHT_CLASS, document))
 		.map(blockElemToBlockDataStruct);
 
 	return {
@@ -181,8 +186,8 @@ function setBlockOrder (sidebar, blocks) {
 function reorderBlocks (blocks) {
 	log.log('reorder blocks', blocks);
 
-	const sidebarLeft = document.getElementById(SIDEBAR_LEFT_CLASS);
-	const sidebarRight = document.getElementById(SIDEBAR_RIGHT_CLASS);
+	const sidebarLeft = dom.selectOne(SIDEBAR_LEFT_CLASS);
+	const sidebarRight = dom.selectOne(SIDEBAR_RIGHT_CLASS);
 
 	const elementList = getBlockElements(sidebarLeft)
 		.concat(getBlockElements(sidebarRight));
@@ -253,13 +258,20 @@ function onBlockButtonClick (e) {
 }
 
 function onEnableBlockControls (dispatch) {
-	document.getElementById('content').addEventListener('click', function (e) {
+	const rootElement = dom.selectOne(BLOCKS_ROOT_ELEMENT);
+
+	if (!rootElement) {
+		log.error('block root element not found');
+		return;
+	}
+
+	dom.addListener('click', function (e) {
 		const event = onBlockButtonClick(e);
 
 		if (event) {
 			dispatch(event);
 		}
-	}, false);
+	}, rootElement);
 }
 
 export {

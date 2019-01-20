@@ -27,6 +27,10 @@ function inArray (array, item) {
  * @return {HTMLDOMElement[]}
  */
 function toArray (list) {
+	if (list === null || list === undefined) {
+		return [];
+	}
+
 	return Array.prototype.slice.call(list);
 }
 

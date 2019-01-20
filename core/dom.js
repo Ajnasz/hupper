@@ -135,10 +135,12 @@ function emptyText (element) {
 }
 
 function selectOne (selector, element) {
+	element = element || document;
 	return element.querySelector(selector);
 }
 
 function selectAll (selector, element) {
+	element = element || document;
 	return func.toArray(element.querySelectorAll(selector));
 }
 

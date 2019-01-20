@@ -7,8 +7,8 @@ const hasExpandedClass = func.curry(dom.hasClass, 'expanded');
 const collapseClasses = ['collapsed', 'hup-collapsed'];
 const expandClasses = ['expanded', 'hup-expanded'];
 
-function create (id, title, target = 'sidebar-right') {
-	let block = document.getElementById(id);
+function create (id, title, target = '.layout-sidebar-second .region') {
+	let block = dom.selectOne(`#${id}`, document);
 	if (block) {
 		return block;
 	}
@@ -27,7 +27,7 @@ function create (id, title, target = 'sidebar-right') {
 	block.appendChild(h2);
 	block.appendChild(content);
 
-	const sidebar = document.getElementById(target);
+	const sidebar = dom.selectOne(target, document);
 
 	sidebar.insertBefore(block, sidebar.firstChild);
 
