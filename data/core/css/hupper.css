@@ -18,11 +18,11 @@
 	}
 }
 
-#filteredhuppers, #filteredtrolls {display: block !important;}
-#tags {background-color:#F6F6EB !important; }
-#tags h4 {margin: 0 !important;padding: 0 !important; }
-#tags ul {list-style: none !important;padding: 0 !important;margin: 0 !important;}
-#tags li {padding-left: 5px !important;margin: 0 !important;}
+#filteredhuppers, #filteredtrolls { display: block;}
+#tags { background-color:#F6F6EB; }
+#tags h4 { margin: 0; padding: 0; }
+#tags ul { list-style: none; padding: 0; margin: 0;}
+#tags li { padding-left: 5px; margin: 0;}
 .hnew {
 	display: inline-block;
 	border-radius: 3px 0;
@@ -47,21 +47,21 @@
 	flex-wrap: nowrap;
 	align-items: start;
 }
-.hnav * { margin-left: 2px !important; margin-right: 2px !important; }
+.hnav * { margin-left: 2px; margin-right: 2px; }
 .node .hnav a {
-	font-size: 0.8em !important;
+	font-size: 0.8em;
 }
 
 .comment .hnav a {
-	font-size: 1em !important;
+	font-size: 1em;
 }
 
 .hnav a {
-	font-weight: normal !important;
-	margin-left: 5px !important;
+	font-weight: normal;
+	margin-left: 5px;
 }
 .submitted {
-	padding: 2px !important;
+	padding: 2px;
 }
 
 .submitted:after {
@@ -83,24 +83,24 @@
 }
 
 .mark {
-	cursor: pointer !important;
-	color: #000 !important;
+	cursor: pointer;
+	color: #000;
 }
 
 .hup-content-no-content,
 .hup-content-loading,
 .hup-hidden {
-	display: none !important;
+	display: none;
 }
 .block h2 {
-	position: relative !important;
+	position: relative;
 }
 .content-hidden .content {
-	display: none !important;
+	display: none;
 }
 
 .content-hidden h2 {
-	border-bottom: 0 !important;
+	border-bottom: 0;
 }
 
 .hupper-button {
@@ -122,8 +122,8 @@
 
 .block-button,
 .block-move-button {
-	position: absolute !important;
-	top: 0 !important;
+	position: absolute;
+	top: 0;
 	visibility: hidden;
 }
 
@@ -133,90 +133,90 @@
 }
 
 .block .btn-container {
-	position: relative !important;
+	position: relative;
 }
 .hide-content-button,
 .show-content-button {
-	right: 18px !important;
+	right: 18px;
 }
 .delete-button {
-	background-position: -16px -32px !important;
-	right: 0 !important;
+	background-position: -16px -32px;
+	right: 0;
 }
 .delete-button:hover {
-	background-position: -16px -48px !important;
+	background-position: -16px -48px;
 }
 .hide-content-button {
-	background-position: -16px 0 !important;
+	background-position: -16px 0;
 }
 .hide-content-button:hover {
-	background-position: -16px -16px !important;
+	background-position: -16px -16px;
 }
 .show-content-button {
-	background-position: -32px -0px !important;
+	background-position: -32px -0px;
 }
 .show-content-button:hover {
-	background-position: -32px -16px !important;
+	background-position: -32px -16px;
 }
 .show-content-button {
-	display: none !important;
+	display: none;
 }
 .content-hidden .hide-content-button {
-	display: none !important;
+	display: none;
 }
 .content-hidden .show-content-button {
-	display: block !important;
+	display: block;
 }
 .up-button {
-	background-position: 0 -64px !important;
-	left: 0 !important;
+	background-position: 0 -64px;
+	left: 0;
 }
 .up-button:hover {
-	background-position: 0 -80px !important;
+	background-position: 0 -80px;
 }
 
 .down-button {
-	background-position: -16px -64px !important;
-	left: 18px !important;
+	background-position: -16px -64px;
+	left: 18px;
 }
 .down-button:hover {
-	background-position: -16px -80px !important;
+	background-position: -16px -80px;
 }
 
 .left-button {
-	background-position: 0 0 !important;
-	left: 36px !important;
+	background-position: 0 0;
+	left: 36px;
 }
 .left-button:hover {
-	background-position: 0 -16px !important;
+	background-position: 0 -16px;
 }
 
 .right-button {
-	background-position: 0 -32px !important;
-	left: 36px !important;
+	background-position: 0 -32px;
+	left: 36px;
 }
 .right-button:hover {
-	background-position: 0 -48px !important;
+	background-position: 0 -48px;
 }
 #sidebar-left .left-button,
 #sidebar-right .right-button {
-	display: none !important;
+	display: none;
 }
 .hide-submenu ul {
-	display: none !important;
+	display: none;
 }
 .node table ul.links.inline li.first.last {
-	padding-right: 20px !important;
-	position: relative !important;
+	padding-right: 20px;
+	position: relative;
 }
 .taxonomy-button {
-	display: none !important;
-	position: absolute !important;
-	right: 0 !important;
-	top: 0 !important;
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 li:hover .taxonomy-button {
-	display: block !important;
+	display: block;
 }
 
 .scores {
@@ -231,11 +231,11 @@ li:hover .taxonomy-button {
 }
 
 .hup-replies {
-	float: left !important;
-	padding-left: 2px !important;
+	float: left;
+	padding-left: 2px;
 }
 .hup-replies .hup-boring {
-	color: #999 !important;
+	color: #999;
 }
 .comment.article-author .content {
 	background-position: top right;
@@ -249,17 +249,17 @@ li:hover .taxonomy-button {
 .comment.hup-hidden + .indented,
 .comment.hup-boring,
 .comment.hup-boring + .indented {
-	display: none !important;
+	display: none;
 }
 .comment.hup-boring > .submitted {
-	background-color: #EBEBD5 !important;
+	background-color: #EBEBD5;
 }
 .comment.has-children:not(.trollComment),
 a:target + .comment.hup-boring,
 a:target + .comment.hup-hidden,
 a:target + .comment.hup-hidden + .indented,
 a#new:target + a + .comment.hup-boring {
-	display: block !important;
+	display: block;
 }
 
 a:target + .comment {
@@ -271,7 +271,7 @@ a:target + .comment {
 }
 
 .hup-collapsed > ul {
-	display: none !important;
+	display: none;
 }
 
 /*
@@ -387,20 +387,20 @@ a:target + .comment {
 
 .comment:active .username_postfix,
 .comment:focus .username_postfix {
-	width: 16px !important;
+	width: 16px;
 }
 .comment:active .username_postfix:before,
 .comment:focus .username_postfix:before {
-	content: 'v' !important;
-    width: 8px !important;
+	content: 'v';
+    width: 8px;
 }
 
 .comment .username_postfix:active,
 .comment .username_postfix:focus {
-	width: 56px !important;
+	width: 56px;
 }
 .comment .username_postfix:active:before,
 .comment .username_postfix:focus:before {
-	content: 'veterán' !important;
-    width: 48px !important;
+	content: 'veterán';
+    width: 48px;
 }

@@ -1,17 +1,17 @@
 .indented {
-	margin-top: -1em !important;
-	padding-top: 1em !important;
+	margin-top: -1em;
+	padding-top: 1em;
 }
 
 .indented:hover,
 .indented:focus {
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACAQMAAACjTyRkAAAAAXNSR0IArs4c6QAAAAZQTFRFt9BTt7eL4xrPVQAAAAF0Uk5TAEDm2GYAAAABYktHRACIBR1IAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2gsOCiIz/YtxKwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY2hgYAAAAYQAgSjdetcAAAAASUVORK5CYII=) 0 0 repeat-y !important;
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACAQMAAACjTyRkAAAAAXNSR0IArs4c6QAAAAZQTFRFt9BTt7eL4xrPVQAAAAF0Uk5TAEDm2GYAAAABYktHRACIBR1IAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2gsOCiIz/YtxKwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY2hgYAAAAYQAgSjdetcAAAAASUVORK5CYII=) 0 0 repeat-y;
 }
 
 a#new:target + a + .comment,
 a:target + .comment {
-	/* background-color: #F6F6EB !important; */
-	border-color: #000 !important;
+	/* background-color: #F6F6EB; */
+	border-color: #000;
 	-moz-transition: border-color 2s ease-out, background-color 0.5s ease;
 	transition: border-color 2s ease-out, background-color 0.5s ease;
 }
@@ -22,9 +22,9 @@ a#new:target + a + .comment > .submitted {
 }
 
 .indented {
-	transition: margin-left 0.5s !important;
+	transition: margin-left 0.5s;
 }
 
 .widen-comment {
-	margin-left: 0 !important;
+	margin-left: 0;
 }
