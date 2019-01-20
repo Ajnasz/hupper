@@ -26,4 +26,12 @@ deploy:
     on:
       tags: true
 
+  - provider: script
+    script: grunt firefox && grunt deployFirefox
+    repo: Ajnasz/hupper
+    skip_cleanup: true
+    branches:
+      - /^v?\d+\.\d+\.\d+$/
+
+
 # vi:sw=2:tabstop=2
