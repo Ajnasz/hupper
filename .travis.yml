@@ -25,7 +25,6 @@ deploy:
   repo: Ajnasz/hupper
   skip_cleanup: true
   on:
-    tags: true
     all_branches: true
     condition: tag =~ /^v?\d+\.\d+\.\d+-\d+$/
 
@@ -34,6 +33,5 @@ deploy:
   repo: Ajnasz/hupper
   skip_cleanup: true
   on:
-    tags: true
     all_branches: true
     condition: tag =~ /^v?\d+\.\d+\.\d+$/
