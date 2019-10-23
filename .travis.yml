@@ -4,34 +4,26 @@ node_js:
 
 env:
   global:
-  - secure: PySqoFdFGmU3XmxiWXZBGY3YIN+gc7H/CdpE5ltgW9e2VJPVOzJ8p6wYhLkdjbv6ZntNQZtYckqX+ArI+4RHb/3q5t1BnI+7iGKxKVAkTw6pPNUa+9gj5YMM0Guvw23NXjlbNaVtUcRJYZbZE3PNwC/MbP1tGmmJZ1bQ40TMvTM=
-  - secure: G+ShW4GbRmblpEMkzk0ijUJ9EWvJNYpCSCHWmzIuwGh8VNnt6dn9ZCdnwElNKZ+I6TZ9qPCpzzJMA0xU7bI2qOYqkdr+PnoptDvCi8RvGkXhV6LCFtR98Dj5Zh8LZe49EkXYHZ/D16n7otZd0laQlBCB9qP0zUDFaU0DIco9e2I=
-  - secure: F2ZN0p4gv/BM/G57PisUJ3NYip+A54NVQpQLYiZ6Dzi8rjYVeCQ8GjneaEv/izQOmKhv3fplt0g5uaW+bCNo2wEvJ021+VkdQ3LXs76mEPpOr0rejqoAagd1DcJ3gXRUpa+l1fi7KwAiITVzCijlrQMXcsyaXtOjkDsIqx1tUcA=
-  - secure: nEyhHtLNRkLNiBkqEgIirVFYtVPaXfe1YoAxxIsF+S5XkUYz1Ini1Zvzx/qW2ehPv0JYcU99vxA86KUYIgFOhlnqbh6hES3byyyhf7leZx3P+gTYBf6aHjCqpWZyoTyfwoEykSQLS4dFVG2jf0bkKQnlz8J4OJQXvJfkt78Pv3o=
-
+  - secure: pLF4tPhyB8D+5ooj9f5VaOKGjfW2msO4QmDVIOkALrbrZ12isbA/PAuRNS2lqV97hCaFrxjrzHuxTpWgRF3DMdeOW4g3sJ/zSY3kpU4qSQ9eZWzQrqjHnaU/mOnn5RRg/61yvL5o8ITQ2ilKP2jdmoXuR73g59nPAp18zLGnXYc=
+  - secure: ipguI7zt0Sky5AIoWekk4NhH8W62rTxJzt/xjXACWx8DKx//o8SURYG2ARf+sVJR3m+xNDixen1K/3hlGonf2btJU8ZklDCnnMGkmuAmuXvFvB2fKf5Xe6fefWJggAhSQJ8NjgXCsZZ4czQ93m9B+zSpB2pdIq1NJXmoeW5E0kk=
+  - secure: h+VU+tGEwvnPYFJsPbddmYFHPAyNUh+Nf5Dab+SW3wY284kajKrsjHkZdq/Wht6TXcR032HXqPyDxWNBYS/8dK5oImmFIKYvUYacu0ZO2LY3HJLN6BPpp+FNJhjTQ9C7NetH5yqmyU0ooZz+CtZdIx1i1PWzxIr+a1E8ogrLgik=
+  - secure: MxVTrv/Wri2LRMG8fn2H5GEufgXfTmZgGfFpQw9zCkjI6oG4rIizha7IjHBw+7QXuLw6x5T0bqnmXFdhNK5kEiwiBhMins4/93FxH6qIA78FNI6RdAgj9EoCRVM/hmFPq2EszsYVOyqOrbASDnt+uWDNOO8oVrZdmIS/LCKv/V8=
 before_install: npm install -g grunt-cli
-
 install:
-  - npm install
-
+- npm install
 test:
-  - provider: script
-    script: npm test
-
+- provider: script
+  script: npm test
 deploy:
-  - provider: script
-    script: grunt firefoxBeta && grunt deployFirefoxBeta
-    repo: Ajnasz/hupper
-    skip_cleanup: true
-    branches:
-      - /^v?\d+\.\d+\.\d+-\d\+$/
-
-  - provider: script
-    script: grunt firefox && grunt deployFirefox
-    repo: Ajnasz/hupper
-    skip_cleanup: true
-    branches:
-      - /^v?\d+\.\d+\.\d+$/
-
-
-# vi:sw=2:tabstop=2
+- provider: script
+  script: grunt firefoxBeta && grunt deployFirefoxBeta
+  repo: Ajnasz/hupper
+  skip_cleanup: true
+  branches:
+  - "/^v?\\d+\\.\\d+\\.\\d+-\\d\\+$/"
+- provider: script
+  script: grunt firefox && grunt deployFirefox
+  repo: Ajnasz/hupper
+  skip_cleanup: true
+  branches:
+  - "/^v?\\d+\\.\\d+\\.\\d+$/"
