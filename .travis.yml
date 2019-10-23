@@ -8,22 +8,31 @@ env:
   - secure: ipguI7zt0Sky5AIoWekk4NhH8W62rTxJzt/xjXACWx8DKx//o8SURYG2ARf+sVJR3m+xNDixen1K/3hlGonf2btJU8ZklDCnnMGkmuAmuXvFvB2fKf5Xe6fefWJggAhSQJ8NjgXCsZZ4czQ93m9B+zSpB2pdIq1NJXmoeW5E0kk=
   - secure: h+VU+tGEwvnPYFJsPbddmYFHPAyNUh+Nf5Dab+SW3wY284kajKrsjHkZdq/Wht6TXcR032HXqPyDxWNBYS/8dK5oImmFIKYvUYacu0ZO2LY3HJLN6BPpp+FNJhjTQ9C7NetH5yqmyU0ooZz+CtZdIx1i1PWzxIr+a1E8ogrLgik=
   - secure: MxVTrv/Wri2LRMG8fn2H5GEufgXfTmZgGfFpQw9zCkjI6oG4rIizha7IjHBw+7QXuLw6x5T0bqnmXFdhNK5kEiwiBhMins4/93FxH6qIA78FNI6RdAgj9EoCRVM/hmFPq2EszsYVOyqOrbASDnt+uWDNOO8oVrZdmIS/LCKv/V8=
+
 before_install: npm install -g grunt-cli
+
 install:
 - npm install
+
 test:
 - provider: script
   script: npm test
+
 deploy:
 - provider: script
   script: grunt firefoxBeta && grunt deployFirefoxBeta
   repo: Ajnasz/hupper
   skip_cleanup: true
-  branches:
-  - "/^v?\\d+\\.\\d+\\.\\d+-\\d+$/"
+  on:
+    tags: true
+    all_branches: true
+    condition: "$TRAVIS_TAG =~ ^v?\\d+\\.\\d+\\.\\d+-\\d+$"
+
 - provider: script
   script: grunt firefox && grunt deployFirefox
   repo: Ajnasz/hupper
   skip_cleanup: true
-  branches:
-  - "/^v?\\d+\\.\\d+\\.\\d+$/"
+  on:
+    tags: true
+    all_branches: true
+    condition: "$TRAVIS_TAG =~ ^v?\\d+\\.\\d+\\.\\d+$"
