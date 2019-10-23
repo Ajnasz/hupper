@@ -23,8 +23,8 @@ deploy:
     script: grunt firefoxBeta && grunt deployFirefoxBeta
     repo: Ajnasz/hupper
     skip_cleanup: true
-    on:
-      tags: true
+    branches:
+      - /^v?\d+\.\d+\.\d+-\d\+$/
 
   - provider: script
     script: grunt firefox && grunt deployFirefox
