@@ -26,7 +26,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: tag =~ ^v?\d+\.\d+\.\d+-\d+$
+    condition: tag =~ /^v?\d+\.\d+\.\d+-\d+$/
 
 - provider: script
   script: grunt firefox && grunt deployFirefox
@@ -34,4 +34,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: tag =~ ^v?\d+\.\d+\.\d+$
+    condition: tag =~ /^v?\d+\.\d+\.\d+$/
