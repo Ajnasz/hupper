@@ -26,6 +26,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+    all_branches: true
     condition: tag =~ /^v?\d+\.\d+\.\d+-\d+$/
 
 - provider: script
@@ -34,4 +35,5 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+    all_branches: true
     condition: tag =~ /^v?\d+\.\d+\.\d+$/
