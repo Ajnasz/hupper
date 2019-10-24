@@ -21,7 +21,7 @@ test:
 deploy:
 
 - provider: script
-  script: echo "#$TRAVIS_TAG#"
+  script: echo "_$TRAVIS_TAG_"
   repo: Ajnasz/hupper
   on:
     tag: true
@@ -34,7 +34,7 @@ deploy:
   on:
     all_branches: true
     tag: true
-    condition: $TRAVIS_TAG =~ ^v?\d+\.\d+\.\d+-\d+$
+    condition: $TRAVIS_TAG =~ ^v\d+\.\d+\.\d+-\d+$
 
 - provider: script
   script: grunt firefox && grunt deployFirefox
@@ -43,4 +43,4 @@ deploy:
   on:
     all_branches: true
     tag: true
-    condition: $TRAVIS_TAG =~ ^v?\d+\.\d+\.\d+$
+    condition: $TRAVIS_TAG =~ ^v\d+\.\d+\.\d+$
