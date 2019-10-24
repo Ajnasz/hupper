@@ -32,7 +32,7 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: $TRAVIS_TAG =~ /^v?\d+\.\d+\.\d+-\d+$/
+    condition: $TRAVIS_TAG =~ ^v?\d+\.\d+\.\d+-\d+$
 
 - provider: script
   script: grunt firefox && grunt deployFirefox
@@ -40,4 +40,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: $TRAVIS_TAG =~ /^v?\d+\.\d+\.\d+$/
+    condition: $TRAVIS_TAG =~ ^v?\d+\.\d+\.\d+$
