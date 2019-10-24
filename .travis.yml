@@ -21,6 +21,10 @@ test:
 deploy:
 
 - provider: script
+  script: env
+  repo: Ajnasz/hupper
+
+- provider: script
   script: grunt firefoxBeta && grunt deployFirefoxBeta
   repo: Ajnasz/hupper
   skip_cleanup: true
