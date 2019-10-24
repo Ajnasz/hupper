@@ -89,7 +89,6 @@ module.exports = (grunt) => {
 			},
 			stable: {
 				options: {
-					id: 'hupper@ajnasz.hu',
 					apiSecret: process.env.AMO_JWT_SECRET,
 					apiKey: process.env.AMO_JWT_ISSUER,
 					sourceDir: 'build',
