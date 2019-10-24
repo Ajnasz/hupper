@@ -21,13 +21,6 @@ test:
 deploy:
 
 - provider: script
-  script: echo "x$TRAVIS_TAGx"
-  repo: Ajnasz/hupper
-  on:
-    tag: true
-    all_branches: true
-
-- provider: script
   script: grunt firefoxBeta && grunt deployFirefoxBeta
   repo: Ajnasz/hupper
   skip_cleanup: true
