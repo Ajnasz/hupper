@@ -21,7 +21,7 @@ test:
 deploy:
 
 - provider: script
-  script: env
+  script: echo "#$TRAVIS_TAG#"
   repo: Ajnasz/hupper
   on:
     tag: true
