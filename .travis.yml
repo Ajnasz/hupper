@@ -23,6 +23,8 @@ deploy:
 - provider: script
   script: env
   repo: Ajnasz/hupper
+  on:
+    all_branches: true
 
 - provider: script
   script: grunt firefoxBeta && grunt deployFirefoxBeta
