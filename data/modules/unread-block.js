@@ -12,7 +12,7 @@ export function create () {
 }
 
 export function fill (user) {
-	return getPage(`https://hup.hu/user/${user.id}/track`)
+	return getPage(`https://oldhup.hu/user/${user.id}/track`)
 		.then(page => userTrakcer.getContents(page.querySelector('#tracker')))
 		.then((f) => {
 			const newAnswers = f.filter(f => f.answers.new > 0);

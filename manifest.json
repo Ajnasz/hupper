@@ -25,7 +25,8 @@
 		{
 			"run_at": "document_start",
 			"matches": [
-				"*://hup.hu/*"
+				"*://hup.hu/*",
+				"*://oldhup.hu/*"
 			],
 			"css": [
 				"data/core/css/hupper.css",
@@ -45,7 +46,8 @@
 		"webRequestBlocking",
 		"*://platform.twitter.com/widgets.js",
 		"*://www.youtube.com/embed/*",
-		"*://hup.hu/"
+		"*://hup.hu/",
+		"*://oldhup.hu/"
 	],
 	"web_accessible_resources": [
 		"images/icons/009-pen.png",

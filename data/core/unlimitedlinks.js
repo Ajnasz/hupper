@@ -12,7 +12,7 @@ const pathNames = [
 ];
 
 function isOnHup (hostname) {
-	return hostname === 'hup.hu' || hostname === 'www.hup.hu';
+	return hostname === 'hup.hu' || hostname === 'www.hup.hu' || hostname === 'oldhup.hu';
 }
 
 function isExtendablePath (linkPathName) {
